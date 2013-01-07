@@ -7,6 +7,7 @@ PROJECT = MachZehnder
 MCU = atxmega32a4
 TARGET = MachZehnder.elf
 CC = avr-gcc
+CPR = avr-cpp
 
 CPP = avr-g++
 
@@ -39,13 +40,19 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o
+OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o switch_context.o
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
 
 ## Build
 all: $(TARGET) MachZehnder.hex MachZehnder.eep MachZehnder.lss size
+
+%.s: %.asm
+	$(CPR) $< -o $@
+
+%.o: %.s
+	$(CC) -c $< -o $@
 
 ## Compile
 main.o: ../main.c
@@ -107,6 +114,12 @@ tx.o: ../tx.c
 
 control.o: ../control.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+switch_context.o: ./switch_context.s
+	$(CC) $(ASMFLAGS) -c $< -o $@
+
+switch_context.s: ../switch_context.asm
+	$(CPR) $< -o $@
 
 ##Link
 $(TARGET): $(OBJECTS)

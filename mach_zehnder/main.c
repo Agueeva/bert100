@@ -14,6 +14,8 @@
 #include "tx.h"
 #include "control.h"
 
+extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
+
 int
 main()
 {
@@ -42,5 +44,6 @@ main()
 	TX_Init();
 	TWISlave_Init();
 	Control_Init();
+	//_switch_context(0x1000,0x1200);
 	EV_Loop();	
 }
