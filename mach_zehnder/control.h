@@ -1,0 +1,2 @@
+void Control_Init();
+
