@@ -11,6 +11,7 @@
  */
 #ifndef _IRQFLAGS_H
 #define _IRQFLAGS_H
+#include <avr/io.h>
 
 #define IPL_ALLON 	(PMIC_LOLVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_HILVLEN_bm)
 #define IPL_LOW 	(PMIC_MEDLVLEN_bm | PMIC_HILVLEN_bm)

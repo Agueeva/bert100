@@ -40,7 +40,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o switch_context.o
+OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o switch_context.o threads.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -109,8 +109,8 @@ wdt.o: ../wdt.c
 tx.o: ../tx.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
-#rx2g5.o: ../rx2g5.c
-#	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+threads.o: ../threads.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 control.o: ../control.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<

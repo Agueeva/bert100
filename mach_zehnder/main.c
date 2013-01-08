@@ -13,6 +13,7 @@
 #include "twislave.h"
 #include "tx.h"
 #include "control.h"
+#include "threads.h"
 
 extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
 
@@ -35,7 +36,7 @@ main()
 	sei();
 	UartC0_Init();
 	ADC_Init();
-	Con_Printf_P("\nWelcome to Polyboard\n" 
+	Con_Printf_P("\nWelcome to Mach-Zehnder\n" 
 		"Build " __DATE__ " " __TIME__ "\n");
 	I2CM_Init();
 	interp = Interp_Init(Con_OutStr, _Con_Printf_P);
@@ -44,6 +45,7 @@ main()
 	TX_Init();
 	TWISlave_Init();
 	Control_Init();
-	//_switch_context(0x1000,0x1200);
+	Threads_Init();
+	//_switch_context(0x1000,0x2000);
 	EV_Loop();	
 }

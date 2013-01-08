@@ -41,19 +41,31 @@ _switch_context:
 	push r31
 	ldi r30,lo8(label1)
 	ldi r31,hi8(label1)
+
 	call label1
 label1:
 	pop r31
 	pop r30 
-	adiw r30,(label2 - label1)
+	adiw r30,(label2 - label1) >> 1
 	push r30
 	push r31
 
 	/* now exchange stack */
+	mov r30,r22
+	mov r31,r23
 	lds r22,IOA_SPL
 	lds r23,IOA_SPH 
+	st Z+,r22
+	st Z,r23
+	
+	mov r30,r24
+	mov r31,r25
+	ld r24,Z+ 
+	ld r25,Z 
+	cli
 	sts IOA_SPL,r24
 	sts IOA_SPH,r25
+	sei
 	ret
 
 label2:
