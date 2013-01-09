@@ -1,6 +1,8 @@
-#define IOA_SPL         0x5d
-#define IOA_SPH         0x5e
-#define IOA_SREG        0x5f
+//define __ASSEMBLER__
+//include <avr/io.h>
+#define IOA_SPL         0x3d
+#define IOA_SPH         0x3e
+#define IOA_SREG        0x3f
 
 
 .globl _switch_context
@@ -37,13 +39,11 @@ _switch_context:
 	push r29
 	push r30
 	push r31
-	lds   r31,IOA_SREG 
+	in  r31,IOA_SREG 
 	push r31
-	ldi r30,lo8(label1)
-	ldi r31,hi8(label1)
-
 	call label1
 label1:
+	/* Fix the return address on the stack */
 	pop r31
 	pop r30 
 	adiw r30,(label2 - label1) >> 1
@@ -51,26 +51,24 @@ label1:
 	push r31
 
 	/* now exchange stack */
-	mov r30,r22
-	mov r31,r23
-	lds r22,IOA_SPL
-	lds r23,IOA_SPH 
+	movw r30,r22
+	in r22,IOA_SPL
+	in r23,IOA_SPH 
 	st Z+,r22
 	st Z,r23
 	
-	mov r30,r24
-	mov r31,r25
+	movw r30,r24
 	ld r24,Z+ 
 	ld r25,Z 
 	cli
-	sts IOA_SPL,r24
-	sts IOA_SPH,r25
+	out IOA_SPL,r24
+	out IOA_SPH,r25
 	sei
 	ret
 
 label2:
 	pop r31
-	sts IOA_SREG,r31	
+	out IOA_SREG,r31	
 
 	pop r31
 	pop r30
