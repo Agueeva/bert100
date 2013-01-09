@@ -7,3 +7,9 @@ static Thread *unusedqHead = NULL;
 Thread *g_RunqHead = NULL;
 Thread *g_RunqTail = NULL;
 static Thread *yieldqHead = NULL;
+
+void
+TPos_Init(void)
+{
+
+}
