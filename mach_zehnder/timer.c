@@ -16,7 +16,6 @@
 Timer *timerHead;
 static TimeMs_t clock_tick;
 
-
 /**
  *****************************************************************
  * Timer Interrupt. Increment the clock_tick counter and

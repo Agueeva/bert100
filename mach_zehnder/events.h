@@ -23,7 +23,7 @@ enum  {
 typedef struct Event {
 	EventProc *evProc;
 	void *eventData;
-	int evState;
+	uint8_t evState;
 	struct Event *next;
 	struct Event *prev;
 } Event;

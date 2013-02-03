@@ -12,6 +12,9 @@
 #ifndef _IRQFLAGS_H
 #define _IRQFLAGS_H
 #include <avr/io.h>
+#include <stdint.h>
+
+typedef uint8_t Flags_t;
 
 #define IPL_ALLON 	(PMIC_LOLVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_HILVLEN_bm)
 #define IPL_LOW 	(PMIC_MEDLVLEN_bm | PMIC_HILVLEN_bm)
@@ -34,9 +37,9 @@ static inline void barrier(void)
  * Save the flags and disable the interrupts 
  **********************************************************
  */
-static inline uint8_t save_flags_cli(void)
+static inline Flags_t save_flags_cli(void)
 {
-	uint8_t flags;
+	Flags_t flags;
 	asm volatile ("in %0, 0x3f \n" "cli	     \n":"=g" (flags)
 		      :		/* no input */
 		      :"memory");
@@ -67,11 +70,11 @@ static inline void restore_ipl(uint8_t pmic)
 
 /**
  ***********************************************************
- * \fn static inline void restore_flags(uint8_t flags)
+ * \fn static inline void restore_flags(Flags_t flags)
  * Restore old flags;
  ***********************************************************
  */
-static inline void restore_flags(uint8_t flags)
+static inline void restore_flags(Flags_t flags)
 {
 	asm volatile ("out 0x3f, %0 \n": /* No output */
 		      :"g" (flags)

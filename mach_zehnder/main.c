@@ -43,7 +43,7 @@ main()
 	Editor_Init(Interp_Feed, interp);
 	PWM_Init();
 	TX_Init();
-	TWISlave_Init();
+	//TWISlave_Init();
 	Control_Init();
 	Threads_Init();
 	//_switch_context(0x1000,0x2000);

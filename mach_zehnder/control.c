@@ -79,7 +79,7 @@ Control_AdcDone(void *eventData,uint16_t adval)
 	}
 	contr->ibias_outval[ch] = new_ibias;
 	if(contr->control_enable[ch]) {
-		Ibtx_Set(ch,contr->ibias_outval[ch] / 64);
+		//Ibtx_Set(ch,contr->ibias_outval[ch] / 64);
 	}
 	contr->curr_channel = (ch + 1) % NR_CHANNELS;
 	if(contr->curr_channel != 0) {
@@ -152,7 +152,7 @@ cmd_closed_loop(Interp * interp, uint8_t argc, char *argv[])
 		value = astrtoi16(argv[2]);
 		contr->control_enable[ch] = value;
 		value = astrtoi16(argv[2]);
-		Ibtx_Get(ch,&pwmval);
+		//Ibtx_Get(ch,&pwmval);
 		contr->ibias_outval[ch] = NORM_IBTX(pwmval); 
 	} else {
 		value = !!contr->control_enable[ch];
