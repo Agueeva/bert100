@@ -45,8 +45,7 @@ main()
 	TX_Init();
 	//TWISlave_Init();
 	Control_Init();
-	Threads_Init();
+	//Threads_Init();
 	//_switch_context(0x1000,0x2000);
-	while(1);
 	EV_Loop();	
 }
