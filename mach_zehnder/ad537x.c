@@ -38,6 +38,15 @@
 #define	PIN_CLR		6
 #define PINCTRL_CLR	PORTE.PIN6CTRL
 
+static const char str_X1A[] PROGMEM = "x1a";
+static const char str_X1B[] PROGMEM = "x1b";
+static const char str_C[] PROGMEM = "c";
+static const char str_M[] PROGMEM = "m";
+static const char str_CONTROL[] PROGMEM = "control";
+static const char str_OFS0[] PROGMEM = "ofs0";
+static const char str_OFS1[] PROGMEM = "ofs1";
+static const char str_ABSELECT[] PROGMEM = "abselect";
+
 
 static uint32_t  
 AD537x_Write(uint32_t value)
@@ -62,6 +71,30 @@ AD537x_Write(uint32_t value)
 	}		
 	return inval;
 }
+
+/*
+ * Readback  
+ */
+static uint32_t 
+AD537x_Readback(uint8_t reg,uint8_t channel) 
+{
+	uint32_t spiCmd;
+	uint32_t result;
+	spiCmd = ((uint32_t)reg << 13) | (((uint16_t)channel + 8) << 7);
+	AD537x_Write(spiCmd);
+	spiCmd = 0; /* NOP */	
+	result = AD537x_Write(spiCmd);
+	return result;	
+}
+
+static int8_t
+cmd_dac(Interp *interp,uint8_t argc,char *argv[])
+{
+
+}
+
+INTERP_CMD(dac, cmd_dac,
+           "dac         <fieldname> ?<channel>? ?<value> # ");
 
 void
 AD537x_Init(void)
