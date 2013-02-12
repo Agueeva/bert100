@@ -17,10 +17,22 @@
 #include "eeprom_map.h"
 #include "timer.h"
 #include "adc.h"
+#include "console.h"
 
+#define array_size(x) (sizeof(x) / sizeof((x)[0]))
 static uint16_t gPwmRes;
 static bool gSweepSingle;
-static uint16_t curve[256];
+static uint16_t gSweepCounter = 0;	
+static int16_t curve[256];
+static void adc_done(void *clientData, uint16_t adval);
+
+static ADC_Request adcr = {
+        .channel = 16,
+        .callBack = adc_done,
+        .clientData = NULL,
+        .status = ADCR_IDLE
+};
+
 
 #define PORT_TRIGGER      PORTC
 #define PIN_TRIGGER       (1)
@@ -132,24 +144,39 @@ static void sawToothProc(void *eventData);
 
 TIMER_DECLARE(sawToothTimer,sawToothProc,NULL)
 
+static void 
+adc_done(void *clientData, uint16_t adval) 
+{
+	if(gSweepCounter < array_size(curve)) {
+		curve[gSweepCounter] = adval;		
+	}
+}
+
 static void
 sawToothProc(void *eventData)
 {
-	static uint16_t counter = 0;	
-	if(counter == 0) {
+	uint16_t i;
+	if(gSweepCounter == 0) {
 		PORT_TRIGGER.OUTCLR = (1 <<  PIN_TRIGGER);
 	} else {
 		PORT_TRIGGER.OUTSET = (1 <<  PIN_TRIGGER);
 	}
-	counter = (counter + 1) % gPwmRes;
-	if(counter == 0)  {
+	PWM_Set(4,gSweepCounter);
+	gSweepCounter = (gSweepCounter + 1) % gPwmRes;
+	if(gSweepCounter == 0)  {
 		if(gSweepSingle == false) {
 			Timer_Start(&sawToothTimer,4);
+		} else {
+			PWM_Set(4,0); /* Park with zero output */
+			Con_Printf_P("\n");
+			for(i = 0; i < array_size(curve);i++) {
+				Con_Printf_P("%u, %d\n",i,curve[i]);
+			}		
 		}
 	} else {
 		Timer_Start(&sawToothTimer,4);
+		ADC_EnqueueRequest(&adcr,16);
 	}
-	PWM_Set(4,counter);
 }
 
 /**
@@ -242,6 +269,7 @@ cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
 {
 	if(argc == 1) {
 		gSweepSingle = true;
+		ADC_EnqueueRequest(&adcr,16);
 		Timer_Start(&sawToothTimer,4);
 	} else if(argc == 2) {
 		if(strcmp(argv[1],"start") == 0) {
