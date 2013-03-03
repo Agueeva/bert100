@@ -14,9 +14,9 @@
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
 
-#define PORT_SYNC	PORTC
+#define PORT_SYNC	PORTD
 #define	PIN_SYNC	7
-#define PINCTRL_SYNC    PORTC.PIN7CTRL
+#define PINCTRL_SYNC    PORTD.PIN7CTRL
 
 #define PORT_SDI	PORTE
 #define	PIN_SDI		0
@@ -168,25 +168,28 @@ AD537x_Write(uint32_t value)
 	PORT_SYNC.OUTCLR = (1 << PIN_SYNC);
 	for(i = 23; i >= 0;i--) {
 		if((value >> i) & 1) {
+			//Con_Printf_P("1");
 			PORT_SDI.OUTSET = (1 << PIN_SDI);
 		} else {
+			//Con_Printf_P("0");
 			PORT_SDI.OUTCLR = (1 << PIN_SDI);
 		}
+		asm("nop");
+		asm("nop");
+		asm("nop");
 		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
-		asm("nop");
-		asm("nop");
-		asm("nop");
 		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
 			inval = (inval << 1) | 1;
 		} else {
 			inval = (inval << 1);
 		}
+		asm("nop");
+		asm("nop");
+		asm("nop");
 		PORT_SCLK.OUTSET = (1 << PIN_SCLK);
-		asm("nop");
-		asm("nop");
-		asm("nop");
 	}		
 	PORT_SYNC.OUTSET = (1 << PIN_SYNC);
+	//Con_Printf_P("\n");
 	return inval;
 }
 
@@ -195,6 +198,7 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
 {
 	uint32_t wrval;
 	wrval = value | ((uint32_t)sfc << 16); 
+	Con_Printf_P("Write %06lx\n",wrval);
 	AD537x_Write(wrval);
 }
 
@@ -206,7 +210,7 @@ AD537x_Readback(uint16_t addrCode,uint8_t channel)
 {
 	uint32_t spiCmd;
 	uint32_t result;
-	spiCmd = addrCode | (((uint16_t)channel + 8) << 7);
+	spiCmd = addrCode | (UINT32_C(5) << 16) | (((uint16_t)channel + 8) << 7);
 	AD537x_Write(spiCmd);
 	spiCmd = 0; /* NOP */	
 	result = AD537x_Write(spiCmd);
@@ -222,9 +226,18 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 	WriteVar wrvar;
 	uint16_t value;
 	if(argc < 2) {
-		return -EC_BADNUMARGS;
+		for(i = 0; i < array_size(rbvars); i++) {
+			memcpy_P(&rbvar,rbvars + i,sizeof(rbvar));
+			if(rbvar.nrArgs) {
+				value = AD537x_Readback(rbvar.addrCode,0);
+				Con_Printf_P("%S(%04x): %04x\n",rbvar.name,rbvar.addrCode,value);
+			} else {
+				value = AD537x_Readback(rbvar.addrCode,0);
+				Con_Printf_P("%S(%04x): %04x\n",rbvar.name,rbvar.addrCode,value);
+			}		
+		}
+		return 0;
 	}
-	Con_Printf_P("Port Sync 0x%02x\n",PORT_SYNC.IN);
 	for(i = 0; i < array_size(rbvars); i++) {
 		memcpy_P(&rbvar,rbvars + i,sizeof(rbvar));
 		if((strcmp_P(argv[1],rbvar.name) == 0) 
@@ -243,7 +256,7 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 	/* Now try to write the register */
 	for(i = 0; i < array_size(wrvars); i++) {
 		memcpy_P(&wrvar,wrvars + i,sizeof(wrvar));
-		if((argc > 2) && (strcmp_P(argv[1],rbvar.name) == 0)) {
+		if((argc > 2) && (strcmp_P(argv[1],wrvar.name) == 0)) {
 			value = astrtoi16(argv[2]);	
 			AD537x_SFWrite(wrvar.sfCode,value);
 			return 0;
@@ -310,6 +323,9 @@ INTERP_CMD(dacm, cmd_dacm,
 void
 AD537x_Init(void)
 {
+	PINCTRL_RESET = PORT_OPC_TOTEM_gc;
+	PORT_RESET.DIRCLR = (1 << PIN_RESET);
+	PORT_RESET.OUTCLR = (1 << PIN_RESET);
 	
 	PINCTRL_SYNC = PORT_OPC_TOTEM_gc;
 	PORT_SYNC.DIRSET = (1 << PIN_SYNC);
@@ -330,12 +346,10 @@ AD537x_Init(void)
 	PORT_BUSY.DIRCLR = (1 << PIN_BUSY);
 #endif
 
-	PINCTRL_RESET = PORT_OPC_TOTEM_gc;
-	PORT_RESET.DIRCLR = (1 << PIN_RESET);
-	PORT_RESET.OUTSET = (1 << PIN_RESET);
 
 #if 0
 	PINCTRL_CLR = PORT_OPC_TOTEM_gc;
 	PORT_CLR.DIRSET = (1 << PIN_CLR);
 #endif
+	PORT_RESET.OUTSET = (1 << PIN_RESET);
 }

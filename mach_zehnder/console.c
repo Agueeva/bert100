@@ -235,7 +235,6 @@ void _Con_Printf_P(const char *format,...)
 					uint32_t value;
 					if(pfs.printf_flags & FLG_LONG) {
 						value = va_arg( ap, int32_t);
-						Con_OutChar('L');
 						len = itoahex32(value,str);
 					} else {
 						value = va_arg( ap, int);
