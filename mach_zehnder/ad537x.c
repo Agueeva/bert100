@@ -162,26 +162,26 @@ static WriteVar PROGMEM wrvars[] = {
 static uint32_t  
 AD537x_Write(uint32_t value)
 {
-	int8_t i;
+	uint32_t i;
 	uint32_t inval;
 	inval = 0;
 	PORT_SYNC.OUTCLR = (1 << PIN_SYNC);
-	for(i = 23; i >= 0;i--) {
-		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
-			inval = (inval << 1) | 1;
-		} else {
-			inval = (inval << 1);
-		}
-		if((value >> i) & 1) {
+	for(i = UINT32_C(0x00800000); i > 0;i >>= 1) {
+		if(value & i) {
 			//Con_Printf_P("1");
 			PORT_SDI.OUTSET = (1 << PIN_SDI);
 		} else {
 			//Con_Printf_P("0");
 			PORT_SDI.OUTCLR = (1 << PIN_SDI);
 		}
-		asm("nop");
-		asm("nop");
-		asm("nop");
+		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
+			inval = (inval << 1) | 1;
+		} else {
+			inval = (inval << 1);
+		}
+		//asm("nop");
+		//asm("nop");
+		//asm("nop");
 		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
 		asm("nop");
 		asm("nop");
@@ -218,6 +218,15 @@ AD537x_Readback(uint16_t addrCode,uint8_t channelAddr)
 }
 
 static int8_t
+cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
+{
+	PORT_RESET.OUTCLR = (1 << PIN_RESET);
+	_delay_us(1);
+	PORT_RESET.OUTSET = (1 << PIN_RESET);
+	_delay_us(300);
+}
+
+static int8_t
 cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t i;
@@ -229,11 +238,11 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 		for(i = 0; i < array_size(rbvars); i++) {
 			memcpy_P(&rbvar,rbvars + i,sizeof(rbvar));
 			if(rbvar.nrArgs) {
-				value = AD537x_Readback(rbvar.addrCode,0);
-				Con_Printf_P("%S(%04x): %04x\n",rbvar.name,rbvar.addrCode,value);
+			//	value = AD537x_Readback(rbvar.addrCode,0);
+			//	Con_Printf_P("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
 			} else {
 				value = AD537x_Readback(rbvar.addrCode,0);
-				Con_Printf_P("%S(%04x): %04x\n",rbvar.name,rbvar.addrCode,value);
+				Con_Printf_P("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
 			}		
 		}
 		return 0;
@@ -249,7 +258,7 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 				channel = 0;
 			}		
 			value = AD537x_Readback(rbvar.addrCode,channel);
-			Con_Printf_P("%04x\n",value);
+			Con_Printf_P("0x%04x\n",value);
 			return 0;
 		}
 	}
@@ -271,7 +280,7 @@ cmd_dacx(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t channel;
 	uint16_t value;
-	if(argc < 3) {
+	if(argc == 1) {
 		uint8_t i;
 		uint16_t value;
 		for(i = 0; i < 32; i++) {
@@ -290,11 +299,20 @@ cmd_dacx(Interp *interp,uint8_t argc,char *argv[])
 			}
 		}
 		return 0;
+	} else if(argc == 2) {
+		channel = astrtoi16(argv[1]);
+		value = AD537x_Readback(0,channel + 8);
+		Con_Printf_P("0x%04x,",value);
+		value = AD537x_Readback(1 << 13,channel + 8);
+		Con_Printf_P("0x%04x\n",value);
+		return 0;
+	} else if(argc == 3) {
+		channel = astrtoi16(argv[1]);
+		value = astrtoi16(argv[2]);
+		AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
+		return 0;
 	}
-	channel = astrtoi16(argv[1]);
-	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
-	return 0;
+	return -EC_BADNUMARGS;
 }
 
 static int8_t
@@ -302,7 +320,7 @@ cmd_dacc(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t channel;
 	uint16_t value;
-	if(argc < 3) {
+	if(argc == 1) {
 		uint8_t i;
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(2 << 13,i + 8);
@@ -312,11 +330,18 @@ cmd_dacc(Interp *interp,uint8_t argc,char *argv[])
 			}
 		}
 		return 0;
+	} else if(argc == 2) {
+		channel = astrtoi16(argv[1]);
+		value = AD537x_Readback(2 << 13,channel + 8);
+		Con_Printf_P("0x%04x\n",value);
+		return 0;
+	} else if(argc == 3) {
+		channel = astrtoi16(argv[1]);
+		value = astrtoi16(argv[2]);
+		AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(2) << 22));
+		return 0;
 	}
-	channel = astrtoi16(argv[1]);
-	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(2) << 22));
-	return 0;
+	return -EC_BADNUMARGS;
 }
 
 static int8_t
@@ -324,7 +349,7 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t channel;
 	uint16_t value;
-	if(argc < 3) {
+	if(argc == 1) {
 		uint8_t i;
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(3 << 13,i + 8);
@@ -334,10 +359,16 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 			}
 		}
 		return 0;
+	} else if(argc == 2) {
+		channel = astrtoi16(argv[1]);
+		value = AD537x_Readback(3 << 13,channel + 8);
+		Con_Printf_P("0x%04x\n",value);
+		return 0;
+	} else if(argc == 3) {
+		channel = astrtoi16(argv[1]);
+		value = astrtoi16(argv[2]);
+		AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(1) << 22));
 	}
-	channel = astrtoi16(argv[1]);
-	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(1) << 22));
 	return 0;
 }
 
@@ -353,12 +384,15 @@ INTERP_CMD(dacc, cmd_dacc,
 INTERP_CMD(dacm, cmd_dacm,
            "dacm <channel> <value> # ");
 
+INTERP_CMD(dacr, cmd_dacr,
+           "dacr                   # reset dac");
+
 void
 AD537x_Init(void)
 {
 	PINCTRL_RESET = PORT_OPC_TOTEM_gc;
-	PORT_RESET.DIRCLR = (1 << PIN_RESET);
-	PORT_RESET.OUTCLR = (1 << PIN_RESET);
+	PORT_RESET.OUTSET = (1 << PIN_RESET);
+	PORT_RESET.DIRSET = (1 << PIN_RESET);
 	
 	PINCTRL_SYNC = PORT_OPC_TOTEM_gc;
 	PORT_SYNC.DIRSET = (1 << PIN_SYNC);
@@ -383,6 +417,6 @@ AD537x_Init(void)
 #if 0
 	PINCTRL_CLR = PORT_OPC_TOTEM_gc;
 	PORT_CLR.DIRSET = (1 << PIN_CLR);
+	_delay_ms(1000);
 #endif
-	PORT_RESET.OUTSET = (1 << PIN_RESET);
 }
