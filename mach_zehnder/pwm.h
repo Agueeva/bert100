@@ -7,6 +7,9 @@
 #define PWMCH_IBTX3	(7)
 #define PWMCH_IBTX4	(5)
 
+#define PWMCH_MZOUT	(PD4)
+#define ADIN_MZ		(PA0)
+
 void PWM_Init(void); 
 uint8_t PWM_Set(uint8_t channel,uint16_t pwmval);
 

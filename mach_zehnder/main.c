@@ -14,6 +14,7 @@
 #include "tx.h"
 #include "control.h"
 #include "threads.h"
+#include "ad537x.h"
 
 extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
 
@@ -47,5 +48,6 @@ main()
 	Control_Init();
 	//Threads_Init();
 	//_switch_context(0x1000,0x2000);
+	AD537x_Init();
 	EV_Loop();	
 }

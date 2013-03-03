@@ -95,6 +95,7 @@ PWM_Get(uint8_t channel,uint16_t *pwmval)
 			*pwmval = TCE0.CCD;
 			break;
 		default:
+			*pwmval = 0;
 			return 1;
 	}
 	return 0;
@@ -195,17 +196,8 @@ PWM_Init(void) {
 	PORTE.OUTCLR = 0xc;
 	PORTD.DIRSET = 0x3f;
 	PORTE.DIRSET = 0xc;
-#if 0
-	for(i = 0;i < 4;i++) {
-		uint16_t ibtx;
-		EEProm_Read(EEADDR(ibtx_init[i]),&ibtx,2);
-		if(ibtx == 0xffff) {
-			ibtx = 0;
-		}
-		Ibtx_Set(i,ibtx);
-	}
-#endif
-	HIRESD.CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+
+	HIRESD_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCD0.CTRLA = 1; /* Divide by 1 */
 	TCD1.CTRLA = 1; /* Divide by 1 */
         TCD0.PER = (pwmres - 1) & ~3;
@@ -213,7 +205,7 @@ PWM_Init(void) {
 	TCD0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 	TCD1.CTRLB = TC_WGMODE_SS_gc | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 
-	HIRESE.CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESE_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCE0.CTRLA = 1; /* Divide by 1 */
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
@@ -248,7 +240,6 @@ cmd_pwm(Interp * interp, uint8_t argc, char *argv[])
 		}
         } else if(argc == 1) {
 		for(channel = 0; channel < 7;channel++) {
-			uint16_t pwmval;
 			PWM_Get(channel,&pwmval);
 			Interp_Printf_P(interp,"%d ",pwmval);
 		}
@@ -271,6 +262,7 @@ cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
 		gSweepSingle = true;
 		ADC_EnqueueRequest(&adcr,16);
 		Timer_Start(&sawToothTimer,4);
+		return 0;
 	} else if(argc == 2) {
 		if(strcmp(argv[1],"start") == 0) {
 			gSweepSingle = false;
