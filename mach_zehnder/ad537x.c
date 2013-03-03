@@ -167,6 +167,11 @@ AD537x_Write(uint32_t value)
 	inval = 0;
 	PORT_SYNC.OUTCLR = (1 << PIN_SYNC);
 	for(i = 23; i >= 0;i--) {
+		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
+			inval = (inval << 1) | 1;
+		} else {
+			inval = (inval << 1);
+		}
 		if((value >> i) & 1) {
 			//Con_Printf_P("1");
 			PORT_SDI.OUTSET = (1 << PIN_SDI);
@@ -178,11 +183,6 @@ AD537x_Write(uint32_t value)
 		asm("nop");
 		asm("nop");
 		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
-		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
-			inval = (inval << 1) | 1;
-		} else {
-			inval = (inval << 1);
-		}
 		asm("nop");
 		asm("nop");
 		asm("nop");
@@ -206,11 +206,11 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
  * Readback  
  */
 static uint32_t 
-AD537x_Readback(uint16_t addrCode,uint8_t channel) 
+AD537x_Readback(uint16_t addrCode,uint8_t channelAddr) 
 {
 	uint32_t spiCmd;
 	uint32_t result;
-	spiCmd = addrCode | (UINT32_C(5) << 16) | (((uint16_t)channel + 8) << 7);
+	spiCmd = addrCode | (UINT32_C(5) << 16) | (((uint16_t)channelAddr) << 7);
 	AD537x_Write(spiCmd);
 	spiCmd = 0; /* NOP */	
 	result = AD537x_Write(spiCmd);
@@ -272,11 +272,28 @@ cmd_dacx(Interp *interp,uint8_t argc,char *argv[])
 	uint8_t channel;
 	uint16_t value;
 	if(argc < 3) {
-		return -EC_BADNUMARGS;
+		uint8_t i;
+		uint16_t value;
+		for(i = 0; i < 32; i++) {
+			value = AD537x_Readback(0,i + 8);
+			Con_Printf_P("%04x ",value);
+			if((i % 16) == 15) {
+				Con_Printf_P("\n");
+			}
+		}
+		Con_Printf_P("\n");
+		for(i = 0; i < 32; i++) {
+			value = AD537x_Readback(1 << 13,i + 8);
+			Con_Printf_P("%04x ",value);
+			if((i % 16) == 15) {
+				Con_Printf_P("\n");
+			}
+		}
+		return 0;
 	}
 	channel = astrtoi16(argv[1]);
 	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)channel << 16) | (UINT32_C(3) << 22));
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
 	return 0;
 }
 
@@ -286,11 +303,19 @@ cmd_dacc(Interp *interp,uint8_t argc,char *argv[])
 	uint8_t channel;
 	uint16_t value;
 	if(argc < 3) {
-		return -EC_BADNUMARGS;
+		uint8_t i;
+		for(i = 0; i < 32; i++) {
+			value = AD537x_Readback(2 << 13,i + 8);
+			Con_Printf_P("%04x ",value);
+			if((i % 16) == 15) {
+				Con_Printf_P("\n");
+			}
+		}
+		return 0;
 	}
 	channel = astrtoi16(argv[1]);
 	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)channel << 16) | (UINT32_C(2) << 22));
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(2) << 22));
 	return 0;
 }
 
@@ -300,11 +325,19 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 	uint8_t channel;
 	uint16_t value;
 	if(argc < 3) {
-		return -EC_BADNUMARGS;
+		uint8_t i;
+		for(i = 0; i < 32; i++) {
+			value = AD537x_Readback(3 << 13,i + 8);
+			Con_Printf_P("%04x ",value);
+			if((i % 16) == 15) {
+				Con_Printf_P("\n");
+			}
+		}
+		return 0;
 	}
 	channel = astrtoi16(argv[1]);
 	value = astrtoi16(argv[2]);
-	AD537x_Write(value | ((uint32_t)channel << 16) | (UINT32_C(1) << 22));
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(1) << 22));
 	return 0;
 }
 
