@@ -13,6 +13,7 @@
 #include <util/atomic.h>
 #include "irqflags.h"
 #include "events.h"
+#include "tpos.h"
 
 static Event *queueHead = NULL;
 static Event *queueTail = NULL;
@@ -78,7 +79,7 @@ _EventCancel(Event *ev)
  **********************************************
  */
 void
-EV_DoOneEvent(void)
+_EV_DoOneEvent(void)
 {
 	Event *ev;
 	uint8_t ipl;
@@ -104,6 +105,13 @@ EV_DoOneEvent(void)
 	restore_ipl(ipl);
 }
  
+void
+EV_DoOneEvent(void)
+{
+	if(queueHead) {
+		TPOS_Yield();
+	}
+}
 /**
  *************************************************************
  * \fn void EV_Loop(void)
@@ -113,6 +121,6 @@ EV_DoOneEvent(void)
 void
 EV_Loop(void) {
 	while(1) {
-		EV_DoOneEvent();
+		_EV_DoOneEvent();
 	}		 
 }

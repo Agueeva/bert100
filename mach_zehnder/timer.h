@@ -71,7 +71,7 @@ static inline uint8_t Timer_Busy(Timer *timer)
 }
 int8_t Timer_Start(Timer *timer,TimeMs_t timeout_ms);
 void Timer_Cancel(Timer * timer);
-void DelayMs(TimeMs_t delay);
+void SleepMs(TimeMs_t delay);
 void Timers_Init(void);
 
 #endif

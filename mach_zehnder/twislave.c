@@ -58,7 +58,7 @@ void TWITerm_TransmitChar(uint8_t c)
 	barrier();
 	twi->term_tx_buf_wp++;
 	if((twi->term_tx_buf_wp & 3) == 0) {
-		DelayMs(1);	
+		SleepMs(1);	
 	}
 }
 /**

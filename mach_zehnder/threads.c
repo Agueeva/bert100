@@ -5,8 +5,8 @@
 #include "console.h"
 #include "hex.h"
 
-#define NR_THREADS		(2)
-#define THREAD_STACKSIZE	(1024)
+#define NR_THREADS		(4)
+#define THREAD_STACKSIZE	(256)
 
 static Thread g_Thread[NR_THREADS];
 uint8_t thread_stacks[(NR_THREADS - 1) * THREAD_STACKSIZE];
@@ -39,6 +39,20 @@ Thread_Init(Thread *newTh,void (*threadproc)(void))
         stack_top -= 1;
         newTh->regSP = (uint16_t)stack_top;
         return;
+}
+
+Thread *
+Thread_Alloc()
+{
+        static uint8_t id = 0;
+        Thread *th = NULL;
+        id++;
+        if(id < NR_THREADS) {
+                th  = &g_Thread[id];
+                th->stack = (uint8_t *)thread_stacks + THREAD_STACKSIZE * (id - 1);
+                th->stacksize = THREAD_STACKSIZE;
+        }
+        return th;
 }
 
 /**
@@ -83,10 +97,12 @@ Threads_Init(void)
 	g_CurrTh = &g_Thread[0];
 	g_CurrTh->stack = (uint8_t *)(0x3000 - THREAD_STACKSIZE);
 	g_CurrTh->stacksize = THREAD_STACKSIZE;	
+#if 0
 	g_Thread[1].stacksize = THREAD_STACKSIZE;
 	g_Thread[1].stack = thread_stacks + 0 * THREAD_STACKSIZE;
 	Thread_Init(&g_Thread[1],EV_Loop);
 	Thread_Switch(&g_Thread[1]);
+#endif
 //	Thread_Init(&g_Thread[0],EV_Loop);
 //	Thread_Switch(&g_Thread[0]);
 }

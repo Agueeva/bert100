@@ -39,13 +39,18 @@ ISR(TCC0_OVF_vect)
 int8_t 
 Timer_Start(Timer * timer, TimeMs_t delay_ms)
 {
-	uint8_t ipl;
+	Flags_t ipl;
 	Timer *cursor, *prev;
 	ipl = save_ipl_set(IPL_TIMERS);
 	if (timer->busy || Event_Pending(&timer->evTimeout)) {
 		restore_ipl(ipl);
 		return -1;
 	}
+	if(delay_ms == 0) {
+                restore_ipl(ipl);
+                EV_Trigger(&timer->evTimeout);
+                return 0;
+        }
 	timer->busy = 1;
 	timer->timeout = clock_tick + delay_ms;
 	for (prev = NULL, cursor = timerHead; cursor; prev = cursor, cursor = cursor->next) {
@@ -127,14 +132,14 @@ TimeMs_Get(void) {
 
 /*
  ******************************************************************************
- * \fn void DelayMs(TimeMs_t delay);
+ * \fn void SleepMs(TimeMs_t delay);
  * Call the main event loop until some time is elapsed.
  * Use Delay only for very timing uncritical things. Its not recommended to
  * call delay for longer than 10 ms because of events lower in stack.
  ******************************************************************************
  */
 void
-DelayMs(TimeMs_t delay) {
+SleepMs(TimeMs_t delay) {
         TimeMs_t starttime = TimeMs_Get();
         while((TimeMs_Get() - starttime) < delay) {
                 EV_DoOneEvent();
