@@ -159,6 +159,7 @@ static WriteVar PROGMEM wrvars[] = {
 	}
 };
 
+
 static uint32_t  
 AD537x_Write(uint32_t value)
 {
@@ -191,6 +192,12 @@ AD537x_Write(uint32_t value)
 	PORT_SYNC.OUTSET = (1 << PIN_SYNC);
 	//Con_Printf_P("\n");
 	return inval;
+}
+
+void
+DAC_Set(uint16_t channel,uint16_t value)
+{
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
 }
 
 static inline void 

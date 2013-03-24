@@ -17,6 +17,7 @@
 #include "eeprom_map.h"
 #include "timer.h"
 #include "adc.h"
+#include "ad537x.h"
 #include "console.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
@@ -162,7 +163,8 @@ sawToothProc(void *eventData)
 	} else {
 		PORT_TRIGGER.OUTSET = (1 <<  PIN_TRIGGER);
 	}
-	PWM_Set(4,gSweepCounter);
+	//PWM_Set(4,gSweepCounter);
+	DAC_Set(0,gSweepCounter << 8);
 	gSweepCounter = (gSweepCounter + 1) % gPwmRes;
 	if(gSweepCounter == 0)  {
 		if(gSweepSingle == false) {
@@ -197,7 +199,7 @@ PWM_Init(void) {
 	PORTD.DIRSET = 0x3f;
 	PORTE.DIRSET = 0xc;
 
-	HIRESD_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESD_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCD0.CTRLA = 1; /* Divide by 1 */
 	TCD1.CTRLA = 1; /* Divide by 1 */
         TCD0.PER = (pwmres - 1) & ~3;
@@ -205,7 +207,7 @@ PWM_Init(void) {
 	TCD0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 	TCD1.CTRLB = TC_WGMODE_SS_gc | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 
-	HIRESE_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESE_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCE0.CTRLA = 1; /* Divide by 1 */
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
@@ -260,6 +262,8 @@ cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
 {
 	if(argc == 1) {
 		gSweepSingle = true;
+		gSweepCounter = 0;
+		PWM_Set(4,gSweepCounter);
 		ADC_EnqueueRequest(&adcr,16);
 		Timer_Start(&sawToothTimer,4);
 		return 0;

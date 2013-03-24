@@ -17,17 +17,16 @@
 #include "eeprom.h"
 #include "eeprom_map.h"
 #include "adc.h"
-#include "pwm.h"
-#include "tx.h"
+#include "ad537x.h"
 
-#define NR_CHANNELS	(4)
+#define NR_CHANNELS	(1)
 
 #define NORM_IBTX(x)	((x) << 6) 
 #define UNNORM_IBTX(x)	((x) >> 6)
 
 typedef struct Controller {
 	uint8_t curr_channel;
-	uint8_t control_enable[NR_CHANNELS];
+	int8_t control_enable[NR_CHANNELS];
 	uint16_t ibias_outval[NR_CHANNELS]; /* Normalized to 0 - 16384 */
 	uint16_t imon_setpoint[NR_CHANNELS];
 	ADC_Request adcr;
@@ -42,8 +41,8 @@ void
 Control_TimerProc(void *eventData)
 {
 	Controller *contr = (Controller *) eventData;	
-	ADC_EnqueueRequest(&contr->adcr,TX_ImonGetAdChannel(contr->curr_channel));
-	Timer_Start(&g_ControlTimer, 1);
+	ADC_EnqueueRequest(&contr->adcr,16);
+	Timer_Start(&g_ControlTimer, 10);
 }
 
 /**
@@ -55,35 +54,35 @@ void
 Control_AdcDone(void *eventData,uint16_t adval)
 {
 	Controller *contr = (Controller *) eventData;	
-	uint16_t millivolt;
 	uint16_t sp;
 	uint8_t ch = contr->curr_channel;
 	int16_t diff;
-	int new_ibias;
-	int K = 32;
-	if(adval & 0x8000) {
-		millivolt = 0;
-	} else {
-		millivolt = (((adval * 25) >> 5) * 25) >> 4;
-	}
+	int32_t new_ibias;
+	int K = 1;
 	sp = contr->imon_setpoint[ch];
-	diff = (sp - millivolt) * 6; /* Normalized to 15000 */
-	new_ibias = contr->ibias_outval[ch] + (diff / K);
+	diff = (sp - adval); 
+	if(contr->control_enable[ch] < 0) {
+		new_ibias = (int32_t)contr->ibias_outval[ch] - (diff / K);
+	} else {
+		new_ibias = (int32_t)contr->ibias_outval[ch] + (diff / K);
+	}
 	if(new_ibias < 0) {
 		new_ibias = 0;
-	} else if(new_ibias > 16384) {
-		new_ibias = 16384;
+	} else if(new_ibias > UINT32_C(65535)) {
+		new_ibias = 65535;
 	}
+#if 0
 	if(ch == 0) {
-	//	Con_Printf_P("sp %d, mv %u diff %d, new ibias %u\n",sp,millivolt,diff,new_ibias);
+		Con_Printf_P("sp %d, diff %d, new ibias %u\n",sp,diff,new_ibias);
 	}
+#endif
 	contr->ibias_outval[ch] = new_ibias;
 	if(contr->control_enable[ch]) {
-		//Ibtx_Set(ch,contr->ibias_outval[ch] / 64);
+		DAC_Set(0,contr->ibias_outval[ch]);
 	}
 	contr->curr_channel = (ch + 1) % NR_CHANNELS;
 	if(contr->curr_channel != 0) {
-		ADC_EnqueueRequest(&contr->adcr,TX_ImonGetAdChannel(contr->curr_channel));
+		ADC_EnqueueRequest(&contr->adcr,16);
 	}
 }
 
@@ -114,7 +113,7 @@ cmd_set_imon(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t value;
 	if(argc > 1) {
 		ch = astrtoi16(argv[1]) - 1;
-		if(ch > 3) {
+		if(ch >= NR_CHANNELS) {
 			return -EC_ARGRANGE;
 		}
 	} else {
@@ -131,7 +130,7 @@ cmd_set_imon(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(set_imon, cmd_set_imon,
-           "set_imon    <channel> < 0 | 1 > #  Configure setpoint for monitor current");
+           "set_imon    <channel> < 0 | 1 > ?<setpoint>? #  Configure setpoint for monitor current");
 
 static int8_t 
 cmd_closed_loop(Interp * interp, uint8_t argc, char *argv[])
@@ -141,27 +140,30 @@ cmd_closed_loop(Interp * interp, uint8_t argc, char *argv[])
 	uint8_t value;
 	if(argc > 1) {
 		ch = astrtoi16(argv[1]) - 1;
-		if(ch > 3) {
+		if(ch >= NR_CHANNELS) {
 			return -EC_ARGRANGE;
 		}
 	} else {
 		return -EC_BADNUMARGS;
 	}
 	if(argc > 2) {
-		uint16_t pwmval;
+		//uint16_t startval;
 		value = astrtoi16(argv[2]);
 		contr->control_enable[ch] = value;
 		value = astrtoi16(argv[2]);
+		if(argc > 3) {
+			contr->ibias_outval[ch] = astrtoi16(argv[3]);
+		}
 		//Ibtx_Get(ch,&pwmval);
-		contr->ibias_outval[ch] = NORM_IBTX(pwmval); 
+		//contr->ibias_outval[ch] = NORM_IBTX(pwmval); 
 	} else {
 		value = !!contr->control_enable[ch];
-		Interp_Printf_P(interp,"Control Loop %d: %d\n",ch + 1,value);
+		Interp_Printf_P(interp,"Control Loop %d: %d, outval %04x\n",ch + 1,value,contr->ibias_outval[ch]);
 	}
         return 0;
 }
 
 
 INTERP_CMD(closed_loop, cmd_closed_loop,
-           "closed_loop <channel> < 0 | 1 > #  Close / open control loop");
+           "closed_loop <channel> < 0 | 1 > <DAC startval> #  Close / open control loop");
 
