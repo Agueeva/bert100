@@ -22,24 +22,6 @@
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 static uint16_t gPwmRes;
-#if 0
-static bool gSweepSingle;
-static uint16_t gSweepCounter = 0;	
-static int16_t curve[256];
-static void adc_done(void *clientData, uint16_t adval);
-
-static ADC_Request adcr = {
-        .channel = 16,
-        .callBack = adc_done,
-        .clientData = NULL,
-        .status = ADCR_IDLE
-};
-
-
-#define PORT_TRIGGER      PORTC
-#define PIN_TRIGGER       (1)
-#define CTRL_TRIGGER      PORTC_PIN1CTRL 
-#endif
 
 /**
  ********************************************
@@ -144,97 +126,6 @@ PWM_Set(uint8_t channel,uint16_t pwmval)
 	return 0;
 }
 
-#if 0
-static void sawToothProc(void *eventData);
-
-TIMER_DECLARE(sawToothTimer,sawToothProc,NULL)
-
-static void 
-adc_done(void *clientData, uint16_t adval) 
-{
-	if(gSweepCounter < array_size(curve)) {
-		curve[gSweepCounter] = adval;		
-	}
-}
-
-void find_params(void) {
-	int16_t i;
-        int16_t maxx,maxy;
-        int16_t minx,miny;
-        int16_t midy;
-        int16_t x,y;
-        int8_t direction = 0;
-        maxx = 0; maxy = 0;
-        minx = 10000; miny = 10000;
-        for(i = 1; i < array_size(curve);i++) {
-                x = i; 
-                y = curve[i];
-                if(y > maxy) {
-                        maxy = y;
-                        maxx = x;
-                }
-                if(y < miny) {
-                        miny = y;
-                        minx = x;
-                }
-        }
-        midy = (miny + maxy) / 2;
-	Con_Printf_P("set_imon 1 %u\n",midy);
-        for(i = 2; i < array_size(curve); i++) {
-                x = i; 
-                y = curve[i];
-                if(direction == 0) {
-                        if(y > midy) {
-                                direction = -1;
-                        } else {
-                                direction = 1;
-                        }
-                }
-                if(direction == 1) {
-                        if(y > midy) {
-                                Con_Printf_P("closed_loop 1 1 %u\n",i << 8);
-                                direction = 0;
-                                i += 5;
-                        }
-                } else {
-                        if(y < midy) {
-                                Con_Printf_P("closed_loop 1 -1 %u\n",i << 8);
-                                direction = 0;
-                                i += 5;
-                        }
-                }
-        }
-}
-
-static void
-sawToothProc(void *eventData)
-{
-	uint16_t i;
-	if(gSweepCounter == 0) {
-		PORT_TRIGGER.OUTCLR = (1 <<  PIN_TRIGGER);
-	} else {
-		PORT_TRIGGER.OUTSET = (1 <<  PIN_TRIGGER);
-	}
-	//PWM_Set(4,gSweepCounter);
-	DAC_Set(0,gSweepCounter << 8);
-	gSweepCounter = (gSweepCounter + 1) % gPwmRes;
-	if(gSweepCounter == 0)  {
-		if(gSweepSingle == false) {
-			Timer_Start(&sawToothTimer,4);
-		} else {
-			PWM_Set(4,0); /* Park with zero output */
-			Con_Printf_P("\n");
-			for(i = 0; i < array_size(curve);i++) {
-				Con_Printf_P("%u, %d\n",i,curve[i]);
-			}		
-			find_params();
-		}
-	} else {
-		Timer_Start(&sawToothTimer,4);
-		ADC_EnqueueRequest(&adcr,16);
-	}
-}
-#endif
 /**
  ******************************************************************************
  * \fn void PWM_Init(void); 
@@ -265,12 +156,6 @@ PWM_Init(void) {
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
 	TCE0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm; 
-
-#if 0
-	CTRL_TRIGGER = PORT_OPC_TOTEM_gc;
-        PORT_TRIGGER.DIRSET = (1 << PIN_TRIGGER);
-	//Timer_Start(&sawToothTimer,4);
-#endif
 }
 
 
@@ -307,37 +192,6 @@ cmd_pwm(Interp * interp, uint8_t argc, char *argv[])
         return 0;
 }
 
-#if 0
-/**
- *******************************************************************************
- * \fn static int8_t cmd_pwm(Interp * interp, uint8_t argc, char *argv[])
- *******************************************************************************
- */
-static int8_t 
-cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
-{
-	if(argc == 1) {
-		gSweepSingle = true;
-		gSweepCounter = 0;
-		PWM_Set(4,gSweepCounter);
-		//ADC_EnqueueRequest(&adcr,16);
-		Timer_Start(&sawToothTimer,4);
-		return 0;
-	} else if(argc == 2) {
-		if(strcmp(argv[1],"start") == 0) {
-			gSweepSingle = false;
-			Timer_Start(&sawToothTimer,4);
-			return 0;
-		} else if(strcmp(argv[1],"stop") == 0) {
-			Timer_Cancel(&sawToothTimer);
-			return 0;
-		}
-		return -EC_BADARG;
-        } else {
-		return -EC_BADNUMARGS;
-	}
-}
-#endif
 
 /**
  *************************************************************************************

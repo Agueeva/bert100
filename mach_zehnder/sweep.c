@@ -20,6 +20,10 @@
 #include "console.h"
 #include "control.h"
 
+#define PORT_TRIGGER      PORTC
+#define PIN_TRIGGER       (1)
+#define CTRL_TRIGGER      PORTC_PIN1CTRL 
+
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 static bool gSweepSingle;
 static bool gSweepClose;
@@ -34,12 +38,6 @@ static ADC_Request adcr = {
         .clientData = NULL,
         .status = ADCR_IDLE
 };
-
-
-#define PORT_TRIGGER      PORTC
-#define PIN_TRIGGER       (1)
-#define CTRL_TRIGGER      PORTC_PIN1CTRL 
-
 
 static void sawToothProc(void *eventData);
 
@@ -60,11 +58,11 @@ void find_params(void) {
         int16_t midy;
         int16_t x,y;
         int8_t direction = 0;
-	int16_t bestdacval = -10000;
-	int8_t bestdirection;
+	uint16_t bestdacval = 0;
+	int8_t bestdirection = 0;
 	
         maxx = 0; maxy = 0;
-        minx = 10000; miny = 10000;
+        minx = 32767; miny = 32767;
         for(i = 1; i < array_size(curve);i++) {
                 x = i; 
                 y = curve[i];
@@ -91,7 +89,7 @@ void find_params(void) {
                 if(direction == 1) {
                         if(y > midy) {
                                 Con_Printf_P("closed_loop 1 1 %u\n",i << 8);
-				if(abs((i << 8) - 32768) < abs(bestdacval - 32768)) {
+				if(abs((i << 8) - 32767) < abs(bestdacval - 32767)) {
 					bestdacval = i << 8;
 					bestdirection = 1;
 				} 
@@ -101,7 +99,7 @@ void find_params(void) {
                 } else {
                         if(y < midy) {
                                 Con_Printf_P("closed_loop 1 -1 %u\n",i << 8);
-				if(abs((i << 8) - 32768) < abs(bestdacval - 32768)) {
+				if(abs((i << 8) - 32767) < abs(bestdacval - 32767)) {
 					bestdacval = i << 8;
 					bestdirection = -1;
 				} 
@@ -128,15 +126,12 @@ sawToothProc(void *eventData)
 	} else {
 		PORT_TRIGGER.OUTSET = (1 <<  PIN_TRIGGER);
 	}
-	//Con_Printf_P("%u\n",gSweepCounter);
-	//PWM_Set(4,gSweepCounter);
 	DAC_Set(0,gSweepCounter << 8);
 	gSweepCounter = (gSweepCounter + 1) % array_size(curve);
 	if(gSweepCounter == 0)  {
 		if(gSweepSingle == false) {
 			Timer_Start(&sawToothTimer,4);
 		} else {
-			//PWM_Set(4,0); /* Park with zero output */
 			Con_Printf_P("\n");
 			for(i = 0; i < array_size(curve);i++) {
 				Con_Printf_P("%u, %d\n",i,curve[i]);
