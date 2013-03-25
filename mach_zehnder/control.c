@@ -99,6 +99,24 @@ Control_Init()
 	Timer_Start(&g_ControlTimer, 10);
 }
 
+void ControlLoop(uint8_t channel,int8_t direction,uint16_t startval)
+{
+	Controller *contr = &g_Controller;
+	if(channel >= NR_CHANNELS) {
+		return;
+	}
+	contr->control_enable[channel] = direction;
+	contr->ibias_outval[channel] = startval; 
+}
+
+void ControlImon(uint8_t channel,uint16_t value) {
+	Controller *contr = &g_Controller;
+	if(channel >= NR_CHANNELS) {
+		return;
+	}
+	contr->imon_setpoint[channel] = value; 
+}
+
 /**
  *************************************************************************************
  * \fn static int8_t cmd_set_imon(Interp * interp, uint8_t argc, char *argv[])
@@ -131,6 +149,7 @@ cmd_set_imon(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(set_imon, cmd_set_imon,
            "set_imon    <channel> < 0 | 1 > ?<setpoint>? #  Configure setpoint for monitor current");
+
 
 static int8_t 
 cmd_closed_loop(Interp * interp, uint8_t argc, char *argv[])

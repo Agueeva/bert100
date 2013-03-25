@@ -22,6 +22,7 @@
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 static uint16_t gPwmRes;
+#if 0
 static bool gSweepSingle;
 static uint16_t gSweepCounter = 0;	
 static int16_t curve[256];
@@ -38,6 +39,7 @@ static ADC_Request adcr = {
 #define PORT_TRIGGER      PORTC
 #define PIN_TRIGGER       (1)
 #define CTRL_TRIGGER      PORTC_PIN1CTRL 
+#endif
 
 /**
  ********************************************
@@ -142,6 +144,7 @@ PWM_Set(uint8_t channel,uint16_t pwmval)
 	return 0;
 }
 
+#if 0
 static void sawToothProc(void *eventData);
 
 TIMER_DECLARE(sawToothTimer,sawToothProc,NULL)
@@ -231,7 +234,7 @@ sawToothProc(void *eventData)
 		ADC_EnqueueRequest(&adcr,16);
 	}
 }
-
+#endif
 /**
  ******************************************************************************
  * \fn void PWM_Init(void); 
@@ -263,9 +266,11 @@ PWM_Init(void) {
         TCE0.PER = (pwmres - 1) & ~3;
 	TCE0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm; 
 
+#if 0
 	CTRL_TRIGGER = PORT_OPC_TOTEM_gc;
         PORT_TRIGGER.DIRSET = (1 << PIN_TRIGGER);
 	//Timer_Start(&sawToothTimer,4);
+#endif
 }
 
 
@@ -302,6 +307,7 @@ cmd_pwm(Interp * interp, uint8_t argc, char *argv[])
         return 0;
 }
 
+#if 0
 /**
  *******************************************************************************
  * \fn static int8_t cmd_pwm(Interp * interp, uint8_t argc, char *argv[])
@@ -331,6 +337,7 @@ cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
 		return -EC_BADNUMARGS;
 	}
 }
+#endif
 
 /**
  *************************************************************************************
@@ -366,4 +373,4 @@ cmd_pwmres(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(pwm, cmd_pwm, "pwm         <channel> ?<value> | save? # Set the pwm to value");
 INTERP_CMD(pwmres, cmd_pwmres, "pwmres      <value>           # Number of PWM-Levels");
-INTERP_CMD(sweep, cmd_sweep, "sweep      start | stop           # start/stop sweep");
+//INTERP_CMD(sweep, cmd_sweep, "sweep      start | stop           # start/stop sweep");
