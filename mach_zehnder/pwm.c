@@ -154,6 +154,55 @@ adc_done(void *clientData, uint16_t adval)
 	}
 }
 
+void find_params(void) {
+	int16_t i;
+        int16_t maxx,maxy;
+        int16_t minx,miny;
+        int16_t midy;
+        int16_t x,y;
+        int8_t direction = 0;
+        maxx = 0; maxy = 0;
+        minx = 10000; miny = 10000;
+        for(i = 1; i < array_size(curve);i++) {
+                x = i; 
+                y = curve[i];
+                if(y > maxy) {
+                        maxy = y;
+                        maxx = x;
+                }
+                if(y < miny) {
+                        miny = y;
+                        minx = x;
+                }
+        }
+        midy = (miny + maxy) / 2;
+	Con_Printf_P("set_imon 1 %u\n",midy);
+        for(i = 2; i < array_size(curve); i++) {
+                x = i; 
+                y = curve[i];
+                if(direction == 0) {
+                        if(y > midy) {
+                                direction = -1;
+                        } else {
+                                direction = 1;
+                        }
+                }
+                if(direction == 1) {
+                        if(y > midy) {
+                                Con_Printf_P("closed_loop 1 1 %u\n",i << 8);
+                                direction = 0;
+                                i += 5;
+                        }
+                } else {
+                        if(y < midy) {
+                                Con_Printf_P("closed_loop 1 -1 %u\n",i << 8);
+                                direction = 0;
+                                i += 5;
+                        }
+                }
+        }
+}
+
 static void
 sawToothProc(void *eventData)
 {
@@ -175,6 +224,7 @@ sawToothProc(void *eventData)
 			for(i = 0; i < array_size(curve);i++) {
 				Con_Printf_P("%u, %d\n",i,curve[i]);
 			}		
+			find_params();
 		}
 	} else {
 		Timer_Start(&sawToothTimer,4);
@@ -199,7 +249,7 @@ PWM_Init(void) {
 	PORTD.DIRSET = 0x3f;
 	PORTE.DIRSET = 0xc;
 
-	HIRESD_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESD_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCD0.CTRLA = 1; /* Divide by 1 */
 	TCD1.CTRLA = 1; /* Divide by 1 */
         TCD0.PER = (pwmres - 1) & ~3;
@@ -207,7 +257,7 @@ PWM_Init(void) {
 	TCD0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 	TCD1.CTRLB = TC_WGMODE_SS_gc | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 
-	HIRESE_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESE_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCE0.CTRLA = 1; /* Divide by 1 */
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
@@ -264,7 +314,7 @@ cmd_sweep(Interp * interp, uint8_t argc, char *argv[])
 		gSweepSingle = true;
 		gSweepCounter = 0;
 		PWM_Set(4,gSweepCounter);
-		ADC_EnqueueRequest(&adcr,16);
+		//ADC_EnqueueRequest(&adcr,16);
 		Timer_Start(&sawToothTimer,4);
 		return 0;
 	} else if(argc == 2) {

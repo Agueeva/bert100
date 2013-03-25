@@ -158,7 +158,7 @@ cmd_closed_loop(Interp * interp, uint8_t argc, char *argv[])
 		//contr->ibias_outval[ch] = NORM_IBTX(pwmval); 
 	} else {
 		value = !!contr->control_enable[ch];
-		Interp_Printf_P(interp,"Control Loop %d: %d, outval %04x\n",ch + 1,value,contr->ibias_outval[ch]);
+		Interp_Printf_P(interp,"Control Loop %d: %d, outval %u\n",ch + 1,value,contr->ibias_outval[ch]);
 	}
         return 0;
 }

@@ -231,6 +231,7 @@ cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
 	_delay_us(1);
 	PORT_RESET.OUTSET = (1 << PIN_RESET);
 	_delay_us(300);
+	return 0;
 }
 
 static int8_t

@@ -9,7 +9,7 @@
 #define THREAD_STACKSIZE	(256)
 
 static Thread g_Thread[NR_THREADS];
-uint8_t thread_stacks[(NR_THREADS - 1) * THREAD_STACKSIZE];
+static uint8_t thread_stacks[(NR_THREADS - 1) * THREAD_STACKSIZE];
 extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
 
 Thread *g_CurrTh = NULL;

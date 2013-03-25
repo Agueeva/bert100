@@ -6,6 +6,7 @@
 typedef struct Thread Thread;
 extern Thread *g_CurrTh;
 static inline Thread *Thread_Current(void) { return g_CurrTh; }
+void Thread_Init(Thread *newTh,void (*threadproc)(void));
 
 struct Thread {
 	uint16_t regSP;

@@ -1,5 +1,5 @@
 OUTPUT_FORMAT("elf32-avr","elf32-avr","elf32-avr")
-OUTPUT_ARCH(avr:103)
+OUTPUT_ARCH(avr:102)
 MEMORY
 {
   text      (rx)   : ORIGIN = 0, LENGTH = 1024K
