@@ -46,6 +46,19 @@ static inline Flags_t save_flags_cli(void)
 	return flags;
 }
 
+#if  0
+static inline void disable_irq(void)
+{
+	Flags_t flags;
+	asm volatile ("cli	     \n":::"memory");
+}
+static inline void enable_irq(void)
+{
+	Flags_t flags;
+	asm volatile ("sei	     \n":::"memory");
+}
+#endif
+
 /**
  **************************************************************
  * Disable only some interrupts 

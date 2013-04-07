@@ -143,19 +143,28 @@ PWM_Init(void) {
 	PORTD.DIRSET = 0x3f;
 	PORTE.DIRSET = 0xc;
 
-	HIRESD_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
-	TCD0.CTRLA = 1; /* Divide by 1 */
-	TCD1.CTRLA = 1; /* Divide by 1 */
-        TCD0.PER = (pwmres - 1) & ~3;
-        TCD1.PER = (pwmres - 1) & ~3;
+	HIRESD_CTRL = 0 /* | HIRES_HREN_TC0_gc  | HIRES_HREN_TC1_gc */; 
+	TCD0.CTRLA = 5; /* Divide by 64 */
+	TCD1.CTRLA = 5; /* Divide by 64 */
+        TCD0.PER = 49999;
+        TCD1.PER = 499; 
+	
+	cli();
 	TCD0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 	TCD1.CTRLB = TC_WGMODE_SS_gc | TC0_CCBEN_bm | TC0_CCAEN_bm; 
+	sei();
 
-	HIRESE_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+	HIRESE_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
 	TCE0.CTRLA = 1; /* Divide by 1 */
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
 	TCE0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm; 
+	PWM_Set(4,249);
+	PWM_Set(5,249);
+	PWM_Set(0,1);
+	PWM_Set(1,1);
+	PORTD.PIN0CTRL ^= PORT_INVEN_bm;
+	PORTD.PIN5CTRL ^= PORT_INVEN_bm;
 }
 
 
@@ -212,7 +221,7 @@ cmd_pwmres(Interp * interp, uint8_t argc, char *argv[])
 		} else {
 			cnt_max = (astrtoi16(argv[1]) - 1) & ~3; 
 			TCD0.PER = cnt_max;
-			TCD1.PER = cnt_max;
+			//TCD1.PER = cnt_max;
 			TCE0.PER = cnt_max;
 			gPwmRes = (TCE0.PER | 3) + 1;
 		}
