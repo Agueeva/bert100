@@ -41,6 +41,19 @@ ConfigureClocks(void)
 	SYSTEM.SCKCR3.WORD = 0x400;
 }
 
+static void blinkProc(void *eventData);
+static TIMER_DECLARE(blinkTimer,blinkProc,NULL);
+
+static void
+blinkProc(void *eventData)
+{
+	static uint8_t toggle = 0;
+	Timer_Start(&blinkTimer,500);
+	toggle ^= 1;
+ 	BMOD(3,PORT0.PODR.BYTE,toggle);
+ //	BMOD(6,PORT8.PODR.BYTE,toggle);
+}
+
 
 int main()
 {
@@ -53,9 +66,21 @@ int main()
 	MPC.PWPR.BYTE = 0x00;
 	MPC.PWPR.BYTE = 0x40;
 	/*
+ 	***********************************************
+ 	* USB host VBus Power enable
+ 	***********************************************
  	*/
  	BSET(6,PORT1.PDR.BYTE);
  	BSET(6,PORT1.PODR.BYTE);
+
+ 	BSET(3,PORT0.PDR.BYTE);
+ 	BCLR(3,PORT0.PODR.BYTE);
+ 	BSET(5,PORT0.PDR.BYTE);
+ 	BCLR(5,PORT0.PODR.BYTE);
+
+	/* Backlight LCD */
+ 	BSET(6,PORT8.PDR.BYTE);
+ //	BSET(6,PORT8.PODR.BYTE);
 
 	ConfigureClocks();
 	Threads_Init();
@@ -66,6 +91,7 @@ int main()
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
 
+	Timer_Start(&blinkTimer,500);
 
 	//ENABLE_IRQ();
 	EV_Loop();

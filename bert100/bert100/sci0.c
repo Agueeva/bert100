@@ -114,7 +114,7 @@ Excep_SCI0_TXI0(void)
  ******************************************************
  */
 void
-Sci0_TransmitChar(uint16_t c)
+Sci0_TransmitChar(uint8_t c)
 {
 	uint32_t flags;
 	Sci0 *ua = &g_uart;
@@ -217,7 +217,7 @@ cmd_sci0(Interp * interp, uint8_t argc, char *argv[])
 			Sci0_TransmitChar(argv[1][i]);
 		}
 		Sci0_TransmitChar('\r');
-		Sci0_TransmitChar('\n' | 0x100);
+		Sci0_TransmitChar('\n');
 	}
 	return 0;
 }
