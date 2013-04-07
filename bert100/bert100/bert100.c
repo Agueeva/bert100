@@ -52,6 +52,11 @@ int main()
 	/* Disable Pin function write protections permanently */	
 	MPC.PWPR.BYTE = 0x00;
 	MPC.PWPR.BYTE = 0x40;
+	/*
+ 	*/
+ 	BSET(6,PORT1.PDR.BYTE);
+ 	BSET(6,PORT1.PODR.BYTE);
+
 	ConfigureClocks();
 	Threads_Init();
 	TPOS_Init();
