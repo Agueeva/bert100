@@ -22,6 +22,7 @@
 #include "editor.h"
 #include "threads.h"
 #include "tpos.h"
+#include "rxether.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 void
@@ -90,8 +91,8 @@ int main()
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
-
 	Timer_Start(&blinkTimer,500);
+	RX_EtherInit();
 
 	//ENABLE_IRQ();
 	EV_Loop();

@@ -13,8 +13,9 @@ INCLUDES += $(patsubst %,-I$(VPATH)/%,$(SUBMODULES)) -I$(VPATH)
 
 .PHONY: depend clean all $(SUBMODULES)
 
-SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c vector_table.c \
-          console.c  events.c  hex.c interrupt_handlers.c  threads.c tpos.c
+SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
+	vector_table.c console.c  events.c  hex.c interrupt_handlers.c  \
+	threads.c tpos.c rxether.c phy.c
 
 ASMFILES=reset_program.asm switch_context.asm 
 
@@ -42,7 +43,7 @@ version.o: $(SRCFILES) $(ASMFILES)
 	$(CC) $(CFLAGS) -c $(VPATH)/version.c -o $@
 
 
-all: depend bert100.pat
+all: depend bert100.mot
 
 bert100.bin: bert100.mot
 	$(OBJCOPY) --gap-fill 0xff -I srec -O binary $< $@	
