@@ -68,4 +68,5 @@ typedef uint16_t uint16_be;
 typedef uint32_t uint32_le;
 typedef uint32_t uint32_be;
 #define INLINE static inline
+#define NOINLINE __attribute__((noinline))
 #endif
