@@ -19,14 +19,14 @@
 #define PHY_ADDR	(31)
 
 NOINLINE static void
-mdio_delay400ns(void)
+mdio_delay200ns(void)
 {
-	asm("mov.l %0,r1"::"g"(F_CPU / 10000000) : "memory","r1");
+	asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
 	asm("label9279: ":::);
 	asm("sub #1,r1":::"r1");
 	asm("bne label9279":::);
 }
-#define mdio_delay() mdio_delay400ns()
+#define mdio_delay() mdio_delay200ns()
 
 static uint16_t 
 Phy_Read(uint16_t regAddr)
@@ -52,11 +52,13 @@ Phy_Read(uint16_t regAddr)
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
 		mdio_delay();
 	}
-	/* Bus release with one clock cycle */
-	ETHERC.PIR.LONG = 0 | PIR_MDC;
-	mdio_delay();
-	ETHERC.PIR.LONG = 0;	
-	mdio_delay();
+	/* Bus release with two clock cycle */
+	for(i = 0; i < 2; i++) {
+		ETHERC.PIR.LONG = 0 | PIR_MDC;
+		mdio_delay();
+		ETHERC.PIR.LONG = 0;	
+		mdio_delay();
+	}
 	inval = 0;
 	for(i = 0; i < 16; i++) {
 		ETHERC.PIR.LONG = PIR_MDC;
@@ -118,7 +120,8 @@ void
 Phy_Init(void)
 {
 	unsigned int i;
-	for(i = 0; i < 31; i++) {
-		Con_Printf("%u: %u\n",i,Phy_Read(i));
+	for(i = 0; i < 32; i++) {
+		Con_Printf("%u: 0x%04x\n",i,Phy_Read(i));
+		SleepMs(100);
 	}
 }
