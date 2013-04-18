@@ -12,8 +12,8 @@
  * Setup IO Ports for Ethernet RMII
  *********************************************************************
  */
-static void
-RX_EtherSetupIoPorts(void)
+__attribute__((unused)) static void
+RX_EtherSetupIoPortsRMII(void)
 {
 	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;
@@ -38,11 +38,50 @@ RX_EtherSetupIoPorts(void)
 	MPC.PWPR.BIT.PFSWE = 0;
 	MPC.PWPR.BIT.B0WI = 1;
 }
+
+__attribute__((unused)) static void
+RX_EtherSetupIoPortsMII(void)
+{
+	MPC.PWPR.BIT.B0WI = 0;	
+	MPC.PWPR.BIT.PFSWE = 1;
+	MPC.PFENET.BIT.PHYMODE = 1;
+	MPC.P71PFS.BYTE = 0x11; /* P71 MDIO	*/
+	MPC.P72PFS.BYTE = 0x11; /* P72 MDC	*/
+	MPC.P74PFS.BYTE = 0x11; /* P74 RXD1	*/
+	MPC.P75PFS.BYTE = 0x11;	/* P75 RXD0	*/
+	MPC.P76PFS.BYTE = 0x11; /* P76 RXCLK	*/
+	MPC.P77PFS.BYTE = 0x11; /* P77 RXER	*/
+	PORT7.PMR.BYTE = 0xf6;  /* Port Mode Register to Ether */
+	PORT7.PDR.BYTE = 0x06;  /* P71 and P72 are output */
+	/* Port 8 */	
+	MPC.P80PFS.BYTE = 0x11;	/* TXEN */
+	MPC.P81PFS.BYTE = 0x11;	/* TXD0 */
+	MPC.P82PFS.BYTE = 0x11;	/* TXD1 */
+	MPC.P83PFS.BYTE = 0x11;	/* CRS input */
+	PORT8.PMR.BYTE = 0x0f;
+	PORT8.PDR.BYTE = 0x07;
+	
+	/* Port C */
+	MPC.PC0PFS.BYTE = 0x11; /* PC0 RXD3 */
+	MPC.PC1PFS.BYTE = 0x11;	/* PC1 RXD2 */
+	MPC.PC2PFS.BYTE = 0x11;	/* PC2 RXDV */
+	MPC.PC3PFS.BYTE = 0x11; /* PC3 TXER */
+	MPC.PC4PFS.BYTE = 0x11;	/* PC4 TXCLK */
+	MPC.PC5PFS.BYTE = 0x11;	/* PC5 TXD2 */
+	MPC.PC6PFS.BYTE = 0x11;	/* PC6 TXD3 */
+	MPC.PC7PFS.BYTE = 0x11; /* PC7 COL  */
+	PORTC.PMR.BYTE = 0xff;	
+	PORTC.PDR.BYTE = 0x68;
+	
+	MPC.PWPR.BIT.PFSWE = 0;
+	MPC.PWPR.BIT.B0WI = 1;
+}
+
 void
 RX_EtherInit()
 {
 	volatile uint32_t i;
-	RX_EtherSetupIoPorts();
+	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
 	for(i = 0; i < 10000; i++) {
 

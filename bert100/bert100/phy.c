@@ -66,11 +66,17 @@ Phy_Read(uint16_t regAddr)
 		ETHERC.PIR.LONG = PIR_MDC;
 		mdio_delay();
 		inval <<= 1;
+		ETHERC.PIR.LONG = 0;	
+		mdio_delay();
+		/* 
+		 ******************************************************
+		 * delay of data is up to 300ns from rising edge so 
+		 * better sample behind falling edge 
+		 ******************************************************
+		 */
 		if(ETHERC.PIR.LONG & PIR_MDI) {
 			inval |= 1;
 		}
-		ETHERC.PIR.LONG = 0;	
-		mdio_delay();
 	}
 	/* Let the device release the bus ? */
 	ETHERC.PIR.LONG = 0 | PIR_MDC;
@@ -126,6 +132,5 @@ Phy_Init(void)
 	unsigned int i;
 	for(i = 0; i < 32; i++) {
 		Con_Printf("%u: 0x%04x\n",i,Phy_Read(i));
-		SleepMs(100);
 	}
 }
