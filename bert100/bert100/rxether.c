@@ -23,7 +23,7 @@ RX_EtherSetupIoPortsRMII(void)
 	/* P73 is WOL */
 	MPC.P74PFS.BYTE = 0x12;	/* RXD1 */ 
 	MPC.P75PFS.BYTE = 0x12; /* RXD0 */
-	MPC.P76PFS.BYTE = 0x12; /* RXCLK */
+	MPC.P76PFS.BYTE = 0x12; /* ETHCLK */
 	MPC.P77PFS.BYTE = 0x12; /* RXER input */
 	PORT7.PMR.BYTE = 0xf6;
 	PORT7.PDR.BYTE = 0x06;
