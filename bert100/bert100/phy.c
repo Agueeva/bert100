@@ -11,6 +11,8 @@
 #include "config.h"
 #include "types.h"
 #include "console.h"
+#include "interpreter.h"
+#include "hex.h"
 
 #define PIR_MDC	(1 << 0)	
 #define PIR_MMD	(1 << 1)	/* 1 == Write, 0 == Read */
@@ -19,14 +21,14 @@
 #define PHY_ADDR	(31)
 
 NOINLINE static void
-mdio_delay200ns(void)
+phy_delay200ns(void)
 {
 	asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
 	asm("label9279: ":::);
 	asm("sub #1,r1":::"r1");
 	asm("bpz label9279":::);
 }
-#define mdio_delay() mdio_delay200ns()
+#define phy_delay() phy_delay200ns()
 
 static uint16_t 
 Phy_Read(uint16_t regAddr)
@@ -34,13 +36,13 @@ Phy_Read(uint16_t regAddr)
 	unsigned int i;
 	uint16_t outval,inval;
 	ETHERC.PIR.LONG = PIR_MMD | PIR_MDO;	
-	mdio_delay();
+	phy_delay();
 	/* Preamble */
 	for(i = 0; i < 32; i++) {
 		ETHERC.PIR.LONG = PIR_MMD | PIR_MDO | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = PIR_MMD | PIR_MDO;	
-		mdio_delay();
+		phy_delay();
 	}
 	outval = 0x1800;
 	outval |= (PHY_ADDR << 5);
@@ -49,25 +51,25 @@ Phy_Read(uint16_t regAddr)
 		uint32_t mdo = (outval & 0x2000) ? PIR_MDO : 0; 
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
 		ETHERC.PIR.LONG = PIR_MMD | mdo | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
-		mdio_delay();
+		phy_delay();
 	}
 	/* Bus release with one clock cycle */
 	for(i = 0; i < 1; i++) {
 	//	ETHERC.PIR.LONG = 0;	
 		ETHERC.PIR.LONG = 0 | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = 0;	
-		mdio_delay();
+		phy_delay();
 	}
 	inval = 0;
 	for(i = 0; i < 16; i++) {
 		ETHERC.PIR.LONG = PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		inval <<= 1;
 		ETHERC.PIR.LONG = 0;	
-		mdio_delay();
+		phy_delay();
 		/* 
 		 ******************************************************
 		 * delay of data is up to 300ns from rising edge so 
@@ -80,9 +82,9 @@ Phy_Read(uint16_t regAddr)
 	}
 	/* Let the device release the bus ? */
 	ETHERC.PIR.LONG = 0 | PIR_MDC;
-	mdio_delay();
+	phy_delay();
 	ETHERC.PIR.LONG = 0;	
-	mdio_delay();
+	phy_delay();
 	return inval;
 }
 
@@ -95,42 +97,63 @@ Phy_Write(uint16_t regAddr,uint16_t value)
 	for(i = 0; i < 32; i++) {
 		ETHERC.PIR.LONG = PIR_MMD | PIR_MDO;	
 		ETHERC.PIR.LONG = PIR_MMD | PIR_MDO | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = PIR_MMD | PIR_MDO;	
-		mdio_delay();
+		phy_delay();
 	}
-	outval = 0x6002;
+	outval = 0x5002;
 	outval |= (PHY_ADDR << 7);
 	outval |= (regAddr & 0x1f) << 2;	
 	for(i = 0; i < 16; i++,  outval <<= 1) {
 		uint32_t mdo = (outval & 0x8000) ? PIR_MDO : 0; 
 		ETHERC.PIR.LONG = PIR_MMD | mdo;
 		ETHERC.PIR.LONG = PIR_MMD | mdo | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
-		mdio_delay();
+		phy_delay();
 	}
 	outval = value; 
 	for(i = 0; i < 16; i++,  outval <<= 1) {
 		uint32_t mdo = (outval & 0x8000) ? PIR_MDO : 0; 
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
 		ETHERC.PIR.LONG = PIR_MMD | mdo | PIR_MDC;
-		mdio_delay();
+		phy_delay();
 		ETHERC.PIR.LONG = PIR_MMD | mdo;	
-		mdio_delay();
+		phy_delay();
 	}
 	ETHERC.PIR.LONG = 0;	
 	ETHERC.PIR.LONG = 0 | PIR_MDC;
-	mdio_delay();
+	phy_delay();
 	ETHERC.PIR.LONG = 0;	
-	mdio_delay();
+	phy_delay();
 }
+
+static int8_t
+cmd_phy(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint16_t regAddr;
+	uint16_t value;
+	int i;
+	if(argc == 1) {
+		for(i = 0; i < 32; i++) {
+			Con_Printf("%u: 0x%04x\n",i,Phy_Read(i));
+		}
+	} else if(argc == 2) {
+		regAddr = astrtoi16(argv[1]);
+		Con_Printf("%u: 0x%04x\n",regAddr,Phy_Read(regAddr));
+	} else if(argc == 3) {
+		regAddr = astrtoi16(argv[1]);
+		value = astrtoi16(argv[2]);
+		Phy_Write(regAddr,value);
+		Con_Printf("%u: 0x%04x\n",regAddr,Phy_Read(regAddr));
+	}
+	return 0;
+}
+
+INTERP_CMD(phyCmd, "phy", cmd_phy, "phy      # ");
 
 void
 Phy_Init(void)
 {
-	unsigned int i;
-	for(i = 0; i < 32; i++) {
-		Con_Printf("%u: 0x%04x\n",i,Phy_Read(i));
-	}
+	Interp_RegisterCmd(&phyCmd);
 }

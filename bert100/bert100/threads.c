@@ -98,7 +98,6 @@ Thread_Alloc()
 	return th;
 }
 
-#ifndef SMALL
 /**
  *****************************************************************************
  * \fn static int8_t cmd_thread(Interp * interp, uint8_t argc, char *argv[])
@@ -132,7 +131,6 @@ cmd_thread(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(threadCmd, "thread", cmd_thread, "thread      # Control thread");
-#endif
 
 /**
  *********************************************************
@@ -146,7 +144,5 @@ Threads_Init(void)
 	g_CurrTh = &g_Thread[0];
 	g_CurrTh->stack = (uint8_t *) thread0_stack;
 	g_CurrTh->stacksize = THREAD_STACKSIZE;
-#ifndef SMALL
 	Interp_RegisterCmd(&threadCmd);
-#endif
 }

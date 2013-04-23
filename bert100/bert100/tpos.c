@@ -257,7 +257,6 @@ Mutex_Init(Mutex * rs)
 
 /** END of code, rest is testcode */
 
-#ifndef SMALL
 static CSema testCSema;
 
 static void
@@ -359,7 +358,6 @@ cmd_tpos(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(tposCmd, "tpos", cmd_tpos, "tpos        # Show Thread pool OS statistics");
-#endif
 /**
  ****************************************************
  * \fn void TPOS_Init(void) 
@@ -379,10 +377,8 @@ TPOS_Init(void)
 		unusedqHead = th;
 		EV_Init(&th->wakeEvent, TPos_ThreadWake, th);
 	}
-#ifndef SMALL
 	Mutex_Init(&testRSema);
 	Interp_RegisterCmd(&csemaCmd);
 	Interp_RegisterCmd(&rsemaCmd);
 	Interp_RegisterCmd(&tposCmd);
-#endif
 }
