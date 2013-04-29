@@ -34,7 +34,7 @@ mdio_delay200ns(void)
 	}
 	return;
 }
-#define mdio_delayx() mdio_delay200ns()
+#define mdio_delaxy() mdio_delay200ns()
 #define mdio_delay() 
 
 static inline void
@@ -70,7 +70,7 @@ SetMDO(uint8_t value)
 static inline uint8_t
 GetMDI() 
 {
-	return (PORT_MDIO.IN >> PIN_MDIO) & 1;
+	return PORT_MDIO.IN & (1 << PIN_MDIO);
 }
 
 
@@ -102,13 +102,12 @@ MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 		mdio_delay();
 	}
 	/* Bus release with one clock cycle */
-	for(i = 0; i < 1; i++) {
-		SetDirection(DIR_IN);
-		SetMDC(1);
-		mdio_delay();
-		SetMDC(0);
-		mdio_delay();
-	}
+	SetDirection(DIR_IN);
+	SetMDC(1);
+	mdio_delay();
+	SetMDC(0);
+	mdio_delay();
+
 	inval = 0;
 	for(i = 0; i < 16; i++) {
 		//SleepMs(1000);
@@ -219,6 +218,8 @@ MDIO_Write(uint8_t phy_addr,uint8_t devType,uint16_t value)
 	mdio_delay();
 }
 
+static uint32_t bit_errs = 0;
+
 static int8_t
 cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -238,16 +239,30 @@ cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf_P("%u.%u: 0x%x\n",phyaddr,devtype,val);
 		return 0;
 	}
-	return -EC_BADNUMARGS;
+	Con_Printf_P("%08lu\n",bit_errs);
+	return 0;
 }
 
 INTERP_CMD(mdio, cmd_mdio, "mdio <addr> <register> ?<value>?   # read write to/from mdio");
 
+
+
+void pollProc(void *eventData);
+TIMER_DECLARE(pollTimer,pollProc,NULL)
+
+void pollProc(void *eventData)
+{
+	uint16_t val;
+	Timer_Start(&pollTimer,1);
+	val = MDIO_Read(1,30);
+	bit_errs += val;
+}
+
 void
 MDIO_Init(void)
 {
-	unsigned int i;
 	PINCTRL_MDC = PORT_OPC_TOTEM_gc;
 	PINCTRL_MDIO = PORT_OPC_TOTEM_gc;
 	PORT_MDC.DIRSET  = (1 << PIN_MDC);
+	Timer_Start(&pollTimer,1);
 }
