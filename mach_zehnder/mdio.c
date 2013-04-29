@@ -225,11 +225,12 @@ cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 {
 	uint8_t phyaddr,devtype;
 	uint16_t val;
+	uint16_t addr;
 	if(argc == 4) {
 		phyaddr = astrtoi16(argv[1]);
 		devtype = astrtoi16(argv[2]);
-		val = astrtoi16(argv[3]);
-		MDIO_Address(phyaddr,devtype,val);
+		addr = astrtoi16(argv[3]);
+		MDIO_Address(phyaddr,devtype,addr);
 		//MDIO_Write(phyaddr,devtype,val);
 		return 0;
 	} else if(argc == 3) {
@@ -238,6 +239,13 @@ cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 		val = MDIO_Read(phyaddr,devtype);
 		Con_Printf_P("%u.%u: 0x%x\n",phyaddr,devtype,val);
 		return 0;
+	} else if(argc == 5) {
+		phyaddr = astrtoi16(argv[1]);
+		devtype = astrtoi16(argv[2]);
+		addr = astrtoi16(argv[3]);
+		val = astrtoi16(argv[4]);
+		MDIO_Address(phyaddr,devtype,addr);
+		MDIO_Write(phyaddr,devtype,val);
 	}
 	Con_Printf_P("%08lu\n",bit_errs);
 	return 0;
@@ -264,5 +272,5 @@ MDIO_Init(void)
 	PINCTRL_MDC = PORT_OPC_TOTEM_gc;
 	PINCTRL_MDIO = PORT_OPC_TOTEM_gc;
 	PORT_MDC.DIRSET  = (1 << PIN_MDC);
-	Timer_Start(&pollTimer,1);
+//	Timer_Start(&pollTimer,1);
 }
