@@ -40,7 +40,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o switch_context.o ad537x.o threads.o tpos.o sweep.o
+OBJECTS = main.o events.o timer.o console.o editor.o eeprom.o i2cmaster.o interpreter.o twislave.o uartc0.o hex.o adc.o bitops.o calib.o pwm.o tx.o wdt.o control.o switch_context.o ad537x.o threads.o tpos.o sweep.o mdio.o
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -119,6 +119,9 @@ ad537x.o: ../ad537x.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 sweep.o: ../sweep.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+mdio.o: ../mdio.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 switch_context.o: ./switch_context.s
