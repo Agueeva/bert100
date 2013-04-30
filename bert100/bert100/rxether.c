@@ -6,6 +6,17 @@
 #include "types.h"
 #include "rxether.h"
 #include "phy.h"
+#include "interrupt_handlers.h"
+
+#define NUM_TXBUFS	(2)
+#define EMAC_TC_INT	(UINT32_C(1) << 21)
+#define EMAC_FR_INT	(UINT32_C(1) << 18)
+
+typedef struct RxEth {
+	uint8_t txBuffer[1522 * NUM_TXBUFS] __attribute__((aligned (4)));	
+} RxEth;
+
+static RxEth gRxEth;
 
 /**
  *********************************************************************
@@ -75,6 +86,23 @@ RX_EtherSetupIoPortsMII(void)
 	
 	MPC.PWPR.BIT.PFSWE = 0;
 	MPC.PWPR.BIT.B0WI = 1;
+}
+
+void Excep_ETHER_EINT(void) 
+{  
+	uint32_t status;
+	status = EDMAC.EESR.LONG;
+	if(status & EMAC_FR_INT) {
+	} 
+	if(status & EMAC_TC_INT) {
+		EDMAC.EESR.BIT.TC = 1; /* Clear the transmission complete bit */
+	}
+}
+
+void 
+RXEth_Transmit(uint8_t *buf,uint16_t len)
+{
+
 }
 
 void

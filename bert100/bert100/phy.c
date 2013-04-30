@@ -136,7 +136,10 @@ cmd_phy(Interp * interp, uint8_t argc, char *argv[])
 	int i;
 	if(argc == 1) {
 		for(i = 0; i < 32; i++) {
-			Con_Printf("%u: 0x%04x\n",i,Phy_Read(i));
+			Con_Printf("%02u: 0x%04x   ",i,Phy_Read(i));
+			if((i & 3) == 3) {
+				Con_Printf("\n");
+			}
 		}
 	} else if(argc == 2) {
 		regAddr = astrtoi16(argv[1]);

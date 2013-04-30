@@ -57,7 +57,7 @@ void Excep_CMT2_CMI2(void){ }
 void Excep_CMT3_CMI3(void){ }
 
 // ETHER EINT
-void Excep_ETHER_EINT(void){ }
+//void Excep_ETHER_EINT(void){ }
 
 // USB0 D0FIFO0
 void Excep_USB0_D0FIFO0(void){ }
