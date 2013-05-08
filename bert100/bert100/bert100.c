@@ -25,7 +25,7 @@
 #include "rxether.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
-void
+static void
 ConfigureClocks(void)
 {
 	uint32_t i;
@@ -56,7 +56,7 @@ blinkProc(void *eventData)
 }
 
 
-int main()
+int main(void)
 {
 
 	Interp *interp;

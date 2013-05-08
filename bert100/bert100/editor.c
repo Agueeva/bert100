@@ -142,7 +142,7 @@ editor_insert(Editor * ed, uint8_t c)
  * character to the left.
  **********************************************************************
  */
-inline void
+INLINE void
 editor_backspace(Editor * ed)
 {
 
@@ -163,11 +163,11 @@ editor_backspace(Editor * ed)
 
 /**
  **********************************************************************
- * \fn static inline void editor_del(Editor * ed);
+ * \fn static INLINE void editor_del(Editor * ed);
  * Remove the character at the cursorposition
  **********************************************************************
  */
-inline void
+INLINE void
 editor_del(Editor * ed)
 {
 
@@ -186,11 +186,11 @@ editor_del(Editor * ed)
 
 /**
  **********************************************************************
- * \fn static inline void editor_goto_x(Editor * ed, uint8_t pos)
+ * \fn static INLINE void editor_goto_x(Editor * ed, uint8_t pos)
  * Set the cursor to a given position.
  **********************************************************************
  */
-inline void
+INLINE void
 editor_goto_x(Editor * ed, uint8_t pos)
 {
 	while (ed->cursor > pos) {

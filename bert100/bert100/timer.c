@@ -143,7 +143,7 @@ TimeNs_Get(void)
 static uint32_t cnt_per_ms = 0;
 static uint16_t ns_per_call;
 
-void
+static void
 DelayNs(uint32_t ns)
 {
 	uint32_t max;

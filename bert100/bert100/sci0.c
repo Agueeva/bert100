@@ -159,7 +159,7 @@ Excep_SCI0_RXI0(void)
 	g_uart.rxbuf_wp++;
 	rx_avail(&g_uart);
 }
-
+#if 0
 /**
  *********************************************************************
  * The receiver seems to be stopped until errors are acknowledged.
@@ -186,7 +186,7 @@ Excep_SCI0_ERI0(void)
 		rx_avail(&g_uart);
 	}
 }
-
+#endif
 /**
  ****************************************************************************
  * \fn static int8_t cmd_sci0(Interp * interp, uint8_t argc, char *argv[])

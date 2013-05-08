@@ -72,8 +72,6 @@ EV_Yield(void)
 {
 	if (queueHead) {
 		TPOS_Yield();
-	} else {
-		//TPOS_CondYield();
 	}
 }
 
@@ -83,7 +81,7 @@ EV_Yield(void)
  * Execute one event if available.
  **********************************************
  */
-void
+static void
 _EV_DoOneEvent(void)
 {
 	Event *ev;

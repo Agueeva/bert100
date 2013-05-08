@@ -171,21 +171,21 @@ itoahex64(uint64_t value, char *buf)
 uint8_t
 uitoa16(uint16_t value, char *buf)
 {
-	uint16_t div = 10000;
+	uint16_t divisor = 10000;
 	uint8_t digit;
 	uint8_t count = 0;
-	while (div > 1) {
-		if (value < div) {
-			div = div / 10;
+	while (divisor > 1) {
+		if (value < divisor) {
+			divisor = divisor / 10;
 		} else {
 			break;
 		}
 	}
-	while (div > 0) {
-		digit = value / div;
-		value -= (uint16_t) digit *div;
+	while (divisor > 0) {
+		digit = value / divisor;
+		value -= (uint16_t) digit * divisor;
 		*buf++ = digit + '0';
-		div = div / 10;
+		divisor = divisor / 10;
 		count++;
 	}
 	return count;
@@ -194,21 +194,21 @@ uitoa16(uint16_t value, char *buf)
 uint8_t
 uitoa32(uint32_t value, char *buf)
 {
-	uint32_t div = 1000000000;
+	uint32_t divisor = 1000000000;
 	uint8_t digit;
 	uint8_t count = 0;
-	while (div > 1) {
-		if (value < div) {
-			div = div / 10;
+	while (divisor > 1) {
+		if (value < divisor) {
+			divisor = divisor / 10;
 		} else {
 			break;
 		}
 	}
 	while (div > 0) {
-		digit = value / div;
-		value -= (uint32_t) digit *div;
+		digit = value / divisor;
+		value -= (uint32_t) digit *divisor;
 		*buf++ = digit + '0';
-		div = div / 10;
+		divisor = divisor / 10;
 		count++;
 	}
 	return count;
@@ -217,21 +217,21 @@ uitoa32(uint32_t value, char *buf)
 uint8_t
 uitoa64(uint64_t value, char *buf)
 {
-	uint64_t div = UINT64_C(10000000000000000000);
+	uint64_t divisor = UINT64_C(10000000000000000000);
 	uint8_t digit;
 	uint8_t count = 0;
-	while (div > 1) {
-		if (value < div) {
-			div = div / 10;
+	while (divisor > 1) {
+		if (value < divisor) {
+			divisor = divisor / 10;
 		} else {
 			break;
 		}
 	}
-	while (div > 0) {
-		digit = value / div;
-		value -= (uint32_t) digit *div;
+	while (divisor > 0) {
+		digit = value / divisor;
+		value -= (uint32_t) digit * divisor;
 		*buf++ = digit + '0';
-		div = div / 10;
+		divisor = divisor / 10;
 		count++;
 	}
 	return count;

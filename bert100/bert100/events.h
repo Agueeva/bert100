@@ -47,7 +47,7 @@ typedef struct Event {
 	struct Event *prev;
 } Event;
 
-void EV_Loop(void);
+NORETURN void EV_Loop(void);
 void EV_Trigger(Event * event);
 void EV_Yield(void);
 

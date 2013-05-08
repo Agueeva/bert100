@@ -89,7 +89,7 @@ split_args(char *script, char *argv[])
  * \return Pointer the the command procedure or NULL if not found.
  *********************************************************************
  */
-InterpCmdProc *
+static InterpCmdProc *
 find_cmd_proc(Interp * interp, char *cmdname)
 {
 	const Cmd *cursor;

@@ -69,4 +69,5 @@ typedef uint32_t uint32_le;
 typedef uint32_t uint32_be;
 #define INLINE static inline
 #define NOINLINE __attribute__((noinline))
+#define NORETURN __attribute__((noreturn))
 #endif

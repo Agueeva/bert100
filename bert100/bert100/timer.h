@@ -121,6 +121,7 @@ is_later(TimeMs_t time1, TimeMs_t time2)
 	}
 }
 
+uint64_t TimeNs_Get(void);
 void Timers_Init(void);
 void CalibrateDelayLoop(void);
 #endif

@@ -10,6 +10,8 @@
 #include "interrupt_handlers.h"
 #include "interpreter.h"
 #include "hex.h"
+#include "console.h"
+#include "timer.h"
 
 #define RX_DESCR_NUM	(2U)
 #define TX_DESCR_NUM	(4U)
@@ -159,7 +161,7 @@ RXEth_Transmit(uint8_t *buf,uint16_t len)
 	txDescr->bufsize = len;
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	re->txDescrWp++;
-	if(EDMAC.EDTRR.LONG = 0) {
+	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
 	SleepMs(200);
