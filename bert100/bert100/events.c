@@ -82,7 +82,7 @@ EV_Yield(void)
  **********************************************
  */
 static void
-_EV_DoOneEvent(void)
+EV_DoOneEvent(void)
 {
 	Event *ev;
 	Flags_t flags;
@@ -108,11 +108,6 @@ _EV_DoOneEvent(void)
 		}
 	}
 	RESTORE_FLAGS(flags);
-#if 0
-	if (!ev) {
-		TPOS_Schedule();
-	}
-#endif
 }
 
 /**
@@ -125,6 +120,6 @@ void
 EV_Loop(void)
 {
 	while (1) {
-		_EV_DoOneEvent();
+		EV_DoOneEvent();
 	}
 }

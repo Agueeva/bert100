@@ -68,7 +68,7 @@
 
 typedef struct Descriptor {
 	uint32_t status;
-	uint16_t size;	  /**< Only relevantin receive descriptor */
+	uint16_t size;	  /**< Only relevant in receive descriptor */
 	uint16_t bufsize; /**< TX: number of bytes to transmit, RX: Maxium bytes to receive */
 	uint8_t  *bufP;
 	uint32_t padding;
@@ -78,6 +78,7 @@ typedef struct RxEth {
 	Descriptor txDescr[TX_DESCR_NUM] __attribute__((aligned (16))); 
 	Descriptor rxDescr[RX_DESCR_NUM] __attribute__((aligned (16)));
 	uint8_t rxBuf[EMAC_NUM_RX_BUFS * EMAC_RX_BUFSIZE];
+	uint8_t ethMAC[6];
 	uint16_t txDescrWp;
 	uint16_t txDescrRp;
 	uint16_t rxDescrWp;
@@ -159,7 +160,8 @@ RX_EtherSetupIoPortsMII(void)
 	MPC.PWPR.BIT.B0WI = 1;
 }
 
-void Excep_ETHER_EINT(void) 
+void 
+Excep_ETHER_EINT(void) 
 {  
 	RxEth *re = &gRxEth;
 	uint32_t status;
@@ -182,8 +184,38 @@ void Excep_ETHER_EINT(void)
 static void
 RXEth_RxEventProc(void *eventData)
 {
-//	RxEth *re = eventData;
-	Con_Printf("RX-Event\n");
+	RxEth *re = eventData;
+	uint16_t rp;
+	bool frame_ok;
+	uint32_t status;
+	Descriptor *rxDescr;
+	do { 
+		rp = RX_DESCR_RP(re);
+		rxDescr = &re->rxDescr[rp];
+		status = rxDescr->status;
+		if(status & RXDS_ACT) {
+			break;
+		}
+		/* Check for errors */
+		if(status & RXDS_FE) {
+			/* Broadcast is not an error */ 
+			if(status & RFS_RMAF) {
+				frame_ok = true;
+			} else {
+				frame_ok = false;
+			}
+		} else {
+			frame_ok = true;
+		}
+		if(frame_ok) {
+			Con_Printf("Rx Good Frame %u bytes\n",rxDescr->size);
+		} else {
+			Con_Printf("Rx Bad Frame Frame\n");
+		}
+		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
+		re->rxDescrRp++;
+	} while(1);
+
 }
 
 void 
@@ -201,6 +233,17 @@ RXEth_Transmit(uint8_t *buf,uint16_t len)
 	SleepMs(200);
 }
 
+static void
+RXEth_SetMAC(RxEth *re,const uint8_t *mac)
+{
+	int i;
+	for(i = 0; i < 6; i++) {
+		re->ethMAC[i] = mac[i];
+	}
+	ETHERC.MAHR = ((uint32_t)mac[0] << 24) | ((uint32_t)mac[1] << 16) 
+		      | ((uint32_t)mac[2] << 8) | mac[3];
+	ETHERC.MALR.LONG = ((uint32_t)mac[4] << 8) | mac[5];
+}
 /**
  ***************************************************************************
  * Initialize the DMA descriptors.
@@ -240,8 +283,12 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t i;
 	uint8_t pkt[64] __attribute__((aligned (32)));
 	memset(pkt,0,sizeof(pkt));
-	for(i = 1; i < argc && (i <= array_size(pkt)); i++) {
-		pkt[i - 1] = astrtoi16(argv[i]);
+	for(i = 0; i < 6; i++) {
+		pkt[i] = 0xff;
+		pkt[i + 6] = re->ethMAC[i];
+	}
+	for(i = 1; (i < argc) && (i < 20); i++) {
+		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
 	RXEth_Transmit(pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
@@ -255,7 +302,10 @@ void
 RX_EtherInit()
 {
 	volatile uint32_t i;
+	/* This is a locally assigned unicast address */
+	const uint8_t mac[6] = { 0x12,0x34,0x56,0x78,0xab,0xcd };
 	RxEth *re = &gRxEth;
+
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
@@ -267,9 +317,7 @@ RX_EtherInit()
 
 	}
 	RXEth_InitDescriptors(re);
-	/* This is a locally assigned unicast address */
-	ETHERC.MAHR = 0x12345678;
-	ETHERC.MALR.LONG = 0x9abc;
+	RXEth_SetMAC(re,mac);
 	
 	ETHERC.ECSR.LONG = 0x37;	/* Clear all status bits */
 	EDMAC.EESIPR.BIT.TCIP = 1; 	/* Enable the transmission Complete interrupt */

@@ -94,7 +94,6 @@ int main(void)
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
 
-	//ENABLE_IRQ();
 	EV_Loop();
 }
 	
