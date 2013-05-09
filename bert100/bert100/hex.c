@@ -204,7 +204,7 @@ uitoa32(uint32_t value, char *buf)
 			break;
 		}
 	}
-	while (div > 0) {
+	while (divisor > 0) {
 		digit = value / divisor;
 		value -= (uint32_t) digit *divisor;
 		*buf++ = digit + '0';

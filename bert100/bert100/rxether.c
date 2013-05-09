@@ -12,6 +12,7 @@
 #include "hex.h"
 #include "console.h"
 #include "timer.h"
+#include "events.h"
 
 #define RX_DESCR_NUM	(2U)
 #define TX_DESCR_NUM	(4U)
@@ -39,6 +40,12 @@
 #define TXDS_FE		(UINT32_C(1) << 27)
 #define TXDS_WBI	(UINT32_C(1) << 26)
 
+#define TFS_DTA		(UINT32_C(1) << 8) 	/* Detect Transmission Abort	*/
+#define TFS_DNC		(UINT32_C(1) << 3)	/* Detect No Carrier		*/	
+#define TFS_DLC		(UINT32_C(1) << 2)	/* Detect Loss of Carrier	*/
+#define TFS_DDC		(UINT32_C(1) << 1)	/* Detect Delayed Collision	*/
+#define	TFS_TRO		(UINT32_C(1) << 0)	/* Transmit Retry Over */
+
 /*
  *************************************************************************
  * Status bits in the receive descriptor
@@ -49,6 +56,15 @@
 #define RXDS_FP1	(UINT32_C(1) << 29)
 #define RXDS_FP0	(UINT32_C(1) << 28)
 #define RXDS_FE		(UINT32_C(1) << 27)
+
+#define RFS_OVL		(UINT32_C(1) << 9)
+#define RFS_DRA		(UINT32_C(1) << 8)
+#define RFS_RMAF	(UINT32_C(1) << 7)
+#define	RFS_RRF		(UINT32_C(1) << 4)
+#define RFS_RTLF	(UINT32_C(1) << 3)
+#define	RFS_RTSF	(UINT32_C(1) << 2)
+#define RFS_PRE		(UINT32_C(1) << 1)
+#define RFS_CERF	(UINT32_C(1) << 0)
 
 typedef struct Descriptor {
 	uint32_t status;
@@ -66,6 +82,9 @@ typedef struct RxEth {
 	uint16_t txDescrRp;
 	uint16_t rxDescrWp;
 	uint16_t rxDescrRp;
+	Event    evRxEvent;
+	uint32_t statTxInts;
+	uint32_t statRxInts;
 } RxEth;
 
 static RxEth gRxEth;
@@ -142,14 +161,29 @@ RX_EtherSetupIoPortsMII(void)
 
 void Excep_ETHER_EINT(void) 
 {  
+	RxEth *re = &gRxEth;
 	uint32_t status;
 	status = EDMAC.EESR.LONG;
 	if(status & EMAC_FR_INT) {
+		EDMAC.EESR.BIT.FR = 1; /* Clear reception interrupt */
+		/* Restart receiver if necessary */
+		if(EDMAC.EDRRR.LONG == 0) {
+			EDMAC.EDRRR.LONG = 1;
+		}
+		re->statRxInts++;
+		EV_Trigger(&re->evRxEvent);
 	} 
 	if(status & EMAC_TC_INT) {
 		EDMAC.EESR.BIT.TC = 1; /* Clear the transmission complete bit */
-		Con_Printf("TCINT\n");
+		re->statTxInts++;
 	}
+}
+
+static void
+RXEth_RxEventProc(void *eventData)
+{
+//	RxEth *re = eventData;
+	Con_Printf("RX-Event\n");
 }
 
 void 
@@ -185,11 +219,12 @@ RXEth_InitDescriptors(RxEth *re)
 	
 	for(i = 0; i < RX_DESCR_NUM; i++) {
 		descr = &re->rxDescr[i];
+		descr->bufP = re->rxBuf + i * EMAC_RX_BUFSIZE; 
 		descr->bufsize = EMAC_RX_BUFSIZE;
 		descr->size = 0;
 		descr->status = RXDS_ACT;
 	}
-	descr->status = RXDS_DLE; /* Mark as last descriptor in the ring */
+	descr->status |= RXDS_DLE; /* Mark as last descriptor in the ring */
 	
 }
 /**
@@ -201,6 +236,7 @@ RXEth_InitDescriptors(RxEth *re)
 static int8_t
 cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 {
+	RxEth *re = &gRxEth;
 	uint16_t i;
 	uint8_t pkt[64] __attribute__((aligned (32)));
 	memset(pkt,0,sizeof(pkt));
@@ -208,6 +244,8 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 		pkt[i - 1] = astrtoi16(argv[i]);
 	}
 	RXEth_Transmit(pkt,64);
+	Con_Printf("TX Ints: %lu\n",re->statTxInts);
+	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	return 0;
 }
 
@@ -218,6 +256,7 @@ RX_EtherInit()
 {
 	volatile uint32_t i;
 	RxEth *re = &gRxEth;
+	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
 	for(i = 0; i < 1000; i++) {
@@ -247,13 +286,15 @@ RX_EtherInit()
 	EDMAC.RMCR.LONG = 0;		/* Should not be necessary because cleared by reset */
 	EDMAC.FCFTR.LONG = 0x00070005; 
 	/* Now start it */
+	ETHERC.ECMR.BIT.DM = 1;		/* Full duplex */
+	ETHERC.ECMR.BIT.RTM = 1; 	/* 100 MBit */
 	ETHERC.APR.LONG = 1;
 	ETHERC.TPAUSER.LONG = 0;
 	ETHERC.ECMR.BIT.TXF = 0; /* TXPause */
 	ETHERC.ECMR.BIT.RXF = 0; /* RXPause */
-	//EHTERC.ECMR.BIT.RE = 1;	
+	ETHERC.ECMR.BIT.RE = 1;	
 	ETHERC.ECMR.BIT.TE = 1;	
-	//EDMAC.EDRRR.LONG = 1;	 /* Enable receive */
+	EDMAC.EDRRR.LONG = 1;	 /* Enable receive */
 
 	IPR(ETHER,EINT) = 2;
 	IEN(ETHER,EINT) = 1;
