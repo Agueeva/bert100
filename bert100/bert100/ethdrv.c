@@ -19,7 +19,11 @@ Eth_RegisterPktSink(int ifaceID,Eth_PktSinkProc *proc,void *cbData)
 	ethDriver->pktSinkData = cbData;
 }
 
-
+/**
+ ***********************************************************************
+ * \fn void Eth_Control(int ifaceID,EthControlCmd *ctrlCmd)
+ ***********************************************************************
+ */
 void
 Eth_Control(int ifaceID,EthControlCmd *ctrlCmd)
 {

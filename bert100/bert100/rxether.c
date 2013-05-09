@@ -5,6 +5,7 @@
 #include <string.h>
 #include "iodefine.h"
 #include "types.h"
+#include "eth_drv.h"
 #include "rxether.h"
 #include "phy.h"
 #include "interrupt_handlers.h"
@@ -77,6 +78,7 @@ typedef struct Descriptor {
 typedef struct RxEth {
 	Descriptor txDescr[TX_DESCR_NUM] __attribute__((aligned (16))); 
 	Descriptor rxDescr[RX_DESCR_NUM] __attribute__((aligned (16)));
+	EthDriver *ethDrv;
 	uint8_t rxBuf[EMAC_NUM_RX_BUFS * EMAC_RX_BUFSIZE];
 	uint8_t ethMAC[6];
 	uint16_t txDescrWp;
@@ -218,10 +220,16 @@ RXEth_RxEventProc(void *eventData)
 
 }
 
-void 
-RXEth_Transmit(uint8_t *buf,uint16_t len)
+/**
+ ****************************************************************************
+ * \fn static void RXEth_Transmit(void *driverData,uint8_t *buf,uint16_t len)
+ * Transmit a paket. This is the interface to the outside.
+ ****************************************************************************
+ */
+static void 
+RXEth_Transmit(void *driverData,uint8_t *buf,uint16_t len)
 {
-	RxEth *re = &gRxEth;
+	RxEth *re = driverData; 
 	Descriptor *txDescr = &re->txDescr[TX_DESCR_WP(re)];
 	txDescr->bufP = buf;
 	txDescr->bufsize = len;
@@ -230,9 +238,20 @@ RXEth_Transmit(uint8_t *buf,uint16_t len)
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
-	SleepMs(200);
+//	SleepMs(200);
 }
 
+static void
+RXEth_Control(void driverData,EthControlCmd *cmd)
+{
+//	RxEth *re = driverData; 
+}
+/**
+ **********************************************************************
+ * \fn static void RXEth_SetMAC(RxEth *re,const uint8_t *mac)
+ * Set the MAC address of the ethernet Interface.
+ **********************************************************************
+ */
 static void
 RXEth_SetMAC(RxEth *re,const uint8_t *mac)
 {
@@ -290,7 +309,7 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	for(i = 1; (i < argc) && (i < 20); i++) {
 		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
-	RXEth_Transmit(pkt,64);
+//	RXEth_Transmit(pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	return 0;
@@ -305,6 +324,8 @@ RX_EtherInit()
 	/* This is a locally assigned unicast address */
 	const uint8_t mac[6] = { 0x12,0x34,0x56,0x78,0xab,0xcd };
 	RxEth *re = &gRxEth;
+	EthDriver *ethDrv;
+	re->ethDrv = ethDrv = &g_EthDriver[ETHIF_RXETH0]; 
 
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 	RX_EtherSetupIoPortsMII();
@@ -347,5 +368,9 @@ RX_EtherInit()
 	IPR(ETHER,EINT) = 2;
 	IEN(ETHER,EINT) = 1;
 	Phy_Init();
+	ethDrv->transmitProc = RXEth_Transmit;
+	//ethDrv->controlProc = blub
+	ethDrv->driverData = re;
+	
 	Interp_RegisterCmd(&ethtxCmd);
 }

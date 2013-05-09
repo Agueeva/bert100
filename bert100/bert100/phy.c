@@ -88,6 +88,12 @@ Phy_Read(uint16_t regAddr)
 	return inval;
 }
 
+/**
+ **********************************************************************
+ * \fn static void Phy_Write(uint16_t regAddr,uint16_t value)
+ * Write to a register of the PHY
+ **********************************************************************
+ */
 static void
 Phy_Write(uint16_t regAddr,uint16_t value)
 {

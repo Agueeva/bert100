@@ -24,8 +24,8 @@ typedef void Eth_ControlProc(void *driverData,EthControlCmd *ctrlCmd);
 typedef struct EthDriver {
 	int ifID;
 	Eth_TxProc *transmitProc;
-	void *driverData;	
 	Eth_ControlProc *ctrlProc;
+	void *driverData;	
 
 	Eth_PktSinkProc *pktSinkProc;
 	void *pktSinkData;
