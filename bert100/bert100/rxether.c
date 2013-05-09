@@ -246,6 +246,15 @@ RX_EtherInit()
 	EDMAC.FDR.LONG = 5;		/* Fifo 1536 bytes */
 	EDMAC.RMCR.LONG = 0;		/* Should not be necessary because cleared by reset */
 	EDMAC.FCFTR.LONG = 0x00070005; 
+	/* Now start it */
+	ETHERC.APR.LONG = 1;
+	ETHERC.TPAUSER.LONG = 0;
+	ETHERC.ECMR.BIT.TXF = 0; /* TXPause */
+	ETHERC.ECMR.BIT.RXF = 0; /* RXPause */
+	//EHTERC.ECMR.BIT.RE = 1;	
+	ETHERC.ECMR.BIT.TE = 1;	
+	//EDMAC.EDRRR.LONG = 1;	 /* Enable receive */
+
 	IPR(ETHER,EINT) = 2;
 	IEN(ETHER,EINT) = 1;
 	Phy_Init();
