@@ -15,7 +15,7 @@ INCLUDES += $(patsubst %,-I$(VPATH)/%,$(SUBMODULES)) -I$(VPATH)
 
 SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	vector_table.c console.c  events.c  hex.c interrupt_handlers.c  \
-	threads.c tpos.c rxether.c phy.c
+	threads.c tpos.c rxether.c phy.c ethdrv.c
 
 ASMFILES=reset_program.asm switch_context.asm 
 

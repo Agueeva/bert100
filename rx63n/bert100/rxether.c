@@ -5,7 +5,7 @@
 #include <string.h>
 #include "iodefine.h"
 #include "types.h"
-#include "eth_drv.h"
+#include "ethdrv.h"
 #include "rxether.h"
 #include "phy.h"
 #include "interrupt_handlers.h"
@@ -227,11 +227,11 @@ RXEth_RxEventProc(void *eventData)
  ****************************************************************************
  */
 static void 
-RXEth_Transmit(void *driverData,uint8_t *buf,uint16_t len)
+RXEth_Transmit(void *driverData,const uint8_t *buf,uint16_t len)
 {
 	RxEth *re = driverData; 
 	Descriptor *txDescr = &re->txDescr[TX_DESCR_WP(re)];
-	txDescr->bufP = buf;
+	txDescr->bufP = (uint8_t *)buf;
 	txDescr->bufsize = len;
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	re->txDescrWp++;
@@ -265,11 +265,11 @@ RXEth_SetMAC(RxEth *re,const uint8_t *mac)
  *********************************************************************
  */
 static void
-RXEth_Control(void driverData,EthControlCmd *ctrl)
+RXEth_Control(void *driverData,EthControlCmd *ctrl)
 {
 	RxEth *re = driverData; 
 	uint8_t *mac;
-	switch(ctrl.cmd) {
+	switch(ctrl->cmd) {
 		case ETHCTL_SET_MAC: 
 			mac = ctrl->cmdArg;	
 			RXEth_SetMAC(re,mac);
@@ -343,7 +343,7 @@ RX_EtherInit()
 	const uint8_t mac[6] = { 0x12,0x34,0x56,0x78,0xab,0xcd };
 	RxEth *re = &gRxEth;
 	EthDriver *ethDrv;
-	re->ethDrv = ethDrv = &g_EthDriver[ETHIF_RXETH0]; 
+	re->ethDrv = ethDrv = &g_EthDrivers[ETHIF_RXETH0]; 
 
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 	RX_EtherSetupIoPortsMII();
@@ -387,7 +387,7 @@ RX_EtherInit()
 	IEN(ETHER,EINT) = 1;
 	Phy_Init();
 	ethDrv->transmitProc = RXEth_Transmit;
-	//ethDrv->controlProc = blub
+	ethDrv->ctrlProc = RXEth_Control; 
 	ethDrv->driverData = re;
 	
 	Interp_RegisterCmd(&ethtxCmd);

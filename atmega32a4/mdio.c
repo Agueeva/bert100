@@ -18,10 +18,13 @@
 #define DIR_OUT		(1)
 #define DIR_IN		(0)
 
+#define PORT_DIRCTRL	PORTB
 #define PORT_MDIO	PORTB
 #define PORT_MDC	PORTB
 #define PIN_MDIO	(2)
 #define PIN_MDC		(3)
+#define PIN_DIRCTRL	(1)
+#define PINCTRL_DIRCTRL	PORTB_PIN1CTRL
 #define PINCTRL_MDIO	PORTB_PIN2CTRL
 #define PINCTRL_MDC	PORTB_PIN3CTRL
 
@@ -42,7 +45,9 @@ SetDirection(uint8_t dir)
 {
 	if(dir == DIR_IN) {
 		PORT_MDIO.DIRCLR  = (1 << PIN_MDIO);
+		PORT_DIRCTRL.OUTCLR = (1 << PIN_DIRCTRL);
 	} else {
+		PORT_DIRCTRL.OUTSET = (1 << PIN_DIRCTRL);
 		PORT_MDIO.DIRSET  = (1 << PIN_MDIO);
 	}
 }
@@ -271,6 +276,8 @@ MDIO_Init(void)
 {
 	PINCTRL_MDC = PORT_OPC_TOTEM_gc;
 	PINCTRL_MDIO = PORT_OPC_TOTEM_gc;
+	PINCTRL_DIRCTRL = PORT_OPC_TOTEM_gc;
 	PORT_MDC.DIRSET  = (1 << PIN_MDC);
+	PORT_DIRCTRL.DIRSET = (1 << PIN_DIRCTRL);
 //	Timer_Start(&pollTimer,1);
 }
