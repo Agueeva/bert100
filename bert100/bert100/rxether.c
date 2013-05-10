@@ -241,11 +241,6 @@ RXEth_Transmit(void *driverData,uint8_t *buf,uint16_t len)
 //	SleepMs(200);
 }
 
-static void
-RXEth_Control(void driverData,EthControlCmd *cmd)
-{
-//	RxEth *re = driverData; 
-}
 /**
  **********************************************************************
  * \fn static void RXEth_SetMAC(RxEth *re,const uint8_t *mac)
@@ -262,6 +257,29 @@ RXEth_SetMAC(RxEth *re,const uint8_t *mac)
 	ETHERC.MAHR = ((uint32_t)mac[0] << 24) | ((uint32_t)mac[1] << 16) 
 		      | ((uint32_t)mac[2] << 8) | mac[3];
 	ETHERC.MALR.LONG = ((uint32_t)mac[4] << 8) | mac[5];
+}
+
+/**
+ *********************************************************************
+ * \fn static void RXEth_Control(void driverData,EthControlCmd *ctrl)
+ *********************************************************************
+ */
+static void
+RXEth_Control(void driverData,EthControlCmd *ctrl)
+{
+	RxEth *re = driverData; 
+	uint8_t *mac;
+	switch(ctrl.cmd) {
+		case ETHCTL_SET_MAC: 
+			mac = ctrl->cmdArg;	
+			RXEth_SetMAC(re,mac);
+			break;
+				
+		case ETHCTL_GET_MAC: 
+			mac = ctrl->cmdArg;
+			memcpy(mac,re->ethMAC,6);
+			break;
+	}
 }
 /**
  ***************************************************************************

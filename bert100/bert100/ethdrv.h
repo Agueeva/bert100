@@ -4,6 +4,8 @@
 
 #define ETHIF_RXETH0    0
 
+#define ETHCTL_SET_MAC	0
+#define ETHCTL_GET_MAC	1
 typedef struct EthControlCmd {
 	unsigned int cmd;
 	void *cmdArg;
