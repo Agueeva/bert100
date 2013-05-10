@@ -78,8 +78,16 @@ GetMDI()
 	return PORT_MDIO.IN & (1 << PIN_MDIO);
 }
 
-
-static uint16_t 
+/**
+ ****************************************************************************
+ * \fn static uint16_t MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
+ * Read 16 Bit from MDIO
+ * This is not the standard Read command as used for PHY Registers.
+ * Use this command after setting the Address with a separate address 
+ * command with no other commands between.
+ ****************************************************************************
+ */
+uint16_t 
 MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 {
 	uint8_t i;
@@ -115,7 +123,6 @@ MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 
 	inval = 0;
 	for(i = 0; i < 16; i++) {
-		//SleepMs(1000);
 		SetMDC(1);
 		mdio_delay();
 		SetMDC(0);
@@ -138,6 +145,15 @@ MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 	mdio_delay();
 	return inval;
 }
+
+/**
+ ************************************************************************
+ * \fn void MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
+ * Send the register address to the MDIO device. This command is
+ * required before a read or write command because these include no
+ * address.
+ ************************************************************************
+ */
 
 void
 MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
@@ -181,6 +197,7 @@ MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
 	SetMDC(0);
 	mdio_delay();
 }
+
 void
 MDIO_Write(uint8_t phy_addr,uint8_t devType,uint16_t value)
 {
@@ -257,8 +274,6 @@ cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(mdio, cmd_mdio, "mdio <addr> <register> ?<value>?   # read write to/from mdio");
-
-
 
 void pollProc(void *eventData);
 TIMER_DECLARE(pollTimer,pollProc,NULL)
