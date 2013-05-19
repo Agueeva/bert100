@@ -18,6 +18,7 @@
 #include "ad537x.h"
 #include "sweep.h"
 #include "mdio.h"
+#include "cdr.h"
 
 extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
 
@@ -55,5 +56,6 @@ main()
 	Sweep_Init();
 	AD537x_Init();
 	MDIO_Init();
+	Cdr_Init();
 	EV_Loop();	
 }
