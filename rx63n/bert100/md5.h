@@ -30,7 +30,7 @@ typedef struct
 } xy_md5ctx;
 
 void MD5Init(xy_md5ctx *);
-void MD5Loop(xy_md5ctx *, unsigned char *buf, unsigned int len);
+void MD5Loop(xy_md5ctx *,const unsigned char *buf, unsigned int len);
 void MD5Result(unsigned char[16], xy_md5ctx *);
 /*
  * MD5 Encode an ascii string

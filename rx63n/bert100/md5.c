@@ -22,7 +22,7 @@ documentation and/or software.
 #include <string.h>
 #include "types.h"
 #include "md5.h"
-#include "xy_string.h"
+#include <string.h>
 #include "interpreter.h"
 #include "console.h"
 #include "hex.h"
@@ -114,7 +114,7 @@ MD5Init (xy_md5ctx *context)
 static void
 Decode (
      uint32_t *output,
-     uint8_t *input,
+     const uint8_t *input,
      unsigned int len)
 {
 	unsigned int i, j;
@@ -130,7 +130,7 @@ Decode (
 /* MD5 basic transformation. Transforms state based on block.
  */
 static void
-MD5Transform (uint32_t state[4],uint8_t block[64])
+MD5Transform (uint32_t state[4],const uint8_t block[64])
 {
 	uint32_t a = state[0], b = state[1], c = state[2], d = state[3], x[16];
 
@@ -225,7 +225,7 @@ MD5Transform (uint32_t state[4],uint8_t block[64])
 void
 MD5Loop (
      xy_md5ctx *context,		/* context */
-     unsigned char *input,	/* input block */
+     const unsigned char *input,	/* input block */
      unsigned int inputLen)	/* length of input block */
 {
 	unsigned int i, index, partLen;
@@ -322,7 +322,7 @@ MD5_EncodeString(uint8_t *digest,const char *string)
 {
 	/* The context is static, so never call the scheduler during MD5 */
      	static xy_md5ctx context;
-	unsigned int len = xy_strlen (string);
+	unsigned int len = strlen(string);
 	MD5Init (&context);
 	MD5Loop (&context, (const uint8_t*)string, len);
 	MD5Result (digest, &context);

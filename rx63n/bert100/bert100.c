@@ -23,6 +23,8 @@
 #include "threads.h"
 #include "tpos.h"
 #include "rxether.h"
+#include "md5.h"
+#include "sha1.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -91,6 +93,9 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	MD5Lib_Init();
+	Sha1Lib_Init();
+
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
 

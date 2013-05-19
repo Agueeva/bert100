@@ -38,6 +38,7 @@
 #include "byteorder.h"
 #include "sha1.h"
 #include "interpreter.h"
+#include "console.h"
 
 
 /* constant table */
@@ -285,7 +286,7 @@ cmd_sha1(Interp * interp, uint8_t argc, char *argv[])
         uint8_t digest[20];
         uint8_t i;
         if(argc > 1) {
-                sha1_sum(argv[1],strlen(argv[1]),digest);
+                sha1_sum((uint8_t*)argv[1],strlen(argv[1]),digest);
                 for(i = 0; i < 20; i++) {
                         Con_Printf("%02x",digest[i]);
                 }
