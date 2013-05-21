@@ -100,7 +100,7 @@ UartC0_TransmitChar(uint8_t c)
         }
  	while((USARTC0.STATUS & USART_DREIF_bm) == 0) {
 		//PORTC.OUTTGL = 0x40;
-                EV_DoOneEvent();
+                EV_Yield();
 	}
     	USARTC0.DATA = c;  
 }
