@@ -220,14 +220,14 @@ uint16_t ADC_Read(uint8_t channel)
 	uint16_t adval;
 	/* Be careful here that this is not called in a critical section ! */
 	while (adcr.status != ADCR_IDLE) {
-		EV_DoOneEvent();
+		EV_Yield();
 	}
 	adcr.clientData = &adval;
 	if (ADC_EnqueueRequest(&adcr,channel) < 0) {
 		return 0xffff;
 	}
 	while (adcr.status != ADCR_IDLE) {
-		EV_DoOneEvent();
+		EV_Yield();
 	}
 	return adval;
 }

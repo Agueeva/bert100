@@ -142,7 +142,7 @@ void
 SleepMs(TimeMs_t delay) {
         TimeMs_t starttime = TimeMs_Get();
         while((TimeMs_Get() - starttime) < delay) {
-                EV_DoOneEvent();
+                EV_Yield();
         }
 }
 

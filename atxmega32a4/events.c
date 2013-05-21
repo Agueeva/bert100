@@ -106,7 +106,7 @@ _EV_DoOneEvent(void)
 }
  
 void
-EV_DoOneEvent(void)
+EV_Yield(void)
 {
 	if(queueHead) {
 		TPOS_Yield();

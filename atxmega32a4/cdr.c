@@ -20,6 +20,12 @@ typedef struct CdrRegister {
 
 #define NAME(x,y)	 
 
+/**
+ ******************************************************************
+ * This is the list of all CDR registers with name
+ * and address.  
+ ******************************************************************
+ */
 static const CdrRegister gCdrRegisters[] = 
 {
 	{
@@ -28,6 +34,13 @@ static const CdrRegister gCdrRegisters[] =
 	}
 };
 
+/**
+ ************************************************************************
+ * \fn void Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
+ * Write to the CDR by setting up the Address with the MDIO Address cmd.
+ * and then writing a 16bit word.
+ ************************************************************************
+ */
 void
 Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
 {
@@ -35,6 +48,13 @@ Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
 	MDIO_Write(phyAddr,DEVTYPE,value);
 }
 
+/**
+ ************************************************************************
+ * \fn void Cdr_Read(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
+ * Write to the CDR by setting up the Address with the MDIO Address cmd.
+ * and then writing a 16bit word.
+ ************************************************************************
+ */
 uint16_t 
 Cdr_Read(uint8_t phyAddr,uint16_t regAddr)
 {
@@ -42,6 +62,12 @@ Cdr_Read(uint8_t phyAddr,uint16_t regAddr)
 	return MDIO_Read(phyAddr,DEVTYPE);
 }
 
+/**
+ ************************************************************************
+ * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
+ * Allows to read or write registers of a CDR from the command shell
+ **************************************************************************
+ */
 static int8_t
 cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 {

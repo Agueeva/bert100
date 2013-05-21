@@ -420,7 +420,7 @@ uint8_t I2C_Read8(uint8_t i2caddr, uint8_t daddr, uint8_t * data, uint8_t count)
 {
 	uint8_t result;
 	uint8_t i;
-	//EV_DoOneEvent();
+	//EV_Yield();
 	result = I2C_AckPoll(i2caddr);
 	if (result != I2C_RESULT_OK) {
 		/* 
@@ -475,7 +475,7 @@ I2C_Write8(uint8_t i2caddr, uint8_t daddr, const uint8_t * data, uint8_t count)
 {
 	uint8_t result;
 	uint8_t i;
-	//EV_DoOneEvent();
+	//EV_Yield();
 	result = I2C_AckPoll(i2caddr);
 	if (result != I2C_RESULT_OK) {
 		/* 
