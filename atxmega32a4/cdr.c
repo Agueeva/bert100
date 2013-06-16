@@ -14,7 +14,7 @@
 #include "timer.h"
 
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
-#define DEVTYPE		(0x30)
+#define DEVTYPE		(30)
 
 typedef struct CdrRegister {
 	uint16_t regNo;	
@@ -481,8 +481,8 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
         uint16_t regAddr;
 	if((argc == 3) && (strcmp(argv[1],"startup")  == 0)) {
 		uint8_t cdr = astrtoi16(argv[2]);
+		Con_Printf_P("Calling Olgas CDR_Startup for CDR %u\n",cdr);
 		Cdr_startup(cdr);
-		Con_Printf_P("Called olgas CDR_Startup for CDR %u\n",cdr);
 		return 0;
 	} else if(argc == 3) {
                 phyAddr = astrtoi16(argv[1]);
