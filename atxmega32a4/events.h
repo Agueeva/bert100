@@ -30,7 +30,7 @@ typedef struct Event {
 
 void EV_Loop(void);
 void EV_Trigger(Event *event);
-void EV_DoOneEvent(void);
+void EV_Yield(void);
 
 static inline void
 EV_Init(Event *ev,EventProc *proc,void *eventData)

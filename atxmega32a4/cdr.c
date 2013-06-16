@@ -4,6 +4,7 @@
  **************************************************************************************
  */
 
+#include <string.h>
 #include <stdint.h> 
 #include "mdio.h"
 #include "cdr.h"
@@ -63,35 +64,6 @@ Cdr_Read(uint8_t phyAddr,uint16_t regAddr)
 	return MDIO_Read(phyAddr,DEVTYPE);
 }
 
-/**
- ************************************************************************
- * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
- * Allows to read or write registers of a CDR from the command shell
- **************************************************************************
- */
-static int8_t
-cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
-{
-	uint8_t phyAddr;
-        uint16_t val;
-        uint16_t regAddr;
-        if(argc == 3) {
-                phyAddr = astrtoi16(argv[1]);
-                regAddr = astrtoi16(argv[2]);
-                val = Cdr_Read(phyAddr,regAddr);
-                Con_Printf_P("%u.%u: 0x%x\n",phyAddr,regAddr,val);
-                return 0;
-        } else if(argc == 4) {
-                phyAddr = astrtoi16(argv[1]);
-                regAddr = astrtoi16(argv[2]);
-                val = astrtoi16(argv[3]);
-		Cdr_Write(phyAddr,regAddr,val);
-        }
-        return 0;
-
-}
-
-INTERP_CMD(cdr, cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
 
 void
 Cdr_Init() 
@@ -494,3 +466,38 @@ for(i = 0; i < 4; i++) {
 
 return status;
 }
+
+/**
+ ************************************************************************
+ * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
+ * Allows to read or write registers of a CDR from the command shell
+ **************************************************************************
+ */
+static int8_t
+cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint8_t phyAddr;
+        uint16_t val;
+        uint16_t regAddr;
+	if((argc == 3) && (strcmp(argv[1],"startup")  == 0)) {
+		uint8_t cdr = astrtoi16(argv[2]);
+		Cdr_startup(cdr);
+		Con_Printf_P("Called olgas CDR_Startup for CDR %u\n",cdr);
+		return 0;
+	} else if(argc == 3) {
+                phyAddr = astrtoi16(argv[1]);
+                regAddr = astrtoi16(argv[2]);
+                val = Cdr_Read(phyAddr,regAddr);
+                Con_Printf_P("%u.%u: 0x%x\n",phyAddr,regAddr,val);
+                return 0;
+        } else if(argc == 4) {
+                phyAddr = astrtoi16(argv[1]);
+                regAddr = astrtoi16(argv[2]);
+                val = astrtoi16(argv[3]);
+		Cdr_Write(phyAddr,regAddr,val);
+        }
+        return 0;
+
+}
+
+INTERP_CMD(cdr, cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
