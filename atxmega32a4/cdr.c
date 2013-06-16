@@ -484,6 +484,11 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf_P("Calling Olgas CDR_Startup for CDR %u\n",cdr);
 		Cdr_startup(cdr);
 		return 0;
+	} if((argc == 3) && (strcmp(argv[1],"init")  == 0)) {
+		uint8_t cdr = astrtoi16(argv[2]);
+		Con_Printf_P("Calling Olgas CDR_Init_cdr for CDR %u\n",cdr);
+		Cdr_Init_cdr(cdr);
+		return 0;
 	} else if(argc == 3) {
                 phyAddr = astrtoi16(argv[1]);
                 regAddr = astrtoi16(argv[2]);
@@ -495,9 +500,10 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
                 regAddr = astrtoi16(argv[2]);
                 val = astrtoi16(argv[3]);
 		Cdr_Write(phyAddr,regAddr,val);
-        }
+        } else {
+		return -EC_BADARG;
+	}
         return 0;
-
 }
 
 INTERP_CMD(cdr, cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
