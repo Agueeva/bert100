@@ -147,7 +147,7 @@ PWM_Init(void) {
 	TCD0.CTRLA = 5; /* Divide by 64 */
 	TCD1.CTRLA = 5; /* Divide by 64 */
         TCD0.PER = 49999;
-        TCD1.PER = 499; 
+        TCD1.PER = 24; 
 	
 	cli();
 	TCD0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm | TC0_CCBEN_bm | TC0_CCAEN_bm; 
@@ -159,8 +159,8 @@ PWM_Init(void) {
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;
 	TCE0.CTRLB = TC_WGMODE_SS_gc | TC0_CCDEN_bm | TC0_CCCEN_bm; 
-	PWM_Set(4,249);
-	PWM_Set(5,249);
+	PWM_Set(4,12);
+	PWM_Set(5,12);
 	PWM_Set(0,1);
 	PWM_Set(1,1);
 	PORTD.PIN0CTRL ^= PORT_INVEN_bm;
