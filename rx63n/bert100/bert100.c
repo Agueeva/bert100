@@ -26,6 +26,7 @@
 #include "md5.h"
 #include "sha1.h"
 
+
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
 ConfigureClocks(void)
@@ -98,7 +99,6 @@ int main(void)
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
-
 	EV_Loop();
 }
 	
