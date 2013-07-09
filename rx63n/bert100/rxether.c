@@ -327,7 +327,7 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	for(i = 1; (i < argc) && (i < 20); i++) {
 		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
-//	RXEth_Transmit(pkt,64);
+	RXEth_Transmit(re,pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	return 0;
