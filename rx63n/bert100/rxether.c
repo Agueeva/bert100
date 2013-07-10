@@ -170,10 +170,6 @@ Excep_ETHER_EINT(void)
 	status = EDMAC.EESR.LONG;
 	if(status & EMAC_FR_INT) {
 		EDMAC.EESR.BIT.FR = 1; /* Clear reception interrupt */
-		/* Restart receiver if necessary */
-		if(EDMAC.EDRRR.LONG == 0) {
-			EDMAC.EDRRR.LONG = 1;
-		}
 		re->statRxInts++;
 		EV_Trigger(&re->evRxEvent);
 	} 
@@ -220,6 +216,13 @@ RXEth_RxEventProc(void *eventData)
 		Con_Printf("%lx %lx\n",rxDescr->bufP,EDMAC.RBWAR);
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
 		re->rxDescrRp++;
+		/* 
+		 * Restart receiver if necessary 
+		 * Should not be necessary if RNC is set
+		 */ 
+		if(EDMAC.EDRRR.LONG == 0) {
+			EDMAC.EDRRR.LONG = 1;
+		}
 	} while(1);
 
 }
