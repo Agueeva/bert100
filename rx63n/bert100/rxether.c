@@ -217,6 +217,7 @@ RXEth_RxEventProc(void *eventData)
 		} else {
 			Con_Printf("Rx Bad Frame Frame\n");
 		}
+		Con_Printf("%lx %lx\n",rxDescr->bufP,EDMAC.RBWAR);
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
 		re->rxDescrRp++;
 	} while(1);
