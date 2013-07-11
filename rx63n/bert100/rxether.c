@@ -196,14 +196,6 @@ RXEth_RxEventProc(void *eventData)
 		}
 		/* Check for errors */
 		if(status & RXDS_FE) {
-		#if 0
-			/* Broadcast is not an error */ 
-			if(status & RFS_RMAF) {
-				frame_ok = true;
-			} else {
-				frame_ok = false;
-			}
-		#endif
 			frame_ok = false;
 		} else {
 			frame_ok = true;
@@ -213,12 +205,13 @@ RXEth_RxEventProc(void *eventData)
 		} else {
 			Con_Printf("Rx Bad Frame Frame\n");
 		}
-		Con_Printf("%lx %lx\n",rxDescr->bufP,EDMAC.RBWAR);
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
 		re->rxDescrRp++;
 		/* 
+ 		 ****************************************************
 		 * Restart receiver if necessary 
 		 * Should not be necessary if RNC is set
+ 		 ****************************************************
 		 */ 
 		if(EDMAC.EDRRR.LONG == 0) {
 			EDMAC.EDRRR.LONG = 1;
