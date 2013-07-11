@@ -25,6 +25,7 @@
 #include "rxether.h"
 #include "md5.h"
 #include "sha1.h"
+#include "wdta.h"
 
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
@@ -96,6 +97,7 @@ int main(void)
 	Con_RegisterSink(Editor_Feed, editor);
 	MD5Lib_Init();
 	Sha1Lib_Init();
+	WDTA_Init();
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
