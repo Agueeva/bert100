@@ -201,7 +201,7 @@ RXEth_RxEventProc(void *eventData)
 			frame_ok = true;
 		}
 		if(frame_ok) {
-			Con_Printf("Rx Good Frame %u bytes status 0x%08lx\n",rxDescr->size,status);
+			//Con_Printf("Rx Good Frame %u bytes status 0x%08lx\n",rxDescr->size,status);
 		} else {
 			Con_Printf("Rx Bad Frame Frame\n");
 		}
