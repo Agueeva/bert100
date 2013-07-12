@@ -104,6 +104,7 @@ skb_alloc(uint16_t hdrlen,uint16_t datalen)
 		skb->dataAvailLen = datalen;
 		skb->dataBufSize = datalen;
 	}
+	return skb;
 }
 
 void
@@ -135,7 +136,7 @@ Eth_Transmit(EthIf *eth,Skb *skb)
  */
 
 static void
-ArpCE_Enter(EthIf *eth,void *ip,uint8_t *mac) 
+ArpCE_Enter(EthIf *eth,uint8_t *ip,uint8_t *mac) 
 {
 	ArpCE *ace;
 	uint16_t entry_nr = 0;
@@ -144,7 +145,7 @@ ArpCE_Enter(EthIf *eth,void *ip,uint8_t *mac)
 	TimeMs_t age = 0;
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
-		if(*(uint32_t*)ip == *(uint32_t*)ace->arp_ip) {
+		if(memcmp(ip,ace->arp_ip,4)) {
 			entry_nr = i;
 			break;
 		}
@@ -463,8 +464,8 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 			break;
 
 		case IPPROT_TCP:
-			//Con_Printf("Detected TCP\n");
-			Tcp_ProcessPacket(ipHdr,skb);
+			Con_Printf("Detected TCP\n");
+			//Tcp_ProcessPacket(ipHdr,skb);
 			break;
 
 		case IPPROT_UDP:
@@ -551,10 +552,10 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 				s++;
 			}
 		}
-		Param_Write(ipAddr,eth->if_ip);
+		//Param_Write(ipAddr,eth->if_ip);
 		if(ishexnum(s)) {
 			netmask_bits = astrtoi16(s);	
-			Param_Write(netmask,&netmask_bits);
+			//Param_Write(netmask,&netmask_bits);
 			if(netmask_bits == 0) {
 				*(uint32_t*)eth->if_netmask = UINT32_C(~0); 
 			} else {
@@ -574,7 +575,7 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 				s++;
 			}
 		}
-		Param_Write(defaultGW,eth->defaultGW);
+		//Param_Write(defaultGW,eth->defaultGW);
 	}
 	for(i = 0; i < 4; i++) {
 		Con_Printf("%u",eth->if_ip[i]);
@@ -617,7 +618,7 @@ Ethernet_Init(EthernetDriver *drv)
 		Con_Printf("No ethernet driver available\n");
 		return;
 	}
-	Param_Read(ipAddr,eth->if_ip);
+	//Param_Read(ipAddr,eth->if_ip);
 	if(*(uint32_t*)eth->if_ip == ~UINT32_C(0)) {
 #if 0
 		eth->if_ip[0] = 192;
@@ -631,7 +632,7 @@ Ethernet_Init(EthernetDriver *drv)
 		eth->if_ip[3] = 10;
 #endif
 	}
-	Param_Read(netmask,&netmask_bits);
+	//Param_Read(netmask,&netmask_bits);
 	if(netmask_bits > 32) {
 		netmask_bits = 24;
 	}
@@ -640,7 +641,7 @@ Ethernet_Init(EthernetDriver *drv)
 	} else {
 		*(uint32_t*)eth->if_netmask = ntohl(UINT32_C(~0) << (32 - netmask_bits));
 	}
-	Param_Read(defaultGW,eth->defaultGW);
+	//Param_Read(defaultGW,eth->defaultGW);
 	if(*(uint32_t*)eth->defaultGW == ~UINT32_C(0)) {
 		eth->defaultGW[0] = 192;
 		eth->defaultGW[1] = 168;
