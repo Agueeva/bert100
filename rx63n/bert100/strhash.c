@@ -6,7 +6,7 @@
 #include <string.h>
 #include "types.h"
 #include "rx_crc.h"
-#include "sram.h"
+#include "iram.h"
 #include "strhash.h"
 
 #define NR_HASH_BUCKETS	64
@@ -23,8 +23,22 @@ struct StrHashTable {
 };
 
 static uint16_t 
-StrHashBucket(char *str) {
+StrHashBucket(const char *str) {
 	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
+}
+
+/**
+ ************************************
+ * Duplicate a string
+ ************************************
+ */
+static char *
+sr_strdup(const char *str) {
+        char *dup;
+        uint16_t len = strlen(str);
+        dup = IRam_Calloc(len + 1);
+        strcpy(dup,str);
+        return dup;
 }
 
 /**
@@ -48,7 +62,7 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 		/* Error: entry already exists */
 		return NULL;	
 	}
-	newentry = sr_calloc(sizeof(StrHashEntry));
+	newentry = IRam_Calloc(sizeof(StrHashEntry));
 	newentry->next = *first;
 	newentry->prev = NULL;
 	if(*first) {
@@ -103,7 +117,7 @@ StrHash_GetKey(StrHashEntry *she)
 
 StrHashTable * 
 StrHash_New(void) {
-	StrHashTable *sht = sr_calloc(sizeof(*sht));
-	sht->buckets = (StrHashEntry **)sr_calloc(sizeof(void *) * NR_HASH_BUCKETS);
+	StrHashTable *sht = IRam_Calloc(sizeof(*sht));
+	sht->buckets = (StrHashEntry **)IRam_Calloc(sizeof(void *) * NR_HASH_BUCKETS);
 	return sht;
 }

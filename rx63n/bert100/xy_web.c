@@ -9,7 +9,7 @@
 #include "base64.h"
 #include "xy_web.h"
 #include "xy_string.h"
-#include "sram.h"
+#include "iram.h"
 #include "tcp.h"
 #include "hex.h"
 #include <stdlib.h>
@@ -292,10 +292,10 @@ Web_PoolsInit(void) {
 		return;
 	}
 	for(i = 0; i < NR_WCONS; i++) {
-		wcpool[i]  = sr_calloc(sizeof(_WebCon));
+		wcpool[i]  = IRam_Calloc(sizeof(_WebCon));
 	}
 	for(i = 0; i < NR_WEBSOCKS; i++) {
-		wspool[i]  = sr_calloc(sizeof(WebSocket));
+		wspool[i]  = IRam_Calloc(sizeof(WebSocket));
 	}
 	wcpool_initialized = 1;
 	wspool_initialized = 1;
@@ -1071,7 +1071,7 @@ WebServ_Accept(void *eventData,Tcb *tcb,uint8_t ip[4],uint16_t port)
 XY_WebServer *
 XY_NewWebServer(void) 
 {
-	XY_WebServer *wserv = sr_calloc(sizeof(XY_WebServer));
+	XY_WebServer *wserv = IRam_Calloc(sizeof(XY_WebServer));
 	if(!wserv)
 		return NULL;
 	Tcp_ServerSocket(80,WebServ_Accept,wserv);
@@ -1091,7 +1091,7 @@ XY_NewWebServer(void)
 static WebPageRegistration * 
 new_registration(XY_WebServer *wserv,const char *path) {
 	int isnew;
-	WebPageRegistration *reg = sr_calloc(sizeof(WebPageRegistration));
+	WebPageRegistration *reg = IRam_Calloc(sizeof(WebPageRegistration));
 	StrHashEntry *entryPtr;
 	if(!reg)
 		return NULL;
@@ -1532,10 +1532,10 @@ XYWebAuthInfo *
 XYWebNewAuth(const char *realm,const char *authstr) 
 {
 	int len;
-	XYWebAuthInfo * auth = sr_calloc(sizeof(XYWebAuthInfo));	
+	XYWebAuthInfo * auth = IRam_Calloc(sizeof(XYWebAuthInfo));	
 	auth->realm = sr_strdup(realm);
 	len = Base64_Len(xy_strlen(authstr));
-	auth->auth_b64 = sr_calloc(len+1);
+	auth->auth_b64 = IRam_Calloc(len+1);
 	Base64_Encode(auth->auth_b64,authstr,xy_strlen(authstr));
 	auth->auth_b64[len]=0;
 	auth->next=NULL;
