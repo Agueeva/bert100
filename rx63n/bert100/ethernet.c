@@ -157,7 +157,7 @@ ArpCE_Enter(EthIf *eth,uint8_t *ip,uint8_t *mac)
 	TimeMs_t age = 0;
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
-		if(memcmp(ip,ace->arp_ip,4)) {
+		if(*(uint32_t *)ip == ace->arp_ip32) {
 			entry_nr = i;
 			break;
 		}
