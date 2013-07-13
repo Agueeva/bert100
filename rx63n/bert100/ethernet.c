@@ -15,6 +15,7 @@
 #include "interpreter.h"
 #include "hex.h"
 #include "tcp.h"
+#include "iram.h"
 
 typedef struct ArpCE {
 	uint8_t arp_mac[6];
@@ -105,7 +106,7 @@ Skb *
 skb_alloc(uint16_t hdrlen,uint16_t datalen) 
 {
 #warning alloc missing
-	Skb *skb; // = sr_calloc(sizeof(Skb));
+	Skb *skb = IRam_Calloc(sizeof(Skb));
 	if(hdrlen) {
 		skb->hdrBuf = skb->hdrStart = skb->hdrEnd;// = sr_calloc(hdrlen);
 		skb->hdrAvailLen = hdrlen;		

@@ -14,10 +14,17 @@ typedef struct IRamManager {
 	uint32_t firstFreeIdx;
 } IRamMan;
 
-static IRamMan gIramMan; 
+static IRamMan gIramMan; /* Must be static or memsetted to zero */
 
+/**
+ ******************************************************************************************
+ * \fn void * IRam_Calloc(uint32_t size)
+ * Allocate zeroed memory. As long there is no "free" I need no memset 0, because
+ * this is already done by the static declaration.
+ ******************************************************************************************
+ */
 void *
-IRam_Alloc(uint32_t size)
+IRam_Calloc(uint32_t size)
 {
 	IRamMan *irm = &gIramMan;
 	void *dataP;

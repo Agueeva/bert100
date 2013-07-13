@@ -1,2 +1,2 @@
 #include "types.h"
-void * IRam_Alloc(uint32_t size);
+void * IRam_Calloc(uint32_t size);
