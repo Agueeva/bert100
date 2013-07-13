@@ -130,7 +130,7 @@ Timer_Cancel(Timer * timer)
  */
 uint64_t
 TimeNs_Get(void)
-{;
+{
 	TimeMs_t now;
 	uint64_t ns;
 	do {
@@ -138,6 +138,18 @@ TimeNs_Get(void)
 		ns = CMT0.CMCNT * 160;
 	} while (now != TimeMs_Get());
 	return now * (uint64_t) 1000000 + ns;
+}
+
+uint64_t
+TimeUs_Get(void)
+{
+	TimeMs_t now;
+	uint64_t us;
+	do {
+		now = TimeMs_Get();
+		us = CMT0.CMCNT * 160 / 1000;
+	} while (now != TimeMs_Get());
+	return (uint64_t)now * 1000 + us;
 }
 
 static uint32_t cnt_per_ms = 0;

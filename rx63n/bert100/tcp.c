@@ -75,8 +75,14 @@ typedef struct TcpServerSocket {
  ***************************************************************************
  */
 typedef struct TcpPseudoHdr {
-	uint8_t my_ip[4];
-	uint8_t dst_ip[4];
+	union {
+		uint8_t my_ip[4];
+		uint32_t my_ip32;
+	};
+	union {
+		uint8_t dst_ip[4];
+		uint32_t dst_ip32;
+	};
 	uint16_be proto; 
 	uint16_be payloadlen;
 } TcpPseudoHdr;
@@ -106,8 +112,14 @@ struct Tcb {
 	Timer watchdogTimer;
 
 	void *eventData;
-	uint8_t ipAddr[4];
-	uint8_t myIp[4];
+	union {
+		uint8_t ipAddr[4];
+		uint32_t ipAddr32;
+	};
+	union {
+		uint8_t myIp[4];
+		uint32_t myIp32;
+	};
 	uint16_t srcPort;
 	uint16_t dstPort;
 
@@ -428,7 +440,6 @@ fetch_next_tx_data(Tcb *tcb,uint8_t **dataPP,uint16_t *dataLenP)
 static void
 Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen) 
 {
-	int i;
 	TcpHdr *tcpHdr;
 	TcpPseudoHdr psHdr;
 	bool expectingAck = false;
@@ -504,8 +515,8 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 		tc->myIp[0],tc->myIp[1],tc->myIp[2],tc->myIp[3],
 		tc->ipAddr[0],tc->ipAddr[1],tc->ipAddr[2],tc->ipAddr[3]);
 #endif
-	*(uint32_t*)psHdr.my_ip		= *(uint32_t*)tcb->myIp;
-	*(uint32_t*)psHdr.dst_ip	= *(uint32_t*)tcb->ipAddr;
+	psHdr.my_ip32	= tcb->myIp32;
+	psHdr.dst_ip32	= tcb->ipAddr32;
 	psHdr.proto = htons(IPPROT_TCP);
 	psHdr.payloadlen = htons(dataLen + tcphdrlen);
 
@@ -608,7 +619,7 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 		tcb->state = TCPS_FIN_WAIT_1;
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
-		Enqueue_Retransmit(tcb,flags,NULL,NULL,tcb->SND_NXT);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT);
 		Tcp_Send(tcb,flags,NULL,0);
 		Mutex_Unlock(&tcpSema);
 	}
@@ -672,14 +683,14 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skb) {
 	TcpPseudoHdr psHdr;
 	uint8_t dstaddr[4];
 	uint8_t srcaddr[4];
-	bool requiresAck = false;
+	//bool requiresAck = false;
 	uint16_t tcphdrlen = sizeof(TcpHdr);
 	uint16_t payloadlen = 0;
 	uint16_be csum; 
 	uint16_t tmpPort;
 	uint32_t tmpNr;
 	TcpHdr *tcpHdr = (TcpHdr *)skb_reserve_header(skb,sizeof(TcpHdr));
-	uint8_t *hdrend = ((uint8_t *)tcpHdr)  + tcphdrlen;
+	//uint8_t *hdrend = ((uint8_t *)tcpHdr)  + tcphdrlen;
 	skb->dataLen = 0;
 
 	tmpNr = tcpHdr->ackNr;
@@ -697,16 +708,16 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skb) {
 
 	tcpHdr->hdrLen = (tcphdrlen >> 2) << 4;
 
-	*(uint32_t*)psHdr.my_ip		= *(uint32_t*)ipHdr->dstaddr;
-	*(uint32_t*)psHdr.dst_ip	= *(uint32_t*)ipHdr->srcaddr;
+	psHdr.my_ip32	= ipHdr->dstaddr32;
+	psHdr.dst_ip32	= ipHdr->srcaddr32;
 	psHdr.proto = htons(IPPROT_TCP);
 	psHdr.payloadlen = htons(payloadlen + tcphdrlen);
 
 	csum = chksum_be((uint8_t *)&psHdr,12,0);	
 	csum = chksum_be((uint8_t *)tcpHdr,tcphdrlen + payloadlen,~csum);
 	tcpHdr->chksum = csum; 
-	*(uint32_t *)dstaddr = *(uint32_t *)ipHdr->srcaddr;
-	*(uint32_t *)srcaddr = *(uint32_t *)ipHdr->dstaddr;
+	*(uint32_t *)dstaddr = ipHdr->srcaddr32;
+	*(uint32_t *)srcaddr = ipHdr->dstaddr32;
 
 	IP_MakePacket(skb,dstaddr,srcaddr,IPPROT_TCP,tcphdrlen + payloadlen);
 	IP_SendPacket(skb);
@@ -725,8 +736,6 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	Tcb *tcb;
 	TcpHdr *tcpHdr;
 	TimeMs_t now;
-	uint8_t hdrlen;
-	uint8_t i;
 	uint32_t seqNr,ackNr;
 	bool needToSendAck = false;
 	bool needToSendFin = false;
@@ -773,8 +782,8 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		tc->IRS = seqNr;
 	 	tc->RCV_NXT = seqNr + 1; 
 		tc->SND_WND = tc->SND_UNA + ntohs(tcpHdr->window);
-		*(uint32_t *)tc->ipAddr = *(uint32_t *)ipHdr->srcaddr;
-		*(uint32_t *)tc->myIp = *(uint32_t *)ipHdr->dstaddr;
+		tc->ipAddr32 = ipHdr->srcaddr32;
+		tc->myIp32 = ipHdr->dstaddr32;
 		/* 
  		 *********************************************************************************
 		 * Steps 2 and 3 according to section 3.3 of RFC793 , Ack the received seq. Nr
