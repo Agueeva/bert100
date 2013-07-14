@@ -18,13 +18,13 @@
 #include "timer.h"
 #include "byteorder.h"
 
-#define SPI_MISO	PORTA.PORT.BIT.B7
-#define SPI_MOSI(val)	BMOD(6,PORTA.DR.BYTE,(val))
+#define SPI_MISO	PORT2.PIDR.BIT.B5
+#define SPI_MOSI(val)	BMOD(3,PORT2.PODR.BYTE,(val))
 
-#define SPI_CLK_LOW  BCLR(5,PORTA.DR.BYTE)
-#define SPI_CLK_HIGH BSET(5,PORTA.DR.BYTE)
-#define SPI_MOSI_LOW BCLR(6,PORTA.DR.BYTE)
-#define SPI_MOSI_HIGH BSET(6,PORTA.DR.BYTE)
+#define SPI_CLK_LOW  BCLR(4,PORT2.PODR.BYTE)
+#define SPI_CLK_HIGH BSET(4,PORT2.PODR.BYTE)
+#define SPI_MOSI_LOW BCLR(3,PORT2.PODR.BYTE)
+#define SPI_MOSI_HIGH BSET(3,PORT2.PODR.BYTE)
 
 typedef struct Spi {
 	Mutex rSema;
@@ -103,8 +103,8 @@ _Spir(uint8_t bus)
 		      "BSET %[bit_spiclk], [%[addr_spiclk]].B\n"
 		      "BTST %[bit_miso], [%[addr_miso]].B\n" "BMC #0,%[data]\n":[data] "+r"(data)
 		      :		/*"0" (data), */
-		      [bit_spiclk] "i"(5),[addr_spiclk] "r"(&(PORTA.DR.BYTE)),
-		      [bit_miso] "i"(7),[addr_miso] "r"(&(PORTA.PORT.BYTE))
+		      [bit_spiclk] "i"(4),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
+		      [bit_miso] "i"(5),[addr_miso] "r"(&(PORT2.PIDR.BYTE))
 		      :"memory", "cc");
 
 #else
@@ -178,8 +178,8 @@ _Spiw(uint8_t bus, uint8_t data)
 				  "BMC %[bit_mosi],[%[addr_mosi]].B\n"
 				  "BSET %[bit_spiclk], [%[addr_spiclk]].B\n":	/* No output operands */
 		      :[data] "r"(data),
-		      [bit_spiclk] "i"(5),[addr_spiclk] "r"(&(PORTA.DR.BYTE)),
-		      [bit_mosi] "i"(6),[addr_mosi] "r"(&(PORTA.DR.BYTE))
+		      [bit_spiclk] "i"(4),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
+		      [bit_mosi] "i"(3),[addr_mosi] "r"(&(PORT2.PODR.BYTE))
 		      :"memory", "cc");
 #endif
 	return;
@@ -392,13 +392,13 @@ Spi_Enable(uint8_t bus)
 	spi->spi_mode = 3;
 	/* SPI_MOSI */
 	SPI_MOSI_HIGH;
-	BSET(6, PORTA.DDR.BYTE);
+	BSET(3, PORT2.PDR.BYTE);
 	/* SPI_MISO */
-	BCLR(7, PORTA.DDR.BYTE);
-	BSET(7, PORTA.ICR.BYTE);
+	BCLR(5, PORT2.PDR.BYTE);
+	//BSET(7, PORTA.ICR.BYTE);
 	/* SPI_CLK */
 	SPI_CLK_HIGH;
-	BSET(5, PORTA.DDR.BYTE);
+	BSET(4, PORT2.PDR.BYTE);
 }
 
 /**
