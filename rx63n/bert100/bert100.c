@@ -27,6 +27,7 @@
 #include "sha1.h"
 #include "wdta.h"
 #include "rx_crc.h"
+#include "spi.h"
 #include "sdcard.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
@@ -103,6 +104,7 @@ int main(void)
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
+	Spi_Init();
 	SDCard_ModuleInit();
 	EV_Loop();
 }
