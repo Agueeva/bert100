@@ -4,5 +4,7 @@
 *.lss
 *.elf
 *.map
+*.mot
+.depend
 mach_zehnder/default/
 doku/iPHY_IN012525_DS_Revision_B0.pdf
