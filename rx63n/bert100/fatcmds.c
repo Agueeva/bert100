@@ -3,6 +3,7 @@
  * Command shell interface to the FAT.
  *****************************************************************************************
  */
+#include "fat.h"
 #include "fatcmds.h"
 #include "interpreter.h"
 #include "hex.h"
