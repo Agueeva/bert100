@@ -8,7 +8,7 @@
 #include "diskio.h"
 #include "sdcard.h"
 #include "spiblockdev.h"
-#include "rtc.h"
+//include "rtc.h"
 #include "console.h"
 
 /*-----------------------------------------------------------------------*/
@@ -236,10 +236,10 @@ get_fattime(void)
 {
 	RTime rtc;
 	DWORD fattime;
-	if (RTime_Get(&rtc) != RTIME_OK) {
+//	if (RTime_Get(&rtc) != RTIME_OK) {
 		/* Some day in the year 2012 */
 		return 0x40e35564;
-	}
+//	}
 	/* Pack date and time into a DWORD variable */
 	fattime = ((DWORD) (rtc.year - 1980) << 25)
 	    | ((DWORD) rtc.month << 21)
