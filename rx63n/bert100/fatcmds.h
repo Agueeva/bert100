@@ -1,1 +1,1 @@
-void Fat_Init(void);
+void FatCmds_Init(void);

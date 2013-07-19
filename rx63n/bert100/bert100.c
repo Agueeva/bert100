@@ -29,6 +29,7 @@
 #include "rx_crc.h"
 #include "spi.h"
 #include "sdcard.h"
+#include "fatcmds.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -106,6 +107,7 @@ int main(void)
 	RX_EtherInit();
 	Spi_Init();
 	SDCard_ModuleInit();
+	FatCmds_Init();
 	EV_Loop();
 }
 	

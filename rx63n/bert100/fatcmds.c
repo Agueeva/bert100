@@ -442,19 +442,14 @@ cmd_fatmkfs(Interp * interp, uint8_t argc, char *argv[])
 	} else {
 		return -EC_BADARG;
 	}
-	if (drv == 0) {
-		sfd = 0;
-		au = 4096;
-	} else {
-		au = 0;		/* automatically selected cluster size */
-		sfd = 0;
-	}
+	au = 0;		/* automatically selected cluster size */
+	sfd = 0;
 	res = f_mkfs(drv, sfd, au);
 	if (res != FR_OK) {
 		Interp_Printf_P(interp, "Failed with EC %d\n", res);
 	}
 	if (drv == 0) {
-		f_setlabel("0:RedBox");
+		f_setlabel("0:Ernie");
 	} else {
 		f_setlabel("1:RedBox");
 	}
@@ -483,10 +478,8 @@ Fat_Remount()
  *****************************************************************************
  */
 void
-Fat_Init(void)
+FatCmds_Init(void)
 {
-	FRESULT res;
-	DIR dir;
 	Fat_Remount();
 	Interp_RegisterCmd(&fatlsCmd);
 	Interp_RegisterCmd(&fatcatCmd);

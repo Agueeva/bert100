@@ -7,7 +7,6 @@
 
 #include "diskio.h"
 #include "sdcard.h"
-#include "spiblockdev.h"
 //include "rtc.h"
 #include "console.h"
 
@@ -158,8 +157,7 @@ disk_read(BYTE drv,		/* Physical drive nmuber (0..) */
 		    result = translate_result(res);
 		    return res;
 	    case SPIDRV:
-		    res = SBD_Read(buff, sector, count);
-		    return res;
+		    break;
 	}
 	return RES_PARERR;
 }
@@ -190,8 +188,7 @@ disk_write(BYTE drv,		/* Physical drive nmuber (0..) */
 		    return res;
 
 	    case SPIDRV:
-		    res = SBD_Write(buff, sector, count);
-		    return res;
+		    break;
 
 	}
 	return RES_PARERR;
@@ -219,8 +216,7 @@ disk_ioctl(BYTE drv,		/* Physical drive nmuber (0..) */
 		    return res;
 
 	    case SPIDRV:
-		    res = SBD_Ioctl(ctrl, buff);
-		    return res;
+		break;
 	}
 	return RES_PARERR;
 }
@@ -234,13 +230,14 @@ disk_ioctl(BYTE drv,		/* Physical drive nmuber (0..) */
 DWORD
 get_fattime(void)
 {
-	RTime rtc;
+	//RTime rtc;
 	DWORD fattime;
 //	if (RTime_Get(&rtc) != RTIME_OK) {
 		/* Some day in the year 2012 */
 		return 0x40e35564;
 //	}
 	/* Pack date and time into a DWORD variable */
+#if 0
 	fattime = ((DWORD) (rtc.year - 1980) << 25)
 	    | ((DWORD) rtc.month << 21)
 	    | ((DWORD) rtc.mday << 16)
@@ -248,4 +245,5 @@ get_fattime(void)
 	    | ((DWORD) rtc.min << 5)
 	    | ((DWORD) rtc.sec >> 1);
 	return fattime;
+#endif
 }
