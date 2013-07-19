@@ -1,28 +1,43 @@
+#include <string.h>
 #include "types.h"
 #include "console.h"
 #include "events.h"
 #include "interpreter.h"
 #include "hex.h"
 #include "ad537x.h"
+#include "atomic.h"
+#include "iodefine.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
 
-#define PORT_SYNC	PORTD
-#define	PIN_SYNC	7
-#define PINCTRL_SYNC    PORTD.PIN7CTRL
+#define SYNC_HIGH	BSET(5,PORTC.PODR.BYTE)
+#define SYNC_LOW	BCLR(5,PORTC.PODR.BYTE)	
+#define SYNC_DIROUT	BSET(5,PORTC.PDR.BYTE)
 
-#define PORT_SDI	PORTE
-#define	PIN_SDI		0
-#define PINCTRL_SDI	PORTE.PIN0CTRL
+#define SDI_DIROUT	BSET(3,PORTC.PDR.BYTE)
+#define SDI_HIGH	BSET(3,PORTC.PODR.BYTE)	
+#define SDI_LOW		BCLR(3,PORTC.PODR.BYTE)
 
-#define PORT_SCLK	PORTE
-#define	PIN_SCLK	1
-#define PINCTRL_SCLK	PORTE.PIN1CTRL
+#define SCLK_DIROUT	BSET(2,PORTC.PDR.BYTE)
+#define SCLK_HIGH	BSET(2,PORTC.PODR.BYTE)
+#define SCLK_LOW	BCLR(2,PORTC.PODR.BYTE)
 
-#define PORT_SDO	PORTC
-#define	PIN_SDO		5
-#define PINCTRL_SDO	PORTC.PIN5CTRL
+#define SDO_DIRIN	BCLR(4,PORTC.PDR.BYTE)
+#define SDO_READ	PORTC.PIDR.BIT.B4	
+
+#define RESET_DIROUT	BSET(6,PORTC.PDR.BYTE)
+#define RESET_HIGH	BSET(6,PORTC.PODR.BYTE)
+#define RESET_LOW	BCLR(6,PORTC.PODR.BYTE)
+
+#define CLR_DIROOUT	BSET(1,PORT5.PDR.BYTE)
+#define CLR_HIGH	BSET(1,PORT5.PODR.BYTE)
+#define CLR_LOW		BCLR(1,PORT5.PODR.BYTE)
+
+#define LDAC_DIROUT	BSET(0,PORT5.PDR.BYTE)
+#define LDAC_HIGH	BSET(0,PORT5.PODR.BYTE)
+#define LDAC_LOW	BCLR(0,PORT5.PODR.BYTE)
+
 
 #if 0
 #define PORT_BUSY	PORTE
@@ -30,15 +45,6 @@
 #define PINCTRL_BUSY	PORTE.PIN4CTRL
 #endif
 
-#define PORT_RESET	PORTD
-#define	PIN_RESET	6	
-#define PINCTRL_RESET	PORTD.PIN6CTRL
-
-#if 0
-#define PORT_CLR	PORTE
-#define	PIN_CLR		6
-#define PINCTRL_CLR	PORTE.PIN6CTRL
-#endif
 
 #define PROGMEM 
 static const char str_X1A[] PROGMEM = "x1a";
@@ -161,16 +167,16 @@ AD537x_Write(uint32_t value)
 	uint32_t i;
 	uint32_t inval;
 	inval = 0;
-	PORT_SYNC.OUTCLR = (1 << PIN_SYNC);
+	SYNC_LOW;
 	for(i = UINT32_C(0x00800000); i > 0;i >>= 1) {
 		if(value & i) {
-			//Con_Printf_P("1");
-			PORT_SDI.OUTSET = (1 << PIN_SDI);
+			//Con_Printf("1");
+			SDI_HIGH;
 		} else {
-			//Con_Printf_P("0");
-			PORT_SDI.OUTCLR = (1 << PIN_SDI);
+			//Con_Printf("0");
+			SDI_LOW;
 		}
-		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
+		if(SDO_READ) { 
 			inval = (inval << 1) | 1;
 		} else {
 			inval = (inval << 1);
@@ -178,14 +184,14 @@ AD537x_Write(uint32_t value)
 		//asm("nop");
 		//asm("nop");
 		//asm("nop");
-		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
+		SCLK_LOW;
 		asm("nop");
 		asm("nop");
 		asm("nop");
-		PORT_SCLK.OUTSET = (1 << PIN_SCLK);
+		SCLK_HIGH;
 	}		
-	PORT_SYNC.OUTSET = (1 << PIN_SYNC);
-	//Con_Printf_P("\n");
+	SYNC_HIGH;
+	//Con_Printf("\n");
 	return inval;
 }
 
@@ -200,7 +206,7 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
 {
 	uint32_t wrval;
 	wrval = value | ((uint32_t)sfc << 16); 
-	Con_Printf_P("Write %06lx\n",wrval);
+	Con_Printf("Write %06lx\n",wrval);
 	AD537x_Write(wrval);
 }
 
@@ -222,10 +228,10 @@ AD537x_Readback(uint16_t addrCode,uint8_t channelAddr)
 static int8_t
 cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
 {
-	PORT_RESET.OUTCLR = (1 << PIN_RESET);
-	_delay_us(1);
-	PORT_RESET.OUTSET = (1 << PIN_RESET);
-	_delay_us(300);
+	RESET_LOW;
+	//_delay_us(1);
+	RESET_HIGH;
+	//_delay_us(300);
 	return 0;
 }
 
@@ -239,20 +245,20 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 	uint16_t value;
 	if(argc < 2) {
 		for(i = 0; i < array_size(rbvars); i++) {
-			memcpy_P(&rbvar,rbvars + i,sizeof(rbvar));
+			memcpy(&rbvar,rbvars + i,sizeof(rbvar));
 			if(rbvar.nrArgs) {
 			//	value = AD537x_Readback(rbvar.addrCode,0);
-			//	Con_Printf_P("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
+			//	Con_Printf("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
 			} else {
 				value = AD537x_Readback(rbvar.addrCode,0);
-				Con_Printf_P("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
+				Con_Printf("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
 			}		
 		}
 		return 0;
 	}
 	for(i = 0; i < array_size(rbvars); i++) {
-		memcpy_P(&rbvar,rbvars + i,sizeof(rbvar));
-		if((strcmp_P(argv[1],rbvar.name) == 0) 
+		memcpy(&rbvar,rbvars + i,sizeof(rbvar));
+		if((strcmp(argv[1],rbvar.name) == 0) 
 			&& (rbvar.nrArgs + 2) == argc) 
 		{
 			if(rbvar.nrArgs) {
@@ -261,14 +267,14 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 				channel = 0;
 			}		
 			value = AD537x_Readback(rbvar.addrCode,channel);
-			Con_Printf_P("0x%04x\n",value);
+			Con_Printf("0x%04x\n",value);
 			return 0;
 		}
 	}
 	/* Now try to write the register */
 	for(i = 0; i < array_size(wrvars); i++) {
-		memcpy_P(&wrvar,wrvars + i,sizeof(wrvar));
-		if((argc > 2) && (strcmp_P(argv[1],wrvar.name) == 0)) {
+		memcpy(&wrvar,wrvars + i,sizeof(wrvar));
+		if((argc > 2) && (strcmp(argv[1],wrvar.name) == 0)) {
 			value = astrtoi16(argv[2]);	
 			AD537x_SFWrite(wrvar.sfCode,value);
 			return 0;
@@ -288,26 +294,26 @@ cmd_dacx(Interp *interp,uint8_t argc,char *argv[])
 		uint16_t value;
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(0,i + 8);
-			Con_Printf_P("%04x ",value);
+			Con_Printf("%04x ",value);
 			if((i % 16) == 15) {
-				Con_Printf_P("\n");
+				Con_Printf("\n");
 			}
 		}
-		Con_Printf_P("\n");
+		Con_Printf("\n");
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(1 << 13,i + 8);
-			Con_Printf_P("%04x ",value);
+			Con_Printf("%04x ",value);
 			if((i % 16) == 15) {
-				Con_Printf_P("\n");
+				Con_Printf("\n");
 			}
 		}
 		return 0;
 	} else if(argc == 2) {
 		channel = astrtoi16(argv[1]);
 		value = AD537x_Readback(0,channel + 8);
-		Con_Printf_P("0x%04x,",value);
+		Con_Printf("0x%04x,",value);
 		value = AD537x_Readback(1 << 13,channel + 8);
-		Con_Printf_P("0x%04x\n",value);
+		Con_Printf("0x%04x\n",value);
 		return 0;
 	} else if(argc == 3) {
 		channel = astrtoi16(argv[1]);
@@ -327,16 +333,16 @@ cmd_dacc(Interp *interp,uint8_t argc,char *argv[])
 		uint8_t i;
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(2 << 13,i + 8);
-			Con_Printf_P("%04x ",value);
+			Con_Printf("%04x ",value);
 			if((i % 16) == 15) {
-				Con_Printf_P("\n");
+				Con_Printf("\n");
 			}
 		}
 		return 0;
 	} else if(argc == 2) {
 		channel = astrtoi16(argv[1]);
 		value = AD537x_Readback(2 << 13,channel + 8);
-		Con_Printf_P("0x%04x\n",value);
+		Con_Printf("0x%04x\n",value);
 		return 0;
 	} else if(argc == 3) {
 		channel = astrtoi16(argv[1]);
@@ -356,16 +362,16 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 		uint8_t i;
 		for(i = 0; i < 32; i++) {
 			value = AD537x_Readback(3 << 13,i + 8);
-			Con_Printf_P("%04x ",value);
+			Con_Printf("%04x ",value);
 			if((i % 16) == 15) {
-				Con_Printf_P("\n");
+				Con_Printf("\n");
 			}
 		}
 		return 0;
 	} else if(argc == 2) {
 		channel = astrtoi16(argv[1]);
 		value = AD537x_Readback(3 << 13,channel + 8);
-		Con_Printf_P("0x%04x\n",value);
+		Con_Printf("0x%04x\n",value);
 		return 0;
 	} else if(argc == 3) {
 		channel = astrtoi16(argv[1]);
@@ -393,37 +399,25 @@ INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
 void
 AD537x_Init(void)
 {
-#if 0
-	PINCTRL_RESET = PORT_OPC_TOTEM_gc;
-	PORT_RESET.OUTSET = (1 << PIN_RESET);
-	PORT_RESET.DIRSET = (1 << PIN_RESET);
-	
-	PINCTRL_SYNC = PORT_OPC_TOTEM_gc;
-	PORT_SYNC.DIRSET = (1 << PIN_SYNC);
-	PORT_SYNC.OUTSET = (1 << PIN_SYNC);
+	RESET_HIGH;
+	RESET_DIROUT;
 
-	PINCTRL_SDI = PORT_OPC_TOTEM_gc;
-	PORT_SDI.DIRSET = (1 << PIN_SDI);
+	SYNC_DIROUT;
+	SYNC_HIGH;
 
-	PINCTRL_SCLK = PORT_OPC_TOTEM_gc;
-	PORT_SCLK.DIRSET = (1 << PIN_SCLK);
-	PORT_SCLK.OUTSET = (1 << PIN_SYNC);
+	SDI_DIROUT;
 
-	PINCTRL_SDO = PORT_OPC_PULLUP_gc; 
-	PORT_SDO.DIRCLR = (1 << PIN_SDO);
-#endif
-	
-#if 0
-	PINCTRL_BUSY = PORT_OPC_PULLUP_gc;
-	PORT_BUSY.DIRCLR = (1 << PIN_BUSY);
-#endif
+	SCLK_DIROUT;
+	SCLK_HIGH;
 
+	SDO_DIRIN;
 
-#if 0
-	PINCTRL_CLR = PORT_OPC_TOTEM_gc;
-	PORT_CLR.DIRSET = (1 << PIN_CLR);
-	_delay_ms(1000);
-#endif
+	CLR_HIGH;
+	CLR_DIROOUT;
+
+	LDAC_HIGH;
+	LDAC_DIROUT;
+
 	Interp_RegisterCmd(&dacCmd);
 	Interp_RegisterCmd(&dacxCmd);
 	Interp_RegisterCmd(&daccCmd);

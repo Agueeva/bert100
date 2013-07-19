@@ -30,6 +30,7 @@
 #include "spi.h"
 #include "sdcard.h"
 #include "fatcmds.h"
+#include "ad537x.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -102,6 +103,7 @@ int main(void)
 	MD5Lib_Init();
 	Sha1Lib_Init();
 	WDTA_Init();
+	AD537x_Init();
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
