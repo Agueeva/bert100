@@ -5,7 +5,7 @@
  */
 
 #include <string.h>
-#include <stdint.h> 
+#include "types.h"
 #include "mdio.h"
 #include "cdr.h"
 #include "interpreter.h"
@@ -506,4 +506,9 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
         return 0;
 }
 
-INTERP_CMD(cdr, cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
+INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
+
+void CDR_Init(void)
+{
+	Interp_RegisterCmd(&cdrCmd);
+}
