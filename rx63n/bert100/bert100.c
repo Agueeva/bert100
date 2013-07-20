@@ -32,6 +32,7 @@
 #include "fatcmds.h"
 #include "ad537x.h"
 #include "mdio.h"
+#include "cdr.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -106,6 +107,7 @@ int main(void)
 	WDTA_Init();
 	AD537x_Init();
 	MDIO_Init();
+	CDR_Init();
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
