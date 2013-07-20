@@ -34,6 +34,7 @@
 #include "mdio.h"
 #include "cdr.h"
 #include "shiftreg.h"
+#include "i2cmaster.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -104,6 +105,7 @@ int main(void)
 	Con_RegisterSink(Editor_Feed, editor);
 	ShiftReg_Init(0xffff);
 	RxCRC_Init();
+	I2CM_Init();
 	MD5Lib_Init();
 	Sha1Lib_Init();
 	WDTA_Init();

@@ -1021,13 +1021,13 @@ INTERP_CMD(i2cdelayCmd, "i2cdelay", cmd_i2cdelay,
 static void
 SetSDA_Bus0(uint8_t value)
 {
-	BMOD(1,PORTA.PODR.BYTE,value); /* SDA Direction register */
+	BMOD(1,PORTA.PDR.BYTE,!value); /* SDA Direction register */
 }
 
 static void
 SetSCL_Bus0(uint8_t value)
 {
-	BMOD(2,PORTA.PODR.BYTE,value); /* SCL Direction register */
+	BMOD(2,PORTA.PDR.BYTE,!value); /* SCL Direction register */
 }
 
 static uint8_t 
@@ -1049,6 +1049,9 @@ Init_Bus0(void)
 	SetSDA_Bus0(1);
 	BCLR(1,PORTA.PODR.BYTE); /* SDA Output Register to Low */
 	BCLR(2,PORTA.PODR.BYTE); /* SCL Output Register to Low */
+	if(GetSCL_Bus0() == 0) {
+		Con_Printf("Big Shit ***********************************************************\n");
+	}
 }
 
 
