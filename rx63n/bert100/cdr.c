@@ -481,19 +481,19 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
         uint16_t regAddr;
 	if((argc == 3) && (strcmp(argv[1],"startup")  == 0)) {
 		uint8_t cdr = astrtoi16(argv[2]);
-		Con_Printf_P("Calling Olgas CDR_Startup for CDR %u\n",cdr);
+		Con_Printf("Calling Olgas CDR_Startup for CDR %u\n",cdr);
 		Cdr_startup(cdr);
 		return 0;
 	} if((argc == 3) && (strcmp(argv[1],"init")  == 0)) {
 		uint8_t cdr = astrtoi16(argv[2]);
-		Con_Printf_P("Calling Olgas CDR_Init_cdr for CDR %u\n",cdr);
+		Con_Printf("Calling Olgas CDR_Init_cdr for CDR %u\n",cdr);
 		Cdr_Init_cdr(cdr);
 		return 0;
 	} else if(argc == 3) {
                 phyAddr = astrtoi16(argv[1]);
                 regAddr = astrtoi16(argv[2]);
                 val = Cdr_Read(phyAddr,regAddr);
-                Con_Printf_P("%u.%u: 0x%x\n",phyAddr,regAddr,val);
+                Con_Printf("%u.%u: 0x%x\n",phyAddr,regAddr,val);
                 return 0;
         } else if(argc == 4) {
                 phyAddr = astrtoi16(argv[1]);

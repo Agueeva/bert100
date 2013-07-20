@@ -1,4 +1,4 @@
-void Cdr_Init(void);
+void CDR_Init(void);
 
 uint16_t Cdr_Read(uint8_t phyAddr,uint16_t regAddr);
 void Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value);
