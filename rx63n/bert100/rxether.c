@@ -170,10 +170,6 @@ Excep_ETHER_EINT(void)
 	status = EDMAC.EESR.LONG;
 	if(status & EMAC_FR_INT) {
 		EDMAC.EESR.BIT.FR = 1; /* Clear reception interrupt */
-		/* Restart receiver if necessary */
-		if(EDMAC.EDRRR.LONG == 0) {
-			EDMAC.EDRRR.LONG = 1;
-		}
 		re->statRxInts++;
 		EV_Trigger(&re->evRxEvent);
 	} 
@@ -200,22 +196,26 @@ RXEth_RxEventProc(void *eventData)
 		}
 		/* Check for errors */
 		if(status & RXDS_FE) {
-			/* Broadcast is not an error */ 
-			if(status & RFS_RMAF) {
-				frame_ok = true;
-			} else {
-				frame_ok = false;
-			}
+			frame_ok = false;
 		} else {
 			frame_ok = true;
 		}
 		if(frame_ok) {
-			Con_Printf("Rx Good Frame %u bytes\n",rxDescr->size);
+			//Con_Printf("Rx Good Frame %u bytes status 0x%08lx\n",rxDescr->size,status);
 		} else {
 			Con_Printf("Rx Bad Frame Frame\n");
 		}
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
 		re->rxDescrRp++;
+		/* 
+ 		 ****************************************************
+		 * Restart receiver if necessary 
+		 * Should not be necessary if RNC is set
+ 		 ****************************************************
+		 */ 
+		if(EDMAC.EDRRR.LONG == 0) {
+			EDMAC.EDRRR.LONG = 1;
+		}
 	} while(1);
 
 }
@@ -327,7 +327,7 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	for(i = 1; (i < argc) && (i < 20); i++) {
 		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
-//	RXEth_Transmit(pkt,64);
+	RXEth_Transmit(re,pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	return 0;
@@ -368,6 +368,7 @@ RX_EtherInit()
 	EDMAC.RDLAR = &re->rxDescr[0]; 
 	EDMAC.TDLAR = &re->txDescr[0];
 	EDMAC.TRSCER.LONG = 0;		/* Should not be necessary because cleared by reset */
+	EDMAC.TRSCER.BIT.RMAFCE = 1; /* Multicast is not an error */
 	EDMAC.TFTR.LONG = 0;		/* Store and forward mode */
 	EDMAC.FDR.LONG = 5;		/* Fifo 1536 bytes */
 	EDMAC.RMCR.LONG = 0;		/* Should not be necessary because cleared by reset */

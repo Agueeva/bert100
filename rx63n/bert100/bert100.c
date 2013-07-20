@@ -25,6 +25,13 @@
 #include "rxether.h"
 #include "md5.h"
 #include "sha1.h"
+#include "wdta.h"
+#include "rx_crc.h"
+#include "spi.h"
+#include "sdcard.h"
+#include "fatcmds.h"
+#include "ad537x.h"
+#include "mdio.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -93,12 +100,18 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	RxCRC_Init();
 	MD5Lib_Init();
 	Sha1Lib_Init();
+	WDTA_Init();
+	AD537x_Init();
+	MDIO_Init();
 
 	Timer_Start(&blinkTimer,500);
 	RX_EtherInit();
-
+	Spi_Init();
+	SDCard_ModuleInit();
+	FatCmds_Init();
 	EV_Loop();
 }
 	

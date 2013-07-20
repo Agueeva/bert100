@@ -6,26 +6,41 @@
  *****************************************************
  */
 
-#include "phy.h"
-#include "iodefine.h"
 #include "config.h"
+#include "iodefine.h"
 #include "types.h"
+#include <string.h>
 #include "console.h"
+#include "interpreter.h"
+#include "hex.h"
+#include "mdio.h"
+#include "timer.h"
 
-#define PIR_MDC	(1 << 0)	
-#define PIR_MMD	(1 << 1)	/* 1 == Write, 0 == Read */
-#define PIR_MDO	(1 << 2)
-#define PIR_MDI	(1 << 3)
 #define DIR_OUT		(1)
 #define DIR_IN		(0)
+
+#define DIRCTRL_DIROUT	BSET(0,PORTA.PDR.BYTE)
+#define DIRCTRL_HIGH	BSET(0,PORTA.PODR.BYTE)
+#define DIRCTRL_LOW	BCLR(0,PORTA.PODR.BYTE)
+
+#define MDIO_DIROUT	BSET(6,PORTE.PDR.BYTE)
+#define MDIO_DIRIN	BCLR(6,PORTE.PDR.BYTE)
+#define MDIO_HIGH	BSET(6,PORTE.PODR.BYTE)
+#define MDIO_LOW	BCLR(6,PORTE.PODR.BYTE)
+#define MDIO_READ	PORTE.PIDR.BIT.B6
+
+#define MDC_DIROUT	BSET(7,PORTE.PDR.BYTE)
+#define MDC_HIGH	BSET(7,PORTE.PODR.BYTE)
+#define MDC_LOW		BCLR(7,PORTE.PODR.BYTE)
+
 
 NOINLINE static void
 mdio_delay200ns(void)
 {
-	asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
-	asm("label9279: ":::);
-	asm("sub #1,r1":::"r1");
-	asm("bpz label9279":::);
+        asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
+        asm("label9279: ":::);
+        asm("sub #1,r1":::"r1");
+        asm("bpz label9279":::);
 }
 #define mdio_delay() mdio_delay200ns()
 
@@ -33,7 +48,11 @@ static inline void
 SetDirection(uint8_t dir) 
 {
 	if(dir == DIR_IN) {
+		MDIO_DIRIN;
+		DIRCTRL_LOW;
 	} else {
+		DIRCTRL_HIGH;
+		MDIO_DIROUT;
 	}
 }
 
@@ -41,7 +60,9 @@ static inline void
 SetMDC(uint8_t value) 
 {
 	if(value == 0) {
+		MDC_LOW;
 	} else {
+		MDC_HIGH;
 	}
 }
 
@@ -49,21 +70,31 @@ static inline void
 SetMDO(uint8_t value) 
 {
 	if(value == 0) {
+		MDIO_LOW;
 	} else {
+		MDIO_HIGH;
 	}
 }
 
-static uint8_t
-GetMDI(uint8_t value) 
+static inline uint8_t
+GetMDI() 
 {
-
+	return MDIO_READ;
 }
 
-
-static uint16_t 
-MDIO_Read(uint16_t phy_addr,uint16_t regAddr)
+/**
+ ****************************************************************************
+ * \fn static uint16_t MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
+ * Read 16 Bit from MDIO
+ * This is not the standard Read command as used for PHY Registers.
+ * Use this command after setting the Address with a separate address 
+ * command with no other commands between.
+ ****************************************************************************
+ */
+uint16_t 
+MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 {
-	unsigned int i;
+	uint8_t i;
 	uint16_t outval,inval;
 	SetMDO(1);
 	SetDirection(DIR_OUT);
@@ -75,7 +106,8 @@ MDIO_Read(uint16_t phy_addr,uint16_t regAddr)
 		SetMDC(0);
 		mdio_delay();
 	}
-	outval = 0x1800;
+	//outval = 0x1800;
+	outval = 0x0c00;
 	outval |= (phy_addr << 5);
 	outval |= (regAddr & 0x1f);
 	for(i = 0; i < 14; i++,  outval <<= 1) {
@@ -87,13 +119,12 @@ MDIO_Read(uint16_t phy_addr,uint16_t regAddr)
 		mdio_delay();
 	}
 	/* Bus release with one clock cycle */
-	for(i = 0; i < 1; i++) {
-		SetDirection(DIR_IN);
-		SetMDC(1);
-		mdio_delay();
-		SetMDC(0);
-		mdio_delay();
-	}
+	SetDirection(DIR_IN);
+	SetMDC(1);
+	mdio_delay();
+	SetMDC(0);
+	mdio_delay();
+
 	inval = 0;
 	for(i = 0; i < 16; i++) {
 		SetMDC(1);
@@ -119,10 +150,19 @@ MDIO_Read(uint16_t phy_addr,uint16_t regAddr)
 	return inval;
 }
 
-static void
-MDIO_Write(uint16_t phy_addr,uint16_t regAddr,uint16_t value)
+/**
+ ************************************************************************
+ * \fn void MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
+ * Send the register address to the MDIO device. This command is
+ * required before a read or write command because these include no
+ * address.
+ ************************************************************************
+ */
+
+void
+MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
 {
-	unsigned int i;
+	uint8_t i;
 	uint16_t outval;
 	/* Preamble */
 	SetMDO(1);
@@ -134,9 +174,10 @@ MDIO_Write(uint16_t phy_addr,uint16_t regAddr,uint16_t value)
 		SetMDC(0);
 		mdio_delay();
 	}
-	outval = 0x6002;
-	outval |= (phy_addr << 7);
-	outval |= (regAddr & 0x1f) << 2;	
+	//outval = 0x5002;
+	outval = 0x0002;
+	outval |= ((phy_addr & 0x1f) << 7);
+	outval |= (devType & 0x1f) << 2;	
 	for(i = 0; i < 16; i++,  outval <<= 1) {
 		uint8_t mdo = (outval & 0x8000) ? 1 : 0; 
 		SetMDO(mdo);		
@@ -145,11 +186,11 @@ MDIO_Write(uint16_t phy_addr,uint16_t regAddr,uint16_t value)
 		SetMDC(0);
 		mdio_delay();
 	}
-	outval = value; 
+	outval = addr; 
 	for(i = 0; i < 16; i++,  outval <<= 1) {
-		uint32_t mdo = (outval & 0x8000) ? 1 : 0; 
+		uint8_t mdo = (outval & 0x8000) ? 1 : 0; 
 		SetMDO(mdo);
-		SetMDC(1)
+		SetMDC(1);
 		mdio_delay();
 		SetMDC(0);
 		mdio_delay();
@@ -162,10 +203,100 @@ MDIO_Write(uint16_t phy_addr,uint16_t regAddr,uint16_t value)
 }
 
 void
+MDIO_Write(uint8_t phy_addr,uint8_t devType,uint16_t value)
+{
+	uint8_t i;
+	uint16_t outval;
+	/* Preamble */
+	SetMDO(1);
+	SetDirection(DIR_OUT);
+	mdio_delay();
+	for(i = 0; i < 32; i++) {
+		SetMDC(1);
+		mdio_delay();
+		SetMDC(0);
+		mdio_delay();
+	}
+	outval = 0x1002;
+	outval |= (phy_addr << 7);
+	outval |= (devType & 0x1f) << 2;	
+	for(i = 0; i < 16; i++,  outval <<= 1) {
+		uint8_t mdo = (outval & 0x8000) ? 1 : 0; 
+		SetMDO(mdo);		
+		SetMDC(1);
+		mdio_delay();
+		SetMDC(0);
+		mdio_delay();
+	}
+	outval = value; 
+	for(i = 0; i < 16; i++,  outval <<= 1) {
+		uint8_t mdo = (outval & 0x8000) ? 1 : 0; 
+		SetMDO(mdo);
+		SetMDC(1);
+		mdio_delay();
+		SetMDC(0);
+		mdio_delay();
+	}
+	SetDirection(DIR_IN);
+	SetMDC(1);
+	mdio_delay();
+	SetMDC(0);
+	mdio_delay();
+}
+
+static uint32_t bit_errs = 0;
+
+static int8_t
+cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint8_t phyaddr,devtype;
+	uint16_t val;
+	uint16_t addr;
+	if(argc == 4) {
+		phyaddr = astrtoi16(argv[1]);
+		devtype = astrtoi16(argv[2]);
+		addr = astrtoi16(argv[3]);
+		MDIO_Address(phyaddr,devtype,addr);
+		//MDIO_Write(phyaddr,devtype,val);
+		return 0;
+	} else if(argc == 3) {
+		phyaddr = astrtoi16(argv[1]);
+		devtype = astrtoi16(argv[2]);
+		val = MDIO_Read(phyaddr,devtype);
+		Con_Printf("%u.%u: 0x%x\n",phyaddr,devtype,val);
+		return 0;
+	} else if(argc == 5) {
+		phyaddr = astrtoi16(argv[1]);
+		devtype = astrtoi16(argv[2]);
+		addr = astrtoi16(argv[3]);
+		val = astrtoi16(argv[4]);
+		MDIO_Address(phyaddr,devtype,addr);
+		MDIO_Write(phyaddr,devtype,val);
+	}
+	Con_Printf("%08lu\n",bit_errs);
+	return 0;
+}
+
+INTERP_CMD(mdioCmd, "mdio", cmd_mdio, "mdio <addr> <register> ?<value>?   # read write to/from mdio");
+
+void pollProc(void *eventData);
+TIMER_DECLARE(pollTimer,pollProc,NULL)
+
+void pollProc(void *eventData)
+{
+	uint16_t val;
+	Timer_Start(&pollTimer,1);
+	val = MDIO_Read(1,30);
+	bit_errs += val;
+}
+
+void
 MDIO_Init(void)
 {
-	unsigned int i;
-	for(i = 0; i < 32; i++) {
-		Con_Printf("%u: 0x%04x\n",i,MDC_Read(i));
-	}
+	MDC_DIROUT;
+	MDIO_DIRIN;
+	SetDirection(DIR_IN);
+	DIRCTRL_DIROUT;
+	Interp_RegisterCmd(&mdioCmd);
+//	Timer_Start(&pollTimer,1);
 }

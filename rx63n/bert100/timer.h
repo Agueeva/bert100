@@ -94,8 +94,6 @@ Timer_Remaining(Timer * timer)
 	}
 };
 
-/* Get the time in microseconds. May not be called from interrupt */
-uint32_t TimeUs_Get(void);
 static inline uint8_t
 Timer_Busy(Timer * timer)
 {
@@ -122,6 +120,8 @@ is_later(TimeMs_t time1, TimeMs_t time2)
 }
 
 uint64_t TimeNs_Get(void);
+uint64_t TimeUs_Get(void);
+
 void Timers_Init(void);
 void CalibrateDelayLoop(void);
 #endif

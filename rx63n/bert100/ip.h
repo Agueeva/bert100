@@ -12,8 +12,14 @@ typedef struct IpHdr {
 	uint8_t ttl;		
 	uint8_t proto;
 	uint16_t chksum;
-	uint8_t srcaddr[4];
-	uint8_t dstaddr[4];
+	union {
+		uint8_t srcaddr[4];
+		uint32_t srcaddr32;
+	};
+	union {
+		uint8_t dstaddr[4];
+		uint32_t dstaddr32;
+	};
 	// optspad[4];	
 } IpHdr;
 
@@ -29,6 +35,6 @@ typedef struct IcmpHdr {
 	uint16_be seqNr;
 } IcmpHdr;
 
-void IP_MakePacket(Skb *skb,uint8_t *dstip,uint8_t *srcip,uint8_t ipproto,uint16_t payloadlen);
+void IP_MakePacket(Skb *skb,const uint8_t *dstip,const uint8_t *srcip,uint8_t ipproto,uint16_t payloadlen);
 void IP_SendPacket(Skb *skb);
 #endif
