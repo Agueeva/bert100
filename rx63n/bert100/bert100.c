@@ -33,6 +33,7 @@
 #include "ad537x.h"
 #include "mdio.h"
 #include "cdr.h"
+#include "shiftreg.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -101,6 +102,7 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	ShiftReg_Init(0xffff);
 	RxCRC_Init();
 	MD5Lib_Init();
 	Sha1Lib_Init();
@@ -116,4 +118,4 @@ int main(void)
 	FatCmds_Init();
 	EV_Loop();
 }
-	
+
