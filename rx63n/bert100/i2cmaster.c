@@ -59,8 +59,8 @@ typedef struct I2C_Master {
 
 static I2C_Master gI2cm[2];
 
-static uint8_t i2c_delay = 11;
-static uint8_t i2c_fast_delay = 11;
+static uint8_t i2c_delay = 7;
+static uint8_t i2c_fast_delay = 7;
 static uint8_t i2c_lsdelay = 40;
 
 INLINE void
@@ -924,77 +924,6 @@ cmd_cald(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(caldCmd, "cald", cmd_cald, "cald      # Calibrate I2C delay loop");
 
-/**
- **********************************************************************************
- * \fn static int8_t cmd_i2ctest(Interp *interp,uint8_t argc,char *argv[]);
- * Test the i2cbus by doing 400 reads from the same EEProm location.
- **********************************************************************************
- */
-static int8_t
-cmd_i2ctest(Interp * interp, uint8_t argc, char *argv[])
-{
-	uint16_t i;
-	uint16_t i2caddr = 0x40a0;
-	uint16_t daddr = 0;
-	uint8_t i2cresult;
-	uint8_t data[4];
-	uint8_t data2[4];
-	TimeMs_t actionStartTime = TimeMs_Get();
-	uint32_t microSec;
-	if (argc > 1) {
-		i2caddr = astrtoi16(argv[1]);
-	}
-	i2cresult = I2C_Read(i2caddr, daddr, data, 4);
-	for (i = 0; i < 400; i++) {
-		uint8_t i2cresult;
-		EV_Yield();
-		i2cresult = I2C_Read(i2caddr, 0, data2, 4);
-		if (i2cresult != I2C_RESULT_OK) {
-			Interp_Printf_P(interp, "Failed with EC %d\n", i2cresult);
-			return 0;
-		}
-		if (memcmp(data, data2, 4) != 0) {
-			Interp_Printf_P(interp,
-					"Data comparison error at round %d: %02x %02x %02x %02x\n",
-					i, data2[0], data2[1], data2[2], data2[3]);
-			return 0;
-		}
-	}
-	microSec = (TimeMs_Get() - actionStartTime) * 1000;
-	Interp_Printf_P(interp, "Ok, %luus per Read\n", microSec / 400);
-	return 0;
-}
-
-INTERP_CMD(i2ctestCmd, "i2ctest", cmd_i2ctest, "i2ctest      # Do an i2c read test");
-
-static int8_t
-cmd_eetest(Interp * interp, uint8_t argc, char *argv[])
-{
-	uint16_t i, j;
-	int i2c_result;
-	uint8_t num;
-	for (i = 0; i < 8192; i++) {
-		num = (uint8_t) (i * (i + 1));
-		for (j = 0; j < 15; j++) {
-			i2c_result = I2C_Write16(0x40a8, i, &num, 1);
-			if (i2c_result != I2C_RESULT_NO_ACK) {
-				break;
-			}
-		}
-	}
-	Con_Printf("Now read back\n");
-	SleepMs(5);
-	for (i = 0; i < 8192; i++) {
-		I2C_Read16(0x40a8, i, &num, 1);
-		if (num != (uint8_t) (i * (i + 1))) {
-			Con_Printf("Error at %04x %02x instead of %02x\n", i, num,
-				   (uint8_t) (i * (i + 1)));
-		}
-	}
-	return 0;
-}
-
-INTERP_CMD(eetestCmd, "eetest", cmd_eetest, "eetest      # Do an i2c eeprom read write");
 
 /**
  ****************************************************************************
@@ -1132,7 +1061,5 @@ I2CM_Init(void)
 	Interp_RegisterCmd(&i2cstatCmd);
 	Interp_RegisterCmd(&i2cscanCmd);
 	Interp_RegisterCmd(&caldCmd);
-	Interp_RegisterCmd(&i2ctestCmd);
 	Interp_RegisterCmd(&i2cdelayCmd);
-	Interp_RegisterCmd(&eetestCmd);
 }
