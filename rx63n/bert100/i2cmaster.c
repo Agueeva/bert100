@@ -57,7 +57,7 @@ typedef struct I2C_Master {
 	uint16_t stat_bus_reset;
 } I2C_Master;
 
-static I2C_Master gI2cm[1];
+static I2C_Master gI2cm[2];
 
 static uint8_t i2c_delay = 11;
 static uint8_t i2c_fast_delay = 11;
@@ -855,9 +855,18 @@ static int8_t
 cmd_i2cscan(Interp * interp, uint8_t argc, char *argv[])
 {
 	int i;
+	Interp_Printf_P(interp, "Bus 0: ");
 	for (i = 0; i < 127; i++) {
 		EV_Yield();
 		if (I2C_AckPoll(i << 1, 1) == I2C_RESULT_OK) {
+			i2c_stop(&gI2cm[0]);
+			Interp_Printf_P(interp, "0x%02x ", i << 1);
+		}
+	}
+	Interp_Printf_P(interp, "\nBus 1: ");
+	for (i = 0; i < 127; i++) {
+		EV_Yield();
+		if (I2C_AckPoll(0x1000| (i << 1), 1) == I2C_RESULT_OK) {
 			i2c_stop(&gI2cm[0]);
 			Interp_Printf_P(interp, "0x%02x ", i << 1);
 		}
@@ -1049,9 +1058,42 @@ Init_Bus0(void)
 	SetSDA_Bus0(1);
 	BCLR(1,PORTA.PODR.BYTE); /* SDA Output Register to Low */
 	BCLR(2,PORTA.PODR.BYTE); /* SCL Output Register to Low */
-	if(GetSCL_Bus0() == 0) {
-		Con_Printf("Big Shit ***********************************************************\n");
-	}
+}
+
+/*
+ * Bus 1 PLL
+ */
+static void
+SetSDA_Bus1(uint8_t value)
+{
+	BMOD(6,PORTD.PDR.BYTE,!value); /* SDA Direction register */
+}
+
+static void
+SetSCL_Bus1(uint8_t value)
+{
+	BMOD(7,PORTD.PDR.BYTE,!value); /* SCL Direction register */
+}
+
+static uint8_t 
+GetSDA_Bus1(void)
+{
+	return PORTD.PIDR.BIT.B6;
+}
+
+static uint8_t 
+GetSCL_Bus1(void)
+{
+	return PORTD.PIDR.BIT.B7;
+}
+
+static void
+Init_Bus1(void)
+{
+	SetSCL_Bus1(1);
+	SetSDA_Bus1(1);
+	BCLR(6,PORTD.PODR.BYTE); /* SDA Output Register to Low */
+	BCLR(7,PORTD.PODR.BYTE); /* SCL Output Register to Low */
 }
 
 
@@ -1065,15 +1107,25 @@ Init_Bus0(void)
 void
 I2CM_Init(void)
 {
-	I2C_Master *i2cm = &gI2cm[0];
+	I2C_Master *i2cm0 = &gI2cm[0];
+	I2C_Master *i2cm1 = &gI2cm[1];
 	Init_Bus0();
-	i2cm->setSDA = SetSDA_Bus0;
-	i2cm->getSDA = GetSDA_Bus0;
-	i2cm->setSCL = SetSCL_Bus0;
-	i2cm->getSCL = GetSCL_Bus0;
+	i2cm0->setSDA = SetSDA_Bus0;
+	i2cm0->getSDA = GetSDA_Bus0;
+	i2cm0->setSCL = SetSCL_Bus0;
+	i2cm0->getSCL = GetSCL_Bus0;
 
 	I2C_ResetBus(0);
 	I2C_RiseTimes(0);
+
+	Init_Bus1();
+	i2cm1->setSDA = SetSDA_Bus1;
+	i2cm1->getSDA = GetSDA_Bus1;
+	i2cm1->setSCL = SetSCL_Bus1;
+	i2cm1->getSCL = GetSCL_Bus1;
+
+	I2C_ResetBus(1);
+	I2C_RiseTimes(1);
 
 	Interp_RegisterCmd(&i2crCmd);
 	Interp_RegisterCmd(&i2cwCmd);
