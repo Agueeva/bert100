@@ -11,9 +11,9 @@
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
 
+#define SYNC_DIROUT	BSET(5,PORTC.PDR.BYTE)
 #define SYNC_HIGH	BSET(5,PORTC.PODR.BYTE)
 #define SYNC_LOW	BCLR(5,PORTC.PODR.BYTE)	
-#define SYNC_DIROUT	BSET(5,PORTC.PDR.BYTE)
 
 #define SDI_DIROUT	BSET(3,PORTC.PDR.BYTE)
 #define SDI_HIGH	BSET(3,PORTC.PODR.BYTE)	
@@ -45,79 +45,65 @@
 #define PINCTRL_BUSY	PORTE.PIN4CTRL
 #endif
 
-
-#define PROGMEM 
-static const char str_X1A[] PROGMEM = "x1a";
-static const char str_X1B[] PROGMEM = "x1b";
-static const char str_C[] PROGMEM = "c";
-static const char str_M[] PROGMEM = "m";
-static const char str_CONTROL[] PROGMEM = "control";
-static const char str_OFS0[] PROGMEM = "ofs0";
-static const char str_OFS1[] PROGMEM = "ofs1";
-static const char str_ABSELECT0[] PROGMEM = "abselect0";
-static const char str_ABSELECT1[] PROGMEM = "abselect1";
-static const char str_ABSELECT2[] PROGMEM = "abselect2";
-static const char str_ABSELECT3[] PROGMEM = "abselect3";
-
 typedef struct ReadbackVar {
         const char   *name;
 	uint16_t addrCode;
         uint8_t nrArgs;
 } ReadbackVar;
 
-static ReadbackVar PROGMEM rbvars[] = {
+static ReadbackVar rbvars[] = {
 	{
-		.name = str_X1A,
+		.name = "x1a",
 		.addrCode = 0,
 		.nrArgs = 1,
 	},
 	{
-		.name = str_X1B,
+		.name = "x1b",
 		.addrCode = 0x2000,
 		.nrArgs = 1,
 	},
 	{
-		.name = str_C,
+		.name = "c",
 		.addrCode = 0x4000,
 		.nrArgs = 1,
 	},
 	{
-		.name = str_M,
+		.name = "m",
 		.addrCode = 0x6000,
 		.nrArgs = 1,
 	},
 	{
-		.name = str_CONTROL,
+		.name = "control", 
 		.addrCode = 0x8080,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_OFS0,
+		.name = "ofs0",
 		.addrCode = 0x8100,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_OFS1,
+		.name = "ofs1", 
 		.addrCode = 0x8180,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_ABSELECT0,
+		.name = "abselect0",
 		.addrCode = 0x8300,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_ABSELECT1,
+		.name = "abselect1",
 		.addrCode = 0x8380,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_ABSELECT2,
+		.name = "abselect2",
 		.addrCode = 0x8400,
 		.nrArgs = 0,
 	},
 	{
-		.name = str_ABSELECT3,
+		.name = "abselect3",
 		.nrArgs = 0,
 		.addrCode = 0x8480,
 	}
@@ -129,33 +115,33 @@ typedef struct WriteVar {
         uint8_t nrArgs;
 } WriteVar;
 
-static WriteVar PROGMEM wrvars[] = {
+static WriteVar wrvars[] = {
 	{
-		.name = str_CONTROL,
+		.name = "control",
 		.sfCode = 1,
 	},
 	{
-		.name = str_OFS0,
+		.name = "ofs0",
 		.sfCode = 2,
 	},
 	{
-		.name = str_OFS1,
+		.name = "ofs1",
 		.sfCode = 3,
 	},
 	{
-		.name = str_ABSELECT0,
+		.name = "abselect0",
 		.sfCode = 6,
 	},
 	{
-		.name = str_ABSELECT1,
+		.name = "abselect1",
 		.sfCode = 7,
 	},
 	{
-		.name = str_ABSELECT2,
+		.name = "abselect2",
 		.sfCode = 8,
 	},
 	{
-		.name = str_ABSELECT3,
+		.name = "abselect3",
 		.sfCode = 9,
 	}
 };
@@ -240,43 +226,43 @@ cmd_dac(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t i;
 	uint8_t channel;
-	ReadbackVar rbvar; 
-	WriteVar wrvar;
+	ReadbackVar *rbvar; 
+	WriteVar *wrvar;
 	uint16_t value;
 	if(argc < 2) {
 		for(i = 0; i < array_size(rbvars); i++) {
-			memcpy(&rbvar,rbvars + i,sizeof(rbvar));
-			if(rbvar.nrArgs) {
+			rbvar = &rbvars[i];
+			if(rbvar->nrArgs) {
 			//	value = AD537x_Readback(rbvar.addrCode,0);
 			//	Con_Printf("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
 			} else {
-				value = AD537x_Readback(rbvar.addrCode,0);
-				Con_Printf("%S(%04x): 0x%04x\n",rbvar.name,rbvar.addrCode,value);
+				value = AD537x_Readback(rbvar->addrCode,0);
+				Con_Printf("%s(%04x): 0x%04x\n",rbvar->name,rbvar->addrCode,value);
 			}		
 		}
 		return 0;
 	}
 	for(i = 0; i < array_size(rbvars); i++) {
-		memcpy(&rbvar,rbvars + i,sizeof(rbvar));
-		if((strcmp(argv[1],rbvar.name) == 0) 
-			&& (rbvar.nrArgs + 2) == argc) 
+		rbvar = &rbvars[i];
+		if((strcmp(argv[1],rbvar->name) == 0) 
+			&& (rbvar->nrArgs + 2) == argc) 
 		{
-			if(rbvar.nrArgs) {
+			if(rbvar->nrArgs) {
 				channel = astrtoi16(argv[2]);
 			} else {
 				channel = 0;
 			}		
-			value = AD537x_Readback(rbvar.addrCode,channel);
+			value = AD537x_Readback(rbvar->addrCode,channel);
 			Con_Printf("0x%04x\n",value);
 			return 0;
 		}
 	}
 	/* Now try to write the register */
 	for(i = 0; i < array_size(wrvars); i++) {
-		memcpy(&wrvar,wrvars + i,sizeof(wrvar));
-		if((argc > 2) && (strcmp(argv[1],wrvar.name) == 0)) {
+		wrvar = &wrvars[i];
+		if((argc > 2) && (strcmp(argv[1],wrvar->name) == 0)) {
 			value = astrtoi16(argv[2]);	
-			AD537x_SFWrite(wrvar.sfCode,value);
+			AD537x_SFWrite(wrvar->sfCode,value);
 			return 0;
 		} 
 	}
