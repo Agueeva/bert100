@@ -19,6 +19,7 @@
 #include "sweep.h"
 #include "mdio.h"
 #include "cdr.h"
+#include "shiftreg.h"
 
 extern void _switch_context(uint16_t *newStack,uint16_t *oldStack);
 
@@ -39,6 +40,7 @@ main()
 	Timers_Init();
 	PMIC.CTRL = 7;
 	sei();
+	ShiftReg_Init(0xffff);
 	UartC0_Init();
 	ADC_Init();
 	Con_Printf_P("\nWelcome to Mach-Zehnder\n" 
