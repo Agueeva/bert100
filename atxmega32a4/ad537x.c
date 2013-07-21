@@ -166,6 +166,8 @@ AD537x_Write(uint32_t value)
 	uint32_t i;
 	uint32_t inval;
 	inval = 0;
+	PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
+
 	PORT_SYNC.OUTCLR = (1 << PIN_SYNC);
 	for(i = UINT32_C(0x00800000); i > 0;i >>= 1) {
 		if(value & i) {
@@ -175,19 +177,18 @@ AD537x_Write(uint32_t value)
 			//Con_Printf_P("0");
 			PORT_SDI.OUTCLR = (1 << PIN_SDI);
 		}
+		//asm("nop");
+		//asm("nop");
+		//asm("nop");
+		PORT_SCLK.OUTSET = (1 << PIN_SCLK);
+		//asm("nop");
+		//asm("nop");
+		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
 		if(PORT_SDO.IN & (1 << PIN_SDO)) { 
 			inval = (inval << 1) | 1;
 		} else {
 			inval = (inval << 1);
 		}
-		//asm("nop");
-		//asm("nop");
-		//asm("nop");
-		PORT_SCLK.OUTCLR = (1 << PIN_SCLK);
-		asm("nop");
-		asm("nop");
-		asm("nop");
-		PORT_SCLK.OUTSET = (1 << PIN_SCLK);
 	}		
 	PORT_SYNC.OUTSET = (1 << PIN_SYNC);
 	//Con_Printf_P("\n");
