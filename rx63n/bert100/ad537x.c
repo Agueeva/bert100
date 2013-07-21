@@ -412,7 +412,7 @@ AD537x_Init(void)
 	CLR_HIGH;
 	CLR_DIROOUT;
 
-	LDAC_HIGH;
+	LDAC_LOW;
 	LDAC_DIROUT;
 
 	Interp_RegisterCmd(&dacCmd);
