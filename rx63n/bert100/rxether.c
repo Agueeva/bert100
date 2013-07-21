@@ -346,7 +346,7 @@ RX_EtherInit()
 	re->ethDrv = ethDrv = &g_EthDrivers[ETHIF_RXETH0]; 
 
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
-	RX_EtherSetupIoPortsMII();
+//	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
 	for(i = 0; i < 1000; i++) {
 
