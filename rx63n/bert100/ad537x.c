@@ -7,6 +7,7 @@
 #include "ad537x.h"
 #include "atomic.h"
 #include "iodefine.h"
+#include "config.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -162,19 +163,19 @@ AD537x_Write(uint32_t value)
 			//Con_Printf("0");
 			SDI_LOW;
 		}
+		//asm("nop");
+		//asm("nop");
+		//asm("nop");
+		SCLK_HIGH;
+		asm("nop");
+		asm("nop");
+		asm("nop");
+		SCLK_LOW;
 		if(SDO_READ) { 
 			inval = (inval << 1) | 1;
 		} else {
 			inval = (inval << 1);
 		}
-		//asm("nop");
-		//asm("nop");
-		//asm("nop");
-		SCLK_LOW;
-		asm("nop");
-		asm("nop");
-		asm("nop");
-		SCLK_HIGH;
 	}		
 	SYNC_HIGH;
 	//Con_Printf("\n");
@@ -196,6 +197,15 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
 	AD537x_Write(wrval);
 }
 
+NOINLINE static void
+delay270ns(void)
+{
+        asm("mov.l %0,r1"::"g"(F_CPU / 13714285) : "memory","r1");
+        asm("label3479: ":::);
+        asm("sub #1,r1":::"r1");
+        asm("bpz label3479":::);
+}
+
 /*
  * Readback  
  */
@@ -207,6 +217,7 @@ AD537x_Readback(uint16_t addrCode,uint8_t channelAddr)
 	spiCmd = addrCode | (UINT32_C(5) << 16) | (((uint16_t)channelAddr) << 7);
 	AD537x_Write(spiCmd);
 	spiCmd = 0; /* NOP */	
+	delay270ns();
 	result = AD537x_Write(spiCmd);
 	return result;	
 }
@@ -388,13 +399,13 @@ AD537x_Init(void)
 	RESET_HIGH;
 	RESET_DIROUT;
 
+	SCLK_DIROUT;
+	SCLK_LOW;
+
 	SYNC_DIROUT;
 	SYNC_HIGH;
 
 	SDI_DIROUT;
-
-	SCLK_DIROUT;
-	SCLK_HIGH;
 
 	SDO_DIRIN;
 
