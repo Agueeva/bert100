@@ -152,71 +152,18 @@ TimeUs_Get(void)
 	return (uint64_t)now * 1000 + us;
 }
 
-static uint32_t cnt_per_ms = 0;
-static uint16_t ns_per_call;
-
-static void
-DelayNs(uint32_t ns)
+/**
+ ***********************************************************************
+ * delay loop needs 4 clock cycles per loopcnt
+ ***********************************************************************
+ */
+NOINLINE void
+_delay_loop(uint32_t loopcnt)
 {
-	uint32_t max;
-	volatile uint32_t cnt;
-	max = ((uint64_t) (ns - ns_per_call) * cnt_per_ms) / 1000000;
-	for (cnt = 0; cnt < max; cnt++) ;
-}
-
-void
-CalibrateDelayLoop()
-{
-	uint32_t i;
-	TimeMs_t now;
-	TimeMs_t diff;
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	for (i = 0; i < 10000; i++) {
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-	}
-	diff = TimeMs_Get() - now;
-	ns_per_call = diff * (1050000 / 100000);
-	cnt_per_ms = 10000;
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	DelayNs(100 * 1000 * 1000);	/* Excpect 10 ms */
-	diff = TimeMs_Get() - now;
-
-	Con_Printf("ns_per_call %u ns\n", ns_per_call);
-	Con_Printf("Delay loop needed %u ms\n", diff);
-	cnt_per_ms = ((100 * cnt_per_ms)) / diff;
-	//ps_per_cnt_per_ms = ((diff * 1000000) - 1000 * ns_per_call);
-	Con_Printf("cnt_per_ms %u\n", cnt_per_ms);
-	/* Now test it */
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	DelayNs(100 * 1000 * 1000);	/* Excpect 10 ms */
-	diff = TimeMs_Get() - now;
-	Con_Printf("Test needed %u\n", diff);
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	for (i = 0; i < 1000000; i++) {
-		DelayNs(1000);
-	}
-	diff = TimeMs_Get() - now;
-	Con_Printf("Test needed %u\n", diff);
+	asm("mov.l %0,r1"::"g" (loopcnt) : "memory","r1");
+	asm("label9279: ":::);
+	asm("sub #1,r1":::"r1");
+	asm("bpz label9279":::);
 }
 
 /*

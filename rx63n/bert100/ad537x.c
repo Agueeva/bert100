@@ -8,6 +8,7 @@
 #include "atomic.h"
 #include "iodefine.h"
 #include "config.h"
+#include "timer.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -197,15 +198,6 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
 	AD537x_Write(wrval);
 }
 
-NOINLINE static void
-delay270ns(void)
-{
-        asm("mov.l %0,r1"::"g"(F_CPU / 13714285) : "memory","r1");
-        asm("label3479: ":::);
-        asm("sub #1,r1":::"r1");
-        asm("bpz label3479":::);
-}
-
 /*
  * Readback  
  */
@@ -217,7 +209,7 @@ AD537x_Readback(uint16_t addrCode,uint8_t channelAddr)
 	spiCmd = addrCode | (UINT32_C(5) << 16) | (((uint16_t)channelAddr) << 7);
 	AD537x_Write(spiCmd);
 	spiCmd = 0; /* NOP */	
-	delay270ns();
+	DelayNs(270);
 	result = AD537x_Write(spiCmd);
 	return result;	
 }

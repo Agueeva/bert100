@@ -13,6 +13,7 @@
 #include "console.h"
 #include "interpreter.h"
 #include "hex.h"
+#include "timer.h"
 
 #define PIR_MDC	(1 << 0)	
 #define PIR_MMD	(1 << 1)	/* 1 == Write, 0 == Read */
@@ -20,15 +21,7 @@
 #define PIR_MDI	(1 << 3)
 #define PHY_ADDR	(31)
 
-NOINLINE static void
-phy_delay200ns(void)
-{
-	asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
-	asm("label9279: ":::);
-	asm("sub #1,r1":::"r1");
-	asm("bpz label9279":::);
-}
-#define phy_delay() phy_delay200ns()
+#define phy_delay() DelayNs(200)
 
 static uint16_t 
 Phy_Read(uint16_t regAddr)

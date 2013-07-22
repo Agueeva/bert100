@@ -123,5 +123,7 @@ uint64_t TimeNs_Get(void);
 uint64_t TimeUs_Get(void);
 
 void Timers_Init(void);
-void CalibrateDelayLoop(void);
+
+#define __delay_loop(cnt)    {void _delay_loop(uint32_t loopcnt); _delay_loop((cnt >= 2) ? (cnt - 2) : 0);}
+#define DelayNs(ns)  { __delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
 #endif
