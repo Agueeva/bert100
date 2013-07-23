@@ -127,5 +127,4 @@ uint64_t TimeUs_Get(void);
 #define DelayNs(ns)  { __delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
 
 void Timers_Init(void);
-
 #endif

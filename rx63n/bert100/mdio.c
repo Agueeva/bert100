@@ -33,16 +33,7 @@
 #define MDC_HIGH	BSET(7,PORTE.PODR.BYTE)
 #define MDC_LOW		BCLR(7,PORTE.PODR.BYTE)
 
-
-NOINLINE static void
-mdio_delay200ns(void)
-{
-        asm("mov.l %0,r1"::"g"(F_CPU / 20000000) : "memory","r1");
-        asm("label9279: ":::);
-        asm("sub #1,r1":::"r1");
-        asm("bpz label9279":::);
-}
-#define mdio_delay() mdio_delay200ns()
+#define mdio_delay() DelayNs(200)
 
 static inline void
 SetDirection(uint8_t dir) 
