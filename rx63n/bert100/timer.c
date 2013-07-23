@@ -7,25 +7,11 @@
 #include "atomic.h"
 #include "config.h"
 #include "console.h"
+#include "interpreter.h"
+#include "hex.h"
 
 static Timer *timerHead = NULL;
 volatile TimeMs_t g_TimeClockTick = 0;
-/*
- ******************************************************************************
- * \fn void SleepMs(TimeMs_t delay);
- * Call the main event loop until some time is elapsed.
- * Use Delay only for very timing uncritical things. Its not recommended to
- * call delay for longer than 10 ms because of events lower in stack.
- ******************************************************************************
- */
-void
-SleepMs(TimeMs_t delay)
-{
-	TimeMs_t starttime = TimeMs_Get();
-	while (Time_Sum(TimeMs_Get(), -starttime) < delay) {
-		EV_Yield();
-	}
-}
 
 /**
  *****************************************************************
@@ -152,72 +138,48 @@ TimeUs_Get(void)
 	return (uint64_t)now * 1000 + us;
 }
 
-static uint32_t cnt_per_ms = 0;
-static uint16_t ns_per_call;
-
-static void
-DelayNs(uint32_t ns)
+/**
+ ***********************************************************************
+ * delay loop needs 4 clock cycles per loopcnt
+ ***********************************************************************
+ */
+ __attribute__ ((noinline)) void
+_delay_loop(uint32_t loopcnt)
 {
-	uint32_t max;
-	volatile uint32_t cnt;
-	max = ((uint64_t) (ns - ns_per_call) * cnt_per_ms) / 1000000;
-	for (cnt = 0; cnt < max; cnt++) ;
+        asm("mov.l %0,r1"::"g" (loopcnt) : "memory","r1");
+        asm("label9279: ":::);
+        asm("sub #1,r1":::"r1");
+        asm("bpz label9279":::);
 }
 
-void
-CalibrateDelayLoop()
+#define DELAY 100
+
+static int8_t
+cmd_delay(Interp * interp, uint8_t argc, char *argv[])
 {
-	uint32_t i;
-	TimeMs_t now;
-	TimeMs_t diff;
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	for (i = 0; i < 10000; i++) {
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-		DelayNs(0);
-	}
-	diff = TimeMs_Get() - now;
-	ns_per_call = diff * (1050000 / 100000);
-	cnt_per_ms = 10000;
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	DelayNs(100 * 1000 * 1000);	/* Excpect 10 ms */
-	diff = TimeMs_Get() - now;
-
-	Con_Printf("ns_per_call %u ns\n", ns_per_call);
-	Con_Printf("Delay loop needed %u ms\n", diff);
-	cnt_per_ms = ((100 * cnt_per_ms)) / diff;
-	//ps_per_cnt_per_ms = ((diff * 1000000) - 1000 * ns_per_call);
-	Con_Printf("cnt_per_ms %u\n", cnt_per_ms);
-	/* Now test it */
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	DelayNs(100 * 1000 * 1000);	/* Excpect 10 ms */
-	diff = TimeMs_Get() - now;
-	Con_Printf("Test needed %u\n", diff);
-
-	now = TimeMs_Get();
-	while (now == TimeMs_Get()) ;
-	now = TimeMs_Get();
-	for (i = 0; i < 1000000; i++) {
-		DelayNs(1000);
-	}
-	diff = TimeMs_Get() - now;
-	Con_Printf("Test needed %u\n", diff);
+        TimeMs_t beforeMs,afterMs;
+        uint32_t i;
+        beforeMs = TimeMs_Get();
+        for(i = 0; i < (10000000/DELAY); i++) {
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+                DelayNs(DELAY);
+        }
+        afterMs = TimeMs_Get();
+        Con_Printf("Needed %lu ms \n",afterMs - beforeMs);
+        return 0;
 }
+
+INTERP_CMD(delayCmd, "delay", cmd_delay,
+       "delay   # test the delay looop");
+
 
 /*
  **************************************************************
@@ -236,4 +198,5 @@ Timers_Init(void)
 	CMT0.CMCR.BIT.CMIE = 1;
 	IPR(CMT0, CMI0) = 2;
 	IEN(CMT0, CMI0) = 1;
+	Interp_RegisterCmd(&delayCmd);
 }

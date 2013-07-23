@@ -6,6 +6,7 @@
 #ifndef _TPOS_H
 #define _TPOS_H
 #include "threads.h"
+#include "timer.h"
 typedef struct TPOSRSema {
 	Thread *waitHead;
 	Thread *owner;
@@ -47,4 +48,10 @@ Mutex_Delete(Mutex * rsema)
 	Mutex_Lock(rsema);
 }
 
+/**
+ ********************************************************
+ * Semaphore and timer using variant of sleep 
+ ********************************************************
+ */
+void SleepMs(TimeMs_t delay);
 #endif

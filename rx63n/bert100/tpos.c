@@ -255,6 +255,26 @@ Mutex_Init(Mutex * rs)
 	memset(rs, 0, sizeof(*rs));
 }
 
+static void 
+wakeup_csema(void *eventData)
+{
+	CSema *csema = eventData;
+	CSema_Up(csema);
+}
+/**
+ *******************************************************************
+ * Variant of sleep using a counting Semaphore.
+ *******************************************************************
+ */
+void
+SleepMs(TimeMs_t delay) {
+	CSema csema;
+	TIMER_DECLARE(csemaTimer, wakeup_csema, &csema);
+	CSema_Init(&csema);
+	Timer_Start(&csemaTimer, delay);
+	CSema_Down(&csema);
+}
+
 /** END of code, rest is testcode */
 
 static CSema testCSema;

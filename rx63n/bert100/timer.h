@@ -36,7 +36,7 @@ typedef struct Timer {
 	struct Timer *next;
 } Timer;
 
-#define pT2pE(x) (&(x)->evTimeout)
+//define pT2pE(x) (&(x)->evTimeout)
 
 extern volatile TimeMs_t g_TimeClockTick;
 /* 
@@ -60,11 +60,6 @@ TimeMs_Get(void)
 {
 	return g_TimeClockTick;
 }
-
-/**
- * Call the event-scheduler until some milliseconds are over.
- */
-void SleepMs(TimeMs_t delay);
 
 /**
  *********************************************************************
@@ -121,7 +116,16 @@ is_later(TimeMs_t time1, TimeMs_t time2)
 
 uint64_t TimeNs_Get(void);
 uint64_t TimeUs_Get(void);
+#define __delay_loop(cnt)    {void _delay_loop(uint32_t loopcnt); _delay_loop((cnt >= 2) ? (cnt - 2) : 0);}
+/**
+ ***************************************************************************
+ * \def DelayNs(ns)
+ * Macro calculating the Loop count for a Delay in Nanoseconds and
+ * calling the delay loop.
+ ***************************************************************************
+ */
+#define DelayNs(ns)  { __delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
 
 void Timers_Init(void);
-void CalibrateDelayLoop(void);
+
 #endif
