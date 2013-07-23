@@ -59,15 +59,15 @@ EV_Trigger(Event *ev) {
 void 
 _EventCancel(Event *ev) 
 {
-	if(ev->prev) {
-		ev->prev->next = ev->next;
-	} else {
+	if(ev == queueHead) {
 		queueHead = ev->next;
-	}
-	if(ev->next) {
-		ev->next->prev = ev->prev;
 	} else {
+		ev->prev->next = ev->next;
+	}
+	if(ev == queueTail) {
 		queueTail = ev->prev;
+	} else {
+		ev->next->prev = ev->prev;
 	}
 	ev->evState = EV_StateIdle;
 }
