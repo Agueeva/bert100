@@ -13,6 +13,17 @@
 static Timer *timerHead = NULL;
 volatile TimeMs_t g_TimeClockTick = 0;
 
+
+void
+SleepUs(uint32_t sleepUs)
+{
+	uint64_t starttime = TimeNs_Get();
+	uint64_t sleepNs = 1000 * (uint64_t)sleepUs;
+	while((TimeNs_Get() - starttime) < sleepNs) {
+		EV_Yield();
+	}
+}
+
 /**
  *****************************************************************
  * \fn void timer_b0_interrupt(void);
