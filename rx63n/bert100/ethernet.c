@@ -683,7 +683,7 @@ Ethernet_Init(EthDriver *drv)
 	//}
 	eth->drv = drv;
 #warning here
-	//drv->regRxProc(drv->driverData,Eth_PktRx,eth);
+	drv->regPktSink(drv,Eth_PktRx,eth);
 	ethCtrl.cmd = ETHCTL_SET_MAC;
 	ethCtrl.cmdArg = eth->if_mac;
 	drv->ctrlProc(drv,&ethCtrl);

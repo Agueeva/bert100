@@ -21,11 +21,11 @@ Eth_RegisterPktSink(int ifaceID,Eth_PktSinkProc *proc,void *cbData)
 
 /**
  ***********************************************************************
- * \fn void Eth_Control(int ifaceID,EthControlCmd *ctrlCmd)
+ * \fn void EthDrv_Control(int ifaceID,EthControlCmd *ctrlCmd)
  ***********************************************************************
  */
 void
-Eth_Control(int ifaceID,EthControlCmd *ctrlCmd)
+EthDrv_Control(int ifaceID,EthControlCmd *ctrlCmd)
 {
         EthDriver *ethDriver;
         if((ifaceID < MAX_ETH_DRIVERS) && (ethDriver = &g_EthDrivers[ifaceID])) {

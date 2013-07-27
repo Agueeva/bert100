@@ -12,9 +12,6 @@ typedef struct EthControlCmd {
 	void *cmdArg;
 } EthControlCmd;
 
-typedef void Eth_TxProc(void *driverData,const uint8_t *buf,uint16_t pktlen);
-typedef void Eth_PktSinkProc(void *eventData,int ifaceID,const uint8_t *buf,uint16_t pktlen);
-typedef void Eth_ControlProc(void *driverData,EthControlCmd *ctrlCmd);
 
 /**
  *************************************************************************
@@ -41,6 +38,11 @@ typedef struct Skb {
         uint16_t dataBufSize;
 } Skb;
 
+typedef struct EthDriver EthDriver;
+typedef void Eth_TxProc(void *driverData,const uint8_t *buf,uint16_t pktlen);
+typedef void EthDrv_PktSinkProc(void *eventData,Skb *sbk);
+typedef void EthDrv_RegPktSinkProc(EthDriver *,EthDrv_PktSinkProc *cbProc,void *evData);
+typedef void Eth_ControlProc(void *driverData,EthControlCmd *ctrlCmd);
 /*
  ****************************************************************************
  * \struct EthDriver
@@ -49,15 +51,16 @@ typedef struct Skb {
  * user of the Ethernet driver.
  ****************************************************************************
  */
-typedef struct EthDriver {
+struct EthDriver {
 	int ifID;
 	Eth_TxProc *txProc;
 	Eth_ControlProc *ctrlProc;
+	EthDrv_RegPktSinkProc *regPktSink;
 	void *driverData;	
 
-	Eth_PktSinkProc *pktSinkProc;
+	//Eth_PktSinkProc *pktSinkProc;
 	void *pktSinkData;
-} EthDriver;
+};
 
 //EthDriver g_EthDrivers[MAX_ETH_DRIVERS];
 
@@ -72,7 +75,7 @@ Eth_TransmitPacket(int ifaceID,uint8_t *buf,uint16_t pktlen)
 }
 #endif
 
-void Eth_RegisterPktSink(int ifaceID,Eth_PktSinkProc *proc,void *cbData); 
-void Eth_Control(int ifaceID,EthControlCmd *ctrlCmd);
+void EthDrv_RegisterPktSink(int ifaceID,EthDrv_PktSinkProc *proc,void *cbData); 
+void EthDrv_Control(int ifaceID,EthControlCmd *ctrlCmd);
 
 #endif
