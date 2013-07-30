@@ -26,15 +26,17 @@ swap32(uint32_t value)
 }
 
 /**
- **********************************************************
+ ************************************************************
  * \fn uint16_t swap16(uint16_t value) {
  * 16 Bit Byte order conversion inline assembler function 
- **********************************************************
+ * The Rx instruction works on 32 Bit words and swaps inside
+ * both 16bit words
+ ************************************************************
  */
 static inline uint16_t
-swap16(uint16_t value)
+swap16(uint32_t value)
 {
-	uint16_t retval;
+	uint32_t retval;
 	__asm__("revw %1, %0;":"=r"(retval)
 	: "r"(value)
 	: );

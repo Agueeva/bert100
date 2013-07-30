@@ -79,6 +79,7 @@ typedef struct RxEth {
 	EthDriver ethDrv;
 	Descriptor txDescr[TX_DESCR_NUM] __attribute__((aligned (16))); 
 	Descriptor rxDescr[RX_DESCR_NUM] __attribute__((aligned (16)));
+	Skb	rxSkb;
 	EthDrv_PktSinkProc *pktSinkProc;
 	void *pktSinkData;
 	uint8_t rxBuf[EMAC_NUM_RX_BUFS * EMAC_RX_BUFSIZE];
@@ -90,6 +91,8 @@ typedef struct RxEth {
 	Event    evRxEvent;
 	uint32_t statTxInts;
 	uint32_t statRxInts;
+	uint32_t statRxBadFrame;
+	uint32_t statRxFrameOk;
 } RxEth;
 
 static RxEth gRxEth;
@@ -186,9 +189,9 @@ RXEth_RxEventProc(void *eventData)
 {
 	RxEth *re = eventData;
 	uint16_t rp;
-	bool frame_ok;
 	uint32_t status;
 	Descriptor *rxDescr;
+	Skb *skb;
 	do { 
 		rp = RX_DESCR_RP(re);
 		rxDescr = &re->rxDescr[rp];
@@ -198,14 +201,18 @@ RXEth_RxEventProc(void *eventData)
 		}
 		/* Check for errors */
 		if(status & RXDS_FE) {
-			frame_ok = false;
+			re->statRxBadFrame++;
 		} else {
-			frame_ok = true;
-		}
-		if(frame_ok) {
-			//Con_Printf("Rx Good Frame %u bytes status 0x%08lx\n",rxDescr->size,status);
-		} else {
-			Con_Printf("Rx Bad Frame Frame\n");
+			//Con_Printf("Received a frame\n");
+			re->statRxFrameOk++;
+			skb = &re->rxSkb;
+			skb->hdrBuf = NULL;
+			skb->dataStart = skb->dataBuf = skb->hdrStart = skb->hdrEnd = rxDescr->bufP;
+        		skb->hdrAvailLen = 0;
+        		skb->dataAvailLen =  EMAC_RX_BUFSIZE;
+			if(re->pktSinkProc) {
+				re->pktSinkProc(re->pktSinkData,skb);
+			}
 		}
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
 		re->rxDescrRp++;
@@ -216,6 +223,7 @@ RXEth_RxEventProc(void *eventData)
  		 ****************************************************
 		 */ 
 		if(EDMAC.EDRRR.LONG == 0) {
+			Con_Printf("RRR was clear\n");
 			EDMAC.EDRRR.LONG = 1;
 		}
 	} while(1);
@@ -341,6 +349,8 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	RXEth_Transmit(re,pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
+	Con_Printf("RxGood:  %lu\n",re->statRxFrameOk);
+	Con_Printf("RxBad:   %lu\n",re->statRxBadFrame);
 	return 0;
 }
 
@@ -379,10 +389,11 @@ RX_EtherInit(void)
 	EDMAC.RDLAR = &re->rxDescr[0]; 
 	EDMAC.TDLAR = &re->txDescr[0];
 	EDMAC.TRSCER.LONG = 0;		/* Should not be necessary because cleared by reset */
-	EDMAC.TRSCER.BIT.RMAFCE = 1; /* Multicast is not an error */
+	EDMAC.TRSCER.BIT.RMAFCE = 1;	/* Multicast is not an error */
 	EDMAC.TFTR.LONG = 0;		/* Store and forward mode */
 	EDMAC.FDR.LONG = 5;		/* Fifo 1536 bytes */
 	EDMAC.RMCR.LONG = 0;		/* Should not be necessary because cleared by reset */
+	EDMAC.RMCR.BIT.RNR = 1;
 	EDMAC.FCFTR.LONG = 0x00070005; 
 	/* Now start it */
 	ETHERC.ECMR.BIT.DM = 1;		/* Full duplex */
