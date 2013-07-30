@@ -241,8 +241,8 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 {
 	uint16_t i;
 	ArpRq *arp = (ArpRq *)skb_remove_header(skb,sizeof(ArpRq));
-	//Con_Printf("Arp tpa %u.%u.%u.%u\n",arp->tpa[0],arp->tpa[1],arp->tpa[2],arp->tpa[3]);
-	//Con_Printf("my ip %u.%u.%u.%u\n",eth->if_ip[0],eth->if_ip[1],eth->if_ip[2],eth->if_ip[3]);
+	Con_Printf("Arp tpa %u.%u.%u.%u\n",arp->tpa[0],arp->tpa[1],arp->tpa[2],arp->tpa[3]);
+	Con_Printf("my ip %u.%u.%u.%u\n",eth->if_ip[0],eth->if_ip[1],eth->if_ip[2],eth->if_ip[3]);
 	if((arp->ptype == htons(0x800)) &&
 	   (arp->oper == htons(1)) && 
 	   (memcmp(eth->if_ip,arp->tpa,4) == 0)) {
@@ -264,8 +264,8 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 			ethHdr->dstmac[i] = ethHdr->srcmac[i];
 			ethHdr->srcmac[i] = eth->if_mac[i];
 		}
-		#if 0
 		Con_Printf("Arp Reply:\n");
+		#if 0
 		for(i = 0; i < 28 + 14; i++){
 			Con_Printf("%02x ",pkt[i]);
 			if((i & 15) == 15) {
@@ -280,6 +280,7 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	   (arp->oper == htons(2))) {
 		/* Believe everything, no arp spoofing test here */
 		// Enter to arp cache
+		Con_Printf("ArpCE Enter\n");
 		ArpCE_Enter(eth,arp->spa,arp->sha);
 	} 
 }
@@ -478,8 +479,8 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	ArpCE_Enter(eth,ipHdr->srcaddr,ethHdr->srcmac); 
 	switch(ipHdr->proto) {
 		case IPPROT_ICMP:
-			//Con_Printf("Detected ICMP\n");
-			Eth_HandleICMP(eth,ipHdr,skb); 
+			Con_Printf("Detected ICMP\n");
+			//Eth_HandleICMP(eth,ipHdr,skb); 
 			break;
 
 		case IPPROT_TCP:
@@ -505,9 +506,13 @@ static void
 Eth_PktRx(void *eventData,Skb *skb) 
 {
 	EthIf *eth = eventData;
-	EthHdr *ethHdr = (EthHdr *)skb_remove_header(skb,sizeof(EthHdr));
+	EthHdr *ethHdr;
+	ethHdr = (EthHdr *)skb_remove_header(skb,sizeof(EthHdr));
+	//Con_Printf("Received was: %04x %04x\n",ntohs(ethHdr->proto),ethHdr->proto);
+	//asm("brk");
 	switch(ntohs(ethHdr->proto)) {
 		case ET_IP:
+			Con_Printf("Handle IP\n");
 			Eth_HandleIp(eth,ethHdr,skb);
 			break;
 		case ET_ARP:
@@ -639,19 +644,10 @@ Ethernet_Init(EthDriver *drv)
 		return;
 	}
 	//Param_Read(ipAddr,eth->if_ip);
-	if(eth->if_ip32 == ~UINT32_C(0)) {
-#if 0
-		eth->if_ip[0] = 192;
-		eth->if_ip[1] = 168;
-		eth->if_ip[2] = 101;
-		eth->if_ip[3] = 23;
-#else
-		eth->if_ip[0] = 192;
-		eth->if_ip[1] = 168;
-		eth->if_ip[2] = 80;
-		eth->if_ip[3] = 10;
-#endif
-	}
+	eth->if_ip[0] = 192;
+	eth->if_ip[1] = 168;
+	eth->if_ip[2] = 80;
+	eth->if_ip[3] = 10;
 	//Param_Read(netmask,&netmask_bits);
 	if(netmask_bits > 32) {
 		netmask_bits = 24;
@@ -673,7 +669,7 @@ Ethernet_Init(EthDriver *drv)
 	//I2C_Read8(I2CA_PARAM_EEPROM,0xFA,eth->if_mac,6);
 	/* Check the broadcast bit */
 	//if(eth->if_mac[0] & 1) {
-		Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
+		//Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
 		eth->if_mac[0] = 0x00;
 		eth->if_mac[1] = 0x05;
 		eth->if_mac[2] = 0x51;

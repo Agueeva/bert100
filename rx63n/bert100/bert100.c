@@ -35,6 +35,7 @@
 #include "cdr.h"
 #include "shiftreg.h"
 #include "i2cmaster.h"
+#include "ethernet.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -73,6 +74,7 @@ int main(void)
 
 	Interp *interp;
         Editor *editor;
+	EthDriver *ethDrv;
 	/* Disable register protection permanently */
 	SYSTEM.PRCR.WORD = 0xa50b;
 	/* Disable Pin function write protections permanently */	
@@ -114,7 +116,8 @@ int main(void)
 	CDR_Init();
 
 	Timer_Start(&blinkTimer,500);
-	RX_EtherInit();
+	ethDrv = RX_EtherInit();
+	Ethernet_Init(ethDrv);
 	Spi_Init();
 	SDCard_ModuleInit();
 	FatCmds_Init();
