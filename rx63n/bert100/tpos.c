@@ -246,13 +246,16 @@ CSema_Down(CSema * cs)
 void
 CSema_Init(CSema * cs)
 {
-	memset(cs, 0, sizeof(*cs));
+
+        cs->waitHead = NULL;
+        cs->cnt = NULL;
 }
 
 void
 Mutex_Init(Mutex * rs)
 {
-	memset(rs, 0, sizeof(*rs));
+	rs->waitHead = NULL;
+        rs->owner = 0;
 }
 
 static void 
