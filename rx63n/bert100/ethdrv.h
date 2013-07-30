@@ -1,5 +1,6 @@
 #ifndef _ETHDRV_H
 #define _ETHDRV_H
+#include "skb.h"
 #define MAX_ETH_DRIVERS	1
 
 #define ETHIF_RXETH0    0
@@ -12,7 +13,7 @@ typedef struct EthControlCmd {
 	void *cmdArg;
 } EthControlCmd;
 
-
+#if 0
 /**
  *************************************************************************
  * Pakets are split into two halfs. A header and a Data part. 
@@ -37,6 +38,7 @@ typedef struct Skb {
         uint16_t dataAvailLen;
         uint16_t dataBufSize;
 } Skb;
+#endif
 
 typedef struct EthDriver EthDriver;
 typedef void Eth_TxProc(void *driverData,const uint8_t *buf,uint16_t pktlen);

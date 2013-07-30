@@ -3,48 +3,6 @@
 #include "types.h"
 #include "ethdrv.h"
 
-#if 0
-/**
- *************************************************************************
- * Pakets are split into two halfs. A header and a Data part. 
- * The header is written from the end. It end-first may not get
- * bigger than maxlen; The header grows downward up to maxlen
- * on composition of packet. Header grows upward on decomposition
- * For decomposition all data needs to be in one databuf and
- * hdr_end moves. hdr_start has a reserve of 32 Bytes for 
- * the case that the sent header is bigger than the received header.
- *************************************************************************
- */
-typedef struct Skb {
-	uint8_t *hdrBuf;
-	uint8_t *hdrStart; 
-	uint8_t *hdrEnd;
-	uint16_t hdrAvailLen;
-	uint16_t hdrBufSize;
-
-	uint8_t *dataBuf;
-	uint8_t *dataStart;
-	uint16_t dataLen;
-	uint16_t dataAvailLen;
-	uint16_t dataBufSize;
-} Skb;
-
-typedef void Eth_TxProc(void *ctrl,Skb *skb);
-typedef void Eth_RegPktSinkProc(void *driverData,void (*p)(void *evData,Skb *skb),void *evData);
-typedef void Eth_SetMacProc(void *evData,uint8_t *mac);
-
-/**
- ***********************************************************
- * The ethernet driver structure
- ***********************************************************
- */
-typedef struct EthernetDriver {
-	Eth_TxProc *txProc;
-	Eth_RegPktSinkProc *regRxProc;
-	Eth_SetMacProc *setMacProc;
-	void *driverData;
-} EthernetDriver;
-#endif
 
 /**
  ***********************************************************
@@ -93,9 +51,9 @@ typedef struct ArpRq {
 
 void Ethernet_Init(EthDriver *);
 
-uint8_t * skb_remove_header(Skb *skb,uint16_t len);
-uint8_t * skb_get_header(Skb *skb);
-uint8_t * skb_reserve_header(Skb *skb,uint16_t len); 
+void * skb_remove_header(Skb *skb,uint16_t len);
+void * skb_get_header(Skb *skb);
+void * skb_reserve_header(Skb *skb,uint16_t len); 
 Skb *skb_alloc(uint16_t hdrlen,uint16_t datalen);
 void skb_reset(Skb *skb);
 #endif

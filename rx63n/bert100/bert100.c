@@ -36,6 +36,7 @@
 #include "shiftreg.h"
 #include "i2cmaster.h"
 #include "ethernet.h"
+#include "skb.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -116,6 +117,7 @@ int main(void)
 	CDR_Init();
 
 	Timer_Start(&blinkTimer,500);
+	Skb_Init();
 	ethDrv = RX_EtherInit();
 	Ethernet_Init(ethDrv);
 	Spi_Init();

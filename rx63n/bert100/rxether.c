@@ -14,6 +14,7 @@
 #include "console.h"
 #include "timer.h"
 #include "events.h"
+#include "skb.h"
 
 #define RX_DESCR_NUM	(2U)
 #define TX_DESCR_NUM	(4U)

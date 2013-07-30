@@ -59,7 +59,7 @@ EthIf g_EthIf;
  * decomposition.
  ******************************************************************
  */
-uint8_t * 
+void * 
 skb_remove_header(Skb *skb,uint16_t len) 
 {
 	uint8_t *hdr = skb->hdrEnd;	
@@ -78,13 +78,13 @@ skb_remove_header(Skb *skb,uint16_t len)
 	return hdr;
 }
 
-uint8_t * 
+void * 
 skb_get_header(Skb *skb) 
 {
 	return skb->hdrStart;
 }
 
-uint8_t *
+void *
 skb_reserve_header(Skb *skb,uint16_t len) {
 	if(len <= skb->hdrAvailLen) {
 		skb->hdrStart -= len;
@@ -246,26 +246,35 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	if((arp->ptype == htons(0x800)) &&
 	   (arp->oper == htons(1)) && 
 	   (memcmp(eth->if_ip,arp->tpa,4) == 0)) {
+		Skb *skbReply = Skb_Alloc();
+		ArpRq *arpReply = skb_reserve_header(skbReply,sizeof(ArpRq));
+		EthHdr *ethReplyHdr = skb_reserve_header(skbReply,sizeof(EthHdr));
+		uint8_t *pkt = (uint8_t *)ethReplyHdr;
 
 		ArpCE_Enter(eth,arp->spa,arp->sha);
 
-		arp->oper = htons(2); /* Arp reply */
+		arpReply->htype = htons(1);
+		arpReply->ptype = htons(0x800);
+		arpReply->hwlen = 6;
+		arpReply->plen = 4;
+		arpReply->oper = htons(2); /* Arp reply */
 		for (i = 0; i < 6; i++) {
 			//Con_Printf("sha %d: %02x\n",i,arp->sha[i]);
-			arp->tha[i] = arp->sha[i];
-			arp->sha[i] = eth->if_mac[i];
+			arpReply->tha[i] = arp->sha[i];
+			arpReply->sha[i] = eth->if_mac[i];
 		}
 		for(i = 0; i < 4; i++) {
-			arp->tpa[i] = arp->spa[i];
-			arp->spa[i] = eth->if_ip[i];
+			arpReply->tpa[i] = arp->spa[i];
+			arpReply->spa[i] = eth->if_ip[i];
 		}
 		// cross the ethernet header
 		for (i = 0; i < 6; i++) {
-			ethHdr->dstmac[i] = ethHdr->srcmac[i];
-			ethHdr->srcmac[i] = eth->if_mac[i];
+			ethReplyHdr->dstmac[i] = ethHdr->srcmac[i];
+			ethReplyHdr->srcmac[i] = eth->if_mac[i];
 		}
+
 		Con_Printf("Arp Reply:\n");
-		#if 0
+		#if 1
 		for(i = 0; i < 28 + 14; i++){
 			Con_Printf("%02x ",pkt[i]);
 			if((i & 15) == 15) {
@@ -274,8 +283,8 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 		}
 		Con_Printf("\n");
 		#endif
-		skb_reserve_header(skb,sizeof(ArpRq) + sizeof(EthHdr));
-		Eth_Transmit(eth,skb);
+		Skb_Free(skbReply);
+		//Eth_Transmit(eth,skb);
 	} else if((arp->ptype == htons(0x800)) &&
 	   (arp->oper == htons(2))) {
 		/* Believe everything, no arp spoofing test here */
