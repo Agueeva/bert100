@@ -116,6 +116,7 @@ is_later(TimeMs_t time1, TimeMs_t time2)
 
 uint64_t TimeNs_Get(void);
 uint64_t TimeUs_Get(void);
+void SleepUs_Get(uint32_t us);
 #define __delay_loop(cnt)    {void _delay_loop(uint32_t loopcnt); _delay_loop((cnt >= 2) ? (cnt - 2) : 0);}
 /**
  ***************************************************************************

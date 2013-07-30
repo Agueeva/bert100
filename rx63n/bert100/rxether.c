@@ -76,9 +76,11 @@ typedef struct Descriptor {
 } Descriptor;
 
 typedef struct RxEth {
+	EthDriver ethDrv;
 	Descriptor txDescr[TX_DESCR_NUM] __attribute__((aligned (16))); 
 	Descriptor rxDescr[RX_DESCR_NUM] __attribute__((aligned (16)));
-	EthDriver *ethDrv;
+	EthDrv_PktSinkProc *pktSinkProc;
+	void *pktSinkData;
 	uint8_t rxBuf[EMAC_NUM_RX_BUFS * EMAC_RX_BUFSIZE];
 	uint8_t ethMAC[6];
 	uint16_t txDescrWp;
@@ -307,6 +309,15 @@ RXEth_InitDescriptors(RxEth *re)
 	descr->status |= RXDS_DLE; /* Mark as last descriptor in the ring */
 	
 }
+
+void 
+RxEth_RegisterPktSink(EthDriver *drv,EthDrv_PktSinkProc *p,void *evData)
+{
+	RxEth *re = container_of(drv,RxEth,ethDrv);
+	re->pktSinkProc = p;
+	re->pktSinkData = evData;
+}
+
 /**
  ***********************************************************************************
  * \fn static int8_t cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
@@ -335,15 +346,15 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(ethtxCmd, "ethtx", cmd_ethtx, "ethtx      # Raw ethernet transmit test command");
 
-void
-RX_EtherInit()
+EthDriver *
+RX_EtherInit(void)
 {
 	volatile uint32_t i;
 	/* This is a locally assigned unicast address */
 	const uint8_t mac[6] = { 0x12,0x34,0x56,0x78,0xab,0xcd };
 	RxEth *re = &gRxEth;
 	EthDriver *ethDrv;
-	re->ethDrv = ethDrv = &g_EthDrivers[ETHIF_RXETH0]; 
+	ethDrv = &re->ethDrv;
 
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 //	RX_EtherSetupIoPortsMII();
@@ -387,9 +398,11 @@ RX_EtherInit()
 	IPR(ETHER,EINT) = 2;
 	IEN(ETHER,EINT) = 1;
 	Phy_Init();
-	ethDrv->transmitProc = RXEth_Transmit;
+	ethDrv->txProc = RXEth_Transmit;
 	ethDrv->ctrlProc = RXEth_Control; 
 	ethDrv->driverData = re;
+	ethDrv->regPktSink = RxEth_RegisterPktSink;
 	
 	Interp_RegisterCmd(&ethtxCmd);
+	return ethDrv;
 }

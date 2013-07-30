@@ -1,2 +1,3 @@
 #include "types.h"
-void RX_EtherInit(void);
+#include "ethdrv.h"
+EthDriver *RX_EtherInit(void);

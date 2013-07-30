@@ -61,6 +61,7 @@ _EventCancel(Event * ev)
 	}
 	if (ev == queueTail) {
 		queueTail = ev->prev;
+		queueTail->next = NULL;
 	} else {
 		ev->next->prev = ev->prev;
 	}

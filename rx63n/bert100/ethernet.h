@@ -1,7 +1,9 @@
 #ifndef _ETHERNET_H
 #define _ETHERNET_H
 #include "types.h"
+#include "ethdrv.h"
 
+#if 0
 /**
  *************************************************************************
  * Pakets are split into two halfs. A header and a Data part. 
@@ -27,7 +29,6 @@ typedef struct Skb {
 	uint16_t dataBufSize;
 } Skb;
 
-
 typedef void Eth_TxProc(void *ctrl,Skb *skb);
 typedef void Eth_RegPktSinkProc(void *driverData,void (*p)(void *evData,Skb *skb),void *evData);
 typedef void Eth_SetMacProc(void *evData,uint8_t *mac);
@@ -43,6 +44,7 @@ typedef struct EthernetDriver {
 	Eth_SetMacProc *setMacProc;
 	void *driverData;
 } EthernetDriver;
+#endif
 
 /**
  ***********************************************************
@@ -89,7 +91,7 @@ typedef struct ArpRq {
 } ArpRq;
 
 
-void Ethernet_Init(EthernetDriver *);
+void Ethernet_Init(EthDriver *);
 
 uint8_t * skb_remove_header(Skb *skb,uint16_t len);
 uint8_t * skb_get_header(Skb *skb);

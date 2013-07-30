@@ -27,7 +27,7 @@ typedef struct ArpCE {
 } ArpCE;
 
 typedef struct EthIf {
-	EthernetDriver *drv;
+	EthDriver *drv;
         void *hwif;
         uint8_t if_mac[6];
 	union {
@@ -105,7 +105,6 @@ skb_reserve_header(Skb *skb,uint16_t len) {
 Skb *
 skb_alloc(uint16_t hdrlen,uint16_t datalen) 
 {
-#warning alloc missing
 	Skb *skb = IRam_Calloc(sizeof(Skb));
 	if(hdrlen) {
 		skb->hdrBuf = skb->hdrStart = skb->hdrEnd;// = sr_calloc(hdrlen);
@@ -139,7 +138,15 @@ skb_reset(Skb *skb) {
 inline void
 Eth_Transmit(EthIf *eth,Skb *skb) 
 {
-	eth->drv->txProc(eth->drv->driverData,skb);
+	uint16_t header_len, len;
+	header_len = skb->hdrEnd - skb->hdrStart;
+        len = header_len + skb->dataLen;
+	#if 0 
+        if(len < 64) {
+                skb->dataLen = skb->dataLen + (64 - len);
+        }
+	#endif
+	eth->drv->txProc(eth->drv->driverData,skb->hdrStart,len);
 }
 
 /**
@@ -621,10 +628,11 @@ INTERP_CMD(ipCmd,"ip",cmd_ip,"ip # show/change IP Address/Mask Gateway");
  *****************************************************************
  */
 void
-Ethernet_Init(EthernetDriver *drv) 
+Ethernet_Init(EthDriver *drv) 
 {
 	EthIf *eth = &g_EthIf;
 	uint8_t netmask_bits;
+	EthControlCmd ethCtrl;	
 	
 	if(!drv) {
 		Con_Printf("No ethernet driver available\n");
@@ -674,8 +682,11 @@ Ethernet_Init(EthernetDriver *drv)
 		eth->if_mac[5] = 0xe3;
 	//}
 	eth->drv = drv;
-	drv->regRxProc(drv->driverData,Eth_PktRx,eth);
-	drv->setMacProc(drv->driverData,eth->if_mac);
+#warning here
+	drv->regPktSink(drv,Eth_PktRx,eth);
+	ethCtrl.cmd = ETHCTL_SET_MAC;
+	ethCtrl.cmdArg = eth->if_mac;
+	drv->ctrlProc(drv,&ethCtrl);
 	Interp_RegisterCmd(&arpCmd);
 	Interp_RegisterCmd(&ipCmd);
 }

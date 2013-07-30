@@ -12,6 +12,7 @@
 #include "hex.h"
 #include "console.h"
 #include "timer.h"
+#include "tpos.h"
 
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
 #define DEVTYPE		(30)
