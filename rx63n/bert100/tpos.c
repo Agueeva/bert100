@@ -246,16 +246,15 @@ CSema_Down(CSema * cs)
 void
 CSema_Init(CSema * cs)
 {
-
         cs->waitHead = NULL;
-        cs->cnt = NULL;
+        cs->cnt = 0;
 }
 
 void
 Mutex_Init(Mutex * rs)
 {
 	rs->waitHead = NULL;
-        rs->owner = 0;
+        rs->owner = NULL;
 }
 
 static void 
