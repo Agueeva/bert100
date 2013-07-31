@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "events.h"
 #include "skb.h"
+#include "tpos.h"
 
 #define RX_DESCR_NUM	(2U)
 #define TX_DESCR_NUM	(4U)
@@ -209,6 +210,7 @@ RXEth_RxEventProc(void *eventData)
 			skb = &re->rxSkb;
 			skb->hdrBuf = NULL;
 			skb->dataStart = skb->dataBuf = skb->hdrStart = skb->hdrEnd = rxDescr->bufP;
+			skb->dataLen = rxDescr->size;
         		skb->hdrAvailLen = 0;
         		skb->dataAvailLen =  EMAC_RX_BUFSIZE;
 			if(re->pktSinkProc) {
@@ -238,18 +240,23 @@ RXEth_RxEventProc(void *eventData)
  ****************************************************************************
  */
 static void 
-RXEth_Transmit(void *driverData,const uint8_t *buf,uint16_t len)
+RXEth_Transmit(EthDriver *drv,Skb *skb)
 {
-	RxEth *re = driverData; 
+	RxEth *re = container_of(drv,RxEth,ethDrv); 
 	Descriptor *txDescr = &re->txDescr[TX_DESCR_WP(re)];
-	txDescr->bufP = (uint8_t *)buf;
-	txDescr->bufsize = len;
+	txDescr->bufP = (uint8_t *)skb->hdrStart;
+	txDescr->bufsize = skb->hdrEnd - skb->hdrStart + skb->dataLen;
+	if(txDescr->bufsize < 64)  {
+		txDescr->bufsize = 64;
+	}
+	Con_Printf("Bufsize %u\n",txDescr->bufsize);
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	re->txDescrWp++;
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
-//	SleepMs(200);
+	SleepMs(10);
+	Skb_Free(skb);
 }
 
 /**
@@ -347,7 +354,7 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 	for(i = 1; (i < argc) && (i < 20); i++) {
 		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
-	RXEth_Transmit(re,pkt,64);
+	//RXEth_Transmit(re,pkt,64);
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	Con_Printf("RxGood:  %lu\n",re->statRxFrameOk);
@@ -412,7 +419,6 @@ RX_EtherInit(void)
 	Phy_Init();
 	ethDrv->txProc = RXEth_Transmit;
 	ethDrv->ctrlProc = RXEth_Control; 
-	ethDrv->driverData = re;
 	ethDrv->regPktSink = RxEth_RegisterPktSink;
 	
 	Interp_RegisterCmd(&ethtxCmd);

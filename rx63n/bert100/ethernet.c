@@ -138,15 +138,15 @@ skb_reset(Skb *skb) {
 inline void
 Eth_Transmit(EthIf *eth,Skb *skb) 
 {
+#if 0
 	uint16_t header_len, len;
 	header_len = skb->hdrEnd - skb->hdrStart;
         len = header_len + skb->dataLen;
-	#if 0 
         if(len < 64) {
                 skb->dataLen = skb->dataLen + (64 - len);
         }
 	#endif
-	eth->drv->txProc(eth->drv->driverData,skb->hdrStart,len);
+	eth->drv->txProc(eth->drv,skb);
 }
 
 /**
@@ -241,15 +241,15 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 {
 	uint16_t i;
 	ArpRq *arp = (ArpRq *)skb_remove_header(skb,sizeof(ArpRq));
-	Con_Printf("Arp tpa %u.%u.%u.%u\n",arp->tpa[0],arp->tpa[1],arp->tpa[2],arp->tpa[3]);
-	Con_Printf("my ip %u.%u.%u.%u\n",eth->if_ip[0],eth->if_ip[1],eth->if_ip[2],eth->if_ip[3]);
+	//Con_Printf("Arp tpa %u.%u.%u.%u\n",arp->tpa[0],arp->tpa[1],arp->tpa[2],arp->tpa[3]);
+	//Con_Printf("my ip %u.%u.%u.%u\n",eth->if_ip[0],eth->if_ip[1],eth->if_ip[2],eth->if_ip[3]);
 	if((arp->ptype == htons(0x800)) &&
 	   (arp->oper == htons(1)) && 
 	   (memcmp(eth->if_ip,arp->tpa,4) == 0)) {
 		Skb *skbReply = Skb_Alloc();
 		ArpRq *arpReply = skb_reserve_header(skbReply,sizeof(ArpRq));
 		EthHdr *ethReplyHdr = skb_reserve_header(skbReply,sizeof(EthHdr));
-		uint8_t *pkt = (uint8_t *)ethReplyHdr;
+		//uint8_t *pkt = (uint8_t *)ethReplyHdr;
 
 		ArpCE_Enter(eth,arp->spa,arp->sha);
 
@@ -272,9 +272,9 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 			ethReplyHdr->dstmac[i] = ethHdr->srcmac[i];
 			ethReplyHdr->srcmac[i] = eth->if_mac[i];
 		}
-
+		ethReplyHdr->proto = htons(0x0806);
+		#if 0
 		Con_Printf("Arp Reply:\n");
-		#if 1
 		for(i = 0; i < 28 + 14; i++){
 			Con_Printf("%02x ",pkt[i]);
 			if((i & 15) == 15) {
@@ -283,8 +283,8 @@ Eth_HandleArp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 		}
 		Con_Printf("\n");
 		#endif
-		Skb_Free(skbReply);
-		//Eth_Transmit(eth,skb);
+		//Skb_Free(skbReply);
+		Eth_Transmit(eth,skbReply);
 	} else if((arp->ptype == htons(0x800)) &&
 	   (arp->oper == htons(2))) {
 		/* Believe everything, no arp spoofing test here */
@@ -433,12 +433,16 @@ IP_SendPacket(Skb *skb)
  **********************************************************************************************************
  */
 static void
-ping_reply(Skb *skb,const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,uint16_t totalLength) 
+ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,uint16_t totalLength) 
 {
 	IcmpHdr *icmpHdr;
+	Skb *skb = Skb_Alloc();
 	uint16_t ip_payloadlen = totalLength - sizeof(IpHdr);
+	Con_Printf("totalLength %u, pl %u\n",totalLength,ip_payloadlen);
 	//uint16_t hdrlen = sizeof(IcmpHdr);
 	//uint8_t dstip_copy[4]; /* Need a copy because original is overwritten at arp resolution */
+
+	skb->dataLen = ip_payloadlen - sizeof(IcmpHdr);
 
 	icmpHdr = (IcmpHdr *)skb_reserve_header(skb,sizeof(IcmpHdr));
 	make_icmpHdr(icmpHdr,0,0,id,seqNr,ip_payloadlen);
@@ -458,7 +462,8 @@ Eth_HandleICMP(EthIf *eth,IpHdr *ipHdr,Skb *skb)
 	*(uint32_t *)srcip = ipHdr->dstaddr32;
 
 	if(icmpHdr->type == 8) {
-		ping_reply(skb,dstip,srcip,ntohs(icmpHdr->id),ntohs(icmpHdr->seqNr),ntohs(ipHdr->totalLength));
+		Con_Printf("echo request datalen %u\n",skb->dataLen);
+		ping_reply(dstip,srcip,ntohs(icmpHdr->id),ntohs(icmpHdr->seqNr),ntohs(ipHdr->totalLength));
 	}
 }
 
@@ -489,7 +494,7 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	switch(ipHdr->proto) {
 		case IPPROT_ICMP:
 			Con_Printf("Detected ICMP\n");
-			//Eth_HandleICMP(eth,ipHdr,skb); 
+			Eth_HandleICMP(eth,ipHdr,skb); 
 			break;
 
 		case IPPROT_TCP:
