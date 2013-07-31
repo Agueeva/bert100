@@ -433,7 +433,7 @@ IP_SendPacket(Skb *skb)
  **********************************************************************************************************
  */
 static void
-ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,uint16_t totalLength) 
+ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,uint8_t *dataBuf,uint16_t totalLength) 
 {
 	IcmpHdr *icmpHdr;
 	Skb *skb = Skb_Alloc();
@@ -443,7 +443,10 @@ ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,
 	//uint8_t dstip_copy[4]; /* Need a copy because original is overwritten at arp resolution */
 
 	skb->dataLen = ip_payloadlen - sizeof(IcmpHdr);
-
+	if(skb->dataLen > skb->dataAvailLen) {
+		skb->dataLen = 0;
+	}
+	memcpy(skb->dataStart,dataBuf,skb->dataLen);
 	icmpHdr = (IcmpHdr *)skb_reserve_header(skb,sizeof(IcmpHdr));
 	make_icmpHdr(icmpHdr,0,0,id,seqNr,ip_payloadlen);
 	IP_MakePacket(skb,dstip,srcip,IPPROT_ICMP,ip_payloadlen); 
@@ -463,7 +466,7 @@ Eth_HandleICMP(EthIf *eth,IpHdr *ipHdr,Skb *skb)
 
 	if(icmpHdr->type == 8) {
 		Con_Printf("echo request datalen %u\n",skb->dataLen);
-		ping_reply(dstip,srcip,ntohs(icmpHdr->id),ntohs(icmpHdr->seqNr),ntohs(ipHdr->totalLength));
+		ping_reply(dstip,srcip,ntohs(icmpHdr->id),ntohs(icmpHdr->seqNr),skb->dataStart,ntohs(ipHdr->totalLength));
 	}
 }
 
