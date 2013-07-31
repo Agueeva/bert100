@@ -45,9 +45,10 @@ CRC_Poly(uint8_t poly, uint16_t crc, uint8_t * data, uint32_t count)
  *****************************************************
  */
 uint16_t
-CRC16(uint16_t crc, const uint8_t * data, uint32_t count)
+CRC16(uint16_t crc, const void * _data, uint32_t count)
 {
 	uint32_t i;
+	const uint8_t *data = _data;
 	CRC.CRCCR.BYTE = RX_POLY_1021_LSB;
 	CRC.CRCDOR = crc;
 	for (i = 0; i < count; i++) {

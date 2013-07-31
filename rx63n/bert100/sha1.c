@@ -208,7 +208,7 @@ sha1_pad(struct sha1_ctxt * ctxt)
 }
 
 void
-sha1_loop(struct sha1_ctxt * ctxt, const uint8_t *input0, size_t len)
+sha1_loop(struct sha1_ctxt * ctxt, const void *input0, size_t len)
 {
 	const uint8_t *input;
 	size_t		gaplen;

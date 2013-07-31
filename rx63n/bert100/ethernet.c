@@ -496,13 +496,13 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	ArpCE_Enter(eth,ipHdr->srcaddr,ethHdr->srcmac); 
 	switch(ipHdr->proto) {
 		case IPPROT_ICMP:
-			Con_Printf("Detected ICMP\n");
+			//Con_Printf("Detected ICMP\n");
 			Eth_HandleICMP(eth,ipHdr,skb); 
 			break;
 
 		case IPPROT_TCP:
 			Con_Printf("Detected TCP\n");
-			//Tcp_ProcessPacket(ipHdr,skb);
+			Tcp_ProcessPacket(ipHdr,skb);
 			break;
 
 		case IPPROT_UDP:
@@ -529,7 +529,6 @@ Eth_PktRx(void *eventData,Skb *skb)
 	//asm("brk");
 	switch(ntohs(ethHdr->proto)) {
 		case ET_IP:
-			Con_Printf("Handle IP\n");
 			Eth_HandleIp(eth,ethHdr,skb);
 			break;
 		case ET_ARP:

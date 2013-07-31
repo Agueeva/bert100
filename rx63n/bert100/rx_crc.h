@@ -5,7 +5,7 @@ void RxCRC_Init(void);
  * (same as on M32C/M16C)
  ***********************************************************
  */
-uint16_t CRC16(uint16_t crc, const uint8_t * data, uint32_t count);
+uint16_t CRC16(uint16_t crc, const void * data, uint32_t count);
 uint16_t CRC16_String(const char *str);
 /**
  *************************************************************

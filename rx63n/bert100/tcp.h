@@ -7,7 +7,7 @@
 typedef struct Tcb Tcb;
 typedef bool Tcp_AcceptProc(void *eventData,Tcb *con,uint8_t ip[4],uint16_t port_nr);
 typedef void Tcp_DataSink(void *eventData,uint32_t fpos,const uint8_t *buf,uint16_t count);
-typedef uint16_t Tcp_DataSrc(void *eventData,uint32_t fpos,uint8_t **buf,uint16_t maxlen);
+typedef uint16_t Tcp_DataSrc(void *eventData,uint32_t fpos,void **buf,uint16_t maxlen);
 typedef void Tcp_CloseProc(void *eventData);
 
 typedef struct Tcb_Operations {

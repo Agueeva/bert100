@@ -4,6 +4,7 @@
  *************************************************************************
  */
 
+#include <string.h>
 #include "types.h"
 #include "iram.h"
 
@@ -35,3 +36,13 @@ IRam_Calloc(uint32_t size)
 	}
 	return NULL; 
 }
+
+char *
+IRam_Strdup(const char *str) {
+        char *dup;
+        uint16_t len = strlen(str);
+        dup = IRam_Calloc(len + 1);
+        strcpy(dup,str);
+        return dup;
+}
+

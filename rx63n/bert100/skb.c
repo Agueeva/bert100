@@ -26,6 +26,7 @@ Skb_Reset(Skb *skb,unsigned int index)
 
 	skb->dataStart = skb->dataBuf = skb->hdrBuf + hdrlen; 
 	skb->dataBufSize = skb->dataAvailLen = SKB_BUFSIZE - hdrlen; 
+	skb->dataLen = 0;
 }
 
 Skb *

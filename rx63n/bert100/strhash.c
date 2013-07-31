@@ -8,6 +8,7 @@
 #include "rx_crc.h"
 #include "iram.h"
 #include "strhash.h"
+#include "console.h"
 
 #define NR_HASH_BUCKETS	64
 
@@ -23,22 +24,13 @@ struct StrHashTable {
 };
 
 static uint16_t 
-StrHashBucket(const char *str) {
+StrHashBucket(char *str) {
 	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
 }
 
-/**
- ************************************
- * Duplicate a string
- ************************************
- */
-static char *
-sr_strdup(const char *str) {
-        char *dup;
-        uint16_t len = strlen(str);
-        dup = IRam_Calloc(len + 1);
-        strcpy(dup,str);
-        return dup;
+static uint16_t 
+StrNHashBucket(char *str,uint16_t len) {
+	return CRC16(0,str,len) % (NR_HASH_BUCKETS - 1);	
 }
 
 /**
@@ -69,7 +61,7 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 		(*first)->prev = newentry; 
 	} 
 	*first = newentry;
-	newentry->key = sr_strdup(key);
+	newentry->key = IRam_Strdup(key);
 	return newentry;
 }
 
@@ -86,6 +78,20 @@ StrHash_FindEntry(StrHashTable *table,const char *key)
 	StrHashEntry *cursor;
 	for(cursor = *first; cursor; cursor = cursor->next) {
 		if(strcmp(cursor->key,key) == 0) {
+			break;
+		}
+	}
+	return cursor;
+}
+
+StrHashEntry *
+StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen) 
+{
+	uint16_t idx = StrNHashBucket(key,keylen);
+	StrHashEntry **first = &table->buckets[idx];
+	StrHashEntry *cursor;
+	for(cursor = *first; cursor; cursor = cursor->next) {
+		if(strncmp(cursor->key,key,keylen) == 0) {
 			break;
 		}
 	}

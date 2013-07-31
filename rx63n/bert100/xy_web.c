@@ -21,6 +21,7 @@
 #include "sha1.h"
 #include "fat.h"
 #include "timer.h"
+#include "iram.h"
 
 char *content_string[] = {
 	"text/html",
@@ -39,8 +40,6 @@ char *content_string[] = {
 	"video/ogg", 
 	"video/webm", 
 };
-
-static int verbose = 0;
 
 #define XY_WEB_HEADER "HTTP/1.1 200 OK\r\n" \
         "Server: " XY_WEBSERVERNAME "\r\n" \
@@ -183,7 +182,7 @@ typedef struct _WebCon {
 	FIL file;
 	bool file_isopen;
 
-	char reqbuf[1];
+	char reqbuf[0];
 	char data[XY_WEBPAGEBUF];	
 } _WebCon;
 
@@ -437,7 +436,7 @@ FindRequestHandler(XY_WebServer *wserv,const char *path) {
  **************************************************************+
  */
 static void
-Extract_Var(uint8_t *linev[],uint8_t *keyword,uint8_t **valp) 
+Extract_Var(char *linev[],char *keyword,char **valp) 
 {
 	char *v,*end;
 	uint16_t i;
@@ -475,7 +474,6 @@ Extract_Var(uint8_t *linev[],uint8_t *keyword,uint8_t **valp)
 static int 
 check_auth(_WebCon *wc,WebPageRegistration *reg) 
 {
-	int i;
 	XYWebAuthInfo *auth;
 	char *a;
 	int level=0;
@@ -604,7 +602,7 @@ execute_web_request(_WebCon *wc,char *line)
  **************************************************************
  */ 
 static void
-Feed_PostData(_WebCon *wc,uint8_t *data,uint16_t len,uint16_t flags) {
+Feed_PostData(_WebCon *wc,const uint8_t *data,uint16_t len,uint16_t flags) {
 	if(wc->http_state != HTS_POST) {
 		Con_Printf("BUG: called post without POST state\n");
 		return;
@@ -680,7 +678,7 @@ WebServ_DataSink(void *eventData,uint32_t fpos,const uint8_t *buf,uint16_t len)
 				if((wc->reqbuf[j - 2] == 0) || (wc->reqbuf[j - 1] == 0)) {
 					execute_web_request(wc,wc->reqbuf);
 					if(wc->http_state == HTS_POST) {
-						Feed_PostData(wc,wc->reqbuf + j,wc->reqbuf_wp - j - 1,POST_FLG_START);
+						Feed_PostData(wc,(uint8_t *)wc->reqbuf + j,wc->reqbuf_wp - j - 1,POST_FLG_START);
 					}
 					return;
 				} 
@@ -701,10 +699,11 @@ WebServ_DataSink(void *eventData,uint32_t fpos,const uint8_t *buf,uint16_t len)
  ********************************************************************************************
  */
 static uint16_t
-WebServ_DataSrc(void *eventData,uint32_t fpos,uint8_t **buf,uint16_t maxlen)
+WebServ_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 {
 	_WebCon *wc=(_WebCon*)eventData;
 	uint16_t count;
+	char **buf = (char **)_buf;
 	*buf = wc->page + wc->out_rp; 
 	count = wc->pagelen - wc->out_rp;
 	if(count > maxlen) {
@@ -773,7 +772,7 @@ WebSocket_AllocObufSpace(WebSocket *ws,uint16_t size)
 	}	
 }
 
-uint8_t 
+void
 WebSocket_SubmitSpace(WebSocket *ws,uint16_t size) 
 {
 	//Con_Printf("Submited %d bytes\n",size);
@@ -786,10 +785,11 @@ WebSocket_SubmitSpace(WebSocket *ws,uint16_t size)
  *****************************************************************************************************
  */
 static uint16_t
-WebSocket_DataSrc(void *eventData,uint32_t fpos,uint8_t **buf,uint16_t maxlen)
+WebSocket_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 {
 	
 	uint16_t len;
+	uint8_t **buf = (uint8_t **)_buf;
 	WebSocket *ws=(WebSocket *)eventData;
 	//Con_Printf("Called the WebSocket data src\n");
 	if(ws->outbuf_snd != ws->outbuf_una) {
@@ -839,10 +839,11 @@ WebSocket_DataSrc(void *eventData,uint32_t fpos,uint8_t **buf,uint16_t maxlen)
  */
 
 static uint16_t 
-File_DataSrc(void *eventData,uint32_t fpos,uint8_t **buf,uint16_t maxlen)
+File_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 {
 	UINT size;
 	FRESULT res;
+	char **buf = (char **)_buf;
 	_WebCon *wc=(_WebCon*)eventData;
 	uint16_t count = maxlen;
 	res = f_read(&wc->file,wc->page, count, &size);
@@ -1011,21 +1012,21 @@ WebSocket_CloseProc(void *eventData)
  ***********************************************************
  */
 static struct Tcb_Operations wservTcbOps = {
-     /*.sinkProc =*/ WebServ_DataSink,  
-     /*.srcProc =*/ WebServ_DataSrc,
-     /*.closeProc =*/ WebServ_CloseProc
+     .sinkProc = WebServ_DataSink,  
+     .srcProc = WebServ_DataSrc,
+     .closeProc = WebServ_CloseProc
 };
 
 static struct Tcb_Operations websockTcbOps = {
-     /*.sinkProc =*/ WebSocket_DataSink,  
-     /*.srcProc =*/ WebSocket_DataSrc,
-     /*.closeProc =*/ WebSocket_CloseProc
+     .sinkProc = WebSocket_DataSink,  
+     .srcProc =  WebSocket_DataSrc,
+     .closeProc = WebSocket_CloseProc
 };
 
 static struct Tcb_Operations fileTcbOps = {
-     /*.sinkProc =*/ WebServ_DataSink,  
-     /*.srcProc =*/ File_DataSrc,
-     /*.closeProc =*/ WebServ_CloseProc
+     .sinkProc = WebServ_DataSink,  
+     .srcProc = File_DataSrc,
+     .closeProc = WebServ_CloseProc
 };
 
 /*
@@ -1090,7 +1091,6 @@ XY_NewWebServer(void)
  */
 static WebPageRegistration * 
 new_registration(XY_WebServer *wserv,const char *path) {
-	int isnew;
 	WebPageRegistration *reg = IRam_Calloc(sizeof(WebPageRegistration));
 	StrHashEntry *entryPtr;
 	if(!reg)
@@ -1185,6 +1185,7 @@ WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,uint8_t *data,uint16_t pllen)
 	// submit the message now
 }
 
+#if 0
 /**
  ********************************************************************************
  * \fn static uint16_t WebSocket_UnmaskMessage(uint8_t *data,uint16_t maxlen) 
@@ -1220,6 +1221,7 @@ WebSocket_UnmaskMsg(uint8_t *data,uint16_t maxlen)
 	}
 	return pllen;
 }
+#endif
 
 /**
  ******************************************************************************
@@ -1278,7 +1280,7 @@ WebSocket_MsgEval(WebSocket *ws,uint8_t opc,uint8_t *data,uint16_t len)
  */
 
 static void
-WebSocket_DataSink(void *eventData,uint32_t fpos,uint8_t *data,uint16_t len)
+WebSocket_DataSink(void *eventData,uint32_t fpos,const uint8_t *data,uint16_t len)
 {
 	uint16_t i;
 	WebSocket *ws = eventData;
@@ -1295,7 +1297,7 @@ WebSocket_DataSink(void *eventData,uint32_t fpos,uint8_t *data,uint16_t len)
 
 			case WSMSGS_PLLB:
 				ws->msg_pllen = data[i] & 0x7f;
-				if(!data[i] & 0x80) {
+				if(!(data[i] & 0x80)) {
 					Con_Printf("Message is not masked, Should not happen\n");
 					ws->msg_msk[0] = ws->msg_msk[1] = 
 					ws->msg_msk[2] = ws->msg_msk[3] = 0;
@@ -1420,11 +1422,9 @@ WebSocket_Handshake(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 	WebSocket *ws;
 	char *page = wc->page;
 	uint8_t len;
-	uint16_t i;
 	char *wskey = NULL;
 	char *wsversion;
-	char *end;
-	XY_WebServer *wserv = wc->wserv;
+	//XY_WebServer *wserv = wc->wserv;
 	static uint8_t base64res[29];
        	static struct sha1_ctxt ctxt;
 	static uint8_t digest[20];
@@ -1481,8 +1481,8 @@ WebSocket_Handshake(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
         	"Connection: Upgrade\r\n"
         	"Sec-WebSocket-Accept: "
 	);
-	page+=xy_strcpylen(page,base64res);
-	page+=xy_strcpylen(page,"\r\n\r\n");
+	page += xy_strcpylen(page,(char *)base64res);
+	page += xy_strcpylen(page,"\r\n\r\n");
 	wc->pagelen = page - wc->page;
 	ws->wops->connectProc(ws,ws->wops->eventData);
 	return 0;
@@ -1494,7 +1494,7 @@ WebSocket_Handshake(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
  * Register a WebSocket server here 
  ***********************************************************************************************
  */
-int 
+void 
 XY_WebSocketRegister(XY_WebServer *wserv,const char *path,WebSockOps *wops,void *wopsServData)
 {
 	wops->eventData = wopsServData;
@@ -1533,10 +1533,10 @@ XYWebNewAuth(const char *realm,const char *authstr)
 {
 	int len;
 	XYWebAuthInfo * auth = IRam_Calloc(sizeof(XYWebAuthInfo));	
-	auth->realm = sr_strdup(realm);
+	auth->realm = IRam_Strdup(realm);
 	len = Base64_Len(xy_strlen(authstr));
 	auth->auth_b64 = IRam_Calloc(len+1);
-	Base64_Encode(auth->auth_b64,authstr,xy_strlen(authstr));
+	Base64_Encode((uint8_t *)auth->auth_b64,(const uint8_t *)authstr,xy_strlen(authstr));
 	auth->auth_b64[len]=0;
 	auth->next=NULL;
 	return auth;

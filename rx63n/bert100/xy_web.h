@@ -49,7 +49,7 @@ typedef struct XY_WebRequest {
 typedef struct WebSocket WebSocket;
 
 typedef int XY_WebReqHandler(int argc,char *argv[],XY_WebRequest *wc,void *cd);
-typedef int XY_PostProc(void *eventData,uint8_t *buf,uint32_t len,uint16_t flags);
+typedef int XY_PostProc(void *eventData,const uint8_t *buf,uint32_t len,uint16_t flags);
 
 #define POST_FLG_START	(1)
 int XY_RegisterPostProc(XY_WebServer *,const char *path,XY_PostProc *,void *postData);
@@ -76,6 +76,6 @@ typedef struct WebSockOps {
 	void *eventData;
 } WebSockOps;
 
-int XY_WebSocketRegister(XY_WebServer *wserv,const char *path,WebSockOps *wops,void *evData);
+void XY_WebSocketRegister(XY_WebServer *wserv,const char *path,WebSockOps *wops,void *evData);
 void WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,uint8_t *data,uint16_t pllen);
 #endif 

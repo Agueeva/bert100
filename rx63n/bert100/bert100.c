@@ -37,6 +37,7 @@
 #include "i2cmaster.h"
 #include "ethernet.h"
 #include "skb.h"
+#include "xy_web.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -120,6 +121,9 @@ int main(void)
 	Skb_Init();
 	ethDrv = RX_EtherInit();
 	Ethernet_Init(ethDrv);
+	Tcp_Init();
+	XY_NewWebServer();
+
 	Spi_Init();
 	SDCard_ModuleInit();
 	FatCmds_Init();

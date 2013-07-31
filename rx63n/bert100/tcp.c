@@ -101,7 +101,7 @@ typedef struct PacketQueueEntry {
  **********************************************************************
  */
 struct Tcb {
-	Skb *skb;
+	//Skb *skb;
 	Tcp_DataSink *dataSink;
 	Tcp_DataSrc *dataSrc;
 	Tcp_CloseProc *closeProc;
@@ -270,6 +270,7 @@ TCB_Close(Tcb *tcb) {
 }
 
 
+#if 0
 /**
  **************************************************************************************************
  * \fn void TcpCon_RegisterDataProcs(Tcb *tcon,Tcp_DataSink *sink,Tcp_DataSrc *src,void *eventData) 
@@ -282,6 +283,7 @@ TcpCon_RegisterDataProcs(Tcb *tcon,Tcp_DataSink *sink,Tcp_DataSrc *src,void *eve
 	tcon->dataSrc = src;
 	tcon->eventData = eventData;	
 }
+#endif
 
 /**
  **********************************************************
@@ -446,15 +448,15 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 	uint16_t tcphdrlen;
 	uint8_t *hdrend;
 	uint16_be csum;
-	Skb *skb = tcb->skb;
+	Skb *skbSend = Skb_Alloc(); 
 
-	skb_reset(skb);
+	//skb_reset(skb);
 	if(tcb->state == TCPS_SYN_RCVD) {
 		tcphdrlen = sizeof(TcpHdr) + 4;
 	} else {
 		tcphdrlen = sizeof(TcpHdr);
 	}
-	tcpHdr = (TcpHdr *)skb_reserve_header(skb,tcphdrlen); 
+	tcpHdr = (TcpHdr *)skb_reserve_header(skbSend,tcphdrlen); 
 	hdrend = ((uint8_t *)tcpHdr)  + sizeof(TcpHdr);
 	
 	tcpHdr->srcPort   = htons(tcb->dstPort);
@@ -483,11 +485,11 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 			break;
 	}
 	if(dataLen) {
-		skb->dataLen = dataLen;
-		skb->dataStart = dataP;
+		skbSend->dataLen = dataLen;
+		skbSend->dataStart = dataP;
 		tcpHdr->flags |= TCPFLG_PSH;
 	} else {
-		skb->dataLen = 0;
+		skbSend->dataLen = 0;
 	}
 	tcpHdr->hdrLen = (tcphdrlen >> 2) << 4;
 	tcpHdr->ackNr = htonl(tcb->RCV_NXT);
@@ -522,11 +524,11 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 
 	csum = chksum_be((uint8_t *)&psHdr,12,0);	
 	csum = chksum_be((uint8_t *)tcpHdr,tcphdrlen,~csum);
-	csum = chksum_be((uint8_t *)skb->dataStart,dataLen,~csum);
+	csum = chksum_be((uint8_t *)skbSend->dataStart,dataLen,~csum);
 	tcpHdr->chksum = csum; 
 
-	IP_MakePacket(skb,tcb->ipAddr,tcb->myIp,IPPROT_TCP,tcphdrlen + dataLen);
-	IP_SendPacket(skb);
+	IP_MakePacket(skbSend,tcb->ipAddr,tcb->myIp,IPPROT_TCP,tcphdrlen + dataLen);
+	IP_SendPacket(skbSend);
 #if 0
 	if(expectingAck) {
 		tcb->retransCounter = 4;
@@ -679,7 +681,8 @@ Tcp_Close(Tcb *tcb) {
  *****************************************************************
  */
 void
-Tcp_Rst(IpHdr *ipHdr,Skb *skb) {
+Tcp_Rst(IpHdr *ipHdr,Skb *skbReq) {
+	Skb *skbReply = Skb_Alloc();
 	TcpPseudoHdr psHdr;
 	uint8_t dstaddr[4];
 	uint8_t srcaddr[4];
@@ -689,24 +692,25 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skb) {
 	uint16_be csum; 
 	uint16_t tmpPort;
 	uint32_t tmpNr;
-	TcpHdr *tcpHdr = (TcpHdr *)skb_reserve_header(skb,sizeof(TcpHdr));
+	TcpHdr *tcpHdrReq = (TcpHdr *)skb_reserve_header(skbReq,sizeof(TcpHdr));
+	TcpHdr *tcpHdrReply = (TcpHdr *)skb_reserve_header(skbReply,sizeof(TcpHdr));
 	//uint8_t *hdrend = ((uint8_t *)tcpHdr)  + tcphdrlen;
-	skb->dataLen = 0;
+	//skbReply->dataLen = 0;
 
-	tmpNr = tcpHdr->ackNr;
-	tcpHdr->ackNr = htonl(ntohl(tcpHdr->seqNr) + 1);	
-	tcpHdr->seqNr = tmpNr; 
+	tmpNr = tcpHdrReq->ackNr;
+	tcpHdrReply->ackNr = htonl(ntohl(tcpHdrReq->seqNr) + 1);	
+	tcpHdrReply->seqNr = tmpNr; 
 
-	tmpPort = tcpHdr->srcPort;
-	tcpHdr->srcPort   = tcpHdr->dstPort;
-	tcpHdr->dstPort  = tmpPort;
+	tmpPort = tcpHdrReq->srcPort;
+	tcpHdrReply->srcPort  = tcpHdrReq->dstPort;
+	tcpHdrReply->dstPort  = tmpPort;
 
-	tcpHdr->urgentPtr = 0;
-	tcpHdr->window    = htons(MAX_WIN_SZ);
-	tcpHdr->flags = TCPFLG_RST | TCPFLG_ACK; 
-	tcpHdr->chksum = 0;
+	tcpHdrReply->urgentPtr = 0;
+	tcpHdrReply->window    = htons(MAX_WIN_SZ);
+	tcpHdrReply->flags = TCPFLG_RST | TCPFLG_ACK; 
+	tcpHdrReply->chksum = 0;
 
-	tcpHdr->hdrLen = (tcphdrlen >> 2) << 4;
+	tcpHdrReply->hdrLen = (tcphdrlen >> 2) << 4;
 
 	psHdr.my_ip32	= ipHdr->dstaddr32;
 	psHdr.dst_ip32	= ipHdr->srcaddr32;
@@ -714,13 +718,13 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skb) {
 	psHdr.payloadlen = htons(payloadlen + tcphdrlen);
 
 	csum = chksum_be((uint8_t *)&psHdr,12,0);	
-	csum = chksum_be((uint8_t *)tcpHdr,tcphdrlen + payloadlen,~csum);
-	tcpHdr->chksum = csum; 
+	csum = chksum_be((uint8_t *)tcpHdrReply,tcphdrlen + payloadlen,~csum);
+	tcpHdrReply->chksum = csum; 
 	*(uint32_t *)dstaddr = ipHdr->srcaddr32;
 	*(uint32_t *)srcaddr = ipHdr->dstaddr32;
 
-	IP_MakePacket(skb,dstaddr,srcaddr,IPPROT_TCP,tcphdrlen + payloadlen);
-	IP_SendPacket(skb);
+	IP_MakePacket(skbReply,dstaddr,srcaddr,IPPROT_TCP,tcphdrlen + payloadlen);
+	IP_SendPacket(skbReply);
 }
 
 /**
@@ -980,7 +984,7 @@ Tcp_Init(void)
 	uint16_t i;
 	for(i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb =  &tcpConnection[i];
-		tcb->skb = skb_alloc(86,0);
+		//tcb->skb = skb_alloc(86,0);
 		Timer_Init(&tcb->retransTimer,Tcp_Retrans,tcb);
 		Timer_Init(&tcb->watchdogTimer,Tcp_Watchdog,tcb);
 	}

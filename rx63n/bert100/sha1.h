@@ -57,7 +57,7 @@ struct sha1_ctxt
 };
 
 extern void sha1_init(struct sha1_ctxt *);
-extern void sha1_loop(struct sha1_ctxt *, const uint8_t *, size_t);
+extern void sha1_loop(struct sha1_ctxt *, const void *, size_t);
 extern void sha1_result(struct sha1_ctxt *, uint8_t *);
 extern int sha1_sumfilename(char *fname,uint8_t *result);
 extern void sha1_sum(uint8_t *buf,size_t count,uint8_t *result);
