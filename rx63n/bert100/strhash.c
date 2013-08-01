@@ -24,12 +24,12 @@ struct StrHashTable {
 };
 
 static uint16_t 
-StrHashBucket(char *str) {
+StrHashBucket(const char *str) {
 	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
 }
 
 static uint16_t 
-StrNHashBucket(char *str,uint16_t len) {
+StrNHashBucket(const char *str,uint16_t len) {
 	return CRC16(0,str,len) % (NR_HASH_BUCKETS - 1);	
 }
 
