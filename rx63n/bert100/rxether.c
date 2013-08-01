@@ -255,7 +255,7 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
-	SleepMs(10);
+	SleepMs(3);
 	Skb_Free(skb);
 }
 
