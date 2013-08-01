@@ -6,7 +6,7 @@
 
 #define XY_WEBSERVERNAME "XY-0815 (TPOS)"
 
-#define XY_WEBPAGEBUF 4096 
+#define XY_WEBPAGEBUF 2048 
 
 typedef struct XY_WebServer { 
 	//XY_TcpServer tcpserv;

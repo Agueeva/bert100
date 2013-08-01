@@ -89,7 +89,7 @@ typedef struct WebPageRegistration {
 #define WSMSGS_PAYLOAD	(16)
 #define WSMSGS_IGNORE	(17)
 
-#define WS_OUTBUF_SIZE	(2048)
+#define WS_OUTBUF_SIZE	(1024)
 #define WS_INBUF_SIZE	(1024)
 
 /**

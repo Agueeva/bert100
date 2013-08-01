@@ -7,9 +7,10 @@
 #include <string.h>
 #include "types.h"
 #include "iram.h"
+#include "console.h"
 
 #define ALIGNMENT (4)
-#define IRAM_MANAGED_SIZE	(16384)
+#define IRAM_MANAGED_SIZE	(32768)
 typedef struct IRamManager {
 	uint8_t iram[IRAM_MANAGED_SIZE];
 	uint32_t firstFreeIdx;
@@ -33,6 +34,8 @@ IRam_Calloc(uint32_t size)
 		dataP = &irm->iram[irm->firstFreeIdx];
 		irm->firstFreeIdx = (irm->firstFreeIdx + size + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1);
 		return dataP;
+	} else {
+		Con_Printf("OOM\n");
 	}
 	return NULL; 
 }
