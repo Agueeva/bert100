@@ -189,7 +189,7 @@ cmd_delay(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(delayCmd, "delay", cmd_delay,
-       "delay   # test the delay looop");
+       "delay   # test the delay loop");
 
 
 /*
