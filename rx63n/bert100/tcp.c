@@ -42,8 +42,8 @@
 #define TCPS_LAST_ACK		(9)
 #define TCPS_TIME_WAIT		(10)
 
-//define DBG(x) (x)
-#define DBG(x) 
+#define DBG(x) (x)
+//define DBG(x) 
 static Mutex tcpSema;
 /**
  *******************************************
@@ -415,7 +415,7 @@ fetch_next_tx_data(Tcb *tcb,uint8_t **dataPP,uint16_t *dataLenP)
  	 */
 	if(tcb->txDataAvail && tcb->dataSrc) {
 		tcb->busy = true;
-		*dataLenP = tcb->dataSrc(tcb->eventData,fpos,dataPP,rsize << 1);
+		*dataLenP = tcb->dataSrc(tcb->eventData,fpos,(void **)dataPP,rsize << 1);
 		tcb->busy = false;
 		if(*dataLenP == 0) {
 			//Con_Printf("Warning, got no data\n"); 
@@ -486,7 +486,12 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 	}
 	if(dataLen) {
 		skbSend->dataLen = dataLen;
-		skbSend->dataStart = dataP;
+		if(dataLen <= skbSend->dataAvailLen) {
+			memcpy(skbSend->dataStart,dataP,dataLen);
+			//skbSend->dataStart = dataP;
+		} else {
+			Con_Printf("Packet to big: %u, avail %u\n",dataLen,skbSend->dataAvailLen);
+		}
 		tcpHdr->flags |= TCPFLG_PSH;
 	} else {
 		skbSend->dataLen = 0;
@@ -777,6 +782,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				return;
 			}
 		} else {
+			DBG(Con_Printf("No ssock, sending RST\n"));
 			Tcp_Rst(ipHdr,skb);
 			return;
 		}
@@ -808,7 +814,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	tcb = tc = TcpFindConnection(ipHdr->srcaddr,ntohs(tcpHdr->srcPort));
 	if(!tc) {
 		DBG(
-		Con_Printf("No TCB for port %u, ip %u.%u.%u.%u\n",htonl(tcpHdr->srcPort),
+		Con_Printf("No TCB for port %u, ip %u.%u.%u.%u\n",htons(tcpHdr->srcPort),
 			ipHdr->srcaddr[0],ipHdr->srcaddr[1],ipHdr->srcaddr[2],
 			ipHdr->srcaddr[3]));
 		/* Send RST */
@@ -828,7 +834,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				(ackNr == tc->SND_NXT)) {
 
 				Timer_Cancel(&tc->retransTimer);
-				DBG(Con_Printf("Connection established\n"));	
+				DBG(Con_Printf("Synack was acked, Connection established\n"));	
 				tc->state = TCPS_ESTABLISHED;
 				/* 
 				 ***************************************************************
