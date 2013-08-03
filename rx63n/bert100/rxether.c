@@ -377,13 +377,9 @@ RX_EtherInit(void)
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 //	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
-	for(i = 0; i < 1000; i++) {
-
-	}
+	DelayNs(1000);
 	EDMAC.EDMR.BIT.SWR = 1;
-	for(i = 0; i < 1000; i++) {
-
-	}
+	DelayNs(1000); /* The documentation says 64 bus clock cycles */ 
 	RXEth_InitDescriptors(re);
 	RXEth_SetMAC(re,mac);
 	
