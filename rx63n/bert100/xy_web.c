@@ -89,7 +89,7 @@ typedef struct WebPageRegistration {
 #define WSMSGS_PAYLOAD	(16)
 #define WSMSGS_IGNORE	(17)
 
-#define WS_OUTBUF_SIZE	(2048)
+#define WS_OUTBUF_SIZE	(1024)
 #define WS_INBUF_SIZE	(1024)
 
 /**
@@ -846,6 +846,11 @@ File_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 	char **buf = (char **)_buf;
 	_WebCon *wc=(_WebCon*)eventData;
 	uint16_t count = maxlen;
+	if(maxlen > XY_WEBPAGEBUF) {
+		count = XY_WEBPAGEBUF;
+	} else {
+		count = maxlen;
+	}
 	res = f_read(&wc->file,wc->page, count, &size);
 	*buf = wc->page;
 	if((res != FR_OK) || (size == 0)) {

@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(2U)
+#define RX_DESCR_NUM	(4U)
 #define TX_DESCR_NUM	(4U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
@@ -255,7 +255,7 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
-	SleepMs(10);
+	SleepMs(3);
 	Skb_Free(skb);
 }
 

@@ -9,7 +9,7 @@
 #include "console.h"
 
 #define SKB_POOLSIZE	(2)
-#define SKB_BUFSIZE	(1000)
+#define SKB_BUFSIZE	(1600)
 static Skb skbPool[SKB_POOLSIZE];
 static bool skbFree[SKB_POOLSIZE];
 static CSema skbCSema;
