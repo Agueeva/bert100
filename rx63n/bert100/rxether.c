@@ -246,8 +246,21 @@ static void
 RXEth_TxEventProc(void *eventData)
 {
 	RxEth *re = eventData;
-//	while(re->txDescr
-////	CSema_Up(re->);	
+	Descriptor *txDescr;
+	do {
+		txDescr = &re->txDescr[TX_DESCR_RP(re)];
+		if((txDescr->status & TXDS_ACT)) {
+			break;
+		} 
+		if((txDescr->skb == NULL)) {
+			break;
+		} 
+		Skb_Free(txDescr->skb);
+		txDescr->skb = NULL;
+		re->txDescrRp++;
+		//Con_Printf("Up\n");
+		CSema_Up(&re->cSemaTxDescr);
+	} while(1);
 }
 
 /**
@@ -261,7 +274,7 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 {
 	RxEth *re = container_of(drv,RxEth,ethDrv); 
 	Descriptor *txDescr;
-	//CSema_Down(&drv->cSemaTxDescr);
+	CSema_Down(&re->cSemaTxDescr);
 	txDescr = &re->txDescr[TX_DESCR_WP(re)];
 	txDescr->bufP = (uint8_t *)skb->hdrStart;
 	txDescr->bufsize = skb->hdrEnd - skb->hdrStart + skb->dataLen;
@@ -275,8 +288,10 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
+#if 0
 	SleepMs(3);
 	Skb_Free(skb);
+#endif
 }
 
 /**
