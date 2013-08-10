@@ -152,18 +152,22 @@ TimeUs_Get(void)
 /**
  ***********************************************************************
  * delay loop needs 4 clock cycles per loopcnt
+ * According to ABI specification rej10j2062_ccrx_v100um.pdf page 203
+ * the first argument of a function is in the register r1.
  ***********************************************************************
  */
+#if 0
  __attribute__ ((noinline)) void
 _delay_loop(uint32_t loopcnt)
 {
-        asm("mov.l %0,r1"::"g" (loopcnt) : "memory","r1");
-        asm("label9279: ":::);
-        asm("sub #1,r1":::"r1");
-        asm("bpz label9279":::);
+        asm("label9279%=:      \n\t"
+	    "	sub #1,%0    \n\t"
+	    "	bpz.b label9279%="::"g" (loopcnt));
 }
+#endif
 
-#define DELAY 100
+#define DELAY 120 
+#define DELAY_US 5 
 
 static int8_t
 cmd_delay(Interp * interp, uint8_t argc, char *argv[])
@@ -184,6 +188,23 @@ cmd_delay(Interp * interp, uint8_t argc, char *argv[])
                 DelayNs(DELAY);
         }
         afterMs = TimeMs_Get();
+	EV_Yield();
+        Con_Printf("Needed %lu ms \n",afterMs - beforeMs);
+        beforeMs = TimeMs_Get();
+        for(i = 0; i < (10000/DELAY_US); i++) {
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+                DelayUs(DELAY_US);
+        }
+        afterMs = TimeMs_Get();
+	EV_Yield();
         Con_Printf("Needed %lu ms \n",afterMs - beforeMs);
         return 0;
 }

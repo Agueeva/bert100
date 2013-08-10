@@ -11,6 +11,7 @@
 #include "console.h"
 #include "interpreter.h"
 #include "timer.h"
+#include "tpos.h"
 #include "sdcard.h"
 #include "iodefine.h"
 #include "atomic.h"

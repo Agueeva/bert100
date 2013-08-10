@@ -74,7 +74,7 @@ typedef struct Descriptor {
 	uint16_t size;	  /**< Only relevant in receive descriptor */
 	uint16_t bufsize; /**< TX: number of bytes to transmit, RX: Maxium bytes to receive */
 	uint8_t  *bufP;
-	uint32_t padding;
+	Skb *skb;	  /**< not used by hardware, used for skb here */
 } Descriptor;
 
 typedef struct RxEth {
@@ -91,6 +91,8 @@ typedef struct RxEth {
 	uint16_t rxDescrWp;
 	uint16_t rxDescrRp;
 	Event    evRxEvent;
+	Event    evTxEvent;
+	CSema	 cSemaTxDescr;
 	uint32_t statTxInts;
 	uint32_t statRxInts;
 	uint32_t statRxBadFrame;
@@ -169,6 +171,12 @@ RX_EtherSetupIoPortsMII(void)
 	MPC.PWPR.BIT.B0WI = 1;
 }
 
+/**
+ ************************************************************************
+ * \fn void Excep_ETHER_EINT(void) 
+ ************************************************************************
+ */
+
 void 
 Excep_ETHER_EINT(void) 
 {  
@@ -182,6 +190,7 @@ Excep_ETHER_EINT(void)
 	} 
 	if(status & EMAC_TC_INT) {
 		EDMAC.EESR.BIT.TC = 1; /* Clear the transmission complete bit */
+		EV_Trigger(&re->evTxEvent);
 		re->statTxInts++;
 	}
 }
@@ -233,6 +242,14 @@ RXEth_RxEventProc(void *eventData)
 
 }
 
+static void
+RXEth_TxEventProc(void *eventData)
+{
+	RxEth *re = eventData;
+//	while(re->txDescr
+////	CSema_Up(re->);	
+}
+
 /**
  ****************************************************************************
  * \fn static void RXEth_Transmit(void *driverData,uint8_t *buf,uint16_t len)
@@ -243,14 +260,17 @@ static void
 RXEth_Transmit(EthDriver *drv,Skb *skb)
 {
 	RxEth *re = container_of(drv,RxEth,ethDrv); 
-	Descriptor *txDescr = &re->txDescr[TX_DESCR_WP(re)];
+	Descriptor *txDescr;
+	//CSema_Down(&drv->cSemaTxDescr);
+	txDescr = &re->txDescr[TX_DESCR_WP(re)];
 	txDescr->bufP = (uint8_t *)skb->hdrStart;
 	txDescr->bufsize = skb->hdrEnd - skb->hdrStart + skb->dataLen;
 	if(txDescr->bufsize < 64)  {
 		txDescr->bufsize = 64;
 	}
-	Con_Printf("Bufsize %u\n",txDescr->bufsize);
+	//Con_Printf("Bufsize %u\n",txDescr->bufsize);
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
+	txDescr->skb = skb;
 	re->txDescrWp++;
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
@@ -309,9 +329,12 @@ RXEth_InitDescriptors(RxEth *re)
 {
 	int i;
 	Descriptor *descr;
+	CSema_Init(&re->cSemaTxDescr);
 	for(i = 0; i < TX_DESCR_NUM; i++) {
 		descr = &re->txDescr[i];	
 		descr->status = 0;
+		descr->skb = NULL;
+		CSema_Up(&re->cSemaTxDescr);
 	}
 	descr->status |= TXDS_DLE; /* Mark as last Descriptor in the ring */
 	
@@ -321,6 +344,7 @@ RXEth_InitDescriptors(RxEth *re)
 		descr->bufsize = EMAC_RX_BUFSIZE;
 		descr->size = 0;
 		descr->status = RXDS_ACT;
+		descr->skb = NULL;
 	}
 	descr->status |= RXDS_DLE; /* Mark as last descriptor in the ring */
 	
@@ -367,7 +391,6 @@ INTERP_CMD(ethtxCmd, "ethtx", cmd_ethtx, "ethtx      # Raw ethernet transmit tes
 EthDriver *
 RX_EtherInit(void)
 {
-	volatile uint32_t i;
 	/* This is a locally assigned unicast address */
 	const uint8_t mac[6] = { 0x12,0x34,0x56,0x78,0xab,0xcd };
 	RxEth *re = &gRxEth;
@@ -375,11 +398,12 @@ RX_EtherInit(void)
 	ethDrv = &re->ethDrv;
 
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
+	EV_Init(&re->evTxEvent, RXEth_TxEventProc, re);
 //	RX_EtherSetupIoPortsMII();
 	MSTP(EDMAC) = 0;
-	DelayNs(1000);
+	DelayUs(2);
 	EDMAC.EDMR.BIT.SWR = 1;
-	DelayNs(1000); /* The documentation says 64 bus clock cycles */ 
+	DelayUs(2); /* The documentation says 64 bus clock cycles */ 
 	RXEth_InitDescriptors(re);
 	RXEth_SetMAC(re,mac);
 	

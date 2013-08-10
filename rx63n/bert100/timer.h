@@ -2,6 +2,8 @@
 #define _TIMER_H
 #include "events.h"
 #include "types.h"
+#include "config.h"
+
 void INT_Excep_CMTU0_CMI0(void) __attribute__ ((interrupt));
 
 /**
@@ -117,7 +119,16 @@ is_later(TimeMs_t time1, TimeMs_t time2)
 uint64_t TimeNs_Get(void);
 uint64_t TimeUs_Get(void);
 void SleepUs_Get(uint32_t us);
-#define __delay_loop(cnt)    {void _delay_loop(uint32_t loopcnt); _delay_loop((cnt >= 2) ? (cnt - 2) : 0);}
+
+static inline void
+delay_loop(uint32_t loopcnt)
+{
+        __asm__ volatile(
+	    "label9279%=:      \n\t"
+            "   sub #1,%0    \n\t"
+            "   bpz.b label9279%=":"=r" (loopcnt):"0"(loopcnt):);
+}
+
 /**
  ***************************************************************************
  * \def DelayNs(ns)
@@ -125,7 +136,8 @@ void SleepUs_Get(uint32_t us);
  * calling the delay loop.
  ***************************************************************************
  */
-#define DelayNs(ns)  { __delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
+#define DelayNs(ns)  { delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
+#define DelayUs(us)  { delay_loop(((us) * (F_CPU / 1000) / 4000)); }
 
 void Timers_Init(void);
 #endif
