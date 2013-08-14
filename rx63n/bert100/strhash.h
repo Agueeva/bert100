@@ -9,5 +9,5 @@ StrHashEntry *StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t ke
 StrHashTable *StrHash_New(void); 
 void StrHash_SetValue(StrHashEntry *she,void *value);
 void *StrHash_GetValue(StrHashEntry *she);
-char *StrHash_GetKey(StrHashEntry *she);
+const char *StrHash_GetKey(StrHashEntry *she);
 #endif

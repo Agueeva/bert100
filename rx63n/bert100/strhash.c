@@ -6,14 +6,16 @@
 #include <string.h>
 #include "types.h"
 #include "rx_crc.h"
-#include "iram.h"
 #include "strhash.h"
 #include "console.h"
+#include "iram.h"
 
 #define NR_HASH_BUCKETS	64
+#define Calloc IRam_Calloc
+#define Strdup IRam_Strdup
 
 struct StrHashEntry {
-	char *key;
+	const char *key;
 	void *value;
 	struct StrHashEntry *next;
 	struct StrHashEntry *prev;
@@ -28,10 +30,12 @@ StrHashBucket(const char *str) {
 	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
 }
 
+#if 0
 static uint16_t 
-StrNHashBucket(const char *str,uint16_t len) {
+StrNHashBucket(char *str,uint16_t len) {
 	return CRC16(0,str,len) % (NR_HASH_BUCKETS - 1);	
 }
+#endif
 
 /**
  **************************************************************
@@ -54,14 +58,19 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 		/* Error: entry already exists */
 		return NULL;	
 	}
-	newentry = IRam_Calloc(sizeof(StrHashEntry));
+	newentry = Calloc(sizeof(StrHashEntry));
 	newentry->next = *first;
 	newentry->prev = NULL;
 	if(*first) {
 		(*first)->prev = newentry; 
 	} 
 	*first = newentry;
-	newentry->key = IRam_Strdup(key);
+	/* Dup only keys in RAM, flash is immutable */
+	if((uint32_t) key  < 0xF0000000) {
+		newentry->key = Strdup(key);
+	} else {
+		newentry->key = key;
+	}
 	return newentry;
 }
 
@@ -78,20 +87,6 @@ StrHash_FindEntry(StrHashTable *table,const char *key)
 	StrHashEntry *cursor;
 	for(cursor = *first; cursor; cursor = cursor->next) {
 		if(strcmp(cursor->key,key) == 0) {
-			break;
-		}
-	}
-	return cursor;
-}
-
-StrHashEntry *
-StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen) 
-{
-	uint16_t idx = StrNHashBucket(key,keylen);
-	StrHashEntry **first = &table->buckets[idx];
-	StrHashEntry *cursor;
-	for(cursor = *first; cursor; cursor = cursor->next) {
-		if(strncmp(cursor->key,key,keylen) == 0) {
 			break;
 		}
 	}
@@ -115,7 +110,7 @@ StrHash_GetValue(StrHashEntry *she)
 	return she->value;
 }
 
-char *
+const char *
 StrHash_GetKey(StrHashEntry *she) 
 {
 	return she->key;
@@ -123,7 +118,7 @@ StrHash_GetKey(StrHashEntry *she)
 
 StrHashTable * 
 StrHash_New(void) {
-	StrHashTable *sht = IRam_Calloc(sizeof(*sht));
-	sht->buckets = (StrHashEntry **)IRam_Calloc(sizeof(void *) * NR_HASH_BUCKETS);
+	StrHashTable *sht = Calloc(sizeof(*sht));
+	sht->buckets = (StrHashEntry **)Calloc(sizeof(void *) * NR_HASH_BUCKETS);
 	return sht;
 }
