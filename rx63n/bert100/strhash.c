@@ -25,17 +25,15 @@ struct StrHashTable {
 	StrHashEntry **buckets;		
 };
 
-static uint16_t 
+INLINE uint16_t 
 StrHashBucket(const char *str) {
 	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
 }
 
-#if 0
-static uint16_t 
-StrNHashBucket(char *str,uint16_t len) {
+INLINE uint16_t 
+StrNHashBucket(const char *str,uint16_t len) {
 	return CRC16(0,str,len) % (NR_HASH_BUCKETS - 1);	
 }
-#endif
 
 /**
  **************************************************************
@@ -87,6 +85,20 @@ StrHash_FindEntry(StrHashTable *table,const char *key)
 	StrHashEntry *cursor;
 	for(cursor = *first; cursor; cursor = cursor->next) {
 		if(strcmp(cursor->key,key) == 0) {
+			break;
+		}
+	}
+	return cursor;
+}
+
+StrHashEntry *
+StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen) 
+{
+	uint16_t idx = StrNHashBucket(key,keylen);
+ 	StrHashEntry **first = &table->buckets[idx];
+	StrHashEntry *cursor;
+	for(cursor = *first; cursor; cursor = cursor->next) {
+		if(strncmp(cursor->key,key,keylen) == 0) {
 			break;
 		}
 	}

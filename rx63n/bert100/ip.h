@@ -12,15 +12,8 @@ typedef struct IpHdr {
 	uint8_t ttl;		
 	uint8_t proto;
 	uint16_t chksum;
-	union {
-		uint8_t srcaddr[4];
-		uint32_t srcaddr32;
-	};
-	union {
-		uint8_t dstaddr[4];
-		uint32_t dstaddr32;
-	};
-	// optspad[4];	
+	uint8_t srcaddr[4];
+	uint8_t dstaddr[4];
 } IpHdr;
 
 #define IPPROT_ICMP	0x01

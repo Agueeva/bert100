@@ -17,12 +17,39 @@
 #include "tcp.h"
 #include "iram.h"
 
+INLINE void
+Write32(uint32_t value, void *addr)
+{
+        *(uint32_t *) (addr) = (value);
+}
+
+INLINE void
+Write16(uint16_t value, void *addr)
+{
+        *(uint16_t *) (addr) = (value);
+}
+
+INLINE uint32_t
+Read32(const void *addr)
+{
+        return *(const uint32_t *) (addr);
+}
+
+INLINE uint16_t
+Read16(const void *addr)
+{
+        return *(const uint16_t *) (addr);
+}
+
+INLINE uint8_t
+Read8(const void *addr)
+{
+        return *(const uint8_t *) (addr);
+}
+
 typedef struct ArpCE {
 	uint8_t arp_mac[6];
-	union {
-		uint8_t arp_ip[4];
-		uint32_t arp_ip32;
-	};
+	uint8_t arp_ip[4];
 	TimeMs_t timestamp;
 } ArpCE;
 
@@ -30,18 +57,9 @@ typedef struct EthIf {
 	EthDriver *drv;
         void *hwif;
         uint8_t if_mac[6];
-	union {
-		uint8_t if_ip[4]; /* for arp */
-		uint32_t if_ip32; /* for arp */
-	};
-	union {
-		uint8_t if_netmask[4];
-		uint32_t if_netmask32;
-	};
-	union {
-		uint8_t defaultGW[4];
-		uint32_t defaultGW32;
-	};
+	uint8_t if_ip[4]; /* for arp */
+	uint8_t if_netmask[4];
+	uint8_t defaultGW[4];
 	ArpCE arpCache[4];
 } EthIf;
 
@@ -165,7 +183,7 @@ ArpCE_Enter(EthIf *eth,uint8_t *ip,uint8_t *mac)
 	TimeMs_t age = 0;
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
-		if(*(uint32_t *)ip == ace->arp_ip32) {
+		if(Read32(ip) == Read32(ace->arp_ip)) {
 			entry_nr = i;
 			break;
 		}
@@ -185,8 +203,8 @@ ArpCE_Enter(EthIf *eth,uint8_t *ip,uint8_t *mac)
 
 inline bool  
 netmask_match(EthIf *eth,const uint8_t *ip) {
-	if((*(uint32_t *)ip & eth->if_netmask32) ==
-	  (eth->if_ip32 & eth->if_netmask32)) 
+	if((Read32(ip) & Read32(eth->if_netmask)) ==
+	  (Read32(eth->if_ip) & Read32(eth->if_netmask))) 
 	{
 		return true;
 	} else {
@@ -207,7 +225,7 @@ ArpCE_Find(EthIf *eth,const uint8_t *ip)
 	//TimeMs_t now = TimeMs_Get();
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
-		if(*(uint32_t*)ip == ace->arp_ip32) {
+		if(Read32(ip) == Read32(ace->arp_ip)) {
 			return ace;
 		}
 	}
@@ -215,7 +233,7 @@ ArpCE_Find(EthIf *eth,const uint8_t *ip)
 	if(!netmask_match(eth,ip)) {
 		for(i = 0; i < array_size(eth->arpCache); i++) {
 			ace = &eth->arpCache[i];
-			if(eth->defaultGW32 == ace->arp_ip32) {
+			if(Read32(eth->defaultGW) == Read32(ace->arp_ip)) {
 				return ace;
 			}
 		}
@@ -378,8 +396,12 @@ add_ip_header(Skb *skb,const uint8_t *dstip,const uint8_t *srcip,uint8_t proto,u
 	ipHdr->flagsFrag = 0x40;
 	ipHdr->ttl = 64;
 	ipHdr->proto = proto;
+	Write32(Read32(dstip),ipHdr->dstaddr);
+	Write32(Read32(srcip),ipHdr->srcaddr);	
+#if 0
 	ipHdr->dstaddr32 = *(uint32_t *)dstip;	
 	ipHdr->srcaddr32 = *(uint32_t *)srcip;
+#endif
 	
 	/* For purposes of calcluating the checksum the checksum field is zero */ 
 	ipHdr->chksum = 0;
@@ -439,8 +461,6 @@ ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,
 	Skb *skb = Skb_Alloc();
 	uint16_t ip_payloadlen = totalLength - sizeof(IpHdr);
 	Con_Printf("totalLength %u, pl %u\n",totalLength,ip_payloadlen);
-	//uint16_t hdrlen = sizeof(IcmpHdr);
-	//uint8_t dstip_copy[4]; /* Need a copy because original is overwritten at arp resolution */
 
 	skb->dataLen = ip_payloadlen - sizeof(IcmpHdr);
 	if(skb->dataLen > skb->dataAvailLen) {
@@ -461,8 +481,8 @@ Eth_HandleICMP(EthIf *eth,IpHdr *ipHdr,Skb *skb)
 	uint8_t srcip[4]; /* Need a copy because original is overwritten at arp resolution */
 	IcmpHdr *icmpHdr = (IcmpHdr *)skb_remove_header(skb,sizeof(IcmpHdr));
 
-	*(uint32_t *)dstip = ipHdr->srcaddr32;
-	*(uint32_t *)srcip = ipHdr->dstaddr32;
+	Write32(Read32(ipHdr->srcaddr),dstip);
+	Write32(Read32(ipHdr->dstaddr),srcip);
 
 	if(icmpHdr->type == 8) {
 		Con_Printf("echo request datalen %u\n",skb->dataLen);
@@ -487,7 +507,8 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	}
 	skb_remove_header(skb,hdrlen);
 	
-	if(ipHdr->dstaddr32 != eth->if_ip32) 
+	//if(ipHdr->dstaddr32 != eth->if_ip32) 
+	if(Read32(ipHdr->dstaddr) != Read32(eth->if_ip)) 
 	{
 		return;	
 	}
@@ -501,12 +522,12 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 			break;
 
 		case IPPROT_TCP:
-			Con_Printf("Detected TCP\n");
+			//Con_Printf("Detected TCP\n");
 			Tcp_ProcessPacket(ipHdr,skb);
 			break;
 
 		case IPPROT_UDP:
-			Con_Printf("Detected UDP\n");
+			//Con_Printf("Detected UDP\n");
 			break;
 
 		default:
@@ -554,7 +575,7 @@ cmd_arp(Interp * interp, uint8_t argc, char *argv[])
 	now = TimeMs_Get();
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
-		if(ace->arp_ip32 == 0) {
+		if(Read32(ace->arp_ip) == 0) {
 			continue;	
 		}
 		age = now - ace->timestamp;
@@ -597,9 +618,11 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 			netmask_bits = astrtoi16(s);	
 			//Param_Write(netmask,&netmask_bits);
 			if(netmask_bits == 0) {
-				eth->if_netmask32 = UINT32_C(~0); 
+				Write32(UINT32_C(~0),eth->if_netmask);
+				//eth->if_netmask32 = UINT32_C(~0); 
 			} else {
-				eth->if_netmask32 = ntohl(UINT32_C(~0) << (32 - netmask_bits));
+				Write32(ntohl(UINT32_C(~0) << (32 - netmask_bits)),eth->if_netmask);
+				//eth->if_netmask32 = ntohl(UINT32_C(~0) << (32 - netmask_bits));
 			}
 		}
 	}
@@ -669,12 +692,12 @@ Ethernet_Init(EthDriver *drv)
 		netmask_bits = 24;
 	}
 	if(netmask_bits == 0) {
-		eth->if_netmask32 = UINT32_C(~0); 
+		Write32(UINT32_C(~0),eth->if_netmask);
 	} else {
-		eth->if_netmask32 = ntohl(UINT32_C(~0) << (32 - netmask_bits));
+		Write32(ntohl(UINT32_C(~0) << (32 - netmask_bits)),eth->if_netmask);
 	}
 	//Param_Read(defaultGW,eth->defaultGW);
-	if(eth->defaultGW32 == ~UINT32_C(0)) {
+	if(Read32(eth->defaultGW) == ~UINT32_C(0)) {
 		eth->defaultGW[0] = 192;
 		eth->defaultGW[1] = 168;
 		eth->defaultGW[2] = 101;

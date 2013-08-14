@@ -75,14 +75,8 @@ typedef struct TcpServerSocket {
  ***************************************************************************
  */
 typedef struct TcpPseudoHdr {
-	union {
-		uint8_t my_ip[4];
-		uint32_t my_ip32;
-	};
-	union {
-		uint8_t dst_ip[4];
-		uint32_t dst_ip32;
-	};
+	uint8_t my_ip[4];
+	uint8_t dst_ip[4];
 	uint16_be proto; 
 	uint16_be payloadlen;
 } TcpPseudoHdr;
@@ -94,6 +88,18 @@ typedef struct PacketQueueEntry {
 	uint8_t  flags;
 } PQE;
 #endif
+INLINE void
+Write32(uint32_t value, void *addr)
+{
+        *(uint32_t *) (addr) = (value);
+}
+
+INLINE uint32_t
+Read32(const void *addr)
+{
+        return *(const uint32_t *) (addr);
+}
+
 /**
  **********************************************************************
  * RFC 793 Section 2.7 says that information about a connection is
@@ -522,8 +528,9 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 		tc->myIp[0],tc->myIp[1],tc->myIp[2],tc->myIp[3],
 		tc->ipAddr[0],tc->ipAddr[1],tc->ipAddr[2],tc->ipAddr[3]);
 #endif
-	psHdr.my_ip32	= tcb->myIp32;
-	psHdr.dst_ip32	= tcb->ipAddr32;
+	Write32(Read32(tcb->myIp),psHdr.my_ip);
+	Write32(Read32(tcb->ipAddr),psHdr.dst_ip);
+
 	psHdr.proto = htons(IPPROT_TCP);
 	psHdr.payloadlen = htons(dataLen + tcphdrlen);
 
@@ -717,16 +724,16 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skbReq) {
 
 	tcpHdrReply->hdrLen = (tcphdrlen >> 2) << 4;
 
-	psHdr.my_ip32	= ipHdr->dstaddr32;
-	psHdr.dst_ip32	= ipHdr->srcaddr32;
+	Write32(Read32(ipHdr->dstaddr),psHdr.my_ip);
+	Write32(Read32(ipHdr->srcaddr),psHdr.dst_ip);
 	psHdr.proto = htons(IPPROT_TCP);
 	psHdr.payloadlen = htons(payloadlen + tcphdrlen);
 
 	csum = chksum_be((uint8_t *)&psHdr,12,0);	
 	csum = chksum_be((uint8_t *)tcpHdrReply,tcphdrlen + payloadlen,~csum);
 	tcpHdrReply->chksum = csum; 
-	*(uint32_t *)dstaddr = ipHdr->srcaddr32;
-	*(uint32_t *)srcaddr = ipHdr->dstaddr32;
+	Write32(Read32(ipHdr->srcaddr),dstaddr);
+	Write32(Read32(ipHdr->dstaddr),srcaddr);
 
 	IP_MakePacket(skbReply,dstaddr,srcaddr,IPPROT_TCP,tcphdrlen + payloadlen);
 	IP_SendPacket(skbReply);
@@ -792,8 +799,12 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		tc->IRS = seqNr;
 	 	tc->RCV_NXT = seqNr + 1; 
 		tc->SND_WND = tc->SND_UNA + ntohs(tcpHdr->window);
+		Write32(Read32(ipHdr->srcaddr),tc->ipAddr);
+		Write32(Read32(ipHdr->dstaddr),tc->myIp);
+#if 0
 		tc->ipAddr32 = ipHdr->srcaddr32;
 		tc->myIp32 = ipHdr->dstaddr32;
+#endif
 		/* 
  		 *********************************************************************************
 		 * Steps 2 and 3 according to section 3.3 of RFC793 , Ack the received seq. Nr
@@ -990,7 +1001,6 @@ Tcp_Init(void)
 	uint16_t i;
 	for(i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb =  &tcpConnection[i];
-		//tcb->skb = skb_alloc(86,0);
 		Timer_Init(&tcb->retransTimer,Tcp_Retrans,tcb);
 		Timer_Init(&tcb->watchdogTimer,Tcp_Watchdog,tcb);
 	}
