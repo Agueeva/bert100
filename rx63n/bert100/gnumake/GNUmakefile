@@ -18,7 +18,8 @@ SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	threads.c tpos.c rxether.c phy.c base64.c sha1.c md5.c \
 	wdta.c ethernet.c spi.c fat.c fatcmds.c diskio.c sdcard.c \
 	tcp.c xy_string.c iram.c rx_crc.c strhash.c ccsbcs.c \
-	ad537x.c mdio.c cdr.c shiftreg.c i2cmaster.c skb.c  xy_web.c
+	ad537x.c mdio.c cdr.c shiftreg.c i2cmaster.c skb.c  xy_web.c \
+	pvar_socket.c
 
 ASMFILES=reset_program.asm switch_context.asm 
 

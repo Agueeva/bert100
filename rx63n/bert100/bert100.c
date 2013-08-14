@@ -38,6 +38,7 @@
 #include "ethernet.h"
 #include "skb.h"
 #include "xy_web.h"
+#include "pvar_socket.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -77,6 +78,7 @@ int main(void)
 	Interp *interp;
         Editor *editor;
 	EthDriver *ethDrv;
+	XY_WebServer *wserv;
 	/* Disable register protection permanently */
 	SYSTEM.PRCR.WORD = 0xa50b;
 	/* Disable Pin function write protections permanently */	
@@ -122,8 +124,8 @@ int main(void)
 	ethDrv = RX_EtherInit();
 	Ethernet_Init(ethDrv);
 	Tcp_Init();
-	XY_NewWebServer();
-
+	wserv = XY_NewWebServer();
+	PVarSocket_New(wserv);	
 	Spi_Init();
 	SDCard_ModuleInit();
 	FatCmds_Init();

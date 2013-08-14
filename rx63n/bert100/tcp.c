@@ -42,8 +42,8 @@
 #define TCPS_LAST_ACK		(9)
 #define TCPS_TIME_WAIT		(10)
 
-#define DBG(x) (x)
-//define DBG(x) 
+//define DBG(x) (x)
+#define DBG(x) 
 static Mutex tcpSema;
 /**
  *******************************************
