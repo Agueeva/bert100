@@ -107,7 +107,6 @@ Read32(const void *addr)
  **********************************************************************
  */
 struct Tcb {
-	//Skb *skb;
 	Tcp_DataSink *dataSink;
 	Tcp_DataSrc *dataSrc;
 	Tcp_CloseProc *closeProc;
@@ -118,14 +117,8 @@ struct Tcb {
 	Timer watchdogTimer;
 
 	void *eventData;
-	union {
-		uint8_t ipAddr[4];
-		uint32_t ipAddr32;
-	};
-	union {
-		uint8_t myIp[4];
-		uint32_t myIp32;
-	};
+	uint8_t ipAddr[4];
+	uint8_t myIp[4];
 	uint16_t srcPort;
 	uint16_t dstPort;
 
@@ -801,10 +794,6 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		tc->SND_WND = tc->SND_UNA + ntohs(tcpHdr->window);
 		Write32(Read32(ipHdr->srcaddr),tc->ipAddr);
 		Write32(Read32(ipHdr->dstaddr),tc->myIp);
-#if 0
-		tc->ipAddr32 = ipHdr->srcaddr32;
-		tc->myIp32 = ipHdr->dstaddr32;
-#endif
 		/* 
  		 *********************************************************************************
 		 * Steps 2 and 3 according to section 3.3 of RFC793 , Ack the received seq. Nr
