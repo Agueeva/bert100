@@ -9,9 +9,16 @@
 #include "interpreter.h"
 #include "hex.h"
 
-uint16_t ADC12_Read(void)
+uint16_t ADC12_Read(uint8_t channel)
 {
     uint16_t adc_value;
+    if(channel < 16) {
+    	S12AD.ADANS0.WORD = 0x0001 << channel;
+    	S12AD.ADANS1.WORD = 0;
+    } else {
+    	S12AD.ADANS0.WORD = 0;
+    	S12AD.ADANS1.WORD = 0x0001 << (channel - 16);
+    }	
     /* Start a conversion */
     S12AD.ADCSR.BIT.ADST = 1;
     /* Wait for the conversion to end */
@@ -30,11 +37,16 @@ uint16_t ADC12_Read(void)
 static int8_t
 cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 {
-	Con_Printf("ADVAL: %u\n",ADC12_Read());
+	int channel;
+	if(argc < 2) {
+		return -EC_BADNUMARGS;
+	}
+	channel = astrtoi16(argv[1]);	
+	Con_Printf("ADVAL: %u\n",ADC12_Read(channel));
 	return 0;
 }
 
-INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12  # Read from 12 Bit A/D converter");
+INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit A/D converter");
 void
 ADC12_Init(void) 
 {
