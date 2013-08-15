@@ -27,6 +27,7 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
                 copy[len] = 0;
                 Con_Printf("%-16s",copy);
         }
+	Con_Printf("\n");
 }
 
 void

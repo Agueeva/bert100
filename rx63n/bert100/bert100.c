@@ -39,6 +39,7 @@
 #include "skb.h"
 #include "xy_web.h"
 #include "pvar_socket.h"
+#include "adc12.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -129,6 +130,7 @@ int main(void)
 	Spi_Init();
 	SDCard_ModuleInit();
 	FatCmds_Init();
+	ADC12_Init();
 	EV_Loop();
 }
 

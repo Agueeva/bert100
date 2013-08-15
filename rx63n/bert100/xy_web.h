@@ -30,8 +30,6 @@ typedef struct XY_WebServer {
 #define XY_WEBCONTENT_OGV  	(13)
 #define XY_WEBCONTENT_WEBM  	(14)
 
-typedef void XY_WebPageFreeFunc(void *mem);
-
 #if 1
 typedef struct XY_WebRequest {
 	Tcb *tcb;
