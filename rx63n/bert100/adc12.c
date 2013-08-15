@@ -43,5 +43,6 @@ ADC12_Init(void)
 	S12AD.ADCSR.BYTE = 0x00;
 	/* Selects AN000 */
 	S12AD.ADANS0.WORD = 0x0001;
+	//PORT4.PMR.BYTE = 0x01;
 	Interp_RegisterCmd(&adc12Cmd);
 }
