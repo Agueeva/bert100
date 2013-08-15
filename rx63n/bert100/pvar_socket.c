@@ -21,7 +21,7 @@ void
 PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
 {
         char copy[17] = {0,};
-	Con_Printf("PVar socket got message\n");
+	//Con_Printf("PVar");
         if(len <= 16) {
                 memcpy(copy,data,16);
                 copy[len] = 0;
@@ -32,7 +32,7 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 void
 PVarSock_Close(WebSocket *ws,void *eventData)
 {
-
+	Con_Printf("PVarSock: Close\n");
 }
 
 
@@ -45,6 +45,5 @@ static WebSockOps pvarWsOps = {
 void
 PVarSocket_New(XY_WebServer *wserv) 
 {
-	//XY_WebSocketRegister(wserv,"/pvars",&pvarWsOps,NULL);
-	XY_WebSocketRegister(wserv,"/socket",&pvarWsOps,NULL);
+	XY_WebSocketRegister(wserv,"/pvars",&pvarWsOps,NULL);
 }

@@ -31,13 +31,8 @@ typedef struct XY_WebServer {
 #define XY_WEBCONTENT_WEBM  	(14)
 
 typedef void XY_WebPageFreeFunc(void *mem);
-/*
- * --------------------------------------
- * public part of Web Request struct
- * keep in sync with struct definition
- * in C-File !!!
- * --------------------------------------
- */
+
+#if 1
 typedef struct XY_WebRequest {
 	Tcb *tcb;
 	char *page;
@@ -45,6 +40,7 @@ typedef struct XY_WebRequest {
 	XY_WebServer *wserv;
 	int authLevel;
 } XY_WebRequest;
+#endif
 
 typedef struct WebSocket WebSocket;
 

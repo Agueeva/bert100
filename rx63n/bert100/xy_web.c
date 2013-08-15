@@ -108,12 +108,14 @@ typedef struct WebPageRegistration {
 #define WSOP_CLOSE		(8)
 #define WSOP_PING		(9)
 #define WSOP_PONG		(0xa)
+typedef struct WebCon WebCon; 
+
 struct WebSocket {
-	// WebSocket *next;
 	Tcb *tcb;
 	WebSockOps *wops;
 	void *wopsConData;
 
+	WebCon *handoverWc;	/* Freed as soon as possible after handover */
 	uint8_t msg_state;
 	uint8_t ws_state; /* As defined by w3org */
 	bool msg_masked;
@@ -158,7 +160,7 @@ static struct Tcb_Operations fileTcbOps;
 #define HTS_WEBSOCK	(3)
 #define HTS_FILE	(4)
 
-typedef struct _WebCon {
+struct WebCon {
 	Tcb *tcb;
 	char *page;	
 	int pagelen;
@@ -181,10 +183,9 @@ typedef struct _WebCon {
 	/* File type web request */
 	FIL file;
 	bool file_isopen;
-
 	char reqbuf[0];
 	char data[XY_WEBPAGEBUF];	
-} _WebCon;
+};
 
 /**
  *************************************************************
@@ -192,12 +193,12 @@ typedef struct _WebCon {
  *************************************************************
  */
 #define NR_WCONS	5
-static _WebCon *wcpool[NR_WCONS];
+static WebCon *wcpool[NR_WCONS];
 static uint8_t wcpool_initialized = 0;
 
-static _WebCon * WebCon_Alloc(void) 
+static WebCon * WebCon_Alloc(void) 
 {
-	_WebCon *wc;
+	WebCon *wc;
 	uint16_t i;
 	for(i = 0; i < NR_WCONS; i++) {
 		if(wcpool[i] != NULL) {
@@ -209,7 +210,7 @@ static _WebCon * WebCon_Alloc(void)
 	return NULL;
 }
 
-static void WebCon_Free(_WebCon *wc) 
+static void WebCon_Free(WebCon *wc) 
 {
 	uint16_t i;
 	if(wc == NULL) {
@@ -217,7 +218,9 @@ static void WebCon_Free(_WebCon *wc)
 		return;
 	}
 	//EV_Yield();
-	memset(wc,0,sizeof(_WebCon) - XY_WEBPAGEBUF);
+	//memset(wc,0,sizeof(WebCon) - XY_WEBPAGEBUF);
+	memset(wc,0,offsetof(WebCon,data));
+	
 	for(i = 0; i < NR_WCONS; i++) {
 		if(wcpool[i] == wc) {
 			Con_Printf("BUG: double free of WebCon\n");
@@ -246,6 +249,7 @@ static WebSocket * WebSocket_Alloc(void)
 			ws = wspool[i];	
 			wspool[i] = NULL;
 			ws->tcb = NULL;
+			ws->handoverWc = NULL;
 			ws->msg_state = WSMSGS_OPC;
 			ws->ws_state = WSST_CONNECTING;
 			ws->outbuf_wp = 0;
@@ -291,7 +295,7 @@ Web_PoolsInit(void) {
 		return;
 	}
 	for(i = 0; i < NR_WCONS; i++) {
-		wcpool[i]  = IRam_Calloc(sizeof(_WebCon));
+		wcpool[i]  = IRam_Calloc(sizeof(WebCon));
 	}
 	for(i = 0; i < NR_WEBSOCKS; i++) {
 		wspool[i]  = IRam_Calloc(sizeof(WebSocket));
@@ -328,13 +332,13 @@ XY_AddHttpHeader(char *page,const char *content_type) {
  **************************************************
  */
 static void
-web_submit_page(_WebCon *wc) {
+web_submit_page(WebCon *wc) {
        TcpCon_ControlTx(wc->tcb,true);	
 }
 
 
 static void 
-create_notfoundpage(_WebCon *wc) {
+create_notfoundpage(WebCon *wc) {
 	char *page = wc->page;
 	page += xy_strcpylen(page,NOT_FOUND_HEADER);
 	page += xy_strcpylen(page,
@@ -351,7 +355,7 @@ create_notfoundpage(_WebCon *wc) {
  ************************************************************************
  */
 static void 
-create_authpage(_WebCon *wc,char *realm) {
+create_authpage(WebCon *wc,char *realm) {
 	char *page = wc->page;
 	page+=xy_strcpylen(page,
 		"HTTP/1.1 401 Authorization Required\r\n" \
@@ -472,7 +476,7 @@ Extract_Var(char *linev[],char *keyword,char **valp)
  *****************************************************************
  */
 static int 
-check_auth(_WebCon *wc,WebPageRegistration *reg) 
+check_auth(WebCon *wc,WebPageRegistration *reg) 
 {
 	XYWebAuthInfo *auth;
 	char *a;
@@ -512,7 +516,7 @@ check_auth(_WebCon *wc,WebPageRegistration *reg)
  ********************************************************************** 
  */
 static void 
-execute_web_request(_WebCon *wc,char *line) 
+execute_web_request(WebCon *wc,char *line) 
 {
 	XY_WebServer *wserv = wc->wserv;
 	uint16_t i;
@@ -602,7 +606,7 @@ execute_web_request(_WebCon *wc,char *line)
  **************************************************************
  */ 
 static void
-Feed_PostData(_WebCon *wc,const uint8_t *data,uint16_t len,uint16_t flags) {
+Feed_PostData(WebCon *wc,const uint8_t *data,uint16_t len,uint16_t flags) {
 	if(wc->http_state != HTS_POST) {
 		Con_Printf("BUG: called post without POST state\n");
 		return;
@@ -644,7 +648,7 @@ Feed_PostData(_WebCon *wc,const uint8_t *data,uint16_t len,uint16_t flags) {
 static void 
 WebServ_DataSink(void *eventData,uint32_t fpos,const uint8_t *buf,uint16_t len)
 {
-	_WebCon *wc = (_WebCon *)eventData;
+	WebCon *wc = (WebCon *)eventData;
 	int j;
 	uint16_t old_wp;
 	old_wp = wc->reqbuf_wp;
@@ -701,8 +705,10 @@ WebServ_DataSink(void *eventData,uint32_t fpos,const uint8_t *buf,uint16_t len)
 static uint16_t
 WebServ_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 {
-	_WebCon *wc=(_WebCon*)eventData;
+	WebCon *wc=(WebCon*)eventData;
 	uint16_t count;
+	//int i;
+	bool is_ws = false;
 	char **buf = (char **)_buf;
 	*buf = wc->page + wc->out_rp; 
 	count = wc->pagelen - wc->out_rp;
@@ -710,6 +716,9 @@ WebServ_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 		count = maxlen;
 	}
 	wc->out_rp += count;
+	if(wc->http_state == HTS_WEBSOCK) {
+		is_ws = true;
+	}
 	/**
 	 ************************************************************************************
  	 * If this is a websocket then handover the control to the socket user, else close
@@ -733,7 +742,16 @@ WebServ_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 			//Con_Printf("\nHandover to WebSocket Server\n");
 			ws->tcb = wc->tcb;
 			Tcb_RegisterOps(ws->tcb,&websockTcbOps,ws);
-			WebCon_Free(wc);
+			ws->handoverWc = wc;
+			//WebCon_Free(wc);
+#if 0
+	if(is_ws) {
+		Con_Printf("*buf %08lx count %u, maxlen %u\n",*buf,count,maxlen);
+		for(i = 0; i < count; i++) {
+			Con_Printf("-%c",(*buf)[i]);
+		}
+	}
+#endif
 			//WebSocket_SendMsg(ws,WSOP_TEXT,"Kasper hat Geburtstag",21) ;
 		} else if(wc->http_state == HTS_FILE) {
 			//Con_Printf("\nHandover to File Server\n");
@@ -792,6 +810,10 @@ WebSocket_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 	uint8_t **buf = (uint8_t **)_buf;
 	WebSocket *ws=(WebSocket *)eventData;
 	//Con_Printf("Called the WebSocket data src\n");
+	if(ws->handoverWc) {
+		WebCon_Free(ws->handoverWc);
+		ws->handoverWc = NULL;
+	}
 	if(ws->outbuf_snd != ws->outbuf_una) {
 		if(ws->outbuf_snd < ws->outbuf_una) {
 			/* Wrap detected */
@@ -844,7 +866,7 @@ File_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 	UINT size;
 	FRESULT res;
 	char **buf = (char **)_buf;
-	_WebCon *wc=(_WebCon*)eventData;
+	WebCon *wc=(WebCon*)eventData;
 	uint16_t count = maxlen;
 	if(maxlen > XY_WEBPAGEBUF) {
 		count = XY_WEBPAGEBUF;
@@ -933,7 +955,7 @@ content_type_from_suffix(const char *path) {
 static int
 Page_FatFile(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 {
-	_WebCon *wc = (_WebCon*)wr;
+	WebCon *wc = (WebCon*)wr;
 	FRESULT res;
 	char *page = wc->page;
 	int content_type;
@@ -973,7 +995,7 @@ Page_FatFile(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 static void 
 WebServ_CloseProc(void *eventData)
 {
-	_WebCon *wc=(_WebCon*)eventData;
+	WebCon *wc=(WebCon*)eventData;
 	if(wc == NULL) {
 		Con_Printf("Bug: Called closeproc without wc\n");
 		return;
@@ -1006,6 +1028,10 @@ WebSocket_CloseProc(void *eventData)
 	}
 	if(ws->wops->closeProc) {
 		ws->wops->closeProc(ws,NULL);
+	}
+	if(ws->handoverWc) {
+		WebCon_Free(ws->handoverWc);
+		ws->handoverWc = NULL;
 	}
 	WebSocket_Free(ws);
 	Con_Printf("WebSocket Close is called\n");
@@ -1044,7 +1070,7 @@ static bool
 WebServ_Accept(void *eventData,Tcb *tcb,uint8_t ip[4],uint16_t port)
 {
 	XY_WebServer *wserv = eventData;
-	_WebCon *wc = WebCon_Alloc();
+	WebCon *wc = WebCon_Alloc();
 	if(wc == 0) {
 		Con_Printf("All Connections are in use\n");
 		return false;
@@ -1159,7 +1185,7 @@ WebSocket_ComposeMsg(uint8_t opcode,uint8_t *dst,uint8_t *src,uint16_t pllen)
  * Calculate the required outbuffer space.
  *****************************************************************************
  */
-inline uint16_t
+INLINE uint16_t
 CalcObufSpace(uint16_t pllen) 
 {
 	if(pllen < 126) {
@@ -1423,7 +1449,7 @@ WebSocket_DataSink(void *eventData,uint32_t fpos,const uint8_t *data,uint16_t le
 static int
 WebSocket_Handshake(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 {
-	_WebCon *wc  = (_WebCon *) wr;
+	WebCon *wc  = (WebCon *) wr;
 	WebSocket *ws;
 	char *page = wc->page;
 	uint8_t len;
@@ -1471,9 +1497,7 @@ WebSocket_Handshake(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 	 * 	result must be "s3pPLMBiTxaQ9kYGzzhZRbK+xOo="
 	 ********************************************************
 	 */
-
 	EV_Yield();
-
 	sha1_init(&ctxt);
        	sha1_loop(&ctxt,wskey,strlen(wskey));
 	sha1_loop (&ctxt,"258EAFA5-E914-47DA-95CA-C5AB0DC85B11", 36);

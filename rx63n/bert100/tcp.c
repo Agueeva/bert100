@@ -413,6 +413,7 @@ fetch_next_tx_data(Tcb *tcb,uint8_t **dataPP,uint16_t *dataLenP)
  	 **********************************************************************
  	 */
 	if(tcb->txDataAvail && tcb->dataSrc) {
+		//int i;
 		tcb->busy = true;
 		*dataLenP = tcb->dataSrc(tcb->eventData,fpos,(void **)dataPP,rsize << 1);
 		tcb->busy = false;
@@ -420,6 +421,12 @@ fetch_next_tx_data(Tcb *tcb,uint8_t **dataPP,uint16_t *dataLenP)
 			//Con_Printf("Warning, got no data\n"); 
 			tcb->txDataAvail = false;
 		}
+#if 0
+		Con_Printf("buf %08x",*dataPP);
+		for(i = 0; i < *dataLenP; i++) {
+			Con_Printf("%c",(*dataPP)[i]);
+		}
+#endif
 	} else {
 		*dataLenP = 0;
 	}
