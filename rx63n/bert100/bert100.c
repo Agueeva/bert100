@@ -38,6 +38,7 @@
 #include "ethernet.h"
 #include "skb.h"
 #include "xy_web.h"
+#include "pvar.h"
 #include "pvar_socket.h"
 #include "adc12.h"
 
@@ -126,6 +127,7 @@ int main(void)
 	Ethernet_Init(ethDrv);
 	Tcp_Init();
 	wserv = XY_NewWebServer();
+	PVars_Init();
 	PVarSocket_New(wserv);	
 	Spi_Init();
 	SDCard_ModuleInit();

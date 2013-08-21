@@ -101,7 +101,7 @@ PVar_Find(const char *name)
  *******************************************************************************
  */
 PVar *
-PVar_New(PVar_GetCallback *gcb, PVar_GetCallback *scb,const char *format,...)
+PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,const char *format,...)
 {
         PVar *pvar;
 	char printfBuf[42];
@@ -126,6 +126,9 @@ PVar_New(PVar_GetCallback *gcb, PVar_GetCallback *scb,const char *format,...)
         pvar = IRam_Calloc(sizeof(PVar));
         pvar->she = she;
         StrHash_SetValue(she,pvar);
+	pvar->cbData = cbData;
+	pvar->getCallback = gcb;
+	pvar->setCallback = scb;
         return pvar;
 }
 
@@ -163,6 +166,42 @@ PVar_Get(PVar *pvar,char *valP, uint16_t maxlen)
 	}
 }
 
+
+const char *exampleText1[] = {
+	"Kasper" , 
+	"hat", 
+	"Geburtstag",
+};
+
+const char *exampleText2[] = {
+	"Alle" , 
+	"meine", 
+	"Entchen",
+};
+
+const char **exampleText = exampleText1;
+
+void 
+Example_SetCallback (void *clientData, const char *strP)
+{
+	int16_t val = astrtoi16(strP); 
+	if(val & 1) {
+		exampleText = exampleText1;
+	} else {
+		exampleText = exampleText2;
+	}
+}
+
+void 
+Example_GetCallback (void *clientData, char *bufP,uint16_t maxlen)
+{
+	static int index = 0;
+	strncpy(bufP,exampleText[index],maxlen);
+	bufP[maxlen - 1] = 0;
+	index = (index + 1) % array_size(exampleText1);
+}
+
+
 static int8_t
 cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -195,4 +234,5 @@ PVars_Init(void)
         PVarTable *pvt = &g_PVarTable;
         pvt->varHashTable = StrHash_New();
         Interp_RegisterCmd(&pvarCmd);
+	PVar_New(Example_GetCallback,Example_SetCallback,NULL,"test.var1");
 }
