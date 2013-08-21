@@ -19,9 +19,10 @@ typedef struct PVarTable {
 
 struct PVar {
         StrHashEntry *she;
-	//void (*setProc) (void *clientData, const char *valStr);
-        //void (*getProc) (void *clientData, char *valStr,uint16_t maxlen);
-	void *eventData;
+	PVar_SetCallback *setCallback;
+	PVar_GetCallback *getCallback;
+	void *cbData;
+//	void *dataP; uint16_t maxlen; 
 };
 
 static PVarTable g_PVarTable;
@@ -94,8 +95,13 @@ PVar_Find(const char *name)
 	return pvar;
 }
 
+/**
+ *******************************************************************************
+ * \fn PVar * PVar_New(void *dataP,uint16_t maxlen,const char *format,...)
+ *******************************************************************************
+ */
 PVar *
-PVar_New(const char *format,...)
+PVar_New(PVar_GetCallback *gcb, PVar_GetCallback *scb,const char *format,...)
 {
         PVar *pvar;
 	char printfBuf[42];
@@ -123,6 +129,40 @@ PVar_New(const char *format,...)
         return pvar;
 }
 
+#if 0
+/**
+ *********************************************************************************
+ * Configure the callbacks for setting and getting the variable. 
+ *********************************************************************************
+ */
+void
+PVar_SetCallbacks(PVar *pvar,PVar_GetCallback *gcb,PVar_SetCallback *scb,void *cbData)
+{
+	pvar->cbData = cbData;
+	pvar->getCallback = gcb;
+	pvar->setCallback = scb;
+	return;
+}
+#endif
+
+void
+PVar_Set(PVar *pvar,const char *valStr) 
+{
+	if(pvar->setCallback) {
+		pvar->setCallback(pvar->cbData,valStr);
+	}
+}
+
+void
+PVar_Get(PVar *pvar,char *valP, uint16_t maxlen) 
+{
+	if(pvar->getCallback) {
+		pvar->getCallback(pvar->cbData,valP,maxlen);
+	} else {
+		valP[0] = 0; /* Terminate the string */
+	}
+}
+
 static int8_t
 cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -133,9 +173,11 @@ cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
         pvar = PVar_Find(argv[1]);
         if(pvar) {
                 if(argc > 2) {
-        //                PVar_Set(pvar,argv[2]);
+			PVar_Set(pvar,argv[2]);
                 } else {
-        //               Interp_Printf_P(interp,"%s\n",PVar_Get(pvar));
+			char str[40];
+			PVar_Get(pvar,str,sizeof(str));
+			Interp_Printf_P(interp,"%s\n",str);
                 }
         }
         return 0;
