@@ -49,7 +49,8 @@ int16_t ADC12_Read(int channel)
 void
 PVAdc12_SetRaw (void *cbData, const char *strP)
 {
-	Con_Printf("The value of the A/D converter is readonly\n");
+	ADCChan *ch = cbData;
+	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
 }
 
 void
@@ -88,16 +89,16 @@ ADC12_Init(void)
 	ADC12 *adc = &gAdc12;
 	ADCChan *ch;
 	int i;
-	for(i = 0; i < NR_CHANNELS; i++) {
-		ch = &adc->adch[i];
-		ch->channelNr = i;
-		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,"adc12.raw%02u",i);
-	}
 	MSTP_S12AD = 0;
 	/* ADC clock = PCLK/8, single scan mode */
 	S12AD.ADCSR.BYTE = 0x00;
 	/* Selects AN000 */
 	//S12AD.ADANS0.WORD = 0x0001;
 	//PORT4.PMR.BYTE = 0x01;
+	for(i = 0; i < NR_CHANNELS; i++) {
+		ch = &adc->adch[i];
+		ch->channelNr = i;
+		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,"adc12.raw%02u",i);
+	}
 	Interp_RegisterCmd(&adc12Cmd);
 }

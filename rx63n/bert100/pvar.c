@@ -27,56 +27,6 @@ struct PVar {
 
 static PVarTable g_PVarTable;
 
-#if 0
-static void
-DebugVar_SetFromStr(DebugVar * dvar, char *str)
-{
-        uint64_t uu;
-        int64_t ii;
-        double d;
-        sscanf(str, "%" PRId64, &ii);
-        sscanf(str, "%" PRIu64, &uu);
-        sscanf(str, "%lf", &d);
-        switch (dvar->type) {
-            case DBGT_UINT8_T:
-                    *(uint8_t *) dvar->dataP = uu;
-                    break;
-            case DBGT_UINT16_T:
-                    *(uint16_t *) dvar->dataP = uu;
-                    break;
-            case DBGT_UINT32_T:
-                    *(uint32_t *) dvar->dataP = uu;
-                    break;
-            case DBGT_UINT64_T:
-                    *(uint64_t *) dvar->dataP = uu;
-                    break;
-            case DBGT_INT8_T:
-                    *(int8_t *) dvar->dataP = ii;
-                    break;
-            case DBGT_INT16_T:
-                    *(int16_t *) dvar->dataP = ii;
-                    break;
-            case DBGT_INT32_T:
-                    *(int32_t *) dvar->dataP = ii;
-                    break;
-            case DBGT_INT64_T:
-                    *(int64_t *) dvar->dataP = ii;
-                    break;
-            case DBGT_DOUBLE_T:
-                    *(double *)dvar->dataP = d;
-                    break;
-            case DBGT_PROC64_T:
-                    if (dvar->setProc) {
-                            dvar->setProc(dvar->clientData, dvar->arg, uu);
-                    }
-                    break;
-            default:
-                    fprintf(stderr, "Variable has an illegal type\n");
-                    break;
-        }
-}
-#endif
-
 /**
  ***************************************************************************
  * Find a variable by name.
@@ -87,6 +37,22 @@ PVar_Find(const char *name)
 {
 	PVarTable *pvt = &g_PVarTable;
 	StrHashEntry *she = StrHash_FindEntry(pvt->varHashTable,name);
+	PVar *pvar;
+	if(!she) {
+		return NULL;
+	}
+	pvar = StrHash_GetValue(she);
+	return pvar;
+}
+
+/**
+ * Find a PVar by name, only using the first N chars
+ */
+PVar *
+PVar_NFind(const char *name,uint16_t maxlen)
+{
+	PVarTable *pvt = &g_PVarTable;
+	StrHashEntry *she = StrNHash_FindEntry(pvt->varHashTable,name,maxlen);
 	PVar *pvar;
 	if(!she) {
 		return NULL;
@@ -201,6 +167,12 @@ Example_GetCallback (void *clientData, char *bufP,uint16_t maxlen)
 	index = (index + 1) % array_size(exampleText1);
 }
 
+/**
+ ********************************************************************************
+ * \fn static int8_t cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
+ * Command shell interface for reading/writing process variables
+ ********************************************************************************
+ */
 
 static int8_t
 cmd_pvar(Interp * interp, uint8_t argc, char *argv[])

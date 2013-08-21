@@ -10,3 +10,5 @@ PVar *PVar_New(PVar_GetCallback *,PVar_SetCallback *,void *cbData,const char *fo
 /* This is the users interface */
 void PVar_Set(PVar *pvar,const char *valStr);
 void PVar_Get(PVar *pvar,char *valP, uint16_t maxlen) ;
+PVar * PVar_Find(const char *name);
+PVar * PVar_NFind(const char *name,uint16_t maxlen);
