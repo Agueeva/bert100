@@ -178,9 +178,9 @@ RX_EtherSetupIoPortsMII(void)
 __attribute__((unused)) static void
 RX_EtherSetupIoPorts100_RMII(void)
 {
-	MPC.PWPR.BIT.B0WI = 0;	
+	MPC.PWPR.BIT.B0WI = 0;
 	MPC.PWPR.BIT.PFSWE = 1;
-	MPC.PFENET.BIT.PHYMODE = 1;
+	MPC.PFENET.BIT.PHYMODE = 0; /* RMII mode */
 	MPC.PA3PFS.BYTE = 0x11; /* PA3 MDIO	*/
 	MPC.PA4PFS.BYTE = 0x11; /* PA4 MDC	*/
 	PORTA.PMR.BYTE |= 0x18;
@@ -194,7 +194,8 @@ RX_EtherSetupIoPorts100_RMII(void)
 	MPC.PB6PFS.BYTE = 0x12; /* PB6 RMII_TXD1 */
 	MPC.PB7PFS.BYTE = 0x12; /* PB7_RMII_CRS input */
 	PORTB.PMR.BYTE = 0xff;
-	PORTB.PDR.BYTE = 0x70;
+	PORTB.PDR.BYTE = 0x70; /* This should be good */
+	//PORTB.PDR.BYTE = 0xF0; /* But free rtos does this */
 
 	MPC.PWPR.BIT.PFSWE = 0;
 	MPC.PWPR.BIT.B0WI = 1;

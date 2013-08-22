@@ -685,8 +685,13 @@ Ethernet_Init(EthDriver *drv)
 	//Param_Read(ipAddr,eth->if_ip);
 	eth->if_ip[0] = 192;
 	eth->if_ip[1] = 168;
+#if 1
 	eth->if_ip[2] = 80;
 	eth->if_ip[3] = 10;
+#else
+	eth->if_ip[2] = 2;
+	eth->if_ip[3] = 123;
+#endif
 	//Param_Read(netmask,&netmask_bits);
 	if(netmask_bits > 32) {
 		netmask_bits = 24;

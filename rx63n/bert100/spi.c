@@ -18,6 +18,9 @@
 #include "timer.h"
 #include "byteorder.h"
 
+#define SPI_CLK_BIT_NR	(4)
+#define SPI_MISO_BIT_NR	(5)
+#define SPI_MOSI_BIT_NR	(3)
 #define SPI_MISO	PORT2.PIDR.BIT.B5
 #define SPI_MOSI(val)	BMOD(3,PORT2.PODR.BYTE,(val))
 
@@ -103,8 +106,8 @@ _Spir(uint8_t bus)
 		      "BSET %[bit_spiclk], [%[addr_spiclk]].B\n"
 		      "BTST %[bit_miso], [%[addr_miso]].B\n" "BMC #0,%[data]\n":[data] "+r"(data)
 		      :		/*"0" (data), */
-		      [bit_spiclk] "i"(4),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
-		      [bit_miso] "i"(5),[addr_miso] "r"(&(PORT2.PIDR.BYTE))
+		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
+		      [bit_miso] "i"(SPI_MISO_BIT_NR),[addr_miso] "r"(&(PORT2.PIDR.BYTE))
 		      :"memory", "cc");
 
 #else
@@ -178,8 +181,8 @@ _Spiw(uint8_t bus, uint8_t data)
 				  "BMC %[bit_mosi],[%[addr_mosi]].B\n"
 				  "BSET %[bit_spiclk], [%[addr_spiclk]].B\n":	/* No output operands */
 		      :[data] "r"(data),
-		      [bit_spiclk] "i"(4),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
-		      [bit_mosi] "i"(3),[addr_mosi] "r"(&(PORT2.PODR.BYTE))
+		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
+		      [bit_mosi] "i"(SPI_MOSI_BIT_NR),[addr_mosi] "r"(&(PORT2.PODR.BYTE))
 		      :"memory", "cc");
 #endif
 	return;

@@ -42,6 +42,7 @@
 #include "pvar_socket.h"
 #include "adc12.h"
 #include "flash.h"
+#include "config.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -71,7 +72,7 @@ blinkProc(void *eventData)
 	Timer_Start(&blinkTimer,500);
 	toggle ^= 1;
  	BMOD(3,PORT0.PODR.BYTE,toggle);
-#ifdef SAKURA
+#if  BOARD_SAKURA == 1
  	BSET(0,PORTA.PDR.BYTE);
  	BMOD(0,PORTA.PODR.BYTE,toggle);
 #endif
