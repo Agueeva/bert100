@@ -990,6 +990,7 @@ UsbDev_Init(void)
 	IPR(USB0, D0FIFO0) = 0;
 	IPR(USB0, D1FIFO0) = 0;
 	/* Now configure the IO Ports */
+		
 	PORT1.PDR.BIT.B4        = 0;
 	PORT1.PMR.BIT.B4        = 0;	
 	PORT1.PDR.BIT.B6        = 0; // VBUS
