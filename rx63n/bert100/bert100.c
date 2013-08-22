@@ -72,7 +72,7 @@ blinkProc(void *eventData)
 	Timer_Start(&blinkTimer,500);
 	toggle ^= 1;
  	BMOD(3,PORT0.PODR.BYTE,toggle);
-#if  BOARD_SAKURA == 1
+#ifdef  BOARD_SAKURA
  	BSET(0,PORTA.PDR.BYTE);
  	BMOD(0,PORTA.PODR.BYTE,toggle);
 #endif
@@ -123,7 +123,9 @@ int main(void)
 	MD5Lib_Init();
 	Sha1Lib_Init();
 	WDTA_Init();
+#ifndef BOARD_SAKURA 
 	AD537x_Init();
+#endif
 	MDIO_Init();
 	CDR_Init();
 

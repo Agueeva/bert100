@@ -15,6 +15,7 @@
 #include "sdcard.h"
 #include "iodefine.h"
 #include "atomic.h"
+#include "config.h"
 
 #define SPI_BUS	(0)
 #define SPIR1_IDLE              (1 << 0)
@@ -94,7 +95,11 @@ typedef struct SDCard {
 
 static SDCard g_sdCard;
 
+#ifdef  BOARD_SAKURA
+#define SD_CS(val) BMOD(0,PORTC.PODR.BYTE,(val))
+#else
 #define SD_CS(val) BMOD(2,PORT2.PODR.BYTE,(val))
+#endif
 
 /**
  ********************************************************************************
@@ -1403,7 +1408,11 @@ SDCard_ModuleInit(void)
 	sdc->state = STATE_MULTSECT_IDLE;
 	sdc->statMaxmVolt = 0;
 	sdc->statMinmVolt = 100000;
-	BSET(2, PORT2.PDR.BYTE);
+#ifdef BOARD_SAKURA 
+	BSET(0, PORTC.PDR.BYTE); /* Direction of Chip select to OUT */
+#else
+	BSET(2, PORT2.PDR.BYTE); /* Direction of Chip select to OUT */
+#endif
 	SDCard_Power(sdc, true);
 	Timer_Init(&sdc->pluggedTimer, SDCard_PluggedTimerProc, sdc);
 	Timer_Init(&sdc->multSectFlushTimer, SDCard_MultSectFlush, sdc);

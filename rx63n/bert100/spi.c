@@ -17,17 +17,37 @@
 #include "tpos.h"
 #include "timer.h"
 #include "byteorder.h"
+#include "config.h"
 
+#ifdef BOARD_SAKURA
+#define SPI_CLK_BIT_NR	(5)
+#define SPI_MISO_BIT_NR	(7)
+#define SPI_MOSI_BIT_NR	(6)
+#define SPI_MISO	PORTC.PIDR.BIT.B7
+#define SPI_MOSI(val)	BMOD(6,PORTC.PODR.BYTE,(val))
+#define SPI_CLK_PODR	PORTC.PODR.BYTE
+#define SPI_MISO_PIDR	PORTC.PIDR.BYTE
+#define SPI_MOSI_PODR	PORTC.PODR.BYTE
+
+#define SPI_CLK_LOW  BCLR(5,PORTC.PODR.BYTE)
+#define SPI_CLK_HIGH BSET(5,PORTC.PODR.BYTE)
+#define SPI_MOSI_LOW BCLR(6,PORTC.PODR.BYTE)
+#define SPI_MOSI_HIGH BSET(6,PORTC.PODR.BYTE)
+#else
 #define SPI_CLK_BIT_NR	(4)
 #define SPI_MISO_BIT_NR	(5)
 #define SPI_MOSI_BIT_NR	(3)
 #define SPI_MISO	PORT2.PIDR.BIT.B5
 #define SPI_MOSI(val)	BMOD(3,PORT2.PODR.BYTE,(val))
+#define SPI_CLK_PODR	PORT2.PODR.BYTE
+#define SPI_MISO_PIDR	PORT2.PIDR.BYTE
+#define SPI_MOSI_PODR	PORT2.PODR.BYTE
 
 #define SPI_CLK_LOW  BCLR(4,PORT2.PODR.BYTE)
 #define SPI_CLK_HIGH BSET(4,PORT2.PODR.BYTE)
 #define SPI_MOSI_LOW BCLR(3,PORT2.PODR.BYTE)
 #define SPI_MOSI_HIGH BSET(3,PORT2.PODR.BYTE)
+#endif
 
 typedef struct Spi {
 	Mutex rSema;
@@ -106,8 +126,8 @@ _Spir(uint8_t bus)
 		      "BSET %[bit_spiclk], [%[addr_spiclk]].B\n"
 		      "BTST %[bit_miso], [%[addr_miso]].B\n" "BMC #0,%[data]\n":[data] "+r"(data)
 		      :		/*"0" (data), */
-		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
-		      [bit_miso] "i"(SPI_MISO_BIT_NR),[addr_miso] "r"(&(PORT2.PIDR.BYTE))
+		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(SPI_CLK_PODR)),
+		      [bit_miso] "i"(SPI_MISO_BIT_NR),[addr_miso] "r"(&(SPI_MISO_PIDR))
 		      :"memory", "cc");
 
 #else
@@ -181,8 +201,8 @@ _Spiw(uint8_t bus, uint8_t data)
 				  "BMC %[bit_mosi],[%[addr_mosi]].B\n"
 				  "BSET %[bit_spiclk], [%[addr_spiclk]].B\n":	/* No output operands */
 		      :[data] "r"(data),
-		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(PORT2.PODR.BYTE)),
-		      [bit_mosi] "i"(SPI_MOSI_BIT_NR),[addr_mosi] "r"(&(PORT2.PODR.BYTE))
+		      [bit_spiclk] "i"(SPI_CLK_BIT_NR),[addr_spiclk] "r"(&(SPI_CLK_PODR)),
+		      [bit_mosi] "i"(SPI_MOSI_BIT_NR),[addr_mosi] "r"(&(SPI_MOSI_PODR))
 		      :"memory", "cc");
 #endif
 	return;
@@ -380,8 +400,7 @@ INTERP_CMD(spiCmd, "spi", cmd_spi, "spi  # SPI Bus access");
 /**
  ******************************************************************************
  * \fn void Spi_Enable();
- * Switch the CPU pins to SPI mode. This is called on init and when
- * switching back from GPIO mode which is used for PLD-JTAG.
+ * Switch the CPU pins to SPI mode.
  ******************************************************************************
  */
 
@@ -393,15 +412,24 @@ Spi_Enable(uint8_t bus)
 		return;
 	}
 	spi->spi_mode = 3;
-	/* SPI_MOSI */
 	SPI_MOSI_HIGH;
+#ifdef BOARD_SAKURA
+	/* SPI_MOSI */
+	BSET(6, PORTC.PDR.BYTE);
+	/* SPI_MISO */
+	BCLR(7, PORTC.PDR.BYTE);
+	/* SPI_CLK */
+	SPI_CLK_HIGH;
+	BSET(5, PORTC.PDR.BYTE);
+#else
+	/* SPI_MOSI */
 	BSET(3, PORT2.PDR.BYTE);
 	/* SPI_MISO */
 	BCLR(5, PORT2.PDR.BYTE);
-	//BSET(7, PORTA.ICR.BYTE);
 	/* SPI_CLK */
 	SPI_CLK_HIGH;
 	BSET(4, PORT2.PDR.BYTE);
+#endif
 }
 
 /**
