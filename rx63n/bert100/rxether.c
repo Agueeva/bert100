@@ -109,8 +109,6 @@ static RxEth gRxEth;
 __attribute__((unused)) static void
 RX_EtherSetupIoPortsRMII(void)
 {
-	MPC.PWPR.BIT.B0WI = 0;
-	MPC.PWPR.BIT.PFSWE = 1;
 	MPC.PFENET.BIT.PHYMODE = 0; /* RMII mode */
 	MPC.P71PFS.BYTE = 0x11; /* MDIO */
 	MPC.P72PFS.BYTE = 0x11;	/* MDC */
@@ -128,16 +126,11 @@ RX_EtherSetupIoPortsRMII(void)
 	MPC.P83PFS.BYTE = 0x12; /* CRS input */
 	PORT8.PMR.BYTE = 0x0f;
 	PORT8.PDR.BYTE = 7;
-
-	MPC.PWPR.BIT.PFSWE = 0;
-	MPC.PWPR.BIT.B0WI = 1;
 }
 
 __attribute__((unused)) static void
 RX_EtherSetupIoPortsMII(void)
 {
-	MPC.PWPR.BIT.B0WI = 0;	
-	MPC.PWPR.BIT.PFSWE = 1;
 	MPC.PFENET.BIT.PHYMODE = 1;
 	MPC.P71PFS.BYTE = 0x11; /* P71 MDIO	*/
 	MPC.P72PFS.BYTE = 0x11; /* P72 MDC	*/
@@ -166,9 +159,6 @@ RX_EtherSetupIoPortsMII(void)
 	MPC.PC7PFS.BYTE = 0x11; /* PC7 COL  */
 	PORTC.PMR.BYTE = 0xff;	
 	PORTC.PDR.BYTE = 0x68;
-	
-	MPC.PWPR.BIT.PFSWE = 0;
-	MPC.PWPR.BIT.B0WI = 1;
 }
 /**
  ***********************************************************
@@ -178,8 +168,6 @@ RX_EtherSetupIoPortsMII(void)
 __attribute__((unused)) static void
 RX_EtherSetupIoPorts100_RMII(void)
 {
-	MPC.PWPR.BIT.B0WI = 0;
-	MPC.PWPR.BIT.PFSWE = 1;
 	MPC.PFENET.BIT.PHYMODE = 0; /* RMII mode */
 	MPC.PA3PFS.BYTE = 0x11; /* PA3 MDIO	*/
 	MPC.PA4PFS.BYTE = 0x11; /* PA4 MDC	*/
@@ -194,11 +182,7 @@ RX_EtherSetupIoPorts100_RMII(void)
 	MPC.PB6PFS.BYTE = 0x12; /* PB6 RMII_TXD1 */
 	MPC.PB7PFS.BYTE = 0x12; /* PB7_RMII_CRS input */
 	PORTB.PMR.BYTE = 0xff;
-	PORTB.PDR.BYTE = 0x70; /* This should be good */
-	//PORTB.PDR.BYTE = 0xF0; /* But free rtos does this */
-
-	MPC.PWPR.BIT.PFSWE = 0;
-	MPC.PWPR.BIT.B0WI = 1;
+	PORTB.PDR.BYTE = 0x70; 
 }
 
 /**
