@@ -685,13 +685,8 @@ Ethernet_Init(EthDriver *drv)
 	//Param_Read(ipAddr,eth->if_ip);
 	eth->if_ip[0] = 192;
 	eth->if_ip[1] = 168;
-#if 1
 	eth->if_ip[2] = 80;
 	eth->if_ip[3] = 10;
-#else
-	eth->if_ip[2] = 2;
-	eth->if_ip[3] = 123;
-#endif
 	//Param_Read(netmask,&netmask_bits);
 	if(netmask_bits > 32) {
 		netmask_bits = 24;
@@ -702,12 +697,12 @@ Ethernet_Init(EthDriver *drv)
 		Write32(ntohl(UINT32_C(~0) << (32 - netmask_bits)),eth->if_netmask);
 	}
 	//Param_Read(defaultGW,eth->defaultGW);
-	if(Read32(eth->defaultGW) == ~UINT32_C(0)) {
+	//if(Read32(eth->defaultGW) == ~UINT32_C(0)) {
 		eth->defaultGW[0] = 192;
 		eth->defaultGW[1] = 168;
-		eth->defaultGW[2] = 101;
+		eth->defaultGW[2] = 80;
 		eth->defaultGW[3] = 1;
-	}
+	//}
 		
 	memset(eth->if_mac,0xff,6);
 	//I2C_Read8(I2CA_PARAM_EEPROM,0xFA,eth->if_mac,6);

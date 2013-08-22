@@ -43,6 +43,8 @@
 #include "adc12.h"
 #include "flash.h"
 #include "config.h"
+#include "usbdev.h"
+#include "usbstorage.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -117,6 +119,7 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	UsbStor_Init();
 	ShiftReg_Init(0xffff);
 	RxCRC_Init();
 	I2CM_Init();
@@ -138,10 +141,13 @@ int main(void)
 	PVars_Init();
 	PVarSocket_New(wserv);	
 	Spi_Init();
-	SDCard_ModuleInit();
+	if(SDCard_ModuleInit() == true) {
+		UsbStor_UnitReady(true);
+	}
 	FatCmds_Init();
 	ADC12_Init();
 	Flash_Init();
+	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
 }
 

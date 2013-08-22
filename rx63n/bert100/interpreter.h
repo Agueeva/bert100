@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include "types.h"
 #include "events.h"
+#include "fat.h"
 
 #define INTERP_MAX_ARGC (16)
 typedef void Interp_OutProc(const char *str);
@@ -48,6 +49,7 @@ typedef struct Cmd {
  */
 struct Interp {
 	Event nextLineEvent;
+	FIL file;
 	Interp_OutProc *OutStr;	 /**< Ouput procedure for strings */
 	Interp_PrintVA *PrintVA_P; /**< Output procedure for formated strings in program memory. */
 	uint8_t argc;		 /**< Argument count of last decoded command. */

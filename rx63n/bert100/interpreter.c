@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "interpreter.h"
 #include "editor.h"
+#include "fat.h"
 
 Interp g_interp;
 
@@ -196,7 +197,6 @@ Interp_RegisterCmd(Cmd * cmd)
 	cmd->next = cmdHead;
 	cmdHead = cmd;
 }
-#if 0
 static void
 Interp_ExecuteScript(void *eventData)
 {
@@ -224,7 +224,6 @@ Interp_StartScript(Interp * interp, char *path)
 		EV_Trigger(&interp->nextLineEvent);
 	}
 }
-#endif
 
 /**
  ***************************************************************************
@@ -239,7 +238,7 @@ Interp_Init(Interp_OutProc * OutStr, Interp_PrintVA * PrintVA_P)
 	interp->OutStr = OutStr;
 	interp->PrintVA_P = PrintVA_P;
 	Interp_RegisterCmd(&helpcmd);
-//	EV_Init(&interp->nextLineEvent, Interp_ExecuteScript, interp);
+	EV_Init(&interp->nextLineEvent, Interp_ExecuteScript, interp);
 //      Interp_Printf_P(interp,"Hallo der Interpreter ist da %d\n",4711);
 	return interp;
 }
