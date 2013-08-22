@@ -170,6 +170,35 @@ RX_EtherSetupIoPortsMII(void)
 	MPC.PWPR.BIT.PFSWE = 0;
 	MPC.PWPR.BIT.B0WI = 1;
 }
+/**
+ ***********************************************************
+ * Version for 100 Pin variant of the CPU using port A/B
+ ***********************************************************
+ */
+__attribute__((unused)) static void
+RX_EtherSetupIoPorts100_RMII(void)
+{
+	MPC.PWPR.BIT.B0WI = 0;	
+	MPC.PWPR.BIT.PFSWE = 1;
+	MPC.PFENET.BIT.PHYMODE = 1;
+	MPC.PA3PFS.BYTE = 0x11; /* PA3 MDIO	*/
+	MPC.PA4PFS.BYTE = 0x11; /* PA4 MDC	*/
+	PORTA.PMR.BYTE |= 0x18;
+	PORTA.PDR.BYTE |= 0x18;
+	MPC.PB0PFS.BYTE = 0x12;	/* PB0 RMII_RXD1 */ 
+	MPC.PB1PFS.BYTE = 0x12; /* PB1 RMII_RXD0 */
+	MPC.PB2PFS.BYTE = 0x12; /* PB2 RMII_REF50CK */
+	MPC.PB3PFS.BYTE = 0x12; /* PB3 RMII_RX_ER input */
+	MPC.PB4PFS.BYTE = 0x12;	/* PB4 RMII_TXD_EN */
+	MPC.PB5PFS.BYTE = 0x12; /* PB5 RMII_TXD0 */
+	MPC.PB6PFS.BYTE = 0x12; /* PB6 RMII_TXD1 */
+	MPC.PB7PFS.BYTE = 0x12; /* PB7_RMII_CRS input */
+	PORTB.PMR.BYTE = 0xff;
+	PORTB.PDR.BYTE = 0x70;
+
+	MPC.PWPR.BIT.PFSWE = 0;
+	MPC.PWPR.BIT.B0WI = 1;
+}
 
 /**
  ************************************************************************
@@ -415,6 +444,7 @@ RX_EtherInit(void)
 	EV_Init(&re->evRxEvent, RXEth_RxEventProc, re);
 	EV_Init(&re->evTxEvent, RXEth_TxEventProc, re);
 //	RX_EtherSetupIoPortsMII();
+	RX_EtherSetupIoPorts100_RMII();
 	MSTP(EDMAC) = 0;
 	DelayUs(2);
 	EDMAC.EDMR.BIT.SWR = 1;
