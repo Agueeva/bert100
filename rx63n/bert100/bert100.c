@@ -71,6 +71,10 @@ blinkProc(void *eventData)
 	Timer_Start(&blinkTimer,500);
 	toggle ^= 1;
  	BMOD(3,PORT0.PODR.BYTE,toggle);
+#ifdef SAKURA
+ 	BSET(0,PORTA.PDR.BYTE);
+ 	BMOD(0,PORTA.PODR.BYTE,toggle);
+#endif
  //	BMOD(6,PORT8.PODR.BYTE,toggle);
 }
 
