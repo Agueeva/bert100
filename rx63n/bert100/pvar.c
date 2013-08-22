@@ -134,15 +134,15 @@ PVar_Get(PVar *pvar,char *valP, uint16_t maxlen)
 
 
 const char *exampleText1[] = {
-	"Kasper" , 
-	"hat", 
-	"Geburtstag",
+	"\"Kasper\"" , 
+	"\"hat\"", 
+	"\"Geburtstag\"",
 };
 
 const char *exampleText2[] = {
-	"Alle" , 
-	"meine", 
-	"Entchen",
+	"\"Alle\"" , 
+	"\"meine\"", 
+	"\"Entchen\"",
 };
 
 const char **exampleText = exampleText1;

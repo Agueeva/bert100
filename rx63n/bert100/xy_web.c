@@ -102,12 +102,6 @@ typedef struct WebPageRegistration {
 #define WSST_CLOSING	(2)
 #define WSST_CLOSED	(3)
 
-#define WSOP_CONTINUATION	(0)
-#define WSOP_TEXT		(1)
-#define WSOP_BINARY		(2)
-#define WSOP_CLOSE		(8)
-#define WSOP_PING		(9)
-#define WSOP_PONG		(0xa)
 typedef struct WebCon WebCon; 
 
 struct WebSocket {
@@ -1202,10 +1196,11 @@ CalcObufSpace(uint16_t pllen)
  **********************************************************************************************
  */
 void
-WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,uint8_t *data,uint16_t pllen) 
+WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,void *_data,uint16_t pllen) 
 {
 	uint8_t *buf; 
 	uint16_t msgsize;
+	uint8_t *data = _data;
 	buf = WebSocket_AllocObufSpace(ws,CalcObufSpace(pllen)); 
 	if(!buf) {
 		Con_Printf("No buffer available\n");

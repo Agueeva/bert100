@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(4U)
+#define RX_DESCR_NUM	(6U)
 #define TX_DESCR_NUM	(4U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM

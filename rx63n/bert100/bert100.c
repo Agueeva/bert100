@@ -41,6 +41,7 @@
 #include "pvar.h"
 #include "pvar_socket.h"
 #include "adc12.h"
+#include "flash.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -133,6 +134,7 @@ int main(void)
 	SDCard_ModuleInit();
 	FatCmds_Init();
 	ADC12_Init();
+	Flash_Init();
 	EV_Loop();
 }
 

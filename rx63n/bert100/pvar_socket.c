@@ -10,6 +10,7 @@
 #include "console.h"
 #include "pvar_socket.h"
 #include "pvar.h"
+#include "xy_string.h"
 
 #define MAX_NAMELEN	(40)
 #define MAX_VALUELEN	(40)
@@ -28,58 +29,6 @@ typedef struct JSON_Parser {
 } JSON_Parser;
 
 static JSON_Parser gJSON_Parser;
-#if 0
-/**
- *******************************************************************************
- * {"get":"adc12.raw00"}                   
- * {"set":"test.var1","value":2}  	
- *******************************************************************************
- */
-static bool 
-JSON_HandleMsg(const char *cmd) {
-	bool get;	
-	const char *name;
-	PVar *pvar;
-	cmd = strstr(cmd,"\"");
-	if(!cmd) {
-		return false;
-	}
-	cmd++;
-	if(strncmp(cmd,"get",3) == 0) {
-		get = true;
-	} else if(strncmp(cmd,"set",3) == 0) {
-		get = false;
-	} else {
-		Con_Printf("Unknown cmd %s\n",cmd);
-		return false;
-	}
-	cmd = strstr(cmd,"\"");
-	if(!cmd) {
-		return false;
-	}
-	cmd++;
-	cmd = strstr(cmd,"\"");
-	if(!cmd) {
-		return false;
-	}
-	cmd++;
-	name = cmd;
-	cmd = strstr(cmd,"\"");
-	if(!cmd)
-	{
-		return false;
-	}
-	pvar = PVar_NFind(name,cmd - name);	
-	if(!pvar) {
-		return false;
-	}	
-	if(get) {
-		Con_Printf("The Name of the Var %08x is %s\n",pvar,name);
-			
-	} 
-	return true;
-}
-#endif
 
 #define STATE_IDLE		(0)
 #define STATE_CMD		(1)
@@ -92,7 +41,14 @@ JSON_HandleMsg(const char *cmd) {
 #define STATE_FIND_VAL		(8)
 #define STATE_VAL		(9)
 
-static void 
+/**
+ *******************************************************************************
+ * This statemachine understands get and set messages.
+ * {"get":"adc12.raw00"}                   
+ * {"set":"test.var1","value":2}  	
+ *******************************************************************************
+ */
+INLINE void 
 JSON_Statemachine(JSON_Parser *jp,char c) 
 {
 //	Con_Printf("\"%c\" before %u, ",c,jp->state);
@@ -206,23 +162,44 @@ PVarSock_Connect(WebSocket *ws,void *eventData)
 	return true;	
 }
 
+static void
+SendReply(JSON_Parser *jp,WebSocket *ws) 
+{
+	char replyStr[MAX_VALUELEN + MAX_NAMELEN + 10];
+	char *strP;
+	strP = replyStr;
+	strP += xy_strcpylen(strP,"{\""); 		
+	strP += xy_strcpylen(strP,jp->name);
+	strP += xy_strcpylen(strP,"\":");
+	strP += xy_strcpylen(strP,jp->value);
+	strP += xy_strcpylen(strP,"}");
+	*strP = 0;
+	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
+}
 void
 PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
 {
+	JSON_Parser *jp = &gJSON_Parser;
 	uint32_t i;
-        char copy[41] = {0,};
-	//Con_Printf("PVar");
-        if(len <= 40) {
-                memcpy(copy,data,40);
-                copy[len] = 0;
-                Con_Printf("%-40s",copy);
-        }
-	Con_Printf("\n");
 	gJSON_Parser.state = STATE_IDLE;
 	for(i = 0; i < len; i++) {
-		JSON_Statemachine(&gJSON_Parser,(char)data[i]);
+		JSON_Statemachine(jp,(char)data[i]);
 	}	
-	Con_Printf("Json state %u\n",gJSON_Parser.state);
+	if(jp->state != STATE_DONE) {
+		Con_Printf("Error in message\n");
+		for(i = 0; i < len; i++) {
+			Con_Printf("%c",data[i]);
+		}
+		return;
+	}
+	if(jp->isGet) {
+		jp->value[sizeof(jp->value) - 1] = 0;	
+		PVar_Get(jp->pvar,jp->value,sizeof(jp->value));
+		//WebSocket_SendMsg(ws,WSOP_TEXT,(char *)valP,strlen(valP)) ;
+	} else {
+		PVar_Set(jp->pvar,jp->value);
+	}
+	SendReply(jp,ws);
 }
 
 void
