@@ -460,7 +460,7 @@ ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,
 	IcmpHdr *icmpHdr;
 	Skb *skb = Skb_Alloc();
 	uint16_t ip_payloadlen = totalLength - sizeof(IpHdr);
-	Con_Printf("totalLength %u, pl %u\n",totalLength,ip_payloadlen);
+	//Con_Printf("totalLength %u, pl %u\n",totalLength,ip_payloadlen);
 
 	skb->dataLen = ip_payloadlen - sizeof(IcmpHdr);
 	if(skb->dataLen > skb->dataAvailLen) {
@@ -485,7 +485,7 @@ Eth_HandleICMP(EthIf *eth,IpHdr *ipHdr,Skb *skb)
 	Write32(Read32(ipHdr->dstaddr),srcip);
 
 	if(icmpHdr->type == 8) {
-		Con_Printf("echo request datalen %u\n",skb->dataLen);
+		//Con_Printf("echo request datalen %u\n",skb->dataLen);
 		ping_reply(dstip,srcip,ntohs(icmpHdr->id),ntohs(icmpHdr->seqNr),skb->dataStart,ntohs(ipHdr->totalLength));
 	}
 }

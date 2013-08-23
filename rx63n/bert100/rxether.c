@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(6U)
+#define RX_DESCR_NUM	(4U)
 #define TX_DESCR_NUM	(4U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
@@ -27,6 +27,10 @@
 #define RX_DESCR_RP(rxeth)	((rxeth)->rxDescrRp % RX_DESCR_NUM)
 #define TX_DESCR_WP(rxeth)	((rxeth)->txDescrWp % TX_DESCR_NUM)
 #define TX_DESCR_RP(rxeth)	((rxeth)->txDescrRp % TX_DESCR_NUM)
+#define RX_DESCR_INC_RP(rxeth)	((rxeth)->rxDescrRp = ((rxeth)->rxDescrRp + 1) % (RX_DESCR_NUM << 1))
+#define RX_DESCR_INC_WP(rxeth)	((rxeth)->rxDescrWp = ((rxeth)->rxDescrWp + 1) % (RX_DESCR_NUM << 1))
+#define TX_DESCR_INC_RP(rxeth)	((rxeth)->txDescrRp = ((rxeth)->txDescrRp + 1) % (TX_DESCR_NUM << 1))
+#define TX_DESCR_INC_WP(rxeth)	((rxeth)->txDescrWp = ((rxeth)->txDescrWp + 1) % (TX_DESCR_NUM << 1))
 
 #define EMAC_TC_INT	(UINT32_C(1) << 21)
 #define EMAC_FR_INT	(UINT32_C(1) << 18)
@@ -241,7 +245,7 @@ RXEth_RxEventProc(void *eventData)
 			}
 		}
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
-		re->rxDescrRp++;
+		RX_DESCR_INC_RP(re);
 		/* 
  		 ****************************************************
 		 * Restart receiver if necessary 
@@ -271,7 +275,7 @@ RXEth_TxEventProc(void *eventData)
 		} 
 		Skb_Free(txDescr->skb);
 		txDescr->skb = NULL;
-		re->txDescrRp++;
+		TX_DESCR_INC_RP(re);
 		//Con_Printf("Up\n");
 		CSema_Up(&re->cSemaTxDescr);
 	} while(1);
@@ -298,7 +302,7 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 	//Con_Printf("Bufsize %u\n",txDescr->bufsize);
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	txDescr->skb = skb;
-	re->txDescrWp++;
+	TX_DESCR_INC_WP(re);
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
@@ -394,10 +398,11 @@ RxEth_RegisterPktSink(EthDriver *drv,EthDrv_PktSinkProc *p,void *evData)
  ***********************************************************************************
  */
 static int8_t
-cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
+cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 {
 	RxEth *re = &gRxEth;
 	uint16_t i;
+#if 0
 	uint8_t pkt[64] __attribute__((aligned (32)));
 	memset(pkt,0,sizeof(pkt));
 	for(i = 0; i < 6; i++) {
@@ -408,14 +413,26 @@ cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
 		pkt[i - 1 + 12] = astrtoi16(argv[i]);
 	}
 	//RXEth_Transmit(re,pkt,64);
+#endif
+	for(i = 0; i < RX_DESCR_NUM; i++) {
+		uint32_t status;
+		Descriptor *rxDescr = &re->rxDescr[i];
+		status = rxDescr->status;
+		Con_Printf("RxDescr %u status 0x%08lx\n",i,status);
+	}
 	Con_Printf("TX Ints: %lu\n",re->statTxInts);
 	Con_Printf("RX Ints: %lu\n",re->statRxInts);
 	Con_Printf("RxGood:  %lu\n",re->statRxFrameOk);
 	Con_Printf("RxBad:   %lu\n",re->statRxBadFrame);
+	Con_Printf("EDRRR:   %lu\n",EDMAC.EDRRR.LONG);
+	if(argc > 1) {
+		EDMAC.EDRRR.LONG = 1;
+	}
+
 	return 0;
 }
 
-INTERP_CMD(ethtxCmd, "ethtx", cmd_ethtx, "ethtx      # Raw ethernet transmit test command");
+INTERP_CMD(ethstatCmd, "ethstat", cmd_ethstat, "ethstat      # Ethernet driver statistics");
 
 EthDriver *
 RX_EtherInit(void)
@@ -471,6 +488,6 @@ RX_EtherInit(void)
 	ethDrv->ctrlProc = RXEth_Control; 
 	ethDrv->regPktSink = RxEth_RegisterPktSink;
 	
-	Interp_RegisterCmd(&ethtxCmd);
+	Interp_RegisterCmd(&ethstatCmd);
 	return ethDrv;
 }
