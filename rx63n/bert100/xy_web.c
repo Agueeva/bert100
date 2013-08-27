@@ -738,14 +738,6 @@ WebServ_DataSrc(void *eventData,uint32_t fpos,void **_buf,uint16_t maxlen)
 			Tcb_RegisterOps(ws->tcb,&websockTcbOps,ws);
 			ws->handoverWc = wc;
 			//WebCon_Free(wc);
-#if 0
-	if(is_ws) {
-		Con_Printf("*buf %08lx count %u, maxlen %u\n",*buf,count,maxlen);
-		for(i = 0; i < count; i++) {
-			Con_Printf("-%c",(*buf)[i]);
-		}
-	}
-#endif
 			//WebSocket_SendMsg(ws,WSOP_TEXT,"Kasper hat Geburtstag",21) ;
 		} else if(wc->http_state == HTS_FILE) {
 			//Con_Printf("\nHandover to File Server\n");

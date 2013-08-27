@@ -26,16 +26,6 @@ struct StrHashTable {
 	uint32_t nr_buckets;
 };
 
-/**
- *****************************************************************
- * For walking through hash tables.
- *****************************************************************
- */
-struct StrHashSearch {
-        uint32_t nr_bucket; 	/* The cursor */
-        StrHashEntry *cursor;
-        StrHashTable *table;
-};
 
 INLINE uint16_t 
 StrHashBucket(const char *str) {

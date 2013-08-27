@@ -175,20 +175,8 @@ SendReply(JSON_Parser *jp,WebSocket *ws)
 	strP += xy_strcpylen(strP,"}");
 	*strP = 0;
 	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
-#if 0
- * {"set":"test.var1","val":2}  	
-	char replyStr[MAX_VALUELEN + MAX_NAMELEN + 10];
-	char *strP;
-	strP = replyStr;
-	strP += xy_strcpylen(strP,"{\""); 		
-	strP += xy_strcpylen(strP,jp->name);
-	strP += xy_strcpylen(strP,"\":");
-	strP += xy_strcpylen(strP,jp->value);
-	strP += xy_strcpylen(strP,"}");
-	*strP = 0;
-	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
-#endif
 }
+
 void
 PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
 {

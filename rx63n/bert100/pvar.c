@@ -5,6 +5,7 @@
 #include "types.h"
 #include <stdlib.h>
 #include <string.h>
+#include "tpos.h"
 #include "strhash.h"
 #include "iram.h"
 #include "pvar.h"
@@ -14,6 +15,7 @@
 
 typedef struct PVarTable {
         /* The hash table stores pointers to PVars */
+	Mutex lock;
         StrHashTable *varHashTable;
 } PVarTable;
 
@@ -82,11 +84,13 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,const char *f
 		Con_Printf("Variable already exists");
                 return pvar;
         }
+	Mutex_Lock(&pvt->lock);
         she = StrHash_CreateEntry(pvt->varHashTable,printfBuf);
         if(!she) {
                 while(1) {
                         Con_Printf("Can not create string hash entry\n");
                 }
+		Mutex_Unlock(&pvt->lock);
                 return NULL;
         }
         pvar = IRam_Calloc(sizeof(PVar));
@@ -95,6 +99,7 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,const char *f
 	pvar->cbData = cbData;
 	pvar->getCallback = gcb;
 	pvar->setCallback = scb;
+	Mutex_Unlock(&pvt->lock);
         return pvar;
 }
 
@@ -167,11 +172,25 @@ Example_GetCallback (void *clientData, char *bufP,uint16_t maxlen)
 	index = (index + 1) % array_size(exampleText1);
 }
 
+
+static void
+PVars_Dump(void) {
+	StrHashSearch hashSearch;
+        PVarTable *pvt = &g_PVarTable;
+	StrHashEntry * hashEntry;
+	Mutex_Lock(&pvt->lock);
+	hashEntry = StrHash_FirstEntry(pvt->varHashTable,&hashSearch);
+	for(;hashEntry;hashEntry = StrHash_NextEntry(&hashSearch)) {
+		const char *key = StrHash_GetKey(hashEntry);
+		Con_Printf("%s\n",key);
+	}
+	Mutex_Unlock(&pvt->lock);
+}
 /**
- ********************************************************************************
+ ******************************************************************************
  * \fn static int8_t cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
  * Command shell interface for reading/writing process variables
- ********************************************************************************
+ ******************************************************************************
  */
 
 static int8_t
@@ -181,6 +200,10 @@ cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
         if(argc < 2) {
                 return -EC_BADNUMARGS;
         }
+	if(strcmp(argv[1],"-dump") == 0) {
+		PVars_Dump();
+		return 0;
+	}
         pvar = PVar_Find(argv[1]);
         if(pvar) {
                 if(argc > 2) {
