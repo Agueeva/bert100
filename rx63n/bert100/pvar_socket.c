@@ -45,7 +45,7 @@ static JSON_Parser gJSON_Parser;
  *******************************************************************************
  * This statemachine understands get and set messages.
  * {"get":"adc12.raw00"}                   
- * {"set":"test.var1","value":2}  	
+ * {"set":"test.var1","val":2}  	
  *******************************************************************************
  */
 INLINE void 
@@ -165,6 +165,18 @@ PVarSock_Connect(WebSocket *ws,void *eventData)
 static void
 SendReply(JSON_Parser *jp,WebSocket *ws) 
 {
+	char replyStr[MAX_VALUELEN + MAX_NAMELEN + 20];
+	char *strP;
+	strP = replyStr;
+	strP += xy_strcpylen(strP,"{\"var\":\""); 		
+	strP += xy_strcpylen(strP,jp->name);
+	strP += xy_strcpylen(strP,"\",\"val\":");
+	strP += xy_strcpylen(strP,jp->value);
+	strP += xy_strcpylen(strP,"}");
+	*strP = 0;
+	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
+#if 0
+ * {"set":"test.var1","val":2}  	
 	char replyStr[MAX_VALUELEN + MAX_NAMELEN + 10];
 	char *strP;
 	strP = replyStr;
@@ -175,6 +187,7 @@ SendReply(JSON_Parser *jp,WebSocket *ws)
 	strP += xy_strcpylen(strP,"}");
 	*strP = 0;
 	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
+#endif
 }
 void
 PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
