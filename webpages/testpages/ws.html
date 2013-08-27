@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+  	<title>Beispiel</title>
+    </head>
+    <body bgcolor="#000000" text="#cccccc">
+    <center>
+    <H1>Websocket Variables</H1>
+	<video controls="controls" autoplay="autoplay">
+	<source src="/sd/superman.ogv" type="video/ogg" />
+    	</video>
+     <br></br>
+    <table border="1">  
+	  <colgroup>
+    		<col width="120">
+    		<col width="180">
+	</colgroup>
+	 <tr>
+		<th>Channel</th>
+		<th width="15">value</th>
+  	</tr>
+	  <tr>
+	    <td>TestVariable</td>
+	    <td id="test.var1" align="center">test</td>
+	  </tr>
+	  <tr>
+	    <td>AD00</td>
+	    <td id="adc12.raw00" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD01</td>
+	    <td id="adc12.raw01" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD02</td>
+	    <td id="adc12.raw02" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD03</td>
+	    <td id="adc12.raw03" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD04</td>
+	    <td id="adc12.raw04" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD05</td>
+	    <td id="adc12.raw05" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD06</td>
+	    <td id="adc12.raw06" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>AD07</td>
+	    <td id="adc12.raw07" align="center">unknown</td>
+	  </tr>
+    </table>
+    <script type="text/javascript">
+     var url='ws://' + document.domain + '/pvars';
+     var socket = new WebSocket(url);
+     socket.onopen = function() { 
+		document.getElementById('ausgabe').firstChild.nodeValue="Sau";
+		socket.send('Open success'); 
+     }; 
+     socket.onmessage = function(evt) {
+	var arr = JSON.parse(evt.data);
+	var cnt = 0;
+	var item = arr['var'];
+	var value = arr['val'];
+	document.getElementById(item).firstChild.nodeValue=value;
+     }
+     var pollArr = new Array( "adc12.raw00", "adc12.raw01",
+		     "adc12.raw02","adc12.raw03", 
+		     "adc12.raw04","adc12.raw05", 
+		     "adc12.raw06","adc12.raw07", 
+		     "test.var1" );
+     var cursor = 0;
+     function pollAdc() {
+	    socket.send(JSON.stringify({get: pollArr[cursor]}));
+	    cursor = (cursor + 1) % pollArr.length;
+     }
+     function Lied(lied) {
+	    socket.send(JSON.stringify({set: "test.var1", val: lied}));
+     }
+     setInterval(pollAdc,50);
+     </script>
+     <br></br>
+	<input type="button" value="Lied 1 vom Kasper" onclick="Lied(1);" </input>
+	<input type="button" value="Lied 2 (Entchen)" onclick="Lied(2);" </input>
+    </center>
+
+    </body>
+</html>
