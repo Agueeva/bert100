@@ -3,6 +3,7 @@
 #include "types.h"
 typedef struct StrHashEntry StrHashEntry;
 typedef struct StrHashTable StrHashTable;
+typedef struct StrHashSearch StrHashSearch;
 StrHashEntry *StrHash_CreateEntry(StrHashTable *table,const char *key);
 StrHashEntry *StrHash_FindEntry(StrHashTable *table,const char *key);
 StrHashEntry *StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen);

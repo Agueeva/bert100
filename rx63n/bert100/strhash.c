@@ -23,6 +23,18 @@ struct StrHashEntry {
 
 struct StrHashTable {
 	StrHashEntry **buckets;		
+	uint32_t nr_buckets;
+};
+
+/**
+ *****************************************************************
+ * For walking through hash tables.
+ *****************************************************************
+ */
+struct StrHashSearch {
+        uint32_t nr_bucket; 	/* The cursor */
+        StrHashEntry *cursor;
+        StrHashTable *table;
 };
 
 INLINE uint16_t 
@@ -105,6 +117,41 @@ StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen)
 	return cursor;
 }
 
+StrHashEntry *
+StrHash_FirstEntry(StrHashTable *table,StrHashSearch *search)
+{
+        search->table = table;
+        for(search->nr_bucket = 0;search->nr_bucket < table->nr_buckets;) {
+                StrHashEntry **first=&table->buckets[search->nr_bucket];
+                search->nr_bucket++;
+                if(*first) {
+                        search->cursor=*first;
+                        return *first;
+                }
+        }
+        return NULL;
+}
+
+StrHashEntry *
+StrHash_NextEntry(StrHashSearch *search)
+{
+        StrHashEntry *entry = search->cursor;
+        StrHashTable *table = search->table;
+        if(entry->next) {
+                search->cursor = entry->next;
+                return search->cursor;
+        }
+        while(search->nr_bucket < table->nr_buckets) {
+                StrHashEntry **first = &table->buckets[search->nr_bucket];
+                search->nr_bucket++;
+                if(*first) {
+                        search->cursor=*first;
+                        return *first;
+                }
+        }
+        return NULL;
+}
+
 /**
  ***************************************************************
  * \fn void StrHash_SetValue
@@ -132,5 +179,6 @@ StrHashTable *
 StrHash_New(void) {
 	StrHashTable *sht = Calloc(sizeof(*sht));
 	sht->buckets = (StrHashEntry **)Calloc(sizeof(void *) * NR_HASH_BUCKETS);
+	sht->nr_buckets = NR_HASH_BUCKETS;
 	return sht;
 }
