@@ -23,7 +23,7 @@
 #endif
 
 #define EP0 0
-#define USB_IPL	1
+#define USB_IPL	2
 /*
  ****************************************************************************
  * Standard requests, for the bRequest field of a SETUP packet.
@@ -288,7 +288,7 @@ WriteControlFifo(UsbDev * dev, uint8_t * buf, uint16_t cnt)
 		}
 		if (i == 0) {
 			Con_Printf("Timeout BEMPSTS 0x%04x\n", USB0.BEMPSTS.WORD);
-			Con_Printf("WP %u\n", gUsb0.inPktWp);
+			//Con_Printf("WP %u\n", gUsb0.inPktWp);
 			break;
 		}
 		cnt -= wsize;
@@ -615,13 +615,13 @@ UsbDevStateEvent(void *eventData)
 }
 
 void __attribute__ ((interrupt))
-    INT_Excep_USB0_D0FIFO0(void)
+Excep_USB0_D0FIFO0(void)
 {
 
 }
 
 void __attribute__ ((interrupt))
-    INT_Excep_USB0_D1FIFO0(void)
+Excep_USB0_D1FIFO0(void)
 {
 }
 
@@ -742,7 +742,7 @@ UsbDev_EpInTransmit(UsbDev * ud, uint8_t epNr, uint8_t * data, uint16_t len)
  *************************************************************
  */
 void __attribute__ ((interrupt))
-    INT_Excep_USB0_USBI0(void)
+Excep_USB0_USBI0(void)
 {
 	uint16_t intsts0, intsts1;
 	UsbDev *ud = &gUsb0;
@@ -1013,6 +1013,8 @@ UsbDev_Init(void)
 	USB0.INTENB1.BIT.DTCHE = 1;
 	USB0.INTENB1.BIT.ATTCHE = 1;
 	USB0.BRDYSTS.WORD = 0;
+	//USB0.SYSCFG.BIT.USBE = 1;
+
 	UsbDev_ConfBulkInPipe(ud, 1, 1);
 	UsbDev_ConfBulkOutPipe(ud, 2, 2);
 	Interp_RegisterCmd(&usbCmd);

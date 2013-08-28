@@ -60,7 +60,8 @@ ConfigureClocks(void)
 	for(i = 0; i < 3000;i++) {
 		asm("nop":::"memory");	
 	}
-	SYSTEM.SCKCR.LONG = 0x21821211;
+	//SYSTEM.SCKCR.LONG = 0x21821211;
+	SYSTEM.SCKCR.LONG = 0x21821222;
 	SYSTEM.SCKCR2.WORD = 0x033;
 	SYSTEM.SCKCR3.WORD = 0x400;
 }

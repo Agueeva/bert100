@@ -66,7 +66,7 @@ static const usb_device_descriptor dev_descr_tmpl = {
 	0x00,			/* DeviceProtocol                               */
 	0x40,			/* MaxPacketSize0                               */
 	host16_to_le(0x045b),	/* idVendor Hitachi                             */
-	host16_to_le(0x0815),	/* le16 idProduct                               */
+	host16_to_le(0x0816),	/* le16 idProduct                               */
 	host16_to_le(0x0100),	/* le16 bcdDevice                               */
 	0x01,			/* uint8_t  iManufacturer;                      */
 	0x02,			/* uint8_t  iProduct;                           */
@@ -1140,15 +1140,15 @@ Usb_GetStringDescr(void *evData, uint8_t epNr, UsbSetupBuffer * sb)
 		    break;
 
 	    case 1:		/* iManufacturer        */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "Sielaff", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "Neutronics", maxlen);
 		    break;
 
 	    case 2:		/* iProductId           */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "RedBox", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "Bert100", maxlen);
 		    break;
 
 	    case 3:		/* iSerialNumber        */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "AFF471108Q", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "ERNIE4711AQ", maxlen);
 		    break;
 
 	    case 4:		/* iConfiguration       */

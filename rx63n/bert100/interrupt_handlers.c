@@ -59,15 +59,6 @@ void Excep_CMT3_CMI3(void){ }
 // ETHER EINT
 //void Excep_ETHER_EINT(void){ }
 
-// USB0 D0FIFO0
-void Excep_USB0_D0FIFO0(void){ }
-
-// USB0 D1FIFO0
-void Excep_USB0_D1FIFO0(void){ }
-
-// USB0 USBI0
-void Excep_USB0_USBI0(void){ }
-
 // USB1 D0FIFO1
 void Excep_USB1_D0FIFO1(void){ }
 
