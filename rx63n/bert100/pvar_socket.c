@@ -219,5 +219,5 @@ static WebSockOps pvarWsOps = {
 void
 PVarSocket_New(XY_WebServer *wserv) 
 {
-	XY_WebSocketRegister(wserv,"/pvars",&pvarWsOps,NULL);
+	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,NULL);
 }

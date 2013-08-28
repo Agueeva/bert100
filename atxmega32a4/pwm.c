@@ -143,7 +143,11 @@ PWM_Init(void) {
 	PORTD.DIRSET = 0x3f;
 	PORTE.DIRSET = 0xc;
 
+#ifdef HIRESD_CTRLA
+	HIRESD_CTRLA = 0 /* | HIRES_HREN_TC0_gc  | HIRES_HREN_TC1_gc */; 
+#else
 	HIRESD_CTRL = 0 /* | HIRES_HREN_TC0_gc  | HIRES_HREN_TC1_gc */; 
+#endif
 	TCD0.CTRLA = 5; /* Divide by 64 */
 	TCD1.CTRLA = 5; /* Divide by 64 */
         TCD0.PER = 49999;
@@ -154,7 +158,11 @@ PWM_Init(void) {
 	TCD1.CTRLB = TC_WGMODE_SS_gc | TC0_CCBEN_bm | TC0_CCAEN_bm; 
 	sei();
 
+#ifdef HIRESE_CTRLA
+	HIRESE_CTRLA = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+#else
 	HIRESE_CTRL = HIRES_HREN_TC0_gc | HIRES_HREN_TC1_gc; 
+#endif
 	TCE0.CTRLA = 1; /* Divide by 1 */
         //TCD0.INTCTRLA = 1;
         TCE0.PER = (pwmres - 1) & ~3;

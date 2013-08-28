@@ -14,25 +14,84 @@
 #include "timer.h"
 #include "tpos.h"
 
+/* Register definitions for INPHY-100 CDR */
+#define CDR_VS_DEVICE_CONTROL                   0
+#define CDR_VS_DEVICE_IDENTIFIER2               2
+#define CDR_VS_DEVICE_IDENTIFIER3               3
+#define CDR_PMA_PMD_DEVICES_IN_PACKAGE5         5
+#define CDR_PMA_PMD_DEVICES_IN_PACKAGE6         6
+#define CDR_VS_STATUS                           8
+#define CDR_VS_PACKAGE_ID14                     0xe     // read as 0
+#define CDR_VS_PACKAGE_ID15                     0xf
+#define CDR_LANE_PATTERN_CONTROL0               16      
+#define CDR_LANE_PATTERN_CONTROL1               17
+#define CDR_LANE_PATTERN_CONTROL2               18
+#define CDR_LANE_PATTERN_CONTROL3               19
+#define CDR_CUSTOM_TEST_PATTERN30               30
+#define CDR_CUSTOM_TEST_PATTERN31               31
+#define CDR_CUSTOM_TEST_PATTERN32               32
+#define CDR_LOL_STATUS                          33
+#define CDR_FIFO_STATUS                         37
+#define CDR_TXPLL_CONFIG1                       39      
+#define CDR_TXPLL_CONFIG2                       40
+#define CDR_RXPLL_CONFIG1                       41
+#define CDR_RXPLL_CONFIG2                       42
+#define CDR_MANUAL_RESET_CONTROL                44
+#define CDR_LANE0_ERROR_COUNTER                 48
+#define CDR_LANE1_ERROR_COUNTER                 49
+#define CDR_LANE2_ERROR_COUNTER                 50
+#define CDR_LANE3_ERROR_COUNTER                 51
+#define CDR_LANE0_SAMPLE0_READ                  64
+#define CDR_LANE0_SAMPLE1_READ                  65      
+#define CDR_LANE0_SAMPLE2_READ                  66
+#define CDR_LANE1_SAMPLE0_READ                  0x44    
+#define CDR_LANE1_SAMPLE1_READ                  0x45
+#define CDR_LANE1_SAMPLE2_READ                  0x46
+#define CDR_LANE2_SAMPLE0_READ                  0x48
+#define CDR_LANE2_SAMPLE1_READ                  0x49
+#define CDR_LANE2_SAMPLE2_READ                  0x4a
+#define CDR_LANE3_SAMPLE0_READ                  0x4c
+#define CDR_LANE3_SAMPLE1_READ                  0x4d
+#define CDR_LANE3_SAMPLE2_READ                  0x4e
+/* 0x100-0x17f, 0x200- 0x27f , 0x300 - 0x37f , 0x400 - 0x47f Transmitter register spaces */
+#define CDR_TX_MAIN_CONTROL(lane)               (0x100 + (0x100 * (lane)))
+#define CDR_TX_EQ_CONTROL(lane)                 (0x101 + (0x100 * (lane)))
+#define CDR_TX_SWING_CONTROL(lane)              (0x102 + (0x100 * (lane)))
+/* Receive lane register spaces */
+#define CDR_RX_MAIN_CONTROL(lane)               (384 + (0x100 * (lane)))
+#define CDR_RX_1ST_ORDER_CONTROL(lane)          (385 + (0x100 * (lane)))
+#define CDR_RX_2ND_ORDER_CONTROL(lane)          (386 + (0x100 * (lane)))
+#define CDR_RX_EQ_CONTROL(lane)                 (387 + (0x100 * (lane)))
+#define CDR_RX_EYESCAN_CONTROL1(lane)           (391 + (0x100 * (lane)))
+#define CDR_RX_EYESCAN_CONTROL2(lane)           (392 + (0x100 * (lane)))
+#define CDR_RX_EYESCAN_RESULT(lane)             (393 + (0x100 * (lane)))
+#define CDR_RX_EQ_CONTROL2(lane)                (420 + (0x100 * (lane)))
+#define CDR_RX_EQ_OBSERVE1(lane)                (421 + (0x100 * (lane)))
+#define CDR_RX_EQ_SETTING(lane)                 (422 + (0x100 * (lane)))
+#define CDR_RX_2ND_ORDER_CDR_OBSERVE(lane)      (423 + (0x100 * (lane)))
+
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
 #define DEVTYPE		(30)
 
 typedef struct CdrRegister {
+	const char *name;
 	uint16_t regNo;
+	uint8_t firstBit;
+	uint8_t nrBits;
 } CdrRegister;
-
-#define NAME(x,y)
 
 /**
  ******************************************************************
- * This is the list of all CDR registers with name
+ * This is the list of the exported CDR registers with name
  * and address.  
  ******************************************************************
  */
 static const CdrRegister gCdrRegisters[] = {
 	{
-	 NAME("bla",)
+	 .name = "regBla",
 	 .regNo = 0,
+	 .firstBit = 8,
+	 .nrBits = 8,
 	 }
 };
 
@@ -72,7 +131,7 @@ Cdr_Read(uint8_t phyAddr, uint16_t regAddr)
  ************************************************************************
  */
 static void
-Cdr_Init_cdr(uint16_t phy_addr)
+Cdr_InitCdr(uint16_t phy_addr)
 {
 	Cdr_Write(phy_addr, 0, 0X0100);
 	Cdr_Write(phy_addr, 2, 0X0210);
@@ -408,8 +467,8 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	}
 	if ((argc == 3) && (strcmp(argv[1], "init") == 0)) {
 		uint8_t cdr = astrtoi16(argv[2]);
-		Con_Printf("Calling Olgas CDR_Init_cdr for CDR %u\n", cdr);
-		Cdr_Init_cdr(cdr);
+		Con_Printf("Calling Olgas CDR_InitCdr for CDR %u\n", cdr);
+		Cdr_InitCdr(cdr);
 		return 0;
 	} else if (argc == 3) {
 		phyAddr = astrtoi16(argv[1]);
@@ -430,8 +489,32 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
 
+
 void
-CDR_Init(void)
+PVSignalQuality_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+//        uint32_t rawAdval;
+//        uint8_t cnt;
+//        ADCChan *ch = cbData;
+//        rawAdval = ADC12_Read(ch->channelNr);
+        bufP[uitoa16(value,bufP)] = 0;
+}
+
+
+/*
+ ************************************************************************************
+ * Zum Webinterface exportierte Variablen:
+ * CDR status: PLL locks,
+ * PRBS pattern, PRBS lock, LOL status , PRBS error counters.
+ ************************************************************************************
+ */
+void
+CDR_Init(const char *name)
 {
 	Interp_RegisterCmd(&cdrCmd);
+	int lane;
+	for(lane = 0; lane < 4; lane++) {
+		PVar_New(PVSignalQuality_Get,NULL,&cdr,0,"%s.regEqState_%u",name,);
+	}
+
 }

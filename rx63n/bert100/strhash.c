@@ -18,7 +18,7 @@ struct StrHashEntry {
 	const char *key;
 	void *value;
 	struct StrHashEntry *next;
-	struct StrHashEntry *prev;
+	//struct StrHashEntry *prev;
 };
 
 struct StrHashTable {
@@ -60,10 +60,12 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 	}
 	newentry = Calloc(sizeof(StrHashEntry));
 	newentry->next = *first;
+#if 0
 	newentry->prev = NULL;
 	if(*first) {
 		(*first)->prev = newentry; 
 	} 
+#endif
 	*first = newentry;
 	/* Dup only keys in RAM, flash is immutable */
 	if((uint32_t) key  < 0xF0000000) {

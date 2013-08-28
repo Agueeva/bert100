@@ -27,8 +27,8 @@
 #define LATCH_SR_LOW		BCLR(5,PORT1.PODR.BYTE)
 #define LATCH_SR(val)		BMOD(5,PORT1.PODR.BYTE,(val))
 
-static void
-ShiftOut(uint16_t shiftval) 
+void
+ShiftReg_Out(uint16_t shiftval) 
 {
 	unsigned int i;	
 	LATCH_SR_LOW;
@@ -58,7 +58,7 @@ cmd_shift(Interp * interp, uint8_t argc, char *argv[])
 		return -EC_BADNUMARGS;
 	}
 	val = astrtoi16(argv[1]);
-	ShiftOut(val);
+	ShiftReg_Out(val);
         return 0;
 }
 
@@ -72,6 +72,6 @@ ShiftReg_Init(uint16_t initval)
 	LATCH_SR_DIROUT;
 	CLK_SR_LOW;
 	LATCH_SR_LOW;
-	ShiftOut(initval);
+	ShiftReg_Out(initval);
 	Interp_RegisterCmd(&shiftCmd);
 }

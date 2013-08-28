@@ -45,6 +45,7 @@
 #include "config.h"
 #include "usbdev.h"
 #include "usbstorage.h"
+#include "leds.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -130,7 +131,7 @@ int main(void)
 	AD537x_Init();
 #endif
 	MDIO_Init();
-	CDR_Init();
+	CDR_Init("cdr1");
 
 	Timer_Start(&blinkTimer,500);
 	Skb_Init();
@@ -147,7 +148,8 @@ int main(void)
 	FatCmds_Init();
 	ADC12_Init();
 	Flash_Init();
+	/* Now the higher level modules depending on hardware modules */
+	Leds_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
 }
-

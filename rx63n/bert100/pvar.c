@@ -24,7 +24,7 @@ struct PVar {
 	PVar_SetCallback *setCallback;
 	PVar_GetCallback *getCallback;
 	void *cbData;
-//	void *dataP; uint16_t maxlen; 
+	uint32_t adId;
 };
 
 static PVarTable g_PVarTable;
@@ -69,7 +69,7 @@ PVar_NFind(const char *name,uint16_t maxlen)
  *******************************************************************************
  */
 PVar *
-PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,const char *format,...)
+PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,uint32_t adId,const char *format,...)
 {
         PVar *pvar;
 	char printfBuf[42];
@@ -97,6 +97,7 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,const char *f
         pvar->she = she;
         StrHash_SetValue(she,pvar);
 	pvar->cbData = cbData;
+	pvar->adId = adId;
 	pvar->getCallback = gcb;
 	pvar->setCallback = scb;
 	Mutex_Unlock(&pvt->lock);
@@ -123,7 +124,7 @@ void
 PVar_Set(PVar *pvar,const char *valStr) 
 {
 	if(pvar->setCallback) {
-		pvar->setCallback(pvar->cbData,valStr);
+		pvar->setCallback(pvar->cbData,pvar->adId,valStr);
 	}
 }
 
@@ -131,7 +132,7 @@ void
 PVar_Get(PVar *pvar,char *valP, uint16_t maxlen) 
 {
 	if(pvar->getCallback) {
-		pvar->getCallback(pvar->cbData,valP,maxlen);
+		pvar->getCallback(pvar->cbData,pvar->adId,valP,maxlen);
 	} else {
 		valP[0] = 0; /* Terminate the string */
 	}
@@ -153,7 +154,7 @@ const char *exampleText2[] = {
 const char **exampleText = exampleText1;
 
 void 
-Example_SetCallback (void *clientData, const char *strP)
+Example_SetCallback (void *clientData, uint32_t adId, const char *strP)
 {
 	int16_t val = astrtoi16(strP); 
 	if(val & 1) {
@@ -164,7 +165,7 @@ Example_SetCallback (void *clientData, const char *strP)
 }
 
 void 
-Example_GetCallback (void *clientData, char *bufP,uint16_t maxlen)
+Example_GetCallback (void *clientData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	static int index = 0;
 	strncpy(bufP,exampleText[index],maxlen);
@@ -172,7 +173,11 @@ Example_GetCallback (void *clientData, char *bufP,uint16_t maxlen)
 	index = (index + 1) % array_size(exampleText1);
 }
 
-
+/**
+ **************************************************************************
+ * Dump the Names of all variables to the console.
+ **************************************************************************
+ */
 static void
 PVars_Dump(void) {
 	StrHashSearch hashSearch;
@@ -229,5 +234,5 @@ PVars_Init(void)
         PVarTable *pvt = &g_PVarTable;
         pvt->varHashTable = StrHash_New();
         Interp_RegisterCmd(&pvarCmd);
-	PVar_New(Example_GetCallback,Example_SetCallback,NULL,"test.var1");
+	PVar_New(Example_GetCallback,Example_SetCallback,NULL,0,"test.var1");
 }

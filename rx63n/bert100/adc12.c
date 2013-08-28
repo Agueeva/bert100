@@ -46,15 +46,15 @@ int16_t ADC12_Read(int channel)
     return adc_value;
 }
 
-void
-PVAdc12_SetRaw (void *cbData, const char *strP)
+static void
+PVAdc12_SetRaw (void *cbData, uint32_t adId, const char *strP)
 {
 	ADCChan *ch = cbData;
 	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
 }
 
-void
-PVAdc12_GetRaw (void *cbData, char *bufP,uint16_t maxlen)
+static void
+PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
 	uint8_t cnt;
@@ -98,7 +98,7 @@ ADC12_Init(void)
 	for(i = 0; i < NR_CHANNELS; i++) {
 		ch = &adc->adch[i];
 		ch->channelNr = i;
-		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,"adc12.raw%02u",i);
+		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%02u",i);
 	}
 	Interp_RegisterCmd(&adc12Cmd);
 }
