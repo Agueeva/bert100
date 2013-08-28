@@ -302,8 +302,8 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 //raise Exception("No CDR device detected at the specified PHYADDR")
 	uint16_t uVal;
 	uint8_t status = 1;
-	uint8_t i;
-	uVal = Cdr_ReadPart(phy_addr, 3, 15, 4);
+	uint8_t lane;
+	uVal = Cdr_ReadPart(phy_addr, CDR_VS_DEVICE_IDENTIFIER3, 15, 4);
 	if (uVal == 0x740) {
 		Con_Printf("CDR device detected\n");
 	} else {
@@ -326,27 +326,18 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 //# Reset the device, assume normal bring-up
 //
 //regWrite(device + "30.0",0x1020) # Hard reset (bit 5) and MDIO init (bit 12)
-	Cdr_Write(phy_addr, 0, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
 
 //
 //regWrite(device + "30.0",0x0200) # Datapath soft reset (bit 9)
-	Cdr_Write(phy_addr, 0, 0x200);	//Datapath soft reset (bit 9)
+	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
 //
 //regWrite(device + "30.385.10:8",4)      # Set 128 steps for PI resolution - inside reset"
 //mod_field(uint8_t *buf,uint8_t value,uint8_t bits,uint8_t firstbit)
 //
-
-	Cdr_WritePart(phy_addr, 385, 10, 8, 4);
-//Cdr_WritePart(uint16_t phy_addr,uint16_t uRegister,uint8_t uNumBit,uint8_t uStartBit,uint8_t uNumber)
-
-//regWrite(device + "30.641.10:8",4)
-	Cdr_WritePart(phy_addr, 641, 10, 8, 4);
-
-//regWrite(device + "30.897.10:8",4)
-	Cdr_WritePart(phy_addr, 897, 10, 8, 4);
-
-//regWrite(device + "30.1153.10:8",4)
-	Cdr_WritePart(phy_addr, 1153, 10, 8, 4);
+	for(lane = 0; lane < 4; lane++) {
+		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
+	}
 
 //regWrite(device + "30.0",0x0000)
 //
@@ -355,13 +346,13 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	Cdr_WritePart(phy_addr, 1184, 1, 0, 1);
 //# Re-Calibrating Tx PLL
 //regWrite(device + "30.39.15",0)         # normal mode
-	Cdr_WritePart(phy_addr, 39, 15, 0, 0);
+	Cdr_WritePart(phy_addr, CDR_TXPLL_CONFIG1, 15, 0, 0);
 
 //regWrite(device + "30.39.15",1)         # re-calibrate
-	Cdr_WritePart(phy_addr, 39, 15, 0, 1);
+	Cdr_WritePart(phy_addr, CDR_TXPLL_CONFIG1, 15, 0, 1);
 
 //regWrite(device + "30.39.15",0)         # normal mode
-	Cdr_WritePart(phy_addr, 39, 15, 0, 0);
+	Cdr_WritePart(phy_addr, CDR_TXPLL_CONFIG1, 15, 0, 0);
 //time.sleep(0.1) 
 	SleepMs(100);		// wait for it to lock
 //regWrite(device + "30.1184.1",0)        # and unlock PI3
@@ -371,8 +362,8 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 //
 //for lane in range(4):                   # EQ offset override is set
 //regWrite(device + "30." + str(441 + 256 * lane) + ".0",1)
-	for (i = 0; i < 4; i++) {
-		Cdr_WritePart(phy_addr, 441 + 256 * i, 0, 0, 1);	// Olga  Achtung!!!!!! Die Länge ist 0
+	for (lane = 0; lane < 4; lane++) {
+		Cdr_WritePart(phy_addr, 441 + 256 * lane, 0, 0, 1);	// Olga  Achtung!!!!!! Die Länge ist 0
 	}
 
 //
@@ -381,25 +372,25 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 //execfile("../scripts/correct_offsets.py",globals(),startup_dictionary)
 //for lane in range(4):                 # Set 128 steps here for A0 (not inside reset)
 //regWrite(device + "30." + str(385 + 256 * lane) + ".10:8",4)
-	for (i = 0; i < 4; i++) {
-		Cdr_WritePart(phy_addr, 385 + 256 * i, 10, 8, 4);
+	for (lane = 0; lane < 4; lane++) {
+		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
 	}
 //
 //regWrite(device + "30.37.15",1) # Asserts FIFO reset
 
-	Cdr_WritePart(phy_addr, 37, 15, 0, 1);
+	Cdr_WritePart(phy_addr, CDR_FIFO_STATUS, 15, 0, 1);
 //regWrite(device + "30.37.14",1) # Enable auto-reset
 
-	Cdr_WritePart(phy_addr, 37, 14, 0, 1);
+	Cdr_WritePart(phy_addr, CDR_FIFO_STATUS, 14, 0, 1);
 //regWrite(device + "30.37.15",0) # De-Asserts FIFO reset
 
-	Cdr_WritePart(phy_addr, 37, 15, 0, 0);
+	Cdr_WritePart(phy_addr, CDR_FIFO_STATUS, 15, 0, 0);
 //
 //# This section just checks things did complete are startup OK
 //
 //reply = regRead(device + "30.42.8")
 
-	uVal = Cdr_ReadPart(phy_addr, 42, 8, 0);
+	uVal = Cdr_ReadPart(phy_addr, CDR_RXPLL_CONFIG2, 8, 0);
 //print "Rx PLL Lock Status should be 1:" + str(reply)
 //if reply==0:
 //print "***  Rx PLL not locked, is REFCLK present?"
@@ -410,7 +401,7 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	}
 //reply = regRead(device + "30.40.8")
 
-	uVal = Cdr_ReadPart(phy_addr, 40, 8, 0);
+	uVal = Cdr_ReadPart(phy_addr, CDR_TXPLL_CONFIG2, 8, 0);
 
 //print "Tx PLL Lock Status should be 1:" + str(reply)
 //if reply==0:
@@ -422,7 +413,7 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	}
 //reply = regRead(device + "30.0.8")
 
-	uVal = Cdr_ReadPart(phy_addr, 0, 8, 0);
+	uVal = Cdr_ReadPart(phy_addr, CDR_VS_DEVICE_CONTROL, 8, 0);
 
 //print "GB Tx or CDR Reset sequence done:" + str(reply)
 //if reply == 0:
@@ -435,8 +426,8 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 //print "Enabling calibrated EQ offsets"
 //for lane in range(4):
 //regWrite(device + "30." + str(441 + 256 * lane) + ".0",1)
-	for (i = 0; i < 4; i++) {
-		Cdr_WritePart(phy_addr, 441 + 256 * i, 0, 0, 1);	// Achtung!!!!!! Die Länge ist 0
+	for (lane = 0; lane < 4; lane++) {
+		Cdr_WritePart(phy_addr, 441 + 256 * lane, 0, 0, 1);	// Achtung!!!!!! Die Länge ist 0
 	}
 
 //
