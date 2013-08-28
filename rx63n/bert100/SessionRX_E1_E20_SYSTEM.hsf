@@ -188,7 +188,7 @@
 "{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleCtrlPortBaudIndex" "0" 
 "{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleCtrlPortName" "" 
 "{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleCtrlSendDataTimeout" "50" 
-"{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleCtrlViews" "1" 
+"{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleCtrlViews" "0" 
 "{B39CE26B-928D-4241-BF8F-E15980C81200}DebugConsoleWndInstanceKey0" "{WK_00000001_DEBUGCONSOLE}bert100SessionRX_E1_E20_SYSTEM" 
 "{B6AE2E1F-5221-4A44-91C2-8C3097B41A69}StartStopCheckAfter" "0" 
 "{B6AE2E1F-5221-4A44-91C2-8C3097B41A69}StartStopCheckBefore" "0" 
@@ -201,7 +201,7 @@
 "{EEDC9300-6FBE-11D5-8613-00A024591A38}LocalsCtrlViews" "0" 
 "{EEDC9301-6FBE-11D5-8613-00A024591A38}StackTraceCtrlViews" "0" 
 "{F866DB60-6186-11D5-8BBE-0004E2013C71}IOCtrlIOFile" "" 
-"{F866DB60-6186-11D5-8BBE-0004E2013C71}IOCtrlSaveFileDir" "$(CONFIGDIR)" 
+"{F866DB60-6186-11D5-8BBE-0004E2013C71}IOCtrlSaveFileDir" "" 
 "{F866DB60-6186-11D5-8BBE-0004E2013C71}IOCtrlSaveFileName" "" 
 "{F866DB60-6186-11D5-8BBE-0004E2013C71}IOCtrlViews" "0" 
 "{F923CED3-3318-4B43-B931-0AE76B289176}TaskTraceCtrlAnalyzeViews" "0" 
@@ -251,8 +251,13 @@
 [WINDOW_POSITION_STATE_DATA_VD3]
 [WINDOW_POSITION_STATE_DATA_VD4]
 [WINDOW_Z_ORDER]
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\reset_program.asm" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.c" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\reset_program.asm" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbdev.c" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbstorage.c" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bert100.c" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.h" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tpos.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\rxether.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\ethernet.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\adc12.c" 
@@ -280,8 +285,8 @@
 "SBK_TAR_EMUE100|Exception" 1 
 "SBK_TAR_EMUE100|BreakCondition" 1 
 "SBK_TAR_EMUE100|TaskID" 1 
-"SBK_TAR_EMUE100|ExecutionTime" 1 
 "SBK_TAR_EMUE100|PC" 1 
+"SBK_TAR_EMUE100|ExecutionTime" 1 
 [STATUSBAR_DEBUGGER_PANESTATE_VD2]
 [STATUSBAR_DEBUGGER_PANESTATE_VD3]
 [STATUSBAR_DEBUGGER_PANESTATE_VD4]
