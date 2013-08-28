@@ -476,7 +476,7 @@ INTERP_CMD(cdr, cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/fr
  ************************************************************************************
  */
 void
-CDR_Init()
+Cdr_Init()
 {
 
 }

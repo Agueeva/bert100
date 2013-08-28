@@ -21,7 +21,7 @@ static void
 LedsRefresh(void *eventData)
 {
 	LedModule *lm = eventData;	
-	ShiftReg_Out(&lm->shiftval)
+	ShiftReg_Out(lm->shiftreg);
 }
 
 void

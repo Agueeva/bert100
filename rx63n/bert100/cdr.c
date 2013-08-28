@@ -13,6 +13,7 @@
 #include "console.h"
 #include "timer.h"
 #include "tpos.h"
+#include "pvar.h"
 
 /* Register definitions for INPHY-100 CDR */
 #define CDR_VS_DEVICE_CONTROL                   0
@@ -493,6 +494,7 @@ INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read w
 void
 PVSignalQuality_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
+	uint16_t value = 5;
 //        uint32_t rawAdval;
 //        uint8_t cnt;
 //        ADCChan *ch = cbData;
@@ -514,7 +516,7 @@ CDR_Init(const char *name)
 	Interp_RegisterCmd(&cdrCmd);
 	int lane;
 	for(lane = 0; lane < 4; lane++) {
-		PVar_New(PVSignalQuality_Get,NULL,&cdr,0,"%s.regEqState_%u",name,);
+//		PVar_New(PVSignalQuality_Get,NULL,&cdr,0,"%s.regEqState_%u",name,);
 	}
 
 }
