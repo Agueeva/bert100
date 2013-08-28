@@ -314,9 +314,9 @@ UsbStor_SCInquire(UsbStor * us)
 	data[3] = 2;		/* SCSI level */
 	data[4] = 31;
 	data[5] = data[6] = data[7] = 0;
-	strncpy((char *)data + 8, "Sielaff ", 8);
-	strncpy((char *)data + 16, "RedBox          ", 16);
-	strncpy((char *)data + 32, "4711", 4);
+	strncpy((char *)data + 8, "Neuner  ", 8);
+	strncpy((char *)data + 16, "Bert100         ", 16);
+	strncpy((char *)data + 32, "0001", 4);
 	UsbStor_DataIn(us, data, 36);
 	SC_SetSense(us, SK_NO_SENSE, 0, 0, 0);
 	return CSWS_Good;

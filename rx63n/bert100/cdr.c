@@ -89,10 +89,10 @@ typedef struct CdrRegister {
  */
 static const CdrRegister gCdrRegisters[] = {
 	{
-	 .name = "regBla",
-	 .regNo = 0,
-	 .firstBit = 8,
-	 .nrBits = 8,
+	 	.name = "regBla",
+	 	.regNo = 0,
+	 	.firstBit = 8,
+	 	.nrBits = 8,
 	 }
 };
 
@@ -322,7 +322,6 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	Cdr_WritePart(phy_addr, 1184, 1, 1, 0); // and unlock PI3
 	SleepMs(100);
 	//for lane in range(4):                   # EQ offset override is set
-	//regWrite(device + "30." + str(441 + 256 * lane) + ".0",1)
 	for (lane = 0; lane < 4; lane++) {
 		Cdr_WritePart(phy_addr, 441 + 256 * lane, 0, 0, 1);	// Olga  Achtung!!!!!! Die Länge ist 0
 	}
