@@ -6,10 +6,6 @@
     <body bgcolor="#000000" text="#cccccc">
     <center>
     <H1>Websocket Variables</H1>
-	<video controls="controls" autoplay="autoplay">
-	<source src="/sd/superman.ogv" type="video/ogg" />
-    	</video>
-     <br></br>
     <table border="1">  
 	  <colgroup>
     		<col width="120">
@@ -57,11 +53,13 @@
 	  </tr>
     </table>
     <script type="text/javascript">
-     var url='ws://' + document.domain + '/pvars';
+     var url='ws://' + document.domain + '/messages';
      var socket = new WebSocket(url);
      socket.onopen = function() { 
-		document.getElementById('ausgabe').firstChild.nodeValue="Sau";
-		socket.send('Open success'); 
+		//alert('Verbindung aufgebaut');	
+     }; 
+     socket.onclose = function() { 
+		alert('Verbindung unterbrochen');	
      }; 
      socket.onmessage = function(evt) {
 	var arr = JSON.parse(evt.data);
