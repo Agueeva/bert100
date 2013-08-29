@@ -45,7 +45,7 @@
 #include "config.h"
 #include "usbdev.h"
 #include "usbstorage.h"
-#include "vxco.h"
+#include "xo.h"
 #include "leds.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
@@ -135,7 +135,7 @@ int main(void)
 	AD537x_Init();
 #endif
 	MDIO_Init();
-	VXCO_Init("vxco",0x55);
+	XO_Init("xo",0x55);
 	CDR_Init("cdr0");
 
 	Timer_Start(&blinkTimer,500);
