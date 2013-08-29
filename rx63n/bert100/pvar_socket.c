@@ -163,18 +163,43 @@ PVarSock_Connect(WebSocket *ws,void *eventData)
 }
 
 static void
-SendReply(JSON_Parser *jp,WebSocket *ws) 
+SendMsgType(JSON_Parser *jp,WebSocket *ws,const char *msgType) 
 {
 	char replyStr[MAX_VALUELEN + MAX_NAMELEN + 20];
 	char *strP;
 	strP = replyStr;
-	strP += xy_strcpylen(strP,"{\"var\":\""); 		
+	strP += xy_strcpylen(strP,"{\""); 		
+	strP += xy_strcpylen(strP,msgType);
+	strP += xy_strcpylen(strP,"\":\""); 		
 	strP += xy_strcpylen(strP,jp->name);
 	strP += xy_strcpylen(strP,"\",\"val\":");
 	strP += xy_strcpylen(strP,jp->value);
 	strP += xy_strcpylen(strP,"}");
 	*strP = 0;
 	WebSocket_SendMsg(ws,WSOP_TEXT,replyStr,strP - replyStr) ;
+}
+
+INLINE void
+SendVar(JSON_Parser *jp,WebSocket *ws) 
+{
+	SendMsgType(jp,ws,"var");
+}
+
+INLINE void
+SendNak(JSON_Parser *jp,WebSocket *ws) 
+{
+	SendMsgType(jp,ws,"nak");
+}
+
+/**
+ ********************************************************************
+ * After getting a set msg it is acked
+ ********************************************************************
+ */
+INLINE void
+SendAck(JSON_Parser *jp,WebSocket *ws) 
+{
+	SendMsgType(jp,ws,"ack");
 }
 
 void
@@ -195,12 +220,18 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 	}
 	if(jp->isGet) {
 		jp->value[sizeof(jp->value) - 1] = 0;	
-		PVar_Get(jp->pvar,jp->value,sizeof(jp->value));
-		//WebSocket_SendMsg(ws,WSOP_TEXT,(char *)valP,strlen(valP)) ;
+		if(PVar_Get(jp->pvar,jp->value,sizeof(jp->value)) == true) {
+			SendVar(jp,ws);
+		} else {
+			SendNak(jp,ws);
+		}
 	} else {
-		PVar_Set(jp->pvar,jp->value);
+		if(PVar_Set(jp->pvar,jp->value) == true) {
+			SendAck(jp,ws);
+		} else {
+			SendNak(jp,ws);
+		}
 	}
-	SendReply(jp,ws);
 }
 
 void

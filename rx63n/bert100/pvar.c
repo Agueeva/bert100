@@ -120,21 +120,27 @@ PVar_SetCallbacks(PVar *pvar,PVar_GetCallback *gcb,PVar_SetCallback *scb,void *c
 }
 #endif
 
-void
+bool
 PVar_Set(PVar *pvar,const char *valStr) 
 {
 	if(pvar->setCallback) {
 		pvar->setCallback(pvar->cbData,pvar->adId,valStr);
-	}
+		return true;
+	} else {
+		return false;
+	}	
 }
 
-void
+bool
 PVar_Get(PVar *pvar,char *valP, uint16_t maxlen) 
 {
 	if(pvar->getCallback) {
 		pvar->getCallback(pvar->cbData,pvar->adId,valP,maxlen);
+		valP[maxlen - 1] = 0;
+		return true;
 	} else {
 		valP[0] = 0; /* Terminate the string */
+		return false;
 	}
 }
 
