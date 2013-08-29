@@ -49,7 +49,7 @@ static JSON_Parser gJSON_Parser;
  *******************************************************************************
  */
 INLINE void 
-JSON_Statemachine(JSON_Parser *jp,char c) 
+JSON_SMFeed(JSON_Parser *jp,char c) 
 {
 //	Con_Printf("\"%c\" before %u, ",c,jp->state);
 	switch(jp->state) {
@@ -67,6 +67,9 @@ JSON_Statemachine(JSON_Parser *jp,char c)
 					jp->isGet = true;
 					jp->state = STATE_FIND_NAME;	
 				} else if(strncmp(jp->cmd,"set",3) == 0) {
+					jp->isGet = false;
+					jp->state = STATE_FIND_NAME;
+				} else if(strncmp(jp->cmd,"msg",3) == 0) { 
 					jp->isGet = false;
 					jp->state = STATE_FIND_NAME;
 				} else {
@@ -155,6 +158,12 @@ JSON_Statemachine(JSON_Parser *jp,char c)
 //	Con_Printf(" ,after %u\n",jp->state);
 }
 
+INLINE void 
+JSON_SMReset(JSON_Parser *jp) 
+{
+	jp->state = STATE_IDLE;
+}
+
 static bool
 PVarSock_Connect(WebSocket *ws,void *eventData)
 {
@@ -207,9 +216,9 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 {
 	JSON_Parser *jp = &gJSON_Parser;
 	uint32_t i;
-	gJSON_Parser.state = STATE_IDLE;
+	JSON_SMReset(jp);
 	for(i = 0; i < len; i++) {
-		JSON_Statemachine(jp,(char)data[i]);
+		JSON_SMFeed(jp,(char)data[i]);
 	}	
 	if(jp->state != STATE_DONE) {
 		Con_Printf("Error in message\n");

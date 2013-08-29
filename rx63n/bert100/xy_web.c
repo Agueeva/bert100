@@ -342,6 +342,24 @@ create_notfoundpage(WebCon *wc) {
 	web_submit_page(wc);
 }
 
+static int 
+redirect_page(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
+{
+	char *page = wr->page;
+	page += xy_strcpylen(page,XY_WEB_HEADER);
+	page += XY_AddHttpHeader(page,content_string[XY_WEBCONTENT_HTML]); 
+	page += xy_strcpylen(page,
+		"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
+		"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+	page += xy_strcpylen(page,
+		"<html><head>\n"
+		"<meta http-equiv=\"refresh\" content=\"0; URL=/sd/gui/index.html\">\n"
+		"</head></html>\n\r\n");
+	wr->pagelen = page - wr->page;
+	web_submit_page((WebCon*)wr);
+	return 0;
+}
+
 /*
  ************************************************************************
  * causes  the browser to open a popup window for
@@ -1096,8 +1114,8 @@ XY_NewWebServer(void)
 	wserv->connections=0;
 	wserv->rqHandlerHash = StrHash_New();
 	Web_PoolsInit();
-	//XY_WebRegisterPage(wserv,"/sd/bratwurst.jpg",Page_FatFile,NULL);
 	XY_WebRegisterPage(wserv,"/sd/",Page_FatFile,NULL);
+	XY_WebRegisterPage(wserv,"/",redirect_page,NULL);
 	return wserv;
 }
 

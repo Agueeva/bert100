@@ -98,7 +98,7 @@ ADC12_Init(void)
 	for(i = 0; i < NR_CHANNELS; i++) {
 		ch = &adc->adch[i];
 		ch->channelNr = i;
-		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%02u",i);
+		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%u",i);
 	}
 	Interp_RegisterCmd(&adc12Cmd);
 }
