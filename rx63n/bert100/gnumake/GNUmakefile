@@ -20,7 +20,7 @@ SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	tcp.c xy_string.c iram.c rx_crc.c strhash.c ccsbcs.c \
 	ad537x.c mdio.c cdr.c shiftreg.c i2cmaster.c skb.c  xy_web.c \
 	pvar_socket.c adc12.c pvar.c flash.c usbdev.c usbstorage.c \
-	leds.c vxco.c
+	leds.c xo.c
 
 ASMFILES=reset_program.asm switch_context.asm 
 
