@@ -28,7 +28,7 @@ typedef struct JSON_Parser {
 	PVar *pvar;
 } JSON_Parser;
 
-static JSON_Parser gJSON_Parser;
+JSON_Parser gJSON_Parser;
 
 #define STATE_IDLE		(0)
 #define STATE_CMD		(1)

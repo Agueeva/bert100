@@ -58,6 +58,7 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 		/* Error: entry already exists */
 		return NULL;	
 	}
+	
 	newentry = Calloc(sizeof(StrHashEntry));
 	newentry->next = *first;
 #if 0
