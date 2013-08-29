@@ -14,6 +14,10 @@
 
 #define MAX_NAMELEN	(40)
 #define MAX_VALUELEN	(40)
+
+#define OPERATION_SET	(0)
+#define OPERATION_GET	(1)
+//#define OPERATION_MSG	(2)
 typedef struct JSON_Parser {
 	uint16_t state;
 	bool isGet;
