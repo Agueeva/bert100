@@ -94,6 +94,7 @@ typedef struct CdrRegister {
  ******************************************************************
  */
 static const CdrRegister gCdrRegister[] = {
+	/* Register 16-19 */
 	{
 	 	.name = "l0.prbs_lock",
 	 	.regNo = 16,
@@ -767,6 +768,11 @@ PVReg_Set(void *cbData, uint32_t adId, const char *strP)
 	Cdr_WritePart(cdr->phyAddr,reg->regNo,reg->lastBit,reg->firstBit,value);
 }
 
+/**
+ *******************************************************************************
+ * Access to a register in the 256 Byte RX/TX lane private spaces.
+ *******************************************************************************
+ */
 void
 PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
