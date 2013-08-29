@@ -814,7 +814,7 @@ cmd_i2cw(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t i2c_addr;
 	uint16_t mem_addr;
 	uint8_t bufcnt = 0;
-	uint8_t buf[4];
+	uint8_t buf[8];
 	uint8_t i;
 	if (argc < 3) {
 		return -EC_BADNUMARGS;
@@ -823,12 +823,13 @@ cmd_i2cw(Interp * interp, uint8_t argc, char *argv[])
 	mem_addr = astrtoi16(argv[2]);
 	for (i = 3; i < argc; i++) {
 		buf[bufcnt++] = astrtoi16(argv[i]);
-		if (bufcnt == 4) {
+		if (bufcnt == array_size(buf)) {
 			result = I2C_Write(i2c_addr, mem_addr, buf, bufcnt);
 			if (result != I2C_RESULT_OK) {
 				goto error;
 			}
 			bufcnt = 0;
+			mem_addr += array_size(buf);
 		}
 	}
 	if (bufcnt || (argc == 3)) {
