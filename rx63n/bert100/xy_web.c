@@ -22,6 +22,7 @@
 #include "fat.h"
 #include "timer.h"
 #include "iram.h"
+#include "md5.h"
 
 char *content_string[] = {
 	"text/html",
@@ -53,10 +54,12 @@ char *content_string[] = {
 	"Content-Type: text/html\r\n\r\n" 
 
 typedef struct XYWebAuthInfo {
-	char *realm;
-	char *auth_b64;
-	struct XYWebAuthInfo *next;
+        char *realm;
+        char *username;
+        uint8_t passwd_md5[16];
+        struct XYWebAuthInfo *next;
 } XYWebAuthInfo;
+
 
 #define PAGE_TYPE_WEBPAGE	(1)
 #define PAGE_TYPE_WEBSOCKET	(2)
@@ -342,6 +345,11 @@ create_notfoundpage(WebCon *wc) {
 	web_submit_page(wc);
 }
 
+/**
+ **************************************************************************
+ * Redirects a page to index.html
+ **************************************************************************
+ */
 static int 
 redirect_page(int argc,char *argv[],XY_WebRequest *wr,void *eventData)
 {
@@ -487,40 +495,65 @@ Extract_Var(char *linev[],char *keyword,char **valp)
  * check authorization
  *****************************************************************
  */
-static int 
-check_auth(WebCon *wc,WebPageRegistration *reg) 
+static int
+check_auth(WebCon *wc,WebPageRegistration *reg)
 {
-	XYWebAuthInfo *auth;
-	char *a;
-	int level=0;
-	int result=-1;
-	Extract_Var(wc->linev,"Authorization",&a);
-	if(a) {
-		while(*a && (*a != ' ')) {
-			a++;
-		}
-		while(*a && (*a == ' ')) {
-			a++;
-		}
-		for(auth = reg->authInfo;auth;auth = auth->next) {
-			level++;
-			/* Dangerous becaue of possible trailing spaces */
-			if(strcmp(a,auth->auth_b64) == 0) {
-				result=level;
-			}
-		}
-		if(result >= 0) {
-			wc->authLevel=result;
-		}	
-		return result;
-	}
-	if(reg->authInfo && (reg->authInfo->auth_b64[0]==0)) {
-		wc->authLevel=1;
-	} else {
-		return -1;
-	}
-	return 0;
+        int i;
+        XYWebAuthInfo *auth;
+        int level=0;
+        int result=-1;
+        for(i=0;i<MAX_VARS;i++) {
+                if(!wc->linev[i])
+                        break;
+                if(xy_strniseq(wc->linev[i],"Authorization:",14)) {
+                        char *authstr,*username,*colon,*passwd;
+                        unsigned char passwd_md5[16];
+                        char *auth_b64=xy_strstr(wc->linev[i]+14,"Basic");
+                        int len;
+                        if(!auth_b64)
+                                return -1;
+                        auth_b64+=5;
+                        while(*auth_b64==' ')
+                                auth_b64++;
+                        len=xy_strlen(auth_b64);
+                        if(len>128) {
+                                return -1;
+                        }
+                        authstr=alloca(len+1);
+			len = Base64_Decode(authstr,auth_b64,len);
+                        authstr[len]=0;
+                        colon=xy_strstr(authstr,":");
+                        if(!colon)
+                                return -1;
+                        *colon=0;
+                        passwd=colon+1;
+                        username=authstr;
+                        MD5_EncodeString(passwd_md5,passwd);
+			//Con_Printf("encoded passwd \"%s\"\n",passwd);
+                        for(auth=reg->authInfo;auth;auth=auth->next) {
+                                level++;
+				//Con_Printf("username \"%s\", expected \"%s\"\n",username,auth->username);
+                                if(xy_striseq(username,(char*)auth->username)) {
+                                        if(!memcmp(passwd_md5,auth->passwd_md5,16)) {
+                                                result=level;
+                                        }
+                                }
+                        }
+                        if(result>=0) {
+                                wc->authLevel=result;
+                        }
+                        return result;
+                }
+        }
+        /* Lowest level is allowed to have no protection without popup for passwd */
+        if(reg->authInfo && (reg->authInfo->username[0]==0)) {
+                wc->authLevel=1;
+        } else {
+                return -1;
+        }
+        return 0;
 }
+
 
 /*
  ********************************************************************** 
@@ -1099,6 +1132,78 @@ WebServ_Accept(void *eventData,Tcb *tcb,uint8_t ip[4],uint16_t port)
 	return true;
 }
 
+/*
+ * -----------------------------------------------------------
+ * Convert an MD5 sum given as Ascii String with 32 hexdigits
+ * into a 16 Byte binary representation.
+ * -----------------------------------------------------------
+ */
+static int
+parse_md5hexstring(uint8_t *md5passwd,const char *md5hexstring)
+{
+        char c;
+        int i;
+        for(i=0;i<32;i++) {
+                c=md5hexstring[i];
+                if(!c)
+                        return -1;
+                if(c>='0' && c<='9') {
+                        c=c-'0';
+                } else if (c>='A' && c <= 'F') {
+                        c=c-'A'+10;
+                } else if (c>='a' && c <= 'f') {
+                        c=c-'a'+10;
+                } else {
+                        return -1;
+                }
+                if(i&1) {
+                        md5passwd[i>>1] |= c;
+                } else {
+                        md5passwd[i>>1] = c << 4;
+                }
+        }
+        return 0;
+}
+
+/*
+ * ------------------------------------------------------------------
+ * Create and store an MD5 Authentication for a webpage 
+ * ------------------------------------------------------------------
+ */
+int
+XY_WebAddMD5Auth(XY_WebServer *wserv,const char *uri,const char *realm,const char *username,const char *md5string)
+{
+        WebPageRegistration *reg;
+        XYWebAuthInfo *auth;
+        XYWebAuthInfo *cursor;
+        reg = FindRequestHandler(wserv,uri);
+        if(!reg)
+                return -1;
+
+        //auth=xy_malloc(sizeof(XYWebAuthInfo));
+	auth = IRam_Calloc(sizeof(XYWebAuthInfo));	
+        if(!auth)
+                return -1;
+        if(parse_md5hexstring(auth->passwd_md5,md5string) < 0) {
+                //xy_free(auth);
+		Con_Printf("Error in parse_md5hexstring\n");
+                return -1;
+        }
+        auth->username = IRam_Strdup(username);
+        auth->realm = IRam_Strdup(realm);
+        auth->next = NULL;
+
+        if(!reg->authInfo) {
+                reg->authInfo=auth;
+                return 0;
+        }
+        for(cursor=reg->authInfo;cursor->next;cursor=cursor->next) {
+
+        }
+        cursor->next=auth;
+        return 0;
+}
+
 /**
  *****************************************************
  * Create a new webserver.
@@ -1115,6 +1220,7 @@ XY_NewWebServer(void)
 	wserv->rqHandlerHash = StrHash_New();
 	Web_PoolsInit();
 	XY_WebRegisterPage(wserv,"/sd/",Page_FatFile,NULL);
+	XY_WebAddMD5Auth(wserv,"/sd/","Neutronics Bert 100","ernie","3de0746a7d2762a87add40dac2bc95a0"); /* Passwd is "bert" */
 	XY_WebRegisterPage(wserv,"/",redirect_page,NULL);
 	return wserv;
 }
@@ -1556,50 +1662,3 @@ XY_RegisterPostProc(XY_WebServer *wserv,const char *path,XY_PostProc * proc,void
 	return 0;
 }
 
-/**
- *******************************************************************************
- * \fn XYWebAuthInfo * XYWebNewAuth(const char *realm,const char *authstr) 
- * Allocate a new Authentication structure and add the username/password
- *******************************************************************************
- */
-XYWebAuthInfo *
-XYWebNewAuth(const char *realm,const char *authstr) 
-{
-	int len;
-	XYWebAuthInfo * auth = IRam_Calloc(sizeof(XYWebAuthInfo));	
-	auth->realm = IRam_Strdup(realm);
-	len = Base64_Len(xy_strlen(authstr));
-	auth->auth_b64 = IRam_Calloc(len+1);
-	Base64_Encode((uint8_t *)auth->auth_b64,(const uint8_t *)authstr,xy_strlen(authstr));
-	auth->auth_b64[len]=0;
-	auth->next=NULL;
-	return auth;
-}
-
-/**
- **************************************************************************************************
- * \fn int XY_WebAddAuth(XY_WebServer *wserv,const char *uri,const char *realm,const char *authstr) 
- **************************************************************************************************
- */
-int
-XY_WebAddAuth(XY_WebServer *wserv,const char *uri,const char *realm,const char *authstr) 
-{
-	WebPageRegistration *reg; 
-	XYWebAuthInfo *auth;
-	XYWebAuthInfo *cursor;
-	reg = FindRequestHandler(wserv,uri); 
-	if(!reg)
-		return -1;
-	auth=XYWebNewAuth(realm,authstr);
-	if(!auth)
-		return -1;
-	if(!reg->authInfo) {
-		reg->authInfo=auth;
-		return 0;
-	}
-	for(cursor=reg->authInfo;cursor->next;cursor=cursor->next) {
-
-	}
-	cursor->next=auth;
-	return 0;	
-}
