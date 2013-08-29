@@ -5,6 +5,11 @@
  *
  ************************************************************
  */
+#include <stdlib.h>
+#include <ctype.h>
+#include <limits.h>
+#include <string.h>
+
 #include "types.h"
 #include "base64.h"
 #include "xy_web.h"
@@ -12,10 +17,6 @@
 #include "iram.h"
 #include "tcp.h"
 #include "hex.h"
-#include <stdlib.h>
-#include <ctype.h>
-#include <limits.h>
-#include <string.h>
 #include "console.h"
 #include "events.h"
 #include "sha1.h"
@@ -517,7 +518,7 @@ check_auth(WebCon * wc, WebPageRegistration * reg)
 			char *authstr, *username, *colon, *passwd;
 			unsigned char passwd_md5[16];
 			char *auth_b64 = xy_strstr(wc->linev[i] + 14, "Basic");
-			int len;
+			unsigned int len;
 			if (!auth_b64)
 				return -1;
 			auth_b64 += 5;
@@ -527,7 +528,7 @@ check_auth(WebCon * wc, WebPageRegistration * reg)
 			if (len > 128) {
 				return -1;
 			}
-			authstr = alloca(len + 1);
+			authstr = __builtin_alloca(len + 1);
 			len = Base64_Decode(authstr, auth_b64, len);
 			authstr[len] = 0;
 			colon = xy_strstr(authstr, ":");

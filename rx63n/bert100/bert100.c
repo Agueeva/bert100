@@ -121,11 +121,11 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	RxCRC_Init(); /* Needed for the hash buckets of the PVARs */
 	PVars_Init(); /* We need this early because som HW modules export objects */
 
 	UsbStor_Init();
 	ShiftReg_Init(0xffff);
-	RxCRC_Init();
 	I2CM_Init();
 	MD5Lib_Init();
 	Sha1Lib_Init();
