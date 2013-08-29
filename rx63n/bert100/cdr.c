@@ -1,5 +1,5 @@
 /***
- **************************************************************************************
+**************************************************************************************
  * Interface to CDR Registers
  **************************************************************************************
  */
@@ -74,11 +74,17 @@
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
 #define DEVTYPE		(30)
 
+typedef struct CDR {
+	uint8_t phyAddr;
+} CDR;
+
+CDR gCDR[1];
+
 typedef struct CdrRegister {
 	const char *name;
 	uint16_t regNo;
+	uint8_t lastBit;
 	uint8_t firstBit;
-	uint8_t nrBits;
 } CdrRegister;
 
 /**
@@ -87,15 +93,338 @@ typedef struct CdrRegister {
  * and address.  
  ******************************************************************
  */
-static const CdrRegister gCdrRegisters[] = {
+static const CdrRegister gCdrRegister[] = {
 	{
-	 	.name = "regBla",
-	 	.regNo = 0,
+	 	.name = "l0.prbs_lock",
+	 	.regNo = 16,
+	 	.lastBit = 15,
+	 	.firstBit = 15,
+	},
+	{
+	 	.name = "l0.prbs_autovr",
+	 	.regNo = 16,
+	 	.lastBit = 14,
+	 	.firstBit = 14,
+	},
+	{
+	 	.name = "l0.Loopback_en",
+	 	.regNo = 16,
+	 	.lastBit = 13,
+	 	.firstBit = 13,
+	},
+	{
+	 	.name = "l0.pat_ver_en",
+	 	.regNo = 16,
+	 	.lastBit = 12,
+	 	.firstBit = 12,
+	},
+	{
+	 	.name = "l0.prbs_ver_inv",
+	 	.regNo = 16,
+	 	.lastBit = 11,
+	 	.firstBit = 11,
+	},
+	{
+	 	.name = "l0.pat_ver_sel",
+	 	.regNo = 16,
+	 	.lastBit = 10,
 	 	.firstBit = 8,
-	 	.nrBits = 8,
-	 }
+	},
+	{
+	 	.name = "l0.odb_en",
+	 	.regNo = 16,
+	 	.lastBit = 7,
+	 	.firstBit = 7,
+	},
+	{
+	 	.name = "l0.tx_disable",
+	 	.regNo = 16,
+	 	.lastBit = 6,
+	 	.firstBit = 6,
+	},
+	{
+	 	.name = "l0.error_insert",
+	 	.regNo = 16,
+	 	.lastBit = 5,
+	 	.firstBit = 5,
+	},
+	{
+	 	.name = "l0.pat_gen_en",
+	 	.regNo = 16,
+	 	.lastBit = 4,
+	 	.firstBit = 4,
+	},
+	{
+	 	.name = "l0.prbs_gen_inv",
+	 	.regNo = 16,
+	 	.lastBit = 3,
+	 	.firstBit = 3,
+	},
+	{
+	 	.name = "l0.pat_gen_sel",
+	 	.regNo = 16,
+	 	.lastBit = 2,
+	 	.firstBit = 0,
+	},
+	/* Lane 1 */
+	{
+	 	.name = "l1.prbs_lock",
+	 	.regNo = 17,
+	 	.lastBit = 15,
+	 	.firstBit = 15,
+	},
+	{
+	 	.name = "l1.prbs_autovr",
+	 	.regNo = 17,
+	 	.lastBit = 14,
+	 	.firstBit = 14,
+	},
+	{
+	 	.name = "l1.Loopback_en",
+	 	.regNo = 17,
+	 	.lastBit = 13,
+	 	.firstBit = 13,
+	},
+	{
+	 	.name = "l1.pat_ver_en",
+	 	.regNo = 17,
+	 	.lastBit = 12,
+	 	.firstBit = 12,
+	},
+	{
+	 	.name = "l1.prbs_ver_inv",
+	 	.regNo = 17,
+	 	.lastBit = 11,
+	 	.firstBit = 11,
+	},
+	{
+	 	.name = "l1.pat_ver_sel",
+	 	.regNo = 17,
+	 	.lastBit = 10,
+	 	.firstBit = 8,
+	},
+	{
+	 	.name = "l1.odb_en",
+	 	.regNo = 17,
+	 	.lastBit = 7,
+	 	.firstBit = 7,
+	},
+	{
+	 	.name = "l1.tx_disable",
+	 	.regNo = 17,
+	 	.lastBit = 6,
+	 	.firstBit = 6,
+	},
+	{
+	 	.name = "l1.error_insert",
+	 	.regNo = 17,
+	 	.lastBit = 5,
+	 	.firstBit = 5,
+	},
+	{
+	 	.name = "l1.pat_gen_en",
+	 	.regNo = 17,
+	 	.lastBit = 4,
+	 	.firstBit = 4,
+	},
+	{
+	 	.name = "l1.prbs_gen_inv",
+	 	.regNo = 17,
+	 	.lastBit = 3,
+	 	.firstBit = 3,
+	},
+	{
+	 	.name = "l1.pat_gen_sel",
+	 	.regNo = 17,
+	 	.lastBit = 2,
+	 	.firstBit = 0,
+	},
+	/* Lane 2 */
+	{
+	 	.name = "l2.prbs_lock",
+	 	.regNo = 18,
+	 	.lastBit = 15,
+	 	.firstBit = 15,
+	},
+	{
+	 	.name = "l2.prbs_autovr",
+	 	.regNo = 18,
+	 	.lastBit = 14,
+	 	.firstBit = 14,
+	},
+	{
+	 	.name = "l2.Loopback_en",
+	 	.regNo = 18,
+	 	.lastBit = 13,
+	 	.firstBit = 13,
+	},
+	{
+	 	.name = "l2.pat_ver_en",
+	 	.regNo = 18,
+	 	.lastBit = 12,
+	 	.firstBit = 12,
+	},
+	{
+	 	.name = "l2.prbs_ver_inv",
+	 	.regNo = 18,
+	 	.lastBit = 11,
+	 	.firstBit = 11,
+	},
+	{
+	 	.name = "l2.pat_ver_sel",
+	 	.regNo = 18,
+	 	.lastBit = 10,
+	 	.firstBit = 8,
+	},
+	{
+	 	.name = "l2.odb_en",
+	 	.regNo = 18,
+	 	.lastBit = 7,
+	 	.firstBit = 7,
+	},
+	{
+	 	.name = "l2.tx_disable",
+	 	.regNo = 18,
+	 	.lastBit = 6,
+	 	.firstBit = 6,
+	},
+	{
+	 	.name = "l2.error_insert",
+	 	.regNo = 18,
+	 	.lastBit = 5,
+	 	.firstBit = 5,
+	},
+	{
+	 	.name = "l2.pat_gen_en",
+	 	.regNo = 18,
+	 	.lastBit = 4,
+	 	.firstBit = 4,
+	},
+	{
+	 	.name = "l2.prbs_gen_inv",
+	 	.regNo = 18,
+	 	.lastBit = 3,
+	 	.firstBit = 3,
+	},
+	{
+	 	.name = "l2.pat_gen_sel",
+	 	.regNo = 18,
+	 	.lastBit = 2,
+	 	.firstBit = 0,
+	},
+	/* Lane 3 */
+	{
+	 	.name = "l3.prbs_lock",
+	 	.regNo = 19,
+	 	.lastBit = 15,
+	 	.firstBit = 15,
+	},
+	{
+	 	.name = "l3.prbs_autovr",
+	 	.regNo = 19,
+	 	.lastBit = 14,
+	 	.firstBit = 14,
+	},
+	{
+	 	.name = "l3.Loopback_en",
+	 	.regNo = 19,
+	 	.lastBit = 13,
+	 	.firstBit = 13,
+	},
+	{
+	 	.name = "l3.pat_ver_en",
+	 	.regNo = 19,
+	 	.lastBit = 12,
+	 	.firstBit = 12,
+	},
+	{
+	 	.name = "l3.prbs_ver_inv",
+	 	.regNo = 19,
+	 	.lastBit = 11,
+	 	.firstBit = 11,
+	},
+	{
+	 	.name = "l3.pat_ver_sel",
+	 	.regNo = 19,
+	 	.lastBit = 10,
+	 	.firstBit = 8,
+	},
+	{
+	 	.name = "l3.odb_en",
+	 	.regNo = 19,
+	 	.lastBit = 7,
+	 	.firstBit = 7,
+	},
+	{
+	 	.name = "l3.tx_disable",
+	 	.regNo = 19,
+	 	.lastBit = 6,
+	 	.firstBit = 6,
+	},
+	{
+	 	.name = "l3.error_insert",
+	 	.regNo = 19,
+	 	.lastBit = 5,
+	 	.firstBit = 5,
+	},
+	{
+	 	.name = "l3.pat_gen_en",
+	 	.regNo = 19,
+	 	.lastBit = 4,
+	 	.firstBit = 4,
+	},
+	{
+	 	.name = "l3.prbs_gen_inv",
+	 	.regNo = 19,
+	 	.lastBit = 3,
+	 	.firstBit = 3,
+	},
+	{
+	 	.name = "l3.pat_gen_sel",
+	 	.regNo = 19,
+	 	.lastBit = 2,
+	 	.firstBit = 0,
+	},
 };
 
+/**
+ ****************************************************************************+
+ * Lane specific RX/TX registers with 256 byte spacing
+ ****************************************************************************+
+ */
+static const CdrRegister gCdrLaneRegister[] = 
+{
+	{
+		.name = "LoopbackOutputEnable",
+		.regNo = 256,
+		.lastBit = 1,
+		.firstBit = 1,
+	},
+	{
+		.name = "Swap_TXP_N",
+		.regNo = 256,
+		.lastBit = 1,
+		.firstBit = 1,
+	},
+	{
+		.name = "txa_eqpst",
+		.regNo = 257,
+		.lastBit = 10,
+		.firstBit = 8,
+	},
+	{
+		.name = "txa_eqpre",
+		.regNo = 257,
+		.lastBit = 1,
+		.firstBit = 0,
+	},
+	{
+		.name = "txa_swing",
+		.regNo = 258,
+		.lastBit = 2,
+		.firstBit = 0,
+	}
+};
 /**
  ************************************************************************
  * \fn void Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
@@ -408,18 +737,69 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
 
-
 void
-PVSignalQuality_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
-	uint16_t value = 5;
-//        uint32_t rawAdval;
-//        uint8_t cnt;
-//        ADCChan *ch = cbData;
-//        rawAdval = ADC12_Read(ch->channelNr);
+	const CdrRegister *reg;
+	CDR *cdr = cbData;
+	uint16_t value;
+	if(adId >= array_size(gCdrRegister)) {
+		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
+		return;
+	}
+	reg = &gCdrRegister[adId];
+	value = Cdr_ReadPart(cdr->phyAddr,reg->regNo,reg->lastBit,reg->firstBit);
         bufP[uitoa16(value,bufP)] = 0;
 }
 
+void
+PVReg_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	const CdrRegister *reg;
+	CDR *cdr = cbData;
+	uint16_t value;
+	if(adId >= array_size(gCdrRegister)) {
+		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
+		return;
+	}
+	reg = &gCdrRegister[adId];
+	value = astrtoi16(strP);
+	Cdr_WritePart(cdr->phyAddr,reg->regNo,reg->lastBit,reg->firstBit,value);
+}
+
+void
+PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	const CdrRegister *reg;
+	CDR *cdr = cbData;
+	uint16_t value;
+	uint16_t regNr = adId & 0xffff;
+	uint16_t lane = adId >> 16;
+	if((regNr >= array_size(gCdrLaneRegister)) || (lane > 3)) {
+		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
+		return;
+	}
+	reg = &gCdrLaneRegister[regNr];
+	value = Cdr_ReadPart(cdr->phyAddr,reg->regNo + (lane << 8),reg->lastBit,reg->firstBit);
+        bufP[uitoa16(value,bufP)] = 0;
+}
+
+void
+PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	const CdrRegister *reg;
+	CDR *cdr = cbData;
+	uint16_t value;
+	uint16_t regNr = adId & 0xffff;
+	uint16_t lane = adId >> 16;
+	if((regNr >= array_size(gCdrLaneRegister)) || (lane > 3)) {
+		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
+		return;
+	}
+	reg = &gCdrRegister[regNr];
+	value = astrtoi16(strP);
+	Cdr_WritePart(cdr->phyAddr,reg->regNo + (lane << 8),reg->lastBit,reg->firstBit,value);
+}
 
 /*
  ************************************************************************************
@@ -431,10 +811,18 @@ PVSignalQuality_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 void
 CDR_Init(const char *name)
 {
+	uint32_t i,lane;
+	CDR *cdr = &gCDR[0];
+	cdr->phyAddr = 1;
 	Interp_RegisterCmd(&cdrCmd);
-	int lane;
-	for(lane = 0; lane < 4; lane++) {
-//		PVar_New(PVSignalQuality_Get,NULL,&cdr,0,"%s.regEqState_%u",name,);
+	for(i = 0; i < array_size(gCdrRegister); i++) {
+		const CdrRegister *reg = &gCdrRegister[i];
+		PVar_New(PVReg_Get,PVReg_Set,cdr,i,"%s.%s",name,reg->name);
+	}	
+	for(i = 0; i < array_size(gCdrLaneRegister); i++) {
+		const CdrRegister *reg = &gCdrLaneRegister[i];
+		for(lane = 0; lane < 4; lane++) {
+			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
+		}
 	}
-
 }

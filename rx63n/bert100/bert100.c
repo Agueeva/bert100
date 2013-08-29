@@ -121,6 +121,8 @@ int main(void)
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);
+	PVars_Init(); /* We need this early because som HW modules export objects */
+
 	UsbStor_Init();
 	ShiftReg_Init(0xffff);
 	RxCRC_Init();
@@ -132,7 +134,7 @@ int main(void)
 	AD537x_Init();
 #endif
 	MDIO_Init();
-	CDR_Init("cdr1");
+	CDR_Init("cdr0");
 
 	Timer_Start(&blinkTimer,500);
 	Skb_Init();
@@ -140,7 +142,6 @@ int main(void)
 	Ethernet_Init(ethDrv);
 	Tcp_Init();
 	wserv = XY_NewWebServer();
-	PVars_Init();
 	PVarSocket_New(wserv);	
 	Spi_Init();
 	if(SDCard_ModuleInit() == true) {
