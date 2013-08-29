@@ -91,10 +91,7 @@ JSON_SMFeed(JSON_Parser *jp,char c)
 		case STATE_NAME:
 			if(c == '\"') {
 				jp->name[jp->namelen] = 0; 
-				jp->pvar = PVar_Find(jp->name);
-				if(!jp->pvar) {
-					jp->state = STATE_ERROR;
-				} else if(jp->isGet) {
+				if(jp->isGet) {
 					jp->state = STATE_DONE;
 				} else {
 					jp->state = STATE_FIND_LITVAL;
@@ -140,8 +137,6 @@ JSON_SMFeed(JSON_Parser *jp,char c)
 		case STATE_VAL:
 			if(c == '}') {
 				jp->value[jp->vallen] = 0; 
-				/* Eventuell hier noch fehlerabfrage PVar_Set */
-				PVar_Set(jp->pvar,jp->value);
 				jp->state = STATE_DONE;
 			} else if(c == '\"') {
 				/* currently ignored */
@@ -227,7 +222,10 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 		}
 		return;
 	}
-	if(jp->isGet) {
+	jp->pvar = PVar_Find(jp->name);
+	if(jp->pvar == NULL) {
+		Con_Printf("MSG target \"%s\" not found\n",jp->name);
+	} else if(jp->isGet) {
 		jp->value[sizeof(jp->value) - 1] = 0;	
 		if(PVar_Get(jp->pvar,jp->value,sizeof(jp->value)) == true) {
 			SendVar(jp,ws);
