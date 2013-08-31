@@ -50,7 +50,7 @@ static const uint8_t hsdiv_tab[] = {
 
 
 static bool 
-set_frequency(SiXO *xo,uint64_t freq) 
+set_frequency(SiXO *xo,uint32_t freq) 
 {
 	uint8_t buf[4];
 	int i;
@@ -62,9 +62,12 @@ set_frequency(SiXO *xo,uint64_t freq)
 	uint64_t maxdco = UINT64_C(5670000000);
 	uint64_t mindco = UINT64_C(4850000000);
 	uint64_t optdco = (maxdco + mindco) >> 1; 
-	uint64_t optDividers = optdco / freq;
+	uint32_t optDividers = optdco / freq;
 	if(freq > xo->maxFreq || freq < xo->minFreq) {
 		return false;
+	}
+	if(freq == xo->outFreq) {
+		return true;
 	}
 //	Con_Printf("Optimal dividers %lu\n",(uint32_t)optDividers);
 	for(i = 0; i < array_size(hsdiv_tab); i++) {
@@ -79,7 +82,7 @@ set_frequency(SiXO *xo,uint64_t freq)
 		return false;
 	}
 	div = fxtal * hs_div * n1;
-	rfreq = ((1 << 28) * freq + (fxtal >> 1)) / fxtal * hs_div * n1;
+	rfreq = ((1 << 28) * (uint64_t)freq + (fxtal >> 1)) / fxtal * hs_div * n1;
 //	Con_Printf("n1 %lu hsdiv %lu\n",n1,hs_div);
 //	Con_Printf("rfreq %llx\n",rfreq);
 //	SleepMs(100);
