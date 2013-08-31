@@ -32,6 +32,9 @@
 typedef struct SiXO {
 	uint16_t i2cAddr;
 	uint32_t fXTAL;
+	uint32_t outFreq;
+	uint32_t maxFreq;
+	uint32_t minFreq;
 } SiXO;
 
 static SiXO gSiXO[1];
@@ -60,6 +63,9 @@ set_frequency(SiXO *xo,uint64_t freq)
 	uint64_t mindco = UINT64_C(4850000000);
 	uint64_t optdco = (maxdco + mindco) >> 1; 
 	uint64_t optDividers = optdco / freq;
+	if(freq > xo->maxFreq || freq < xo->minFreq) {
+		return false;
+	}
 //	Con_Printf("Optimal dividers %lu\n",(uint32_t)optDividers);
 	for(i = 0; i < array_size(hsdiv_tab); i++) {
 		hs_div = hsdiv_tab[i];
@@ -75,8 +81,8 @@ set_frequency(SiXO *xo,uint64_t freq)
 	div = fxtal * hs_div * n1;
 	rfreq = ((1 << 28) * freq + (fxtal >> 1)) / fxtal * hs_div * n1;
 //	Con_Printf("n1 %lu hsdiv %lu\n",n1,hs_div);
-	Con_Printf("rfreq %llx\n",rfreq);
-	SleepMs(100);
+//	Con_Printf("rfreq %llx\n",rfreq);
+//	SleepMs(100);
 	/* Now write everything to the I2C registers */
 	buf[0] = FREEZE_DCO;
 	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE_DCO, buf,1);
@@ -103,6 +109,9 @@ set_frequency(SiXO *xo,uint64_t freq)
 	buf[0] = NEW_FREQ;
 	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE, buf,1);
 
+	// Should check for lock before doing this : */
+	xo->outFreq = freq;
+
 	return true;
 }
 
@@ -121,9 +130,11 @@ read_frequency(SiXO *xo,uint32_t *freqRet)
 	uint64_t rfreq;
 	uint32_t outfreq;
 	uint64_t fdco;
-	char str[21];
 
 	i2c_result = I2C_Read8(xo->i2cAddr, REG_N1H_HSDIV, buf,6);
+	if(i2c_result != I2C_RESULT_OK) {
+		return false;
+	}
 	n1 = ((buf[0] & 0x1f) << 2);
 	hsdiv = (buf[0] >> 5) & 7; 
 	n1 = (n1 & 0xfc) | ((buf[1] >> 6) & 3);
@@ -136,12 +147,14 @@ read_frequency(SiXO *xo,uint32_t *freqRet)
 	rfreq |= (uint32_t)(buf[5]) << 0;
 	outfreq = rfreq / hsdiv / n1 * xo->fXTAL / (1 << 28);
 	fdco = rfreq / 64 * xo->fXTAL / (1 << 22);
-	Con_Printf("Out frequency %lu, hsdiv %u, n1, %u\n",outfreq,hsdiv,n1);	
-	Con_Printf("RFREQ %llx\n",rfreq);	
-	Con_Printf("DCO %llu\n",fdco);	
+	//Con_Printf("RFREQ %llx\n",rfreq);	
+	//Con_Printf("DCO %llu\n",fdco);	
 	//Con_Printf("len %u\n",uitoa64(fdco,str));
 	//Con_Printf("DCO %s\n",str);	
-	return false;
+	if(freqRet) {
+		*freqRet = outfreq;
+	}
+	return true;
 }
 /**
  ******************************************************************************
@@ -156,14 +169,35 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 	SiXO *xo = &gSiXO[0];	
 	uint64_t freq;		
 	if(argc < 2) {
-		read_frequency(xo,NULL);
+		read_frequency(xo,&xo->outFreq);
+		Con_Printf("Out frequency %lu\n",xo->outFreq);	
 		return 0;
 	}
-	freq = astrtoi64(argv[1]);
+	freq = astrtoi32(argv[1]);
 	set_frequency(xo,freq);
         return 0;
 }
 INTERP_CMD(synthCmd,"synth", cmd_synth, "synth  ?<freq>? # Set/Get frequency of synthesizer");
+
+static void
+PVSynth_SetFreq (void *cbData, uint32_t adId, const char *strP)
+{
+	SiXO *xo = cbData;
+	uint64_t freq;
+	freq = astrtoi32(strP);
+	set_frequency(xo,freq);
+}
+
+static void
+PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	SiXO *xo = cbData;
+	if(xo->outFreq == 0) {
+		read_frequency(xo,&xo->outFreq);
+	}
+	SNPrintf(bufP,maxlen,"%lu",xo->outFreq);
+}
+
 
 void
 XO_Init(const char *name,uint16_t i2cAddr) 
@@ -171,5 +205,10 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	SiXO *xo = &gSiXO[0];	
 	xo->i2cAddr = i2cAddr;	
 	xo->fXTAL = 114285000;
+	xo->maxFreq = 810 * 1000000;
+	xo->minFreq = 10 * 1000000;
+	xo->outFreq = 0;
+	//read_frequency(xo,&xo->outFreq);
+	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
 	Interp_RegisterCmd(&synthCmd);
 }
