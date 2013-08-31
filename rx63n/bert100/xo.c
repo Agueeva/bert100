@@ -167,10 +167,10 @@ static int8_t
 cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 {
 	SiXO *xo = &gSiXO[0];	
-	uint64_t freq;		
+	uint32_t freq;		
 	if(argc < 2) {
-		read_frequency(xo,&xo->outFreq);
-		Con_Printf("Out frequency %lu\n",xo->outFreq);	
+		read_frequency(xo,&freq);
+		Con_Printf("Out frequency %lu\n",freq);	
 		return 0;
 	}
 	freq = astrtoi32(argv[1]);
