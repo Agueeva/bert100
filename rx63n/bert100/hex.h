@@ -8,6 +8,7 @@
 #include "types.h"
 uint16_t astrtoi16(const char *str);
 uint32_t astrtoi32(const char *str);
+uint64_t astrtoi64(const char *str);
 
 /* 
  * Convert an 8 bit interger value to a 2 digit hexnumber, 

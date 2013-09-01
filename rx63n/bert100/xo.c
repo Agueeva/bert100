@@ -211,7 +211,6 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	xo->maxFreq = 810 * 1000000;
 	xo->minFreq = 10 * 1000000;
 	xo->outFreq = 0;
-	//read_frequency(xo,&xo->outFreq);
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
 	Interp_RegisterCmd(&synthCmd);
 }

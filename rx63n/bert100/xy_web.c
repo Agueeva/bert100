@@ -1146,6 +1146,28 @@ WebServ_Accept(void *eventData, Tcb * tcb, uint8_t ip[4], uint16_t port)
 }
 
 /*
+ *************************************************************************************
+ * Direct accept of a Websocket connection without the switch protocols overhead
+ * usefull for labview without websocket support.
+ *************************************************************************************
+ */
+static bool 
+WebSocket_Accept(void *eventData,Tcb *tcb,uint8_t ip[4], uint16_t port)
+{
+	WebSocket *ws;
+	ws = WebSocket_Alloc();
+	if (!ws) {
+		Con_Printf("Out of WebSockets\n");
+		return false;
+	}
+	ws->ws_state = WSST_OPEN;
+	ws->tcb = tcb;
+	ws->wops = eventData;
+	ws->wops->connectProc(ws, ws->wops->eventData);
+	return true;
+}
+
+/*
  * -----------------------------------------------------------
  * Convert an MD5 sum given as Ascii String with 32 hexdigits
  * into a 16 Byte binary representation.
@@ -1633,6 +1655,11 @@ WebSocket_Handshake(int argc, char *argv[], XY_WebRequest * wr, void *eventData)
 	return 0;
 }
 
+void
+XY_NewLabviewServer(WebSockOps *wops,uint16_t portNr)
+{
+	Tcp_ServerSocket(portNr, WebSocket_Accept, wops);
+}
 /**
  ***********************************************************************************************
  * \fn int XY_WebSocketRegister(XY_WebServer *,const char *path,WebSockOps *,void *wopsServData)
@@ -1640,10 +1667,13 @@ WebSocket_Handshake(int argc, char *argv[], XY_WebRequest * wr, void *eventData)
  ***********************************************************************************************
  */
 void
-XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, void *wopsServData)
+XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, void *wopsServData,int32_t labviewPortNr)
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
+	if(labviewPortNr >= 0) {
+		XY_NewLabviewServer(wops,labviewPortNr);
+	}
 }
 
 /**

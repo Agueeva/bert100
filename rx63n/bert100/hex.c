@@ -47,6 +47,37 @@ astrtoi32(const char *str)
 	return 0;
 }
 
+uint64_t
+astrtoi64(const char *str)
+{
+	uint64_t val = 0;
+	uint8_t base = 10;
+	int8_t mul = 1;
+	if (*str == '-') {
+		mul = -1;
+		str++;
+	}
+	while (1) {
+		if ((*str >= '0') && (*str <= '9')) {
+			val = val * base + (*str - '0');
+		} else if ((*str >= 'a') && (*str <= 'f')) {
+			base = 16;
+			val = val * 16 + (*str - 'a' + 10);
+		} else if ((*str >= 'A') && (*str <= 'F')) {
+			base = 16;
+			val = val * 16 + (*str - 'A' + 10);
+		} else if ((*str == 'x')) {
+			base = 16;
+			val = 0;
+		} else {
+			return val * mul;
+		}
+		str++;
+	}
+	/* The drunken compiler thinks this can be reached */
+	return 0;
+}
+
 /**
  *******************************************************
  * \fn uint16_t astrtoi16(const char *str);
@@ -229,7 +260,7 @@ uitoa64(uint64_t value, char *buf)
 	}
 	while (divisor > 0) {
 		digit = value / divisor;
-		value -= (uint32_t) digit * divisor;
+		value -= digit * divisor;
 		*buf++ = digit + '0';
 		divisor = divisor / 10;
 		count++;

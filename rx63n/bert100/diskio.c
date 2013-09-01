@@ -231,7 +231,7 @@ DWORD
 get_fattime(void)
 {
 	//RTime rtc;
-	DWORD fattime;
+//	DWORD fattime;
 //	if (RTime_Get(&rtc) != RTIME_OK) {
 		/* Some day in the year 2012 */
 		return 0x40e35564;
