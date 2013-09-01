@@ -256,7 +256,6 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\pvar.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\pvar_socket.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\xy_web.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbstorage.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bert100.c" 
@@ -285,8 +284,8 @@
 "SBK_TAR_EMUE100|Exception" 1 
 "SBK_TAR_EMUE100|BreakCondition" 1 
 "SBK_TAR_EMUE100|TaskID" 1 
-"SBK_TAR_EMUE100|ExecutionTime" 1 
 "SBK_TAR_EMUE100|PC" 1 
+"SBK_TAR_EMUE100|ExecutionTime" 1 
 [STATUSBAR_DEBUGGER_PANESTATE_VD2]
 [STATUSBAR_DEBUGGER_PANESTATE_VD3]
 [STATUSBAR_DEBUGGER_PANESTATE_VD4]
