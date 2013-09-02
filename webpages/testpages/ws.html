@@ -6,6 +6,10 @@
     <body bgcolor="#000000" text="#cccccc">
     <center>
     <H1>Websocket Variables</H1>
+	<video controls="controls" autoplay="autoplay">
+	<source src="/sd/superman.ogv" type="video/ogg" />
+    	</video>
+     <br></br>
     <table border="1">  
 	  <colgroup>
     		<col width="120">
@@ -20,36 +24,36 @@
 	    <td id="test.var1" align="center">test</td>
 	  </tr>
 	  <tr>
-	    <td>AD00</td>
-	    <td id="adc12.raw00" align="center">unknown</td>
+	    <td>AD0</td>
+	    <td id="adc12.raw0" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD01</td>
-	    <td id="adc12.raw01" align="center">unknown</td>
+	    <td>AD1</td>
+	    <td id="adc12.raw1" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD02</td>
-	    <td id="adc12.raw02" align="center">unknown</td>
+	    <td>AD2</td>
+	    <td id="adc12.raw2" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD03</td>
-	    <td id="adc12.raw03" align="center">unknown</td>
+	    <td>AD3</td>
+	    <td id="adc12.raw3" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD04</td>
-	    <td id="adc12.raw04" align="center">unknown</td>
+	    <td>AD4</td>
+	    <td id="adc12.raw4" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD05</td>
-	    <td id="adc12.raw05" align="center">unknown</td>
+	    <td>AD5</td>
+	    <td id="adc12.raw5" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD06</td>
-	    <td id="adc12.raw06" align="center">unknown</td>
+	    <td>AD6</td>
+	    <td id="adc12.raw6" align="center">unknown</td>
 	  </tr>
 	  <tr>
-	    <td>AD07</td>
-	    <td id="adc12.raw07" align="center">unknown</td>
+	    <td>AD7</td>
+	    <td id="adc12.raw7" align="center">unknown</td>
 	  </tr>
     </table>
     <script type="text/javascript">
@@ -66,26 +70,29 @@
 	var cnt = 0;
 	var item = arr['var'];
 	var value = arr['val'];
+	//alert(item);
 	document.getElementById(item).firstChild.nodeValue=value;
      }
-     var pollArr = new Array( "adc12.raw00", "adc12.raw01",
-		     "adc12.raw02","adc12.raw03", 
-		     "adc12.raw04","adc12.raw05", 
-		     "adc12.raw06","adc12.raw07", 
+     var pollArr = new Array( "adc12.raw0", "adc12.raw1",
+		     "adc12.raw2","adc12.raw3", 
+		     "adc12.raw4","adc12.raw5", 
+		     "adc12.raw6","adc12.raw7", 
 		     "test.var1" );
+
+//     var pollArr = new Array( "test.var1" );
      var cursor = 0;
      function pollAdc() {
 	    socket.send(JSON.stringify({get: pollArr[cursor]}));
 	    cursor = (cursor + 1) % pollArr.length;
      }
-     function Lied(lied) {
+     function SelectLied(lied) {
 	    socket.send(JSON.stringify({set: "test.var1", val: lied}));
      }
-     setInterval(pollAdc,50);
+     setInterval(pollAdc,20);
      </script>
      <br></br>
-	<input type="button" value="Lied 1 vom Kasper" onclick="Lied(1);" </input>
-	<input type="button" value="Lied 2 (Entchen)" onclick="Lied(2);" </input>
+	<input type="button" value="Lied 1 vom Kasper" onclick="SelectLied(1);" </input>
+	<input type="button" value="Lied 2 (Entchen)" onclick="SelectLied(2);" </input>
     </center>
 
     </body>

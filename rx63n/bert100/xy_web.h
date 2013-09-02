@@ -70,7 +70,7 @@ typedef struct WebSockOps {
 	void *eventData;
 } WebSockOps;
 
-void XY_WebSocketRegister(XY_WebServer *wserv,const char *path,WebSockOps *wops,void *evData);
+void XY_WebSocketRegister(XY_WebServer *wserv,const char *path,WebSockOps *wops,void *evData,int32_t lvPortNr);
 void WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,void *_data,uint16_t pllen);
 
 /* Websocket operations */

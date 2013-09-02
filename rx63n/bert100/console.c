@@ -84,7 +84,7 @@ Con_PrintToVA(PrintCharProc * printChar, void *cbData, const char *format, va_li
 {
 	uint8_t c;
 	uint8_t i;
-	char str[12];
+	char str[21];
 	PrintfState pfs;
 	pfs.state = PRINTF_STATE_IDLE;
 	pfs.flags = 0;
@@ -154,23 +154,39 @@ Con_PrintToVA(PrintCharProc * printChar, void *cbData, const char *format, va_li
 				    pfs.state = PRINTF_STATE_IDLE;
 			    } else if ((c == 'd') || (c == 'u')) {
 				    uint8_t len = 0;
-				    uint32_t value;
+				    uint64_t value;
 				    if (c == 'u') {
 					    pfs.flags |= FLG_UNSIGNED;
 				    }
-				    if (pfs.flags & FLG_LONG) {
-					    value = va_arg(ap, uint32_t);
+				    if (pfs.flags & FLG_LONG64) {
+					    value = va_arg(ap, uint64_t);
+					    if (pfs.flags & FLG_UNSIGNED) {
+						    len = uitoa64(value, str);
+					    } else {
+						    len = itoa64(value, str);
+					    }
+				    } else if (pfs.flags & FLG_LONG) {
+					    if (pfs.flags & FLG_UNSIGNED) {
+					    	value = va_arg(ap, uint32_t);
+					    } else {
+						    value = (int64_t) (int32_t) va_arg(ap, int);
+					    }
+					    if (pfs.flags & FLG_UNSIGNED) {
+						    len = uitoa32(value, str);
+					    } else {
+						    len = itoa32(value, str);
+					    }
 				    } else {
 					    if (pfs.flags & FLG_UNSIGNED) {
 						    value = va_arg(ap, int);
 					    } else {
-						    value = (int32_t) (int16_t) va_arg(ap, int);
+						    value = (int64_t) (int16_t) va_arg(ap, int);
 					    }
-				    }
-				    if (pfs.flags & FLG_UNSIGNED) {
-					    len = uitoa32(value, str);
-				    } else {
-					    len = itoa32(value, str);
+					    if (pfs.flags & FLG_UNSIGNED) {
+						    len = uitoa16(value, str);
+					    } else {
+						    len = itoa16(value, str);
+					    }
 				    }
 				    leftpad(&pfs, printChar, len);
 				    for (i = 0; i < len; i++) {
@@ -180,8 +196,11 @@ Con_PrintToVA(PrintCharProc * printChar, void *cbData, const char *format, va_li
 				    pfs.state = PRINTF_STATE_IDLE;
 			    } else if (c == 'x') {
 				    uint8_t len = 0;
-				    uint32_t value;
-				    if (pfs.flags & FLG_LONG) {
+				    uint64_t value;
+				    if (pfs.flags & FLG_LONG64) {
+					    value = va_arg(ap, uint64_t);
+					    len = itoahex64(value, str);
+				    } else if (pfs.flags & FLG_LONG) {
 					    value = va_arg(ap, uint32_t);
 					    len = itoahex32(value, str);
 				    } else {

@@ -39,7 +39,7 @@
 #include "skb.h"
 #include "xy_web.h"
 #include "pvar.h"
-#include "pvar_socket.h"
+#include "pvar_websock.h"
 #include "adc12.h"
 #include "flash.h"
 #include "config.h"
@@ -135,7 +135,7 @@ int main(void)
 	AD537x_Init();
 #endif
 	MDIO_Init();
-	XO_Init("xo",0x55);
+	XO_Init("synth0",0x10aa);
 	CDR_Init("cdr0");
 
 	Timer_Start(&blinkTimer,500);

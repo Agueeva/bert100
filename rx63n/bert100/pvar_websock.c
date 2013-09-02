@@ -8,7 +8,7 @@
 #include "types.h"
 #include "xy_web.h"
 #include "console.h"
-#include "pvar_socket.h"
+#include "pvar_websock.h"
 #include "pvar.h"
 #include "xy_string.h"
 
@@ -261,5 +261,5 @@ static WebSockOps pvarWsOps = {
 void
 PVarSocket_New(XY_WebServer *wserv) 
 {
-	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,NULL);
+	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,NULL,-1);
 }
