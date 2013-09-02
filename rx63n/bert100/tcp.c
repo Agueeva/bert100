@@ -163,7 +163,7 @@ struct Tcb {
 };
 
 #define MAX_SERVER_SOCKETS	(4)
-#define MAX_TCP_CONS		(16)
+#define MAX_TCP_CONS		(10)
 
 static TcpServerSocket serverSocket[MAX_SERVER_SOCKETS];
 static Tcb tcpConnection[MAX_TCP_CONS];

@@ -17,8 +17,8 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(4U)
-#define TX_DESCR_NUM	(4U)
+#define RX_DESCR_NUM	(3U)
+#define TX_DESCR_NUM	(2U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
 #define EMAC_RX_BUFSIZE		(1536) /* Aligned to multiples of 32 Bytes, not necessary ? */
@@ -101,6 +101,7 @@ typedef struct RxEth {
 	uint32_t statRxInts;
 	uint32_t statRxBadFrame;
 	uint32_t statRxFrameOk;
+	uint32_t statRRRClear;
 } RxEth;
 
 static RxEth gRxEth;
@@ -253,7 +254,7 @@ RXEth_RxEventProc(void *eventData)
  		 ****************************************************
 		 */ 
 		if(EDMAC.EDRRR.LONG == 0) {
-			Con_Printf("RRR was clear\n");
+			re->statRRRClear++;
 			EDMAC.EDRRR.LONG = 1;
 		}
 	} while(1);
@@ -420,11 +421,12 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 		status = rxDescr->status;
 		Con_Printf("RxDescr %u status 0x%08lx\n",i,status);
 	}
-	Con_Printf("TX Ints: %lu\n",re->statTxInts);
-	Con_Printf("RX Ints: %lu\n",re->statRxInts);
-	Con_Printf("RxGood:  %lu\n",re->statRxFrameOk);
-	Con_Printf("RxBad:   %lu\n",re->statRxBadFrame);
-	Con_Printf("EDRRR:   %lu\n",EDMAC.EDRRR.LONG);
+	Con_Printf("TX Ints:  %lu\n",re->statTxInts);
+	Con_Printf("RX Ints:  %lu\n",re->statRxInts);
+	Con_Printf("RxGood:   %lu\n",re->statRxFrameOk);
+	Con_Printf("RxBad:    %lu\n",re->statRxBadFrame);
+	Con_Printf("RRRClear: %lu\n",re->statRRRClear);
+	Con_Printf("EDRRR:    %lu\n",EDMAC.EDRRR.LONG);
 	if(argc > 1) {
 		EDMAC.EDRRR.LONG = 1;
 	}
