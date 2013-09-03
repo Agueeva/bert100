@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(3U)
+#define RX_DESCR_NUM	(4U)
 #define TX_DESCR_NUM	(2U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
@@ -28,7 +28,7 @@
 #define TX_DESCR_WP(rxeth)	((rxeth)->txDescrWp % TX_DESCR_NUM)
 #define TX_DESCR_RP(rxeth)	((rxeth)->txDescrRp % TX_DESCR_NUM)
 #define RX_DESCR_INC_RP(rxeth)	((rxeth)->rxDescrRp = ((rxeth)->rxDescrRp + 1) % (RX_DESCR_NUM << 1))
-#define RX_DESCR_INC_WP(rxeth)	((rxeth)->rxDescrWp = ((rxeth)->rxDescrWp + 1) % (RX_DESCR_NUM << 1))
+//#define RX_DESCR_INC_WP(rxeth)	((rxeth)->rxDescrWp = ((rxeth)->rxDescrWp + 1) % (RX_DESCR_NUM << 1))
 #define TX_DESCR_INC_RP(rxeth)	((rxeth)->txDescrRp = ((rxeth)->txDescrRp + 1) % (TX_DESCR_NUM << 1))
 #define TX_DESCR_INC_WP(rxeth)	((rxeth)->txDescrWp = ((rxeth)->txDescrWp + 1) % (TX_DESCR_NUM << 1))
 
@@ -74,9 +74,9 @@
 #define RFS_CERF	(UINT32_C(1) << 0)
 
 typedef struct Descriptor {
-	uint32_t status;
-	uint16_t size;	  /**< Only relevant in receive descriptor */
-	uint16_t bufsize; /**< TX: number of bytes to transmit, RX: Maxium bytes to receive */
+	volatile uint32_t status;
+	volatile uint16_t size;	  /**< Only relevant in receive descriptor */
+	volatile uint16_t bufsize; /**< TX: number of bytes to transmit, RX: Maxium bytes to receive */
 	uint8_t  *bufP;
 	Skb *skb;	  /**< not used by hardware, used for skb here */
 } Descriptor;
@@ -88,11 +88,11 @@ typedef struct RxEth {
 	Skb	rxSkb;
 	EthDrv_PktSinkProc *pktSinkProc;
 	void *pktSinkData;
+	Timer   rxWatchdogTimer;
 	uint8_t rxBuf[EMAC_NUM_RX_BUFS * EMAC_RX_BUFSIZE];
 	uint8_t ethMAC[6];
 	uint16_t txDescrWp;
 	uint16_t txDescrRp;
-	uint16_t rxDescrWp;
 	uint16_t rxDescrRp;
 	Event    evRxEvent;
 	Event    evTxEvent;
@@ -102,6 +102,7 @@ typedef struct RxEth {
 	uint32_t statRxBadFrame;
 	uint32_t statRxFrameOk;
 	uint32_t statRRRClear;
+	uint32_t statRxWatchdog;
 } RxEth;
 
 static RxEth gRxEth;
@@ -220,7 +221,7 @@ RXEth_RxEventProc(void *eventData)
 	RxEth *re = eventData;
 	uint16_t rp;
 	uint32_t status;
-	Descriptor *rxDescr;
+	volatile Descriptor *rxDescr;
 	Skb *skb;
 	do { 
 		rp = RX_DESCR_RP(re);
@@ -258,14 +259,13 @@ RXEth_RxEventProc(void *eventData)
 			EDMAC.EDRRR.LONG = 1;
 		}
 	} while(1);
-
 }
 
 static void
 RXEth_TxEventProc(void *eventData)
 {
 	RxEth *re = eventData;
-	Descriptor *txDescr;
+	volatile Descriptor *txDescr;
 	do {
 		txDescr = &re->txDescr[TX_DESCR_RP(re)];
 		if((txDescr->status & TXDS_ACT)) {
@@ -292,7 +292,7 @@ static void
 RXEth_Transmit(EthDriver *drv,Skb *skb)
 {
 	RxEth *re = container_of(drv,RxEth,ethDrv); 
-	Descriptor *txDescr;
+	volatile Descriptor *txDescr;
 	CSema_Down(&re->cSemaTxDescr);
 	txDescr = &re->txDescr[TX_DESCR_WP(re)];
 	txDescr->bufP = (uint8_t *)skb->hdrStart;
@@ -301,16 +301,13 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 		txDescr->bufsize = 64;
 	}
 	//Con_Printf("Bufsize %u\n",txDescr->bufsize);
-	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	txDescr->skb = skb;
+	barrier();
+	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	TX_DESCR_INC_WP(re);
 	if(EDMAC.EDTRR.LONG == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
-#if 0
-	SleepMs(3);
-	Skb_Free(skb);
-#endif
 }
 
 /**
@@ -362,7 +359,7 @@ static void
 RXEth_InitDescriptors(RxEth *re)
 {
 	int i;
-	Descriptor *descr;
+	volatile Descriptor *descr;
 	CSema_Init(&re->cSemaTxDescr);
 	for(i = 0; i < TX_DESCR_NUM; i++) {
 		descr = &re->txDescr[i];	
@@ -392,6 +389,31 @@ RxEth_RegisterPktSink(EthDriver *drv,EthDrv_PktSinkProc *p,void *evData)
 	re->pktSinkData = evData;
 }
 
+static void
+RxEth_RxWatchdogTimerProc(void *eventData) 
+{
+	RxEth *re = eventData;
+	bool ok = false;
+	int i;
+	Timer_Start(&re->rxWatchdogTimer,1100);
+#if 0
+	if(EDMAC.EDRRR.LONG == 1) {
+		return;
+	}
+#endif
+	for(i = 0; i < RX_DESCR_NUM; i++) {
+		uint32_t status;
+		volatile Descriptor *rxDescr = &re->rxDescr[i];
+		status = rxDescr->status;
+		if(status & RXDS_ACT) {
+			ok = true;
+		}
+	}
+	if(ok == false) {
+		re->statRxWatchdog++;
+	}
+	EV_Trigger(&re->evRxEvent);
+}
 /**
  ***********************************************************************************
  * \fn static int8_t cmd_ethtx(Interp * interp, uint8_t argc, char *argv[])
@@ -417,7 +439,7 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 #endif
 	for(i = 0; i < RX_DESCR_NUM; i++) {
 		uint32_t status;
-		Descriptor *rxDescr = &re->rxDescr[i];
+		volatile Descriptor *rxDescr = &re->rxDescr[i];
 		status = rxDescr->status;
 		Con_Printf("RxDescr %u status 0x%08lx\n",i,status);
 	}
@@ -427,6 +449,7 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 	Con_Printf("RxBad:    %lu\n",re->statRxBadFrame);
 	Con_Printf("RRRClear: %lu\n",re->statRRRClear);
 	Con_Printf("EDRRR:    %lu\n",EDMAC.EDRRR.LONG);
+	Con_Printf("RxWdg:    %lu\n",re->statRxWatchdog);
 	if(argc > 1) {
 		EDMAC.EDRRR.LONG = 1;
 	}
@@ -489,7 +512,8 @@ RX_EtherInit(void)
 	ethDrv->txProc = RXEth_Transmit;
 	ethDrv->ctrlProc = RXEth_Control; 
 	ethDrv->regPktSink = RxEth_RegisterPktSink;
-	
+	Timer_Init(&re->rxWatchdogTimer,RxEth_RxWatchdogTimerProc,re);
+	Timer_Start(&re->rxWatchdogTimer,2000);
 	Interp_RegisterCmd(&ethstatCmd);
 	return ethDrv;
 }
