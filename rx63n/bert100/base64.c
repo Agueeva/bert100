@@ -35,7 +35,7 @@ Base64_Decode(void *_dst,const void *_src,uint16_t buflen)
 	uint16_t i=0,count=0;
 	uint8_t b;
 	uint8_t *dst = _dst;
-	uint8_t *src = _src;
+	const uint8_t *src = _src;
 	for(i=0;*src && (*src<128) && (count<buflen);i++,src++) {
 		b=decoding_table[*src];
 		if(b>64)  {
