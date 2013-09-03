@@ -367,20 +367,21 @@ Tcp_Watchdog(void *eventData)
 {
 	Tcb *tcb = eventData;
 	TimeMs_t now;
-	Mutex_Lock(&tcpSema);
+//	Mutex_Lock(&tcpSema);
 	if(tcb->state == TCPS_CLOSED) {
-		Mutex_Unlock(&tcpSema);
+//		Mutex_Unlock(&tcpSema);
 		return;
 	}
 	now = TimeMs_Get();
 	/* TCP timeout is 1 minutes */
 	if((now - tcb->lastActionTimeMs) >= 60000) { 
 		DBG(Con_Printf("Now the watchdog is closing\n"));
+		Mutex_Lock(&tcpSema);
 		TCB_Close(tcb);
+		Mutex_Unlock(&tcpSema);
 	} else {
 		Timer_Start(&tcb->watchdogTimer,10000);
 	}
-	Mutex_Unlock(&tcpSema);
 }
 
 static void
@@ -393,7 +394,7 @@ Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t se
 	tcb->retransPending = true;
 	Timer_Start(&tcb->retransTimer,1000);
 	tcb->retransCounter = 10;
-	DBG(Con_Printf("Enqueued retransmit len %u\n",len));
+	//DBG(Con_Printf("Enqueued retransmit len %u\n",len));
 }
 /**
  *****************************************************************************
@@ -880,7 +881,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			uint32_t fpos = tc->RCV_NXT - tc->IRS - 1;
 			tcb->RCV_NXT += nr_bytes; 
 			needToSendAck = true; 
-			DBG(Con_Printf("RCV next set to %llu and needToSendAck\n",tcb->RCV_NXT));
+			DBG(Con_Printf("RCV next set to %lu and needToSendAck\n",tcb->RCV_NXT));
 			if(tc->dataSink) {
 				/* Shit, might recurse and call TX_Avail which locks semaphore */	
 				tcb->busy = true;
@@ -951,7 +952,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT);
 		Tcp_Send(tcb,flags,NULL,0);
 	} else if(dataLen) {
-		DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
+		//DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
 		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT);
 		Tcp_SendData(tcb,flags,dataP,dataLen);
 	} else if(needToSendAck) {
