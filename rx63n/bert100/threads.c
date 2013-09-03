@@ -13,7 +13,7 @@
 #include "timer.h"
 #include "stack.h"
 
-#define NR_THREADS	10	
+#define NR_THREADS	9	
 
 static Thread g_Thread[NR_THREADS];
 Thread *g_CurrTh;

@@ -18,7 +18,7 @@
 #include "timer.h"
 #include "hex.h"
 
-#define THREAD_POOL_SIZE	10
+#define THREAD_POOL_SIZE	9
 
 /**
  *************************************************************************
