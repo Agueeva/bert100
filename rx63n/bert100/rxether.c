@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(4U)
+#define RX_DESCR_NUM	(2U)
 #define TX_DESCR_NUM	(2U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
@@ -204,12 +204,12 @@ Excep_ETHER_EINT(void)
 	uint32_t status;
 	status = EDMAC.EESR.LONG;
 	if(status & EMAC_FR_INT) {
-		EDMAC.EESR.BIT.FR = 1; /* Clear reception interrupt */
+		EDMAC.EESR.LONG = EMAC_FR_INT; /* Clear reception interrupt */
 		re->statRxInts++;
 		EV_Trigger(&re->evRxEvent);
 	} 
 	if(status & EMAC_TC_INT) {
-		EDMAC.EESR.BIT.TC = 1; /* Clear the transmission complete bit */
+		EDMAC.EESR.LONG = EMAC_TC_INT; /* Clear transmission complete */
 		EV_Trigger(&re->evTxEvent);
 		re->statTxInts++;
 	}
@@ -396,7 +396,7 @@ RxEth_RxWatchdogTimerProc(void *eventData)
 	bool ok = false;
 	int i;
 	Timer_Start(&re->rxWatchdogTimer,1100);
-#if 0
+#if 1
 	if(EDMAC.EDRRR.LONG == 1) {
 		return;
 	}
