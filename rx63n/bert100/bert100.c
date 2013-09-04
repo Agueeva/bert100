@@ -140,9 +140,9 @@ int main(void)
 
 	Timer_Start(&blinkTimer,500);
 	Skb_Init();
+	Tcp_Init();
 	ethDrv = RX_EtherInit();
 	Ethernet_Init(ethDrv);
-	Tcp_Init();
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	Spi_Init();
