@@ -122,6 +122,10 @@ void
 Mutex_Lock(Mutex * rs)
 {
 	Thread *newTh;
+	if(rs->magic != 0x08154711) {
+		Con_Printf("Bad magic in semaphore\n");
+		return;
+	}
 	while (1) {
 		if (!rs->owner) {
 			/* Shit, because of pool it is not a thread-owned semaphore */
@@ -160,6 +164,11 @@ void
 Mutex_Unlock(Mutex * rs)
 {
 	Thread *th;
+	if(rs->magic != 0x08154711) {
+		Con_Printf("Bad magic in semaphore %08x\n",rs->magic);
+		while(1);
+		return;
+	}
 	if (rs->owner /* == Thread_Current() */ ) {
 		rs->owner = NULL;
 		/* Wake up the threads which are waiting for this resource */
@@ -255,6 +264,7 @@ Mutex_Init(Mutex * rs)
 {
 	rs->waitHead = NULL;
         rs->owner = NULL;
+	rs->magic = 0x08154711;
 }
 
 static void 

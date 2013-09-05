@@ -10,6 +10,7 @@
 typedef struct TPOSRSema {
 	Thread *waitHead;
 	Thread *owner;
+	uint32_t magic;
 } Mutex;
 
 typedef struct TPOSCSema {
@@ -33,6 +34,17 @@ Mutex_Locked(Mutex * rsema)
 {
 	return ! !rsema->owner;
 };
+
+INLINE bool
+Mutex_TryLock(Mutex *rsema)
+{
+	if(rsema->owner == NULL) {
+		Mutex_Lock(rsema);
+		return true;
+	} else {
+		return false;
+	}
+}
 
 void Mutex_Unlock(Mutex * rsema);
 
