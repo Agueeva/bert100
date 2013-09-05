@@ -17,7 +17,7 @@
 #include "skb.h"
 #include "tpos.h"
 
-#define RX_DESCR_NUM	(2U)
+#define RX_DESCR_NUM	(3U)
 #define TX_DESCR_NUM	(2U)
 
 #define EMAC_NUM_RX_BUFS	RX_DESCR_NUM
@@ -94,6 +94,8 @@ typedef struct RxEth {
 	uint16_t txDescrWp;
 	uint16_t txDescrRp;
 	uint16_t rxDescrRp;
+	bool evRxInUse;
+	bool evTxInUse;
 	Event    evRxEvent;
 	Event    evTxEvent;
 	CSema	 cSemaTxDescr;
@@ -203,13 +205,12 @@ Excep_ETHER_EINT(void)
 	RxEth *re = &gRxEth;
 	uint32_t status;
 	status = EDMAC.EESR.LONG;
+	EDMAC.EESR.LONG = status; /* Ack all pending interrupts */
 	if(status & EMAC_FR_INT) {
-		EDMAC.EESR.LONG = EMAC_FR_INT; /* Clear reception interrupt */
 		re->statRxInts++;
 		EV_Trigger(&re->evRxEvent);
 	} 
 	if(status & EMAC_TC_INT) {
-		EDMAC.EESR.LONG = EMAC_TC_INT; /* Clear transmission complete */
 		EV_Trigger(&re->evTxEvent);
 		re->statTxInts++;
 	}
@@ -223,6 +224,7 @@ RXEth_RxEventProc(void *eventData)
 	uint32_t status;
 	volatile Descriptor *rxDescr;
 	Skb *skb;
+	re->evRxInUse = 1;
 	do { 
 		rp = RX_DESCR_RP(re);
 		rxDescr = &re->rxDescr[rp];
@@ -243,7 +245,9 @@ RXEth_RxEventProc(void *eventData)
         		skb->hdrAvailLen = 0;
         		skb->dataAvailLen =  EMAC_RX_BUFSIZE;
 			if(re->pktSinkProc) {
+				re->evRxInUse = 2;
 				re->pktSinkProc(re->pktSinkData,skb);
+				re->evRxInUse = 1;
 			}
 		}
 		rxDescr->status = RXDS_ACT | (status & RXDS_DLE);
@@ -259,6 +263,7 @@ RXEth_RxEventProc(void *eventData)
 			EDMAC.EDRRR.LONG = 1;
 		}
 	} while(1);
+	re->evRxInUse = 0;
 }
 
 static void
@@ -266,6 +271,7 @@ RXEth_TxEventProc(void *eventData)
 {
 	RxEth *re = eventData;
 	volatile Descriptor *txDescr;
+	re->evTxInUse = 1;
 	do {
 		txDescr = &re->txDescr[TX_DESCR_RP(re)];
 		if((txDescr->status & TXDS_ACT)) {
@@ -280,6 +286,7 @@ RXEth_TxEventProc(void *eventData)
 		//Con_Printf("Up\n");
 		CSema_Up(&re->cSemaTxDescr);
 	} while(1);
+	re->evTxInUse = 0;
 }
 
 /**
@@ -425,18 +432,6 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 {
 	RxEth *re = &gRxEth;
 	uint16_t i;
-#if 0
-	uint8_t pkt[64] __attribute__((aligned (32)));
-	memset(pkt,0,sizeof(pkt));
-	for(i = 0; i < 6; i++) {
-		pkt[i] = 0xff;
-		pkt[i + 6] = re->ethMAC[i];
-	}
-	for(i = 1; (i < argc) && (i < 20); i++) {
-		pkt[i - 1 + 12] = astrtoi16(argv[i]);
-	}
-	//RXEth_Transmit(re,pkt,64);
-#endif
 	for(i = 0; i < RX_DESCR_NUM; i++) {
 		uint32_t status;
 		volatile Descriptor *rxDescr = &re->rxDescr[i];
@@ -450,6 +445,8 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 	Con_Printf("RRRClear: %lu\n",re->statRRRClear);
 	Con_Printf("EDRRR:    %lu\n",EDMAC.EDRRR.LONG);
 	Con_Printf("RxWdg:    %lu\n",re->statRxWatchdog);
+	Con_Printf("evRxInUse %u\n",re->evRxInUse);
+	Con_Printf("evTxInUse %u\n",re->evTxInUse);
 	if(argc > 1) {
 		EDMAC.EDRRR.LONG = 1;
 	}
