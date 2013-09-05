@@ -396,7 +396,7 @@ static const CdrRegister gCdrRegister[] = {
 static const CdrRegister gCdrLaneRegister[] = 
 {
 	{
-		.name = "LoopbackOutputEnable",
+		.name = "LoopbackOE",
 		.regNo = 256,
 		.lastBit = 1,
 		.firstBit = 1,
