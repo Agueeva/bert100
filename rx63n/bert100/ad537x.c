@@ -386,7 +386,7 @@ INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
            "dacr                   # reset dac");
 
 void
-AD537x_Init(void)
+AD537x_Init(const char *name)
 {
 	RESET_HIGH;
 	RESET_DIROUT;
