@@ -12,6 +12,7 @@
 #include "types.h"
 #include "console.h"
 #include "timer.h"
+#include "interpreter.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -44,7 +45,6 @@
 
 //define DBG(x) (x)
 #define DBG(x) 
-static Mutex tcpSema;
 /**
  *******************************************
  * TCP header Size is min 20 bytes
@@ -111,6 +111,8 @@ struct Tcb {
 	Tcp_DataSrc *dataSrc;
 	Tcp_CloseProc *closeProc;
 
+	Mutex lock;
+	uint16_t lockline;	/* For debugging */
 	TimeMs_t lastActionTimeMs;
 	Timer retransTimer;
 	uint8_t retransCounter;
@@ -168,6 +170,29 @@ struct Tcb {
 static TcpServerSocket serverSocket[MAX_SERVER_SOCKETS];
 static Tcb tcpConnection[MAX_TCP_CONS];
 
+#define TCB_TryLock(tcb)	_TCB_TryLock((tcb),__LINE__)
+#define TCB_Lock(tcb)		_TCB_Lock((tcb),__LINE__)
+
+INLINE bool _TCB_TryLock(Tcb *tcb,uint32_t line) 
+{
+	if(!Mutex_Locked(&tcb->lock)) {
+		tcb->lockline = line;
+		Mutex_Lock(&tcb->lock);
+		return true;
+	} else {
+		return false;
+	}
+}
+INLINE void _TCB_Lock(Tcb *tcb,uint32_t line) 
+{
+	tcb->lockline = line;
+	Mutex_Lock(&tcb->lock);
+}
+INLINE void TCB_Unlock(Tcb *tcb) 
+{
+	Mutex_Unlock(&tcb->lock);
+	tcb->lockline = 0;
+}
 /*
  ******************************************************************************+
  * \fn static TcpServerSocket * find_server_socket(uint16_t port) 
@@ -330,26 +355,20 @@ TcpFindConnection(uint8_t ip[4],uint16_t port)
  *******************************************************************************
  */
 static uint16_t
-chksum_be(uint8_t *data,uint16_t len,uint16_t startval)
+chksum_be(void *_data,uint16_t len,uint16_t startval)
 {
-	uint16_be *chkdata = (uint16_t *)data;
+	uint16_be *chkdata = (uint16_t *)_data;
+	uint8_t *data = _data;
 	uint16_t i;
 	uint32_t sum = startval;
 	for(i = 0; i < (len >> 1); i++) {
 		sum += chkdata[i];
 	}
 	/* RFC 793 3.1 */
-#if 0
-	if(len & 1) {
-		uint8_t tmp[2] = {data[len - 1], 0 };
-		sum += *(uint16_t *)tmp; 
-	}
-#else
 	/* This only works on little endian machine */
 	if(len & 1) {
 		sum += data[len - 1]; 
 	}
-#endif
 	while (sum >> 16) {
 		sum = (sum & 0xffff) + (sum >> 16);
 	}
@@ -367,18 +386,19 @@ Tcp_Watchdog(void *eventData)
 {
 	Tcb *tcb = eventData;
 	TimeMs_t now;
-//	Mutex_Lock(&tcpSema);
 	if(tcb->state == TCPS_CLOSED) {
-//		Mutex_Unlock(&tcpSema);
 		return;
 	}
 	now = TimeMs_Get();
 	/* TCP timeout is 1 minutes */
 	if((now - tcb->lastActionTimeMs) >= 60000) { 
 		DBG(Con_Printf("Now the watchdog is closing\n"));
-		Mutex_Lock(&tcpSema);
-		TCB_Close(tcb);
-		Mutex_Unlock(&tcpSema);
+		if(TCB_TryLock(tcb) == false) {
+			Timer_Start(&tcb->watchdogTimer,200);
+		} else {
+			TCB_Close(tcb);
+			TCB_Unlock(tcb);
+		}
 	} else {
 		Timer_Start(&tcb->watchdogTimer,10000);
 	}
@@ -538,8 +558,9 @@ Tcp_Send(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 	csum = chksum_be((uint8_t *)&psHdr,12,0);	
 	csum = chksum_be((uint8_t *)tcpHdr,tcphdrlen,~csum);
 	csum = chksum_be((uint8_t *)skbSend->dataStart,dataLen,~csum);
+	barrier();
 	tcpHdr->chksum = csum; 
-
+	barrier();
 	IP_MakePacket(skbSend,tcb->ipAddr,tcb->myIp,IPPROT_TCP,tcphdrlen + dataLen);
 	IP_SendPacket(skbSend);
 #if 0
@@ -573,7 +594,10 @@ static void
 Tcp_Retrans(void *eventData) 
 {
 	Tcb *tcb = eventData;
-	Mutex_Lock(&tcpSema);
+	if(TCB_TryLock(tcb) == false) {
+		Timer_Start(&tcb->retransTimer,20);
+		return;
+	}
 	if(tcb->retransCanceled) {
 		Con_Printf("BUG: Retrans called with canceled timer\n"); 
 	}
@@ -591,7 +615,7 @@ Tcp_Retrans(void *eventData)
 		DBG(Con_Printf("Now the retrans timer is closing\n"));
 		TCB_Close(tcb); /* Will trigger a RST */
 	}
-	Mutex_Unlock(&tcpSema);
+	TCB_Unlock(tcb);
 }
 
 /**
@@ -617,26 +641,26 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 	/* Check here if something is outstanding */
 	if(enable && (tcb->SND_UNA == tcb->SND_NXT)) {
 		if(!tcb->busy) {
-			Mutex_Lock(&tcpSema);
+			TCB_Lock(tcb);
 			fetch_next_tx_data(tcb,&dataP,&dataLen);
 			if(dataLen) {
 				uint8_t flags = TCPFLG_ACK | TCPFLG_PSH;
 				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT);
 				Tcp_SendData(tcb,flags,dataP,dataLen);
 			}
-			Mutex_Unlock(&tcpSema);
+			TCB_Unlock(tcb);
 		} else {
 			DBG(Con_Printf("Busy"));
 		}
 	} else if(!enable && tcb->do_close) {
 		uint8_t flags;
-		Mutex_Lock(&tcpSema);
+		TCB_Lock(tcb);
 		tcb->state = TCPS_FIN_WAIT_1;
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
 		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT);
 		Tcp_Send(tcb,flags,NULL,0);
-		Mutex_Unlock(&tcpSema);
+		TCB_Unlock(tcb);
 	}
 }
 /*
@@ -759,7 +783,6 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	uint8_t flags;
 	uint8_t *dataP;
 	uint16_t dataLen = 0;
-
 	now = TimeMs_Get();
 	tcpHdr = (TcpHdr *)skb_remove_header(skb,sizeof(TcpHdr)); 
 	seqNr = ntohl(tcpHdr->seqNr);
@@ -778,7 +801,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				return;
 			}
 			tc->state = TCPS_SYN_RCVD;
-			Mutex_Lock(&tcpSema);
+			TCB_Lock(tcb);
 			if(ssock->acceptProc) {
 				result = ssock->acceptProc(ssock->acceptData,tc,ipHdr->srcaddr,tcpHdr->srcPort); 
 			}
@@ -786,7 +809,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				DBG(Con_Printf("nobody listening on TCP port %d\n",ntohs(tcpHdr->dstPort)));
 				TCB_Close(tc);
 				Tcp_Rst(ipHdr,skb);
-				Mutex_Unlock(&tcpSema);
+				TCB_Unlock(tcb);
 				return;
 			}
 		} else {
@@ -810,7 +833,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		 */
 		Enqueue_Retransmit(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0,tcb->SND_NXT);
 		Tcp_Send(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0);
-		Mutex_Unlock(&tcpSema);
+		TCB_Unlock(tcb);
 		return;
 	}
 	/* 
@@ -818,7 +841,6 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	 * If not SYN try to find an existing TCB 
  	 ******************************************************************************
 	 */
-	Mutex_Lock(&tcpSema);
 	tcb = tc = TcpFindConnection(ipHdr->srcaddr,ntohs(tcpHdr->srcPort));
 	if(!tc) {
 		DBG(
@@ -827,13 +849,13 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			ipHdr->srcaddr[3]));
 		/* Send RST */
 		Tcp_Rst(ipHdr,skb);
-		Mutex_Unlock(&tcpSema);
 		return;
 	}
+	TCB_Lock(tcb);
 	tc->lastActionTimeMs = now;
 	if(tcpHdr->flags & TCPFLG_RST) {
 		TCB_Close(tc);
-		Mutex_Unlock(&tcpSema);
+		TCB_Unlock(tcb);
 		return;
 	}
 	if(tc->state == TCPS_SYN_RCVD) {
@@ -858,10 +880,12 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				/* Should send a reset here  */
 				TCB_Close(tc);
 				Tcp_Rst(ipHdr,skb);
+				TCB_Unlock(tc);
+				return;
 			}
 		} else {
 			/* Leave a chance for retransmission of SYN_ACK */
-			Mutex_Unlock(&tcpSema);
+			TCB_Unlock(tcb);
 			return;
 		}
 		/* Fall through, No return ! may contain data ! */
@@ -919,7 +943,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		} else if(tcb->state == TCPS_LAST_ACK && (tcpHdr->flags & TCPFLG_ACK)) {
 			/* This one has no reply */
 			TCB_Close(tc);
-			Mutex_Unlock(&tcpSema);
+			TCB_Unlock(tcb);
 			return;
 		} else if((tc->state == TCPS_FIN_WAIT_1)  && (tcpHdr->flags & TCPFLG_ACK)) {
 			/* Do I need to check for seq NR here ? */ 
@@ -929,7 +953,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				Tcp_Send(tcb,TCPFLG_ACK,NULL,0);
 				tcb->state = TCPS_TIME_WAIT;
 				TCB_Close(tcb);
-				Mutex_Unlock(&tcpSema);
+				TCB_Unlock(tcb);
 				return;
 			} else {
 				DBG(Con_Printf("FINWAIT2, send nix\n"));
@@ -941,7 +965,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			Tcp_Send(tc,TCPFLG_ACK,NULL,0);
 			tc->state = TCPS_TIME_WAIT;
 			TCB_Close(tc);
-			Mutex_Unlock(&tcpSema);
+			TCB_Unlock(tcb);
 			return;
 		}
 	}
@@ -960,7 +984,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	} else {
 		DBG(Con_Printf("Send nothing because not necessary\n"));
 	}
-	Mutex_Unlock(&tcpSema);
+	TCB_Unlock(tcb);
 }
 
 /**
@@ -987,6 +1011,31 @@ Tcp_ServerSocket(uint16_t port,Tcp_AcceptProc *proc,void *eventData)
 	}
 }
 
+static int8_t
+cmd_tcp(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint16_t i;
+#if 0 
+	uint8_t data[] = { 
+		0x12,0x34,0x45,0x56,0x67,0x78,0x90,0x91,
+		0x12,0x34,0x45,0x56,0x67,0x78,0x90,0x91,
+		0x12,0x34,0x45,0x56,0x67,0x78,0x90,0x91,
+		0x12,0x34,0x45,0x56,0x67,0x78,0x90,0x91,
+		0xf2,0xf4,0xf5,0xf6,0xf7,0xf8,0xf0,0xf1,
+		0xf2,0xf4,0xf5,0xf6
+	};
+#endif
+	for(i = 0; i < array_size(tcpConnection); i++) {
+		Tcb *tcb =  &tcpConnection[i];
+		//if(tcb->inUse) {
+			Con_Printf("TCB %u, inUse %u, busy %u\n",i,tcb->inUse,tcb->busy);
+		//}
+	}
+        return 0;
+}
+
+INTERP_CMD(tcpCmd,"tcp", cmd_tcp, "tcp  # Show tcp connections");
+
 /**
  ************************************************************
  * Initialize the TCP module
@@ -1000,6 +1049,7 @@ Tcp_Init(void)
 		Tcb *tcb =  &tcpConnection[i];
 		Timer_Init(&tcb->retransTimer,Tcp_Retrans,tcb);
 		Timer_Init(&tcb->watchdogTimer,Tcp_Watchdog,tcb);
+		Mutex_Init(&tcb->lock);
 	}
-	Mutex_Init(&tcpSema);
+	Interp_RegisterCmd(&tcpCmd);
 }

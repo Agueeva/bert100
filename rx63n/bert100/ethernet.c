@@ -17,6 +17,15 @@
 #include "tcp.h"
 #include "iram.h"
 
+typedef struct IpStack {
+	bool inArp;	
+	bool inIp;
+	bool inTcp;	
+	bool inIcmp;
+} IpStack;
+
+static IpStack gIpStack;
+
 INLINE void
 Write32(uint32_t value, void *addr)
 {
@@ -156,14 +165,6 @@ skb_reset(Skb *skb) {
 inline void
 Eth_Transmit(EthIf *eth,Skb *skb) 
 {
-#if 0
-	uint16_t header_len, len;
-	header_len = skb->hdrEnd - skb->hdrStart;
-        len = header_len + skb->dataLen;
-        if(len < 64) {
-                skb->dataLen = skb->dataLen + (64 - len);
-        }
-	#endif
 	eth->drv->txProc(eth->drv,skb);
 }
 
@@ -339,7 +340,6 @@ add_eth_header(EthIf *eth,Skb *skb,const uint8_t *dstip,uint16_t proto)
 	return;
 }
 
-
 /**
  ****************************************************
  * Returns the ckecksum in host byteorder
@@ -435,9 +435,6 @@ void
 IP_MakePacket(Skb *skb,const uint8_t *dstip,const uint8_t *srcip,uint8_t ipproto,uint16_t payloadlen) 
 {
 	EthIf *eth = &g_EthIf;	
-//	uint8_t ethhdrlen;
-//	uint8_t iphdrlen;
-	
 	add_ip_header(skb,dstip,srcip,ipproto,payloadlen);
 	add_eth_header(eth,skb,dstip,0x800);
 }
@@ -469,7 +466,9 @@ ping_reply(const uint8_t *dstip,const uint8_t *srcip,uint16_t id,uint16_t seqNr,
 	memcpy(skb->dataStart,dataBuf,skb->dataLen);
 	icmpHdr = (IcmpHdr *)skb_reserve_header(skb,sizeof(IcmpHdr));
 	make_icmpHdr(icmpHdr,0,0,id,seqNr,ip_payloadlen);
+	barrier();
 	IP_MakePacket(skb,dstip,srcip,IPPROT_ICMP,ip_payloadlen); 
+	barrier();
 	IP_SendPacket(skb); 
 }
 
@@ -518,12 +517,16 @@ Eth_HandleIp(EthIf *eth,EthHdr *ethHdr,Skb *skb)
 	switch(ipHdr->proto) {
 		case IPPROT_ICMP:
 			//Con_Printf("Detected ICMP\n");
+			gIpStack.inIcmp = true;
 			Eth_HandleICMP(eth,ipHdr,skb); 
+			gIpStack.inIcmp = false;
 			break;
 
 		case IPPROT_TCP:
 			//Con_Printf("Detected TCP\n");
+			gIpStack.inTcp = true;
 			Tcp_ProcessPacket(ipHdr,skb);
+			gIpStack.inTcp = false;
 			break;
 
 		case IPPROT_UDP:
@@ -550,16 +553,32 @@ Eth_PktRx(void *eventData,Skb *skb)
 	//asm("brk");
 	switch(ntohs(ethHdr->proto)) {
 		case ET_IP:
+			gIpStack.inIp = true;
 			Eth_HandleIp(eth,ethHdr,skb);
+			gIpStack.inIp = false;
 			break;
 		case ET_ARP:
+			gIpStack.inArp = true;
 			Eth_HandleArp(eth,ethHdr,skb); 
+			gIpStack.inArp = false;
 			break;
 		default:
 			break;
 	}
 }
 
+static int8_t
+cmd_ipstatus(Interp * interp, uint8_t argc, char *argv[])
+{
+
+	IpStack *is = &gIpStack;
+	Con_Printf("inTCP:	%u\n",is->inTcp);
+	Con_Printf("inIP:	%u\n",is->inIp);
+	Con_Printf("inICMP:	%u\n",is->inIcmp);
+	Con_Printf("inArp:	%u\n",is->inArp);
+	return 0;
+}
+INTERP_CMD(ipstatusCmd,"ipstatus", cmd_ipstatus, "ipstatus  # Show ip status");
 /**
  *************************************************************************
  * \fn static int8_t cmd_arp(Interp * interp, uint8_t argc, char *argv[])
@@ -664,7 +683,7 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 	return 0;
 }
 
-INTERP_CMD(ipCmd,"ip",cmd_ip,"ip # show/change IP Address/Mask Gateway");
+INTERP_CMD(ipCmd,"ip",cmd_ip,"ip ?<address>? ?/<netmask bits>? ?<gateway>?# show/change IP Address/Mask Gateway");
 
 /**
  *****************************************************************
@@ -717,11 +736,11 @@ Ethernet_Init(EthDriver *drv)
 		eth->if_mac[5] = 0xe3;
 	//}
 	eth->drv = drv;
-#warning here
 	drv->regPktSink(drv,Eth_PktRx,eth);
 	ethCtrl.cmd = ETHCTL_SET_MAC;
 	ethCtrl.cmdArg = eth->if_mac;
 	drv->ctrlProc(drv,&ethCtrl);
 	Interp_RegisterCmd(&arpCmd);
 	Interp_RegisterCmd(&ipCmd);
+	Interp_RegisterCmd(&ipstatusCmd);
 }

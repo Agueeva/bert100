@@ -1,6 +1,6 @@
 VPATH=..
 CROSS=rx-elf-
-CFLAGS=-g -O2 -Wall -fno-strict-overflow -funsigned-char -Wstrict-overflow=3 -Wno-unused-but-set-variable 
+CFLAGS=-g -O9 -Wall -fno-strict-overflow -funsigned-char -Wstrict-overflow=3 -Wno-unused-but-set-variable 
 CC=$(CROSS)gcc
 HOSTCC=gcc
 AS=$(CROSS)as
