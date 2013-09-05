@@ -238,6 +238,7 @@ void
 PVars_Init(void)
 {
         PVarTable *pvt = &g_PVarTable;
+	Mutex_Init(&pvt->lock);
         pvt->varHashTable = StrHash_New();
         Interp_RegisterCmd(&pvarCmd);
 	PVar_New(Example_GetCallback,Example_SetCallback,NULL,0,"test.var1");
