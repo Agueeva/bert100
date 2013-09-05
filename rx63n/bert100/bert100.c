@@ -126,6 +126,11 @@ int main(void)
 	PVars_Init(); /* We need this early because som HW modules export objects */
 
 	UsbStor_Init();
+	Spi_Init();
+	if(SDCard_ModuleInit() == true) {
+		UsbStor_UnitReady(true);
+	}
+	FatCmds_Init();
 	ShiftReg_Init(0xffff);
 	I2CM_Init();
 	MD5Lib_Init();
@@ -145,11 +150,6 @@ int main(void)
 	Ethernet_Init(ethDrv);
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
-	Spi_Init();
-	if(SDCard_ModuleInit() == true) {
-		UsbStor_UnitReady(true);
-	}
-	FatCmds_Init();
 	ADC12_Init();
 	Flash_Init();
 	/* Now the higher level modules depending on hardware modules */

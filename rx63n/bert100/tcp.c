@@ -13,6 +13,7 @@
 #include "console.h"
 #include "timer.h"
 #include "interpreter.h"
+#include "fat.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -81,13 +82,9 @@ typedef struct TcpPseudoHdr {
 	uint16_be payloadlen;
 } TcpPseudoHdr;
 
-#if 0
-typedef struct PacketQueueEntry {
-	uint8_t *currDataP;
-	uint16_t currDataLen;
-	uint8_t  flags;
-} PQE;
-#endif
+static FIL tcp_logfile;
+static bool log_isopen;
+
 INLINE void
 Write32(uint32_t value, void *addr)
 {
@@ -100,6 +97,7 @@ Read32(const void *addr)
         return *(const uint32_t *) (addr);
 }
 
+#define tcplog(x...) { if(log_isopen) { f_printf(&tcp_logfile,x);f_sync(&tcp_logfile); }}
 /**
  **********************************************************************
  * RFC 793 Section 2.7 says that information about a connection is
@@ -848,12 +846,14 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			ipHdr->srcaddr[0],ipHdr->srcaddr[1],ipHdr->srcaddr[2],
 			ipHdr->srcaddr[3]));
 		/* Send RST */
+		tcplog("No TCB found\n");
 		Tcp_Rst(ipHdr,skb);
 		return;
 	}
 	TCB_Lock(tcb);
 	tc->lastActionTimeMs = now;
 	if(tcpHdr->flags & TCPFLG_RST) {
+		tcplog("RST flag set in HDR by peer\n");
 		TCB_Close(tc);
 		TCB_Unlock(tcb);
 		return;
@@ -881,6 +881,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				TCB_Close(tc);
 				Tcp_Rst(ipHdr,skb);
 				TCB_Unlock(tc);
+				tcplog("Synack Wrong ack seq Nr\n");
 				return;
 			}
 		} else {
@@ -942,6 +943,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			tc->state = TCPS_LAST_ACK;
 		} else if(tcb->state == TCPS_LAST_ACK && (tcpHdr->flags & TCPFLG_ACK)) {
 			/* This one has no reply */
+			tcplog("LastAck received\n");
 			TCB_Close(tc);
 			TCB_Unlock(tcb);
 			return;
@@ -952,6 +954,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				DBG(Con_Printf("Closed by me and acked with FIN,ACK\n"));
 				Tcp_Send(tcb,TCPFLG_ACK,NULL,0);
 				tcb->state = TCPS_TIME_WAIT;
+				tcplog("Closed by me and acked with FIN\n");
 				TCB_Close(tcb);
 				TCB_Unlock(tcb);
 				return;
@@ -964,6 +967,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			tc->RCV_NXT += 1; 
 			Tcp_Send(tc,TCPFLG_ACK,NULL,0);
 			tc->state = TCPS_TIME_WAIT;
+			tcplog("FINWAIT2: FIN received\n");
 			TCB_Close(tc);
 			TCB_Unlock(tcb);
 			return;
@@ -1045,6 +1049,7 @@ void
 Tcp_Init(void) 
 {
 	uint16_t i;
+	FRESULT res;
 	for(i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb =  &tcpConnection[i];
 		Timer_Init(&tcb->retransTimer,Tcp_Retrans,tcb);
@@ -1052,4 +1057,13 @@ Tcp_Init(void)
 		Mutex_Init(&tcb->lock);
 	}
 	Interp_RegisterCmd(&tcpCmd);
+	res = f_open(&tcp_logfile, "tcplog.txt", FA_WRITE | FA_OPEN_ALWAYS);
+	if(res == FR_OK) {
+		//f_lseek(&tcp_logfile,0xFFFFFFFF);
+		log_isopen = true;
+	} else {
+		Con_Printf("open logfile failed %d\n",res);
+		log_isopen = false;
+	}
+	tcplog("Logfile opened\n");
 }
