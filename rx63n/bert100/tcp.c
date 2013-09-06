@@ -589,7 +589,7 @@ Tcp_SendData(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
  ******************************************************************************
  */
 static void
-Tcp_Retrans(void *eventData) 
+Tcp_RetransTimer(void *eventData) 
 {
 	Tcb *tcb = eventData;
 	if(TCB_TryLock(tcb) == false) {
@@ -972,6 +972,19 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			TCB_Unlock(tcb);
 			return;
 		}
+	} else if(((ackNr - tcp->SND_UNA) >= 0) && ((ackNr - tcp->SND_NXT) < 0)) {
+#if 0
+		uint32_t missing;
+		missing = tcp->SND_NXT - ackNr;
+		if(missing < tcb->currDataLen) {
+			tcb->currDataLen -= missing;
+			tcb->currDataP += missing;
+			tcb->currDataSeqNr = ackNr;
+		}
+		// Retransmit now missing here;	
+		TCB_Unlock(tcb);
+		return;
+#endif
 	}
 	flags = TCPFLG_ACK;
 	if(needToSendFin) {
@@ -1052,7 +1065,7 @@ Tcp_Init(void)
 	FRESULT res;
 	for(i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb =  &tcpConnection[i];
-		Timer_Init(&tcb->retransTimer,Tcp_Retrans,tcb);
+		Timer_Init(&tcb->retransTimer,Tcp_RetransTimer,tcb);
 		Timer_Init(&tcb->watchdogTimer,Tcp_Watchdog,tcb);
 		Mutex_Init(&tcb->lock);
 	}

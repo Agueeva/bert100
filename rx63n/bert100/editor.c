@@ -13,7 +13,7 @@
 #include <string.h>
 #include "editor.h"
 
-static char g_prompt[20] = "Bert100 > ";
+static char g_prompt[20] = "Ernie > ";
 #define HISTORY_LINES	(10)
 #define PROMPT	g_prompt
 
