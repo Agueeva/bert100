@@ -820,19 +820,24 @@ uint8_t *
 WebSocket_AllocObufSpace(WebSocket * ws, uint16_t size)
 {
 	uint8_t *buf;
-	if ((ws->outbuf_wp + size) >= WS_OUTBUF_SIZE) {
+	if (ws->outbuf_wp < ws->outbuf_una) {
+		if ((ws->outbuf_wp + size) > ws->outbuf_una) {
+			return NULL;
+		} else {
+			return ws->outBuf + ws->outbuf_wp;
+		}
+	} else if ((ws->outbuf_wp + size) >= WS_OUTBUF_SIZE) {
 		if (size > ws->outbuf_una) {
 			/* temporarily failed;  */
 			return NULL;
 		} else {
-			ws->outbuf_wrap_pt = ws->outbuf_snd;
+			ws->outbuf_wrap_pt = ws->outbuf_wp;
 			//ws->outbuf_wp = size;
 			ws->outbuf_wp = 0;
 			return ws->outBuf;
 		}
 	} else {
 		buf = ws->outBuf + ws->outbuf_wp;
-		//ws->outbuf_wp += size;
 		return buf;
 	}
 }
@@ -884,6 +889,7 @@ WebSocket_DataSrc(void *eventData, uint32_t fpos, void **_buf, uint16_t maxlen)
 	if (len > maxlen) {
 		len = maxlen;
 	}
+	//Con_Printf("outbuf_snd %u, len %u\n",ws->outbuf_snd,len);
 	ws->outbuf_snd += len;
 
 #if 0
@@ -892,7 +898,8 @@ WebSocket_DataSrc(void *eventData, uint32_t fpos, void **_buf, uint16_t maxlen)
 #endif
 
 	if (ws->outbuf_snd > ws->outbuf_wrap_pt) {
-		Con_Printf("Should not happen\n");
+		Con_Printf("%s Bug: Send pointer past Wrap pointer %u\n",__FILE__,ws->outbuf_wrap_pt);
+		Con_Printf("snd %u, una %u, wp %u\n",ws->outbuf_snd,ws->outbuf_una,ws->outbuf_wp);
 	} else if (ws->outbuf_snd == ws->outbuf_wrap_pt) {
 		ws->outbuf_snd = 0;
 	}
