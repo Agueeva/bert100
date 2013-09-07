@@ -582,6 +582,12 @@ Tcp_SendData(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 	}
 }
 
+static void
+Tcp_Retransmit(Tcb *tcb) {
+	tcb->SND_NXT = tcb->currDataSeqNr;
+	Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
+}
+
 /**
  ******************************************************************************
  * RFC 793 says that the lower bound for retransmission is 1 second. So we
@@ -972,19 +978,19 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			TCB_Unlock(tcb);
 			return;
 		}
-	} else if(((ackNr - tcp->SND_UNA) >= 0) && ((ackNr - tcp->SND_NXT) < 0)) {
-#if 0
+	} else if(((ackNr - tcb->SND_UNA) >= 0) && ((ackNr - tcb->SND_NXT) < 0)) {
 		uint32_t missing;
-		missing = tcp->SND_NXT - ackNr;
+		missing = tcb->SND_NXT - ackNr;
+		Con_Printf("Fast retransmit\n");
 		if(missing < tcb->currDataLen) {
 			tcb->currDataLen -= missing;
 			tcb->currDataP += missing;
 			tcb->currDataSeqNr = ackNr;
-		}
-		// Retransmit now missing here;	
+		} 
+		tcb->SND_NXT = tcb->currDataSeqNr;
+		Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
 		TCB_Unlock(tcb);
 		return;
-#endif
 	}
 	flags = TCPFLG_ACK;
 	if(needToSendFin) {
