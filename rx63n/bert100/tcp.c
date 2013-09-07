@@ -156,6 +156,7 @@ struct Tcb {
 	bool retransCanceled;
 	/** Data about the current outgoing packet is stored here because of possible retransmissions */
 	bool retransPending; 	/* true when a packet is in the below fields */
+	TimeMs_t timeRetransEnqMs;
 	uint8_t currFlags;
 	uint8_t *currDataP;
 	uint16_t currDataLen;
@@ -410,7 +411,7 @@ Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t se
 	tcb->currFlags = flags;
 	tcb->currDataSeqNr = seqNr; 
 	tcb->retransPending = true;
-	Timer_Start(&tcb->retransTimer,1000);
+	Timer_Start(&tcb->retransTimer,100);
 	tcb->retransCounter = 10;
 	//DBG(Con_Printf("Enqueued retransmit len %u\n",len));
 }
@@ -582,11 +583,6 @@ Tcp_SendData(Tcb *tcb,uint8_t flags,uint8_t *dataP,uint16_t dataLen)
 	}
 }
 
-static void
-Tcp_Retransmit(Tcb *tcb) {
-	tcb->SND_NXT = tcb->currDataSeqNr;
-	Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
-}
 
 /**
  ******************************************************************************
@@ -602,6 +598,7 @@ Tcp_RetransTimer(void *eventData)
 		Timer_Start(&tcb->retransTimer,20);
 		return;
 	}
+	Con_Printf("Retrans Timer\n");
 	if(tcb->retransCanceled) {
 		Con_Printf("BUG: Retrans called with canceled timer\n"); 
 	}
@@ -981,16 +978,28 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	} else if(((ackNr - tcb->SND_UNA) >= 0) && ((int32_t)(ackNr - tcb->SND_NXT) < 0)) {
 		uint32_t missing;
 		missing = tcb->SND_NXT - ackNr;
-		//Con_Printf("Fast retransmit\n");
 		if(missing < tcb->currDataLen) {
 			tcb->currDataLen -= missing;
 			tcb->currDataP += missing;
 			tcb->currDataSeqNr = ackNr;
-		} 
-		tcb->SND_NXT = tcb->currDataSeqNr;
-		Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
-		TCB_Unlock(tcb);
-		return;
+//			Con_Printf("Partial %lu, UNA %lu, NXT %lu\n",ackNr,tcb->SND_UNA,tcb->SND_NXT);
+			tcb->SND_UNA = ackNr;
+			tcb->SND_WND = ackNr + ntohs(tcpHdr->window);
+			TCB_Unlock(tcb);
+			return;
+		} else if((TimeMs_Get() - tcb->timeRetransEnqMs) < 20) {
+			/* Leave this if and continue with a stanard ack */
+//			Con_Printf("to early for retransmit, now %lu ,retr %lu ",TimeMs_Get() , tcb->timeRetransEnqMs);
+//			Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA);
+		} else {
+			Con_Printf("Fast retransmit all\n");
+			Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA);
+			tcb->SND_NXT = tcb->currDataSeqNr;
+			tcb->SND_WND = ackNr + ntohs(tcpHdr->window);
+			Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
+			TCB_Unlock(tcb);
+			return;
+		}
 	}
 	flags = TCPFLG_ACK;
 	if(needToSendFin) {
@@ -1001,6 +1010,8 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	} else if(dataLen) {
 		//DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
 		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT);
+		tcb->timeRetransEnqMs = TimeMs_Get();
+		//Con_Printf("Updated Retrans because of dataLen %u\n",dataLen);
 		Tcp_SendData(tcb,flags,dataP,dataLen);
 	} else if(needToSendAck) {
 		Tcp_Send(tcb,flags,NULL,0);
@@ -1051,7 +1062,7 @@ cmd_tcp(Interp * interp, uint8_t argc, char *argv[])
 	for(i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb =  &tcpConnection[i];
 		//if(tcb->inUse) {
-			Con_Printf("TCB %u, inUse %u, busy %u\n",i,tcb->inUse,tcb->busy);
+		Con_Printf("TCB %u, inUse %u, busy %u\n",i,tcb->inUse,tcb->busy);
 		//}
 	}
         return 0;
@@ -1076,6 +1087,7 @@ Tcp_Init(void)
 		Mutex_Init(&tcb->lock);
 	}
 	Interp_RegisterCmd(&tcpCmd);
+	return;
 	res = f_open(&tcp_logfile, "tcplog.txt", FA_WRITE | FA_OPEN_ALWAYS);
 	if(res == FR_OK) {
 		//f_lseek(&tcp_logfile,0xFFFFFFFF);
