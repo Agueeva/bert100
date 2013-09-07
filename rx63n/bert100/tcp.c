@@ -978,10 +978,10 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			TCB_Unlock(tcb);
 			return;
 		}
-	} else if(((ackNr - tcb->SND_UNA) >= 0) && ((ackNr - tcb->SND_NXT) < 0)) {
+	} else if(((ackNr - tcb->SND_UNA) >= 0) && ((int32_t)(ackNr - tcb->SND_NXT) < 0)) {
 		uint32_t missing;
 		missing = tcb->SND_NXT - ackNr;
-		Con_Printf("Fast retransmit\n");
+		//Con_Printf("Fast retransmit\n");
 		if(missing < tcb->currDataLen) {
 			tcb->currDataLen -= missing;
 			tcb->currDataP += missing;
