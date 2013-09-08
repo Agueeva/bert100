@@ -19,6 +19,7 @@
 
 #define MAX_WIN_SZ 1460 
 #define MAX_SEG_SZ 1460
+#define MAX_RETRANSMITS	(25)
 
 /* The TCP flags (See header) */
 #define TCPFLG_FIN      (1 << 0)
@@ -646,7 +647,7 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 			fetch_next_tx_data(tcb,&dataP,&dataLen);
 			if(dataLen) {
 				uint8_t flags = TCPFLG_ACK | TCPFLG_PSH;
-				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,10);
+				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
 				Tcp_SendData(tcb,flags,dataP,dataLen);
 			}
 			TCB_Unlock(tcb);
@@ -659,7 +660,7 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 		tcb->state = TCPS_FIN_WAIT_1;
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,10);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 		Tcp_Send(tcb,flags,NULL,0);
 		TCB_Unlock(tcb);
 	}
@@ -1018,11 +1019,11 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	if(needToSendFin) {
 		flags |= TCPFLG_FIN;
 		DBG(Con_Printf("Case need fin\n"));
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,10);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 		Tcp_Send(tcb,flags,NULL,0);
 	} else if(dataLen) {
 		//DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
-		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,10);
+		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
 		tcb->timeRetransEnqMs = TimeMs_Get();
 		//Con_Printf("Updated Retrans because of dataLen %u\n",dataLen);
 		Tcp_SendData(tcb,flags,dataP,dataLen);
