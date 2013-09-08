@@ -404,7 +404,7 @@ Tcp_Watchdog(void *eventData)
 }
 
 static void
-Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t seqNr) 
+Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t seqNr,uint8_t maxRetrans) 
 {
 	tcb->currDataLen = len;
 	tcb->currDataP = buf;
@@ -412,7 +412,7 @@ Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t se
 	tcb->currDataSeqNr = seqNr; 
 	tcb->retransPending = true;
 	Timer_Start(&tcb->retransTimer,100);
-	tcb->retransCounter = 10;
+	tcb->retransCounter = maxRetrans;
 	//DBG(Con_Printf("Enqueued retransmit len %u\n",len));
 }
 /**
@@ -646,7 +646,7 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 			fetch_next_tx_data(tcb,&dataP,&dataLen);
 			if(dataLen) {
 				uint8_t flags = TCPFLG_ACK | TCPFLG_PSH;
-				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT);
+				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,10);
 				Tcp_SendData(tcb,flags,dataP,dataLen);
 			}
 			TCB_Unlock(tcb);
@@ -659,7 +659,7 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 		tcb->state = TCPS_FIN_WAIT_1;
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,10);
 		Tcp_Send(tcb,flags,NULL,0);
 		TCB_Unlock(tcb);
 	}
@@ -774,8 +774,7 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skbReq) {
 void
 Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb) 
 {
-	Tcb *tc = NULL;
-	Tcb *tcb;
+	Tcb *tcb = NULL;
 	TcpHdr *tcpHdr;
 	TimeMs_t now;
 	uint32_t seqNr,ackNr;
@@ -790,49 +789,57 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	ackNr = ntohl(tcpHdr->ackNr);
 	if(tcpHdr->flags == TCPFLG_SYN) {
 		bool result = false;
-		TcpServerSocket *ssock;
-		DBG(Con_Printf("Got SYN, a new con on port %u, src %u\n",
-			ntohs(tcpHdr->dstPort),ntohs(tcpHdr->srcPort))); 
-		ssock = find_server_socket(ntohs(tcpHdr->dstPort));	
+		TcpServerSocket *ssock = NULL;
+		DBG(Con_Printf("Got SYN, a new con on port %u, src %u IRS %lu\n",
+			ntohs(tcpHdr->dstPort),ntohs(tcpHdr->srcPort),seqNr)); 
+
+		tcb = TcpFindConnection(ipHdr->srcaddr,ntohs(tcpHdr->srcPort));
+		if(!tcb || (tcb->state != TCPS_SYN_RCVD)) {
+			tcb = NULL;
+			ssock = find_server_socket(ntohs(tcpHdr->dstPort));	
+		}  else {
+			TCB_Lock(tcb);
+		}
 		if(ssock) {
-			tcb = tc = TCB_Alloc();
-			if(!tc) {
+			tcb = TCB_Alloc();
+			if(!tcb) {
 				Con_Printf("Out of TCB's\n");	
 				Tcp_Rst(ipHdr,skb);
 				return;
 			}
-			tc->state = TCPS_SYN_RCVD;
+			tcb->state = TCPS_SYN_RCVD;
 			TCB_Lock(tcb);
 			if(ssock->acceptProc) {
-				result = ssock->acceptProc(ssock->acceptData,tc,ipHdr->srcaddr,tcpHdr->srcPort); 
+				result = ssock->acceptProc(ssock->acceptData,tcb,ipHdr->srcaddr,tcpHdr->srcPort); 
 			}
 			if(result != true) {
 				DBG(Con_Printf("nobody listening on TCP port %d\n",ntohs(tcpHdr->dstPort)));
-				TCB_Close(tc);
+				TCB_Close(tcb);
 				Tcp_Rst(ipHdr,skb);
 				TCB_Unlock(tcb);
 				return;
 			}
-		} else {
+		} 
+		if(!tcb) {
 			DBG(Con_Printf("No ssock, sending RST\n"));
 			Tcp_Rst(ipHdr,skb);
 			return;
 		}
-		tc->srcPort = ntohs(tcpHdr->srcPort);
-		tc->dstPort = ntohs(tcpHdr->dstPort);
+		tcb->srcPort = ntohs(tcpHdr->srcPort);
+		tcb->dstPort = ntohs(tcpHdr->dstPort);
 		/* SYN and FIN increment AckNr by one */
-		tc->IRS = seqNr;
-	 	tc->RCV_NXT = seqNr + 1; 
-		tc->SND_WND = tc->SND_UNA + ntohs(tcpHdr->window);
-		Write32(Read32(ipHdr->srcaddr),tc->ipAddr);
-		Write32(Read32(ipHdr->dstaddr),tc->myIp);
+		tcb->IRS = seqNr;
+	 	tcb->RCV_NXT = seqNr + 1; 
+		tcb->SND_WND = tcb->SND_UNA + ntohs(tcpHdr->window);
+		Write32(Read32(ipHdr->srcaddr),tcb->ipAddr);
+		Write32(Read32(ipHdr->dstaddr),tcb->myIp);
 		/* 
  		 *********************************************************************************
 		 * Steps 2 and 3 according to section 3.3 of RFC793 , Ack the received seq. Nr
 		 * and SYN the OWN initial sequence number
  		 *********************************************************************************
 		 */
-		Enqueue_Retransmit(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0,tcb->SND_NXT);
+		Enqueue_Retransmit(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0,tcb->SND_NXT,2);
 		Tcp_Send(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0);
 		TCB_Unlock(tcb);
 		return;
@@ -842,8 +849,8 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	 * If not SYN try to find an existing TCB 
  	 ******************************************************************************
 	 */
-	tcb = tc = TcpFindConnection(ipHdr->srcaddr,ntohs(tcpHdr->srcPort));
-	if(!tc) {
+	tcb = TcpFindConnection(ipHdr->srcaddr,ntohs(tcpHdr->srcPort));
+	if(!tcb) {
 		DBG(
 		Con_Printf("No TCB for port %u, ip %u.%u.%u.%u\n",htons(tcpHdr->srcPort),
 			ipHdr->srcaddr[0],ipHdr->srcaddr[1],ipHdr->srcaddr[2],
@@ -854,36 +861,36 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		return;
 	}
 	TCB_Lock(tcb);
-	tc->lastActionTimeMs = now;
+	tcb->lastActionTimeMs = now;
 	if(tcpHdr->flags & TCPFLG_RST) {
 		tcplog("RST flag set in HDR by peer\n");
-		TCB_Close(tc);
+		TCB_Close(tcb);
 		TCB_Unlock(tcb);
 		return;
 	}
-	if(tc->state == TCPS_SYN_RCVD) {
+	if(tcb->state == TCPS_SYN_RCVD) {
 		if(tcpHdr->flags & TCPFLG_ACK) {
-			if(/*(seqNr == tc->RCV_NXT) && */ /* Should check seq in win */
-				(ackNr == tc->SND_NXT)) {
+			if(/*(seqNr == tcb->RCV_NXT) && */ /* Should check seq in win */
+				(ackNr == tcb->SND_NXT)) {
 
-				Timer_Cancel(&tc->retransTimer);
+				Timer_Cancel(&tcb->retransTimer);
 				DBG(Con_Printf("Synack was acked, Connection established\n"));	
-				tc->state = TCPS_ESTABLISHED;
+				tcb->state = TCPS_ESTABLISHED;
 				/* 
 				 ***************************************************************
 				 * After we got the ack for our SYN ACK we can send data 
 				 ***************************************************************
 				 */
-				if(tc->txDataAvail) {
+				if(tcb->txDataAvail) {
 					DBG(Con_Printf("Data avail\n"));	
 					fetch_next_tx_data(tcb,&dataP,&dataLen);
 				}
 			} else {
-				DBG(Con_Printf("Connection not Established, wrong ack number, seq Nr %lu(%lu) ackNr %lu(%lu)\n",seqNr,tc->RCV_NXT,ackNr,tc->SND_NXT));
+				DBG(Con_Printf("Connection not Established, wrong ack number, seq Nr %lu(%lu) ackNr %lu(%lu)\n",seqNr,tcb->RCV_NXT,ackNr,tbc->SND_NXT));
 				/* Should send a reset here  */
-				TCB_Close(tc);
+				TCB_Close(tcb);
 				Tcp_Rst(ipHdr,skb);
-				TCB_Unlock(tc);
+				TCB_Unlock(tcb);
 				tcplog("Synack Wrong ack seq Nr\n");
 				return;
 			}
@@ -901,27 +908,27 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	 ************************************************************************
  	 */
 	/* First check if something new came in */
-	if(seqNr == tc->RCV_NXT) {
+	if(seqNr == tcb->RCV_NXT) {
 		/* Eat up the Data */	
 		uint16_t iplen = ntohs(ipHdr->totalLength);
 		uint16_t nr_bytes = iplen - sizeof(IpHdr) - ((tcpHdr->hdrLen >> 4) << 2);
 		if(nr_bytes) {
-			uint32_t fpos = tc->RCV_NXT - tc->IRS - 1;
+			uint32_t fpos = tcb->RCV_NXT - tcb->IRS - 1;
 			tcb->RCV_NXT += nr_bytes; 
 			needToSendAck = true; 
 			DBG(Con_Printf("RCV next set to %lu and needToSendAck\n",tcb->RCV_NXT));
-			if(tc->dataSink) {
+			if(tcb->dataSink) {
 				/* Shit, might recurse and call TX_Avail which locks semaphore */	
 				tcb->busy = true;
-				tcb->dataSink(tc->eventData,fpos,skb->dataStart,nr_bytes);	
+				tcb->dataSink(tcb->eventData,fpos,skb->dataStart,nr_bytes);	
 				tcb->busy = false;
 			}
 			/* We should see from ack nr that we have to transmit a ack reply */
 		} 
-	} else if((int32_t)(seqNr - tc->RCV_NXT) < 0) { 
+	} else if((int32_t)(seqNr - tcb->RCV_NXT) < 0) { 
 		DBG(Con_Printf("Seems like a retransmited packet\n"));
 		needToSendAck = true;
-	} else if(seqNr > tc->RCV_NXT) {
+	} else if(seqNr > tcb->RCV_NXT) {
 		/* Future packet, ignore it, resend ack for old packet */
 		needToSendAck = true;
 	}
@@ -943,14 +950,14 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 			tcb->RCV_NXT += 1;
 			needToSendAck = true;
 			needToSendFin = true;	
-			tc->state = TCPS_LAST_ACK;
+			tcb->state = TCPS_LAST_ACK;
 		} else if(tcb->state == TCPS_LAST_ACK && (tcpHdr->flags & TCPFLG_ACK)) {
 			/* This one has no reply */
 			tcplog("LastAck received\n");
-			TCB_Close(tc);
+			TCB_Close(tcb);
 			TCB_Unlock(tcb);
 			return;
-		} else if((tc->state == TCPS_FIN_WAIT_1)  && (tcpHdr->flags & TCPFLG_ACK)) {
+		} else if((tcb->state == TCPS_FIN_WAIT_1)  && (tcpHdr->flags & TCPFLG_ACK)) {
 			/* Do I need to check for seq NR here ? */ 
 			if(tcpHdr->flags & TCPFLG_FIN) {
 				tcb->RCV_NXT += 1; 
@@ -963,19 +970,21 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				return;
 			} else {
 				DBG(Con_Printf("FINWAIT2, send nix\n"));
-				tc->state = TCPS_FIN_WAIT_2;
+				tcb->state = TCPS_FIN_WAIT_2;
 			}
-		} else if((tc->state == TCPS_FIN_WAIT_2) && (tcpHdr->flags & TCPFLG_FIN))  {
+		} else if((tcb->state == TCPS_FIN_WAIT_2) && (tcpHdr->flags & TCPFLG_FIN))  {
 			DBG(Con_Printf("Closed by me and FINed in FIN2\n"));
-			tc->RCV_NXT += 1; 
-			Tcp_Send(tc,TCPFLG_ACK,NULL,0);
-			tc->state = TCPS_TIME_WAIT;
+			tcb->RCV_NXT += 1; 
+			Tcp_Send(tcb,TCPFLG_ACK,NULL,0);
+			tcb->state = TCPS_TIME_WAIT;
 			tcplog("FINWAIT2: FIN received\n");
-			TCB_Close(tc);
+			TCB_Close(tcb);
 			TCB_Unlock(tcb);
 			return;
 		}
 	} else if(((ackNr - tcb->SND_UNA) >= 0) && ((int32_t)(ackNr - tcb->SND_NXT) < 0)) {
+#if 1
+		/* Fast Retransmit */
 		uint32_t missing;
 		missing = tcb->SND_NXT - ackNr;
 		if(missing < tcb->currDataLen) {
@@ -992,24 +1001,25 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 //			Con_Printf("to early for retransmit, now %lu ,retr %lu ",TimeMs_Get() , tcb->timeRetransEnqMs);
 //			Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA);
 		} else {
-			Con_Printf("Fast retransmit all\n");
-			Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA);
+			DBG(Con_Printf("Fast retransmit all\n"));
+			DBG(Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA));
 			tcb->SND_NXT = tcb->currDataSeqNr;
 			tcb->SND_WND = ackNr + ntohs(tcpHdr->window);
 			Tcp_SendData(tcb,tcb->currFlags,tcb->currDataP,tcb->currDataLen);
 			TCB_Unlock(tcb);
 			return;
 		}
+#endif
 	}
 	flags = TCPFLG_ACK;
 	if(needToSendFin) {
 		flags |= TCPFLG_FIN;
 		DBG(Con_Printf("Case need fin\n"));
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,10);
 		Tcp_Send(tcb,flags,NULL,0);
 	} else if(dataLen) {
 		//DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
-		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT);
+		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,10);
 		tcb->timeRetransEnqMs = TimeMs_Get();
 		//Con_Printf("Updated Retrans because of dataLen %u\n",dataLen);
 		Tcp_SendData(tcb,flags,dataP,dataLen);
