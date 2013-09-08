@@ -761,6 +761,7 @@ Tcp_Rst(IpHdr *ipHdr,Skb *skbReq) {
 	Write32(Read32(ipHdr->srcaddr),dstaddr);
 	Write32(Read32(ipHdr->dstaddr),srcaddr);
 
+	barrier();
 	IP_MakePacket(skbReply,dstaddr,srcaddr,IPPROT_TCP,tcphdrlen + payloadlen);
 	IP_SendPacket(skbReply);
 }
@@ -787,6 +788,8 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	tcpHdr = (TcpHdr *)skb_remove_header(skb,sizeof(TcpHdr)); 
 	seqNr = ntohl(tcpHdr->seqNr);
 	ackNr = ntohl(tcpHdr->ackNr);
+	DBG(Con_Printf("TCP: flags %04x, port %u\n",
+		tcpHdr->flags,ntohs(tcpHdr->srcPort)));
 	if(tcpHdr->flags == TCPFLG_SYN) {
 		bool result = false;
 		TcpServerSocket *ssock = NULL;
@@ -886,7 +889,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 					fetch_next_tx_data(tcb,&dataP,&dataLen);
 				}
 			} else {
-				DBG(Con_Printf("Connection not Established, wrong ack number, seq Nr %lu(%lu) ackNr %lu(%lu)\n",seqNr,tcb->RCV_NXT,ackNr,tbc->SND_NXT));
+				DBG(Con_Printf("Connection not Established, wrong ack number, seq Nr %lu(%lu) ackNr %lu(%lu)\n",seqNr,tcb->RCV_NXT,ackNr,tcb->SND_NXT));
 				/* Should send a reset here  */
 				TCB_Close(tcb);
 				Tcp_Rst(ipHdr,skb);
@@ -973,7 +976,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 				tcb->state = TCPS_FIN_WAIT_2;
 			}
 		} else if((tcb->state == TCPS_FIN_WAIT_2) && (tcpHdr->flags & TCPFLG_FIN))  {
-			DBG(Con_Printf("Closed by me and FINed in FIN2\n"));
+			DBG(Con_Printf("TCB %08x Closed by me and FINed in FIN2\n",tcb));
 			tcb->RCV_NXT += 1; 
 			Tcp_Send(tcb,TCPFLG_ACK,NULL,0);
 			tcb->state = TCPS_TIME_WAIT;
