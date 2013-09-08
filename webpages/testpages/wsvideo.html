@@ -6,6 +6,9 @@
     <body bgcolor="#000000" text="#cccccc">
     <center>
     <H1>Websocket Variables</H1>
+	<video controls="controls" autoplay="autoplay">
+	<source src="/sd/superman.ogv" type="video/ogg" />
+    	</video>
      <br></br>
     <table border="1">  
 	  <colgroup>
@@ -54,7 +57,7 @@
 	  </tr>
     </table>
     <script type="text/javascript">
-     var url='ws://' + document.domain + ':' + document.location.port + '/messages';
+     var url='ws://' + document.domain + '/messages';
      var socket = new WebSocket(url);
      socket.onopen = function() { 
 		//alert('Verbindung aufgebaut');	
