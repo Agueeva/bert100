@@ -12,6 +12,7 @@
 #include "console.h"
 #include <string.h>
 #include "editor.h"
+#include "version.h"
 
 static char g_prompt[20] = "Ernie > ";
 #define HISTORY_LINES	(10)
@@ -460,8 +461,8 @@ Editor_Init(Editor_LineSinkProc * LineSinkProc, void *LineSinkData)
 	memset(ed, 0, sizeof(Editor));
 	ed->last_line = ed->current_line = 0;
 	ed->state = ED_STATE_IDLE;
-	Editor_OutPStr("\r\nWelcome to Bert100\n");
-	//Con_Printf(" %s", g_CompileDate);
+	Editor_OutPStr("\r\nWelcome to Bert100 Version ");
+	Con_Printf(" %s\n", Version_GetStr());
 	////Con_Printf(" %s \n", g_CompileTime);
 	//Con_Printf("Version %s\n", g_Version);
 	Editor_OutPStr(PROMPT);

@@ -47,6 +47,7 @@
 #include "usbstorage.h"
 #include "xo.h"
 #include "leds.h"
+#include "version.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -154,6 +155,7 @@ int main(void)
 	Flash_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
+	Version_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
 }
