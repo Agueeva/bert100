@@ -15,6 +15,10 @@
 #include "tpos.h"
 #include "pvar.h"
 
+/* Pin definitions */
+#define CDR_RESET_DIR PORTE.PDR.P3
+#define CDR_RESET_DR  PORTE.PODR.P3
+
 /* Register definitions for INPHY-100 CDR */
 #define CDR_VS_DEVICE_CONTROL                   0
 #define CDR_VS_DEVICE_IDENTIFIER2               2
@@ -73,7 +77,6 @@
 
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
 #define DEVTYPE		(30)
-
 typedef struct CDR {
 	uint8_t phyAddr;
 } CDR;
@@ -819,7 +822,7 @@ CDR_Init(const char *name)
 {
 	uint32_t i,lane;
 	CDR *cdr = &gCDR[0];
-	cdr->phyAddr = 1;
+	cdr->phyAddr = 0;
 	Interp_RegisterCmd(&cdrCmd);
 	for(i = 0; i < array_size(gCdrRegister); i++) {
 		const CdrRegister *reg = &gCdrRegister[i];
