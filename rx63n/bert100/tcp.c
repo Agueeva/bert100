@@ -661,14 +661,18 @@ TcpCon_ControlTx(Tcb * tcb, bool enable)
 		}
 	} else if (!enable && tcb->do_close) {
 		uint8_t flags;
-		TCB_Lock(tcb);
+		if(!tcb->busy) {
+			TCB_Lock(tcb);
+		}
 		tcb->state = TCPS_FIN_WAIT_1;
 
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
 		Tcp_Send(tcb, flags, NULL, 0);
 		Enqueue_Retransmit(tcb, flags, NULL, 0, tcb->SND_NXT, MAX_RETRANSMITS);
-		TCB_Unlock(tcb);
+		if(!tcb->busy) {
+			TCB_Unlock(tcb);
+		}
 	}
 }
 
@@ -940,6 +944,14 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 				tcb->busy = true;
 				tcb->dataSink(tcb->eventData, fpos, skb->dataStart, nr_bytes);
 				tcb->busy = false;
+#if 0
+				if(tcb->state == TCPS_FIN_WAIT_1)
+				{
+					Con_Printf("Case\n");
+					TCB_Unlock(tcb);
+					return;
+				}
+#endif
 			}
 
 			/* We should see from ack nr that we have to transmit a ack reply */
@@ -948,7 +960,6 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 		DBG(Con_Printf("Seems like a retransmited packet\n"));
 		needToSendAck = true;
 	} else if (seqNr > tcb->RCV_NXT) {
-
 		/* Future packet, ignore it, resend ack for old packet */
 		needToSendAck = true;
 	}
