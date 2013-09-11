@@ -412,7 +412,7 @@ Enqueue_Retransmit(Tcb *tcb,uint16_t flags,uint8_t *buf,uint16_t len,uint32_t se
 	tcb->currFlags = flags;
 	tcb->currDataSeqNr = seqNr; 
 	tcb->retransPending = true;
-	Timer_Start(&tcb->retransTimer,100);
+	Timer_Start(&tcb->retransTimer,150);
 	tcb->retransCounter = maxRetrans;
 	//DBG(Con_Printf("Enqueued retransmit len %u\n",len));
 }
@@ -433,10 +433,10 @@ fetch_next_tx_data(Tcb *tcb,uint8_t **dataPP,uint16_t *dataLenP)
 	 * Fetch pointers and seq of current outgoing data 
  	 **********************************************************************
  	 */
-	if(tcb->txDataAvail && tcb->dataSrc) {
+	if(tcb->txDataAvail && tcb->dataSrc && rsize) {
 		//int i;
 		tcb->busy = true;
-		*dataLenP = tcb->dataSrc(tcb->eventData,fpos,(void **)dataPP,rsize << 1);
+		*dataLenP = tcb->dataSrc(tcb->eventData,fpos,(void **)dataPP,rsize);
 		tcb->busy = false;
 		if(*dataLenP == 0) {
 			//Con_Printf("Warning, got no data\n"); 
@@ -647,8 +647,8 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 			fetch_next_tx_data(tcb,&dataP,&dataLen);
 			if(dataLen) {
 				uint8_t flags = TCPFLG_ACK | TCPFLG_PSH;
-				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
 				Tcp_SendData(tcb,flags,dataP,dataLen);
+				Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
 			}
 			TCB_Unlock(tcb);
 		} else {
@@ -660,8 +660,8 @@ TcpCon_ControlTx(Tcb *tcb,bool enable) {
 		tcb->state = TCPS_FIN_WAIT_1;
 		/* May we send data on FIN ? */
 		flags = TCPFLG_FIN | TCPFLG_ACK;
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 		Tcp_Send(tcb,flags,NULL,0);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 		TCB_Unlock(tcb);
 	}
 }
@@ -843,8 +843,8 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		 * and SYN the OWN initial sequence number
  		 *********************************************************************************
 		 */
-		Enqueue_Retransmit(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0,tcb->SND_NXT,2);
 		Tcp_Send(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0);
+		Enqueue_Retransmit(tcb,TCPFLG_SYN | TCPFLG_ACK,NULL,0,tcb->SND_NXT,2);
 		TCB_Unlock(tcb);
 		return;
 	}
@@ -865,6 +865,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		return;
 	}
 	TCB_Lock(tcb);
+	//Con_Printf("TCP: window %u, ack %lu,SND_NXT %lu\n",ntohs(tcpHdr->window),ackNr,tcb->SND_NXT);
 	tcb->lastActionTimeMs = now;
 	if(tcpHdr->flags & TCPFLG_RST) {
 		tcplog("RST flag set in HDR by peer\n");
@@ -941,6 +942,7 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 		tcb->SND_UNA = ackNr;
 		tcb->SND_WND = ackNr + ntohs(tcpHdr->window);
 		tcb->retransPending = false;
+		//Con_Printf("Remaining %lu\n",Timer_Remaining(&tcb->retransTimer));
 		Timer_Cancel(&tcb->retransTimer);
 		fetch_next_tx_data(tcb,&dataP,&dataLen);
 		if(tcb->do_close && (!dataLen)) {
@@ -1019,14 +1021,14 @@ Tcp_ProcessPacket(IpHdr *ipHdr,Skb *skb)
 	if(needToSendFin) {
 		flags |= TCPFLG_FIN;
 		DBG(Con_Printf("Case need fin\n"));
-		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 		Tcp_Send(tcb,flags,NULL,0);
+		Enqueue_Retransmit(tcb,flags,NULL,0,tcb->SND_NXT,MAX_RETRANSMITS);
 	} else if(dataLen) {
 		//DBG(Con_Printf("Calling TCP send with flags 0x%02x\n",flags));
-		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
-		tcb->timeRetransEnqMs = TimeMs_Get();
 		//Con_Printf("Updated Retrans because of dataLen %u\n",dataLen);
 		Tcp_SendData(tcb,flags,dataP,dataLen);
+		tcb->timeRetransEnqMs = TimeMs_Get();
+		Enqueue_Retransmit(tcb,flags,dataP,dataLen,tcb->SND_NXT,MAX_RETRANSMITS);
 	} else if(needToSendAck) {
 		Tcp_Send(tcb,flags,NULL,0);
 	} else {
