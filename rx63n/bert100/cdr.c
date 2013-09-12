@@ -14,10 +14,11 @@
 #include "timer.h"
 #include "tpos.h"
 #include "pvar.h"
+#include "iodefine.h"
 
 /* Pin definitions */
-#define CDR_RESET_DIR PORTE.PDR.P3
-#define CDR_RESET_DR  PORTE.PODR.P3
+#define CDR_RESET_DIR PORTE.PDR.BIT.B3
+#define CDR_RESET_DR  PORTE.PODR.BIT.B3
 
 /* Register definitions for INPHY-100 CDR */
 #define CDR_VS_DEVICE_CONTROL                   0
@@ -699,6 +700,13 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	return status;
 }
 
+static void
+CDR_HwReset(void) 
+{
+	CDR_RESET_DR = 0; 
+	SleepMs(1);
+	CDR_RESET_DR = 1; 
+}
 /**
  ************************************************************************
  * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
@@ -716,8 +724,7 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("Calling Olgas CDR_Startup for CDR %u\n", cdr);
 		Cdr_Startup(cdr);
 		return 0;
-	}
-	if ((argc == 3) && (strcmp(argv[1], "init") == 0)) {
+	} else if ((argc == 3) && (strcmp(argv[1], "init") == 0)) {
 		uint8_t cdr = astrtoi16(argv[2]);
 		Con_Printf("Calling Olgas CDR_InitCdr for CDR %u\n", cdr);
 		Cdr_InitCdr(cdr);
@@ -733,6 +740,8 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		regAddr = astrtoi16(argv[2]);
 		val = astrtoi16(argv[3]);
 		Cdr_Write(phyAddr, regAddr, val);
+	} else if (argc == 2 && (strcmp(argv[1],"reset") == 0)) {
+		CDR_HwReset();
 	} else {
 		return -EC_BADARG;
 	}
@@ -823,6 +832,8 @@ CDR_Init(const char *name)
 	uint32_t i,lane;
 	CDR *cdr = &gCDR[0];
 	cdr->phyAddr = 0;
+	CDR_RESET_DIR = 1;
+	CDR_RESET_DR = 1; 
 	Interp_RegisterCmd(&cdrCmd);
 	for(i = 0; i < array_size(gCdrRegister); i++) {
 		const CdrRegister *reg = &gCdrRegister[i];
