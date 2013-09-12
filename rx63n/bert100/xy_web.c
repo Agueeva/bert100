@@ -364,15 +364,17 @@ static int
 redirect_page(int argc, char *argv[], XY_WebRequest * wr, void *eventData)
 {
 	char *page = wr->page;
-	page += xy_strcpylen(page, XY_WEB_HEADER);
 	page += XY_AddHttpHeader(page, content_string[XY_WEBCONTENT_HTML]);
 	page += xy_strcpylen(page,
 			     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
-			     "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+			     "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n\r\n");
 	page += xy_strcpylen(page,
-			     "<html><head>\n"
+			     "<html>\n<head>\n"
+			     "<title>A redirect page</title>\n"
 			     "<meta http-equiv=\"refresh\" content=\"0; URL=/sd/gui/index.html\">\n"
-			     "</head></html>\n\r\n");
+			     "</head>\n<body><center><H1>Redirect Page</H1><center>\n"
+			     "<a href=\"/sd/gui/index.html\">click here</a>\n"
+			     "</body>\n</html>\n\r\n");
 	wr->pagelen = page - wr->page;
 	web_submit_page((WebCon *) wr);
 	return 0;
