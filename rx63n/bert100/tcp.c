@@ -980,7 +980,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			needToSendAck = true;
 			needToSendFin = true;
 			tcb->state = TCPS_LAST_ACK;
-		} else if (tcb->do_close /* && (!dataLen) */ && !(tcpHdr->flags & TCPFLG_FIN)) {
+		} else if (tcb->do_close  && (!dataLen)  && !(tcpHdr->flags & TCPFLG_FIN)) {
 			needToSendFin = true;
 			needToSendAck = true;
 			tcb->do_close = false;
