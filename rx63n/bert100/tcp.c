@@ -83,6 +83,7 @@ typedef struct TcpPseudoHdr {
 } TcpPseudoHdr;
 static FIL tcp_logfile;
 static bool log_isopen;
+
 INLINE void
 Write32(uint32_t value, void *addr)
 {
@@ -106,8 +107,9 @@ struct Tcb {
 	Tcp_DataSrc *dataSrc;
 	Tcp_CloseProc *closeProc;
 	Mutex lock;
-	uint16_t lockline;	/* For debugging */
-	TimeMs_t lastActionTimeMs;
+	uint16_t tryLockLine;	/* For debugging */
+	uint16_t hasLockLine;	/* For debugging */
+	TimeMs_t rxTimeStampMs;	/* For watchdog and connection timeout */
 	Timer retransTimer;
 	uint8_t retransCounter;
 	Timer watchdogTimer;
@@ -163,17 +165,20 @@ struct Tcb {
 
 #define MAX_SERVER_SOCKETS	(4)
 #define MAX_TCP_CONS		(10)
+
 static TcpServerSocket serverSocket[MAX_SERVER_SOCKETS];
 static Tcb tcpConnection[MAX_TCP_CONS];
 
 #define TCB_TryLock(tcb)	_TCB_TryLock((tcb),__LINE__)
 #define TCB_Lock(tcb)		_TCB_Lock((tcb),__LINE__)
+
 INLINE bool
 _TCB_TryLock(Tcb * tcb, uint32_t line)
 {
 	if (!Mutex_Locked(&tcb->lock)) {
-		tcb->lockline = line;
+		tcb->tryLockLine = line;
 		Mutex_Lock(&tcb->lock);
+		tcb->hasLockLine = line;
 		return true;
 	} else {
 		return false;
@@ -183,14 +188,16 @@ _TCB_TryLock(Tcb * tcb, uint32_t line)
 INLINE void
 _TCB_Lock(Tcb * tcb, uint32_t line)
 {
-	tcb->lockline = line;
+	tcb->tryLockLine = line;
 	Mutex_Lock(&tcb->lock);
-} INLINE void
+	tcb->hasLockLine = line;
+} 
 
+INLINE void
 TCB_Unlock(Tcb * tcb)
 {
 	Mutex_Unlock(&tcb->lock);
-	tcb->lockline = 0;
+	tcb->hasLockLine = 0;
 }
 
 /*
@@ -247,8 +254,6 @@ TCB_Alloc(void)
 			tc->busy = false;
 			tc->currDataLen = 0;
 			Timer_Start(&tc->watchdogTimer, 5000);
-			tc->lastActionTimeMs = TimeMs_Get();
-
 			//Con_Printf("Alloced tc %08lx",tc);
 			return tc;
 		}
@@ -296,20 +301,6 @@ TCB_Close(Tcb * tcb)
 	TCB_Free(tcb);
 }
 
-#if 0
-/**
- **************************************************************************************************
- * \fn void TcpCon_RegisterDataProcs(Tcb *tcon,Tcp_DataSink *sink,Tcp_DataSrc *src,void *eventData) 
- **************************************************************************************************
- */
-static void
-TcpCon_RegisterDataProcs(Tcb * tcon, Tcp_DataSink * sink, Tcp_DataSrc * src, void *eventData)
-{
-	tcon->dataSink = sink;
-	tcon->dataSrc = src;
-	tcon->eventData = eventData;
-}
-#endif				/*  */
 
 /**
  **********************************************************
@@ -396,7 +387,7 @@ Tcp_Watchdog(void *eventData)
 	now = TimeMs_Get();
 
 	/* TCP timeout is 1 minutes */
-	if ((now - tcb->lastActionTimeMs) >= 60000) {
+	if ((now - tcb->rxTimeStampMs) >= 60000) {
 		DBG(Con_Printf("Now the watchdog is closing\n"));
 		if (TCB_TryLock(tcb) == false) {
 			Timer_Start(&tcb->watchdogTimer, 200);
@@ -815,6 +806,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 				Tcp_Rst(ipHdr, skb);
 				return;
 			}
+			tcb->rxTimeStampMs = TimeMs_Get();
 			tcb->state = TCPS_SYN_RCVD;
 			TCB_Lock(tcb);
 			if (ssock->acceptProc) {
@@ -876,7 +868,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 	TCB_Lock(tcb);
 
 	//Con_Printf("TCP: window %u, ack %lu,SND_NXT %lu\n",ntohs(tcpHdr->window),ackNr,tcb->SND_NXT);
-	tcb->lastActionTimeMs = now;
+	tcb->rxTimeStampMs = now;
 	if (tcpHdr->flags & TCPFLG_RST) {
 		tcplog("RST flag set in HDR by peer\n");
 		TCB_Close(tcb);
@@ -944,14 +936,6 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 				tcb->busy = true;
 				tcb->dataSink(tcb->eventData, fpos, skb->dataStart, nr_bytes);
 				tcb->busy = false;
-#if 0
-				if(tcb->state == TCPS_FIN_WAIT_1)
-				{
-					Con_Printf("Case\n");
-					TCB_Unlock(tcb);
-					return;
-				}
-#endif
 			}
 
 			/* We should see from ack nr that we have to transmit a ack reply */
@@ -1118,7 +1102,8 @@ cmd_tcp(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t i;
 	for (i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb = &tcpConnection[i];
-		Con_Printf("TCB %u, inUse %u, busy %u\n", i, tcb->inUse, tcb->busy);
+		Con_Printf("TCB %u, inUse %u, busy %u, hasLockLine %u, tryLockLine %u\n", 
+			i, tcb->inUse, tcb->busy,tcb->hasLockLine,tcb->tryLockLine);
 	}
 	return 0;
 }
