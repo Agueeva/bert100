@@ -1225,12 +1225,10 @@ XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const
 	if (!reg)
 		return -1;
 
-	//auth=xy_malloc(sizeof(XYWebAuthInfo));
 	auth = IRam_Calloc(sizeof(XYWebAuthInfo));
 	if (!auth)
 		return -1;
 	if (parse_md5hexstring(auth->passwd_md5, md5string) < 0) {
-		//xy_free(auth);
 		Con_Printf("Error in parse_md5hexstring\n");
 		return -1;
 	}
@@ -1680,6 +1678,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
+	XY_WebAddMD5Auth(wserv, path, "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	if(labviewPortNr >= 0) {
 		XY_NewLabviewServer(wops,labviewPortNr);
 	}
