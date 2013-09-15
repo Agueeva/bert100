@@ -803,7 +803,6 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			tcb = TCB_Alloc();
 			if (!tcb) {
 				Con_Printf("Out of TCB's\n");
-				Tcp_Rst(ipHdr, skb);
 				return;
 			}
 			tcb->rxTimeStampMs = TimeMs_Get();
@@ -815,16 +814,14 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 						      tcpHdr->srcPort);
 			}
 			if (result != true) {
-				DBG(Con_Printf("nobody listening on TCP port %d\n", ntohs(tcpHdr->dstPort)));
+				DBG(Con_Printf("accept failed TCP port %d\n", ntohs(tcpHdr->dstPort)));
 				TCB_Close(tcb);
-				Tcp_Rst(ipHdr, skb);
 				TCB_Unlock(tcb);
 				return;
 			}
 		}
 		if (!tcb) {
-			DBG(Con_Printf("No ssock, sending RST\n"));
-			Tcp_Rst(ipHdr, skb);
+			DBG(Con_Printf("No ssock, ignoring\n"));
 			return;
 		}
 		tcb->srcPort = ntohs(tcpHdr->srcPort);
