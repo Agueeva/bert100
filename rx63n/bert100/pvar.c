@@ -13,6 +13,7 @@
 #include "interpreter.h"
 #include "hex.h"
 
+static bool pvar_debug = 0;
 typedef struct PVarTable {
         /* The hash table stores pointers to PVars */
 	Mutex lock;
@@ -123,6 +124,9 @@ PVar_SetCallbacks(PVar *pvar,PVar_GetCallback *gcb,PVar_SetCallback *scb,void *c
 bool
 PVar_Set(PVar *pvar,const char *valStr) 
 {
+	if(pvar_debug) {
+		Con_Printf("%s\n",valStr);
+	}
 	if(pvar->setCallback) {
 		pvar->setCallback(pvar->cbData,pvar->adId,valStr);
 		return true;
@@ -160,7 +164,7 @@ const char *exampleText2[] = {
 
 const char **exampleText = exampleText1;
 
-void 
+static bool
 Example_SetCallback (void *clientData, uint32_t adId, const char *strP)
 {
 	int16_t val = astrtoi16(strP); 
@@ -169,15 +173,17 @@ Example_SetCallback (void *clientData, uint32_t adId, const char *strP)
 	} else {
 		exampleText = exampleText2;
 	}
+	return true;
 }
 
-void 
+static bool
 Example_GetCallback (void *clientData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	static int index = 0;
 	strncpy(bufP,exampleText[index],maxlen);
 	bufP[maxlen - 1] = 0;
 	index = (index + 1) % array_size(exampleText1);
+	return true;
 }
 
 /**
@@ -214,6 +220,14 @@ cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
         }
 	if(strcmp(argv[1],"-dump") == 0) {
 		PVars_Dump();
+		return 0;
+	}
+	if(strcmp(argv[1],"-debug") == 0) {
+		pvar_debug = 1;
+		return 0;
+	}
+	if(strcmp(argv[1],"-undebug") == 0) {
+		pvar_debug = 0;
 		return 0;
 	}
         pvar = PVar_Find(argv[1]);
