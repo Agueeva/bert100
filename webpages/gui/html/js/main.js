@@ -3,7 +3,7 @@
   var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel"); //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert"
   var myVarTX= new Array("txa_swing");
   var myVarDrTr= new Array("synth0.freq");
-  var urlWS='ws:' + document.domain + '/messages';
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';
      var socket = new WebSocket(urlWS);
      socket.onopen = function() {
 		//alert('Verbindung aufgebaut');
@@ -17,8 +17,9 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-	//alert(value);
-	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+	if(typeof arr['var'] != "undefined") {
+		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+	}
 
      }
 
