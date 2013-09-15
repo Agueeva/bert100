@@ -10,28 +10,43 @@
 #include <string.h>
 #include "hex.h"
 
+/**
+ *****************************************************************
+ * Convert an Ascii string to a floating point value.
+ * Format is xxx.yyy, (No exponent is allowed)
+ *****************************************************************
+ */
+#include "console.h"
 float
 astrtof32(const char *str)
 {
 	int64_t ival = 0;
 	int64_t div = 1;
 	uint8_t base = 10;
+	uint8_t digits = 0;
 	bool dot = false;
 	if (*str == '-') {
 		div = -1;
 		str++;
 	}
 	while (1) {
-		if ((*str >= '0') && (*str <= '9')) {
+		if (digits > 18) {
+			if (dot) {
+				return (float)ival / div;
+			} else {
+				return 0;
+			}
+		} else if ((*str >= '0') && (*str <= '9')) {
 			ival = ival * base + (*str - '0');
-			if(dot) {
+			if (dot) {
 				div *= 10;
-			}	
+			}
+			digits++;
 		} else if (*str == '.') {
 			dot = true;
 		} else {
 			return (float)ival / div;
-		}	
+		}
 		str++;
 	}
 }
@@ -241,7 +256,7 @@ uitoa16(uint16_t value, char *buf)
 	}
 	while (divisor > 0) {
 		digit = value / divisor;
-		value -= (uint16_t) digit * divisor;
+		value -= (uint16_t) digit *divisor;
 		*buf++ = digit + '0';
 		divisor = divisor / 10;
 		count++;
@@ -362,3 +377,50 @@ ishexnum(char *str)
 	}
 	return 1;
 }
+
+uint8_t
+f32toa(float fval, char *_str, int maxlen)
+{
+	uint32_t ival;
+	uint8_t count;
+	uint8_t digit;
+	uint64_t div = 1;
+	char *str = _str;
+	if(maxlen < 11) {
+		return 0;		
+	}
+	if(fval < 0) {
+		*str++ = '-';
+		maxlen--;
+		fval = -fval;
+	}
+	maxlen = 10;
+	ival = fval;
+	count = uitoa32(ival, str);
+	if (count >= maxlen) {
+		return count;
+	}
+	str[count++] = '.';
+	fval = fval - (float)ival;
+	str += count;
+	while (count < maxlen) {
+		fval *= 10;
+		++count;
+		div = div * 10;
+	}
+	ival = fval;
+	div = div / 10;
+//	Con_Printf("xival %lld, div %llu\n",ival,div);
+	while(div) {
+		digit = ival / div;
+	//	Con_Printf("xival %ld, div %llu: %u\n",ival,div,digit);
+		ival -= digit * div;
+		*str++ = digit + '0';
+		div = div / 10;
+		if(ival == 0) {
+			break;
+		}
+	}
+	return str - _str;
+}
+

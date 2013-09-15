@@ -24,5 +24,5 @@ uint8_t uitoa32(uint32_t value, char *buf);
 uint8_t itoa32(int32_t value, char *buf);
 uint8_t uitoa64(uint64_t value, char *buf);
 uint8_t itoa64(int64_t value, char *buf);
-uint8_t f32toa(float value,char *buf,uint8_t maxlen);
+uint8_t f32toa(float value,char *buf,int maxlen);
 uint8_t ishexnum(char *str);

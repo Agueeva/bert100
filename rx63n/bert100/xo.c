@@ -185,16 +185,17 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 }
 INTERP_CMD(synthCmd,"synth", cmd_synth, "synth  ?<freq>? # Set/Get frequency of synthesizer");
 
-static void
+static bool 
 PVSynth_SetFreq (void *cbData, uint32_t adId, const char *strP)
 {
 	SiXO *xo = cbData;
 	uint64_t freq;
 	freq = astrtoi32(strP);
 	set_frequency(xo,freq);
+	return true;
 }
 
-static void
+static bool 
 PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	SiXO *xo = cbData;
@@ -202,6 +203,7 @@ PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 		read_frequency(xo,&xo->outFreq);
 	}
 	SNPrintf(bufP,maxlen,"%lu",xo->outFreq);
+	return true;
 }
 
 

@@ -305,6 +305,23 @@ DAC_Set(uint8_t chNr,float value)
 	return true;
 }
 
+static bool 
+DAC_Get(uint8_t chNr,float *valRet)
+{
+	float anaVOut;
+	uint8_t channelAddr = chNr + 8;
+	uint16_t inputCode; 
+	uint16_t M = 65535;
+	uint16_t C = 32768;
+	int32_t dacCode;
+	int32_t offsCode = 8192;
+	inputCode = AD537x_Readback(0,channelAddr); /* Read X1A of channel */
+	dacCode = (int64_t)inputCode * ((uint32_t)M + 1) / 65536 + C - 32768;
+	anaVOut = (4 * 5.0 * (dacCode - (offsCode * 4))) / 65536 /* + ad->anaVSigGnd */;
+	*valRet = anaVOut;
+	return true;
+}
+
 static int8_t
 cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -476,17 +493,24 @@ INTERP_CMD(dacmCmd, "dacm", cmd_dacm,
 INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
            "dacr                   # reset dac");
 
-static void
+static bool 
 PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
 {
 	float val;	
 	val = astrtof32(strP);
-	DAC_Set(chNr,val);
+	return DAC_Set(chNr,val);
 }
 
-static void
+static bool 
 PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
+	float dacval;
+        uint8_t cnt;
+	bool retval;
+	retval = DAC_Get(chNr,&dacval);
+        cnt = f32toa(dacval,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
 }
 
 void
@@ -521,7 +545,8 @@ AD537x_Init(const char *name)
 		DACX_Set(ch,value);
 		value = 0x8000;
 		DACC_Set(ch,value);
-		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.%s",dac0ChannelName[ch]);
+		//PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vo",dac0ChannelName[ch]);
+		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vout%d",ch);
 	}
 		
 	LDAC_LOW;

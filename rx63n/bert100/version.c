@@ -38,10 +38,11 @@ Version_GetStr(void)
 	return g_Version;
 }
 
-static void
+static bool 
 PVVersionSW_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	strncpy(bufP,Version_GetStr(),maxlen);
+	return true;
 }
 
 static int8_t
