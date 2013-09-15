@@ -1,15 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-    <head>
-  	<title>Beispiel</title>
-    </head>
-    <body bgcolor="#ff6688" text="#000000">
-    <center>
-    <H1>Hauptseite vom Ernie</H1>
-    </center>
-    <ul>
-    <li><A href="/sd/ws.html">WebSocket Variable example</a></li>
-    <li><A href="/sd/wsvideo.html">Video example</a></li>
-    </ul>
-    </body>
-</html>
+<head>
+<LINK href="html/css/stylefile.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="html/js/jquery-2.0.3.js"></script>
+	<!-- Main functions -->
+	<script type="text/javascript" src="html/js/main.js" ></script>
+	<!--<script type="text/javascript" src="html/js/simpletreemenu.js" ></script>-->
+</head>
+<body >
+<div id="wrapper_all">
+	<div id="header">
+		<img id="logo" src="html/img/header.jpg"  alt="bg" >
+	</div>
+
+	<div id="wrapper">
+		<div id="menu">
+		<ul id="treemenu" class="menu">
+			<li><a href='javascript:void(0);'  class="selected" id="homeBut">Home</a></li>
+			<li><a href='javascript:void(0);'>Settings</a>
+				<ul>
+				<li><a href='javascript:void(0);' id="PatternBut" >Pattern</a></li>
+				<li><a href='javascript:void(0);' id="TXBut" >TX Data</a>
+				<!--	<ul>
+						<li><a href='javascript:void(0);' id="TXBut" >TX Data Port OUT</a></li>
+					</ul> -->
+				</li>
+				<li><a href='javascript:void(0);' id="RateTrBut" >Data Rate & Trigger</a></li>
+				</ul>
+
+			</li>
+		</ul>
+			<!--<input id="homeBut" type="button" name="Home" value="Home">
+			<input id="PatternBut" type="button" name="Pattern" value="Pattern">
+			<input id="TXBut" type="button" name="TX" value="TX Data Port OUT">
+			<input id="RateTrBut" type="button" name="TX" value="Data Rate & Trigger">
+			<img id="logo" src="html/img/closed.gif"  alt="foldericon">
+			-->
+		</div>
+
+		<div id="content">
+			<iframe id="frame" src=""></iframe>
+			<div id="loading">
+				<b>&nbsp;&nbsp;Loading...</b></br>
+				<img id="logo" src="html/img/ajax-loader.gif"  alt="bg" >
+			</div>
+		</div>
+	</div>
+</div>
+</body>

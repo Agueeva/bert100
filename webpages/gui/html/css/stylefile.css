@@ -1,0 +1,140 @@
+* { margin: 0; padding: 0; }
+body { font: 14px Georgia, serif;}
+
+#page-wrap {
+    margin: 40px auto; color: white;
+}
+
+#page-wrap > div {
+    border: 1px solid #999; padding: 20px; margin-bottom: 5px; color: black;
+}
+
+#wrapper_all{
+    position: relative;
+    left:10px;
+    width: 98%;
+    height: 90%;
+}
+
+#header {
+    padding: 0 0 0 0 !important;
+    position: relative;
+    width: 100%;
+ 
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    background-image: url(../img/header_raw_loop.jpg);
+    background-color: rgb(1,1,1);
+    background-repeat:repeat;
+    background-size:9px 100px;
+    overflow:hidden;
+}
+
+
+#header img {
+
+    position:relative;
+    top:0;
+    left:0;
+    height: 100px;
+}
+
+#wrapper{
+    position: relative;
+    top:5px;
+    display: block;
+    height: 80%;
+}
+
+#menu {
+    position: relative;
+    width: 300px;
+    height: 100%;
+    float: left;
+    background: #bbffff;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    overflow:hidden
+}
+
+#menu input{
+    position: relative;
+    padding: 4px 2px 2px 0 !important;
+    width: 100%;
+
+}
+
+#content {
+    position:relative;
+    margin-left: 300px;
+    margin-right: 3px;
+    
+    height: 100%;
+
+    left:4px;
+    background: #d9ffff;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    overflow:hidden;
+
+}
+
+#content div{
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin:-150px 20 20 -150px;
+}
+#frame{
+
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    border:0;
+    overflow-x:auto;
+    overflow-y:auto;
+}
+/* TREE MENU*/
+ul.menu, .item-list ul {
+  margin: 0.35em 0 0 0.5em; 
+  padding: 0;
+}
+
+.item{
+    position:relative;
+    left:0px;
+    padding: 0 0 2px 18px;
+    list-style-type: none;
+    list-style-image: none;
+    background: url(../img/item.png) no-repeat 0 2px; 
+    background-repeat:no-repeat;
+    background-position:left top;
+}
+
+.selected {
+    text-decoration:none;
+    font-weight:bold;
+    color:#2e82ff;
+    }
+
+.cat_close {
+    position:relative;
+    left:0px;
+    padding: 0 0 0px 18px;
+    list-style-type: none;
+    list-style-image: none;
+    background-image:url(../img/closed.png);
+    background-repeat:no-repeat;
+    background-position:left top;
+}
+.cat_open {
+    position:relative;
+    left:0px;
+    padding: 0 0 0px 18px;
+    list-style-type: none;
+    list-style-image: none;
+    background-image:url(../img/open.png);
+    background-repeat:no-repeat;
+    background-position:left top;
+}
+
+a.item, a.cat_close, a.cat_open {
+    text-decoration:none;
+}
