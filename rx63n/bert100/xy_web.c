@@ -1265,6 +1265,7 @@ XY_NewWebServer(void)
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
 	XY_WebAddMD5Auth(wserv, "/sd/", "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
+	XY_WebAddMD5Auth(wserv, "/sd/", "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	return wserv;
 }
 
