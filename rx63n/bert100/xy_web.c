@@ -25,6 +25,8 @@
 #include "iram.h"
 #include "md5.h"
 
+#define REALM	"Munich Instruments C-BERT"
+
 char *content_string[] = {
 	"text/html",
 	"image/gif",
@@ -1263,9 +1265,9 @@ XY_NewWebServer(void)
 	wserv->rqHandlerHash = StrHash_New();
 	Web_PoolsInit();
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
-	XY_WebAddMD5Auth(wserv, "/sd/", "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, "/sd/", REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
-	XY_WebAddMD5Auth(wserv, "/sd/", "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, "/", REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	return wserv;
 }
 
@@ -1679,7 +1681,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
-	XY_WebAddMD5Auth(wserv, path, "Neutronics Bert 100", "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	if(labviewPortNr >= 0) {
 		XY_NewLabviewServer(wops,labviewPortNr);
 	}

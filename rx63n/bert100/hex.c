@@ -9,6 +9,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hex.h"
+
+float
+astrtof32(const char *str)
+{
+	int64_t ival = 0;
+	int64_t div = 1;
+	uint8_t base = 10;
+	bool dot = false;
+	if (*str == '-') {
+		div = -1;
+		str++;
+	}
+	while (1) {
+		if ((*str >= '0') && (*str <= '9')) {
+			ival = ival * base + (*str - '0');
+			if(dot) {
+				div *= 10;
+			}	
+		} else if (*str == '.') {
+			dot = true;
+		} else {
+			return (float)ival / div;
+		}	
+		str++;
+	}
+}
+
 /**
  *******************************************************
  * \fn uint32_t astrtoi32(const char *str);

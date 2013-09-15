@@ -134,12 +134,13 @@ PVar_Set(PVar *pvar,const char *valStr)
 bool
 PVar_Get(PVar *pvar,char *valP, uint16_t maxlen) 
 {
+	bool retval;
+	valP[0] = 0; /* Terminate the string */
 	if(pvar->getCallback) {
-		pvar->getCallback(pvar->cbData,pvar->adId,valP,maxlen);
+		retval = pvar->getCallback(pvar->cbData,pvar->adId,valP,maxlen);
 		valP[maxlen - 1] = 0;
-		return true;
+		return retval;
 	} else {
-		valP[0] = 0; /* Terminate the string */
 		return false;
 	}
 }
