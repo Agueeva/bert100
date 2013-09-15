@@ -12,7 +12,6 @@
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
-
 #define SYNC_DIROUT	BSET(5,PORTC.PDR.BYTE)
 #define SYNC_HIGH	BSET(5,PORTC.PODR.BYTE)
 #define SYNC_LOW	BCLR(5,PORTC.PODR.BYTE)	
@@ -40,6 +39,7 @@
 #define LDAC_HIGH	BSET(0,PORT5.PODR.BYTE)
 #define LDAC_LOW	BCLR(0,PORT5.PODR.BYTE)
 
+#define NR_CHANNELS	(32)
 
 #if 0
 #define PORT_BUSY	PORTE
@@ -214,6 +214,45 @@ AD537x_Readback(uint16_t addrCode,uint8_t channelAddr)
 	return result;	
 }
 
+/**
+ * Per channel gain 
+ */ 
+static void
+DACM_Set(uint16_t channel,uint16_t value)    
+{
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(1) << 22));
+}
+/**
+ * Per channel offset
+ */ 
+static void
+DACC_Set(uint16_t channel,uint16_t value)    
+{
+	/* 2 is an offset register */
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(2) << 22));
+}
+
+/**
+ * Per channel input code 
+ */ 
+static void
+DACX_Set(uint16_t channel,uint16_t value)    
+{
+	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
+}
+
+static void
+DACOFS0_Write(uint16_t value) {
+	uint16_t addrCode = 2;
+	AD537x_SFWrite(addrCode,value);
+}
+
+static void
+DACOFS1_Write(uint16_t value) {
+	uint16_t addrCode = 3;
+	AD537x_SFWrite(addrCode,value);
+}
+
 static int8_t
 cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -385,9 +424,22 @@ INTERP_CMD(dacmCmd, "dacm", cmd_dacm,
 INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
            "dacr                   # reset dac");
 
+
+static void
+PVDac_SetRaw (void *cbData, uint32_t chNr, const char *strP)
+{
+
+}
+
+static void
+PVDac_GetRaw (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+}
+
 void
 AD537x_Init(const char *name)
 {
+	int ch;
 	RESET_HIGH;
 	RESET_DIROUT;
 
@@ -404,6 +456,19 @@ AD537x_Init(const char *name)
 	CLR_HIGH;
 	CLR_DIROOUT;
 
+	LDAC_HIGH;
+	LDAC_DIROUT;
+	DACOFS0_Write(0x2000);
+	DACOFS1_Write(0x2000);
+ 	for(ch = 0; ch < NR_CHANNELS; ch++) {
+		uint16_t value = 0x8000;
+		DACC_Set(ch,value);
+		value = 0xffff;
+		DACM_Set(ch,value);
+		value = 0x8000;
+		DACX_Set(ch,value);
+	}
+		
 	LDAC_LOW;
 	LDAC_DIROUT;
 
