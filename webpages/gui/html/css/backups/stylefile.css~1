@@ -1,0 +1,143 @@
+* { margin: 0; padding: 0; }
+body {BACKGROUND-COLOR: #bbffff; font: 14px Georgia, serif; }
+
+#page-wrap {
+    margin: 40px auto; color: white;
+}
+
+#page-wrap > div {
+    border: 1px solid #999; padding: 20px; margin-bottom: 5px; color: black;
+}
+
+#wrapper_all{
+    position: relative;
+    left:10px;
+    width: 90%;
+    height: 90%;
+}
+
+#header {
+    padding: 0 0 0 0 !important;
+    position: relative;
+    width: 100%;
+
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    background-image: url(./img/header_raw_loop.jpg);
+    background-repeat:repeat;
+    background-size:9px 100px;
+    overflow:hidden;
+}
+
+
+#header img {
+
+    position:relative;
+    top:0;
+    left:0;
+    height: 100px;
+}
+
+#wrapper{
+    position: relative;
+    top:5px;
+    display: block;
+    height: 80%;
+}
+
+#menu {
+    padding: 8px 8px 8px 12px !important;
+    position: relative;
+    width: 300px;
+    height: 100%;
+    float: left;
+    background: #bbffff;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    overflow:hidden
+}
+
+#menu input{
+    position: relative;
+    width: 100%;
+
+}
+#variable{
+    BACKGROUND-COLOR: #808000;
+    padding: 8px 4px 8px 12px !important;
+    position: relative;
+    margin-left: 320px;
+    margin-right: 3px;
+    height: 100%;
+
+    left:4px;
+    background: #3b76ee ;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    overflow-x:auto;
+    overflow-y:auto;
+}
+#content {
+    BACKGROUND-COLOR: #ccffcc;
+    padding: 8px 4px 8px 12px !important;
+    position: relative;
+    margin-left: 320px;
+    margin-right: 3px;
+    height: 100%;
+
+    left:4px;
+    background: #3b76ee ;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
+    overflow-x:auto;
+    overflow-y:auto;
+}
+
+TABLE {
+	FONT-FAMILY: Verdana; FONT-SIZE: 10pt
+}
+H2 {
+	FONT-STYLE: italic; FONT-FAMILY: Verdana; COLOR: #008000; FONT-SIZE: 16pt
+}
+H3 {
+	FONT-FAMILY: Verdana; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.BLUE {
+	COLOR: #0000ff
+}
+*.HEADER {
+	FONT-FAMILY: Verdana; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.HEADER_BLUE {
+	FONT-FAMILY: Verdana; COLOR: #0000ff; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.TITLE {
+	TEXT-ALIGN: center; FONT-FAMILY: Verdana; COLOR: #0000ff; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+A:link {
+	COLOR: #0000ff; TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #0000ff; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #ff0000; TEXT-DECORATION: none
+}
+TABLE {
+	FONT-FAMILY: Verdana; FONT-SIZE: 10pt
+}
+H2 {
+	FONT-STYLE: italic; FONT-FAMILY: Verdana; COLOR: #008000; FONT-SIZE: 16pt
+}
+H3 {
+	FONT-FAMILY: Verdana; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.BLUE {
+	COLOR: #0000ff
+}
+*.HEADER {
+	FONT-FAMILY: Verdana; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.HEADER_BLUE {
+	FONT-FAMILY: Verdana; COLOR: #0000ff; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+*.TITLE {
+	TEXT-ALIGN: center; FONT-FAMILY: Verdana; COLOR: #0000ff; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+

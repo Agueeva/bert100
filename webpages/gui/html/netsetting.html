@@ -1,0 +1,106 @@
+
+<!-- saved from url=(0026)http://10.20.20.242/02.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="css/stylefile.css" rel="stylesheet" type="text/css">
+<title>Network Settings</title> <script language="JavaScript" src="js/valid.js">
+</script> <script language="JavaScript">
+<!--
+var iperrmsg = " is not a valid IP address."
+function CheckValue(form)
+{
+if( !verifyIP(form.IP.value) )
+{
+alert(form.IP.value + iperrmsg);
+form.IP.focus();
+return false;
+}
+if( form.Netmask.value.length > 0 )
+{
+if( !verifyNetmask(form.Netmask.value) )
+{
+alert(form.Netmask.value + iperrmsg);
+form.Netmask.focus();
+return false;
+}
+}
+if( form.Gateway.value.length > 0 )
+{
+if( !verifyNetmask(form.Gateway.value) )
+{
+alert(form.Gateway.value + iperrmsg);
+form.Gateway.focus();
+return false;
+}
+}
+if( form.DNS1.value.length > 0 )
+{
+if( !verifyNetmask(form.DNS1.value) )
+{
+alert(form.DNS1.value + iperrmsg);
+form.DNS1.focus();
+return false;
+}
+}
+if( form.DNS2.value.length > 0 )
+{
+if( !verifyNetmask(form.DNS2.value) )
+{
+alert(form.DNS2.value + iperrmsg);
+form.DNS2.focus();
+return false;
+}
+}
+if( !isValidPort(form.IPLocationPort.value) )
+{
+alert(form.IPLocationPort.value + " is not a valid number");
+form.IPLocationPort.focus();
+return false;
+}
+if( form.IPLocationPeriod.value < 0 || !isValidNumber(form.IPLocationPeriod.value) )
+{
+alert(form.IPLocationPeriod.value + " is not a valid number");
+form.IPLocationPeriod.focus();
+return false;
+}
+return true;
+}
+//-->
+</script></head><body onload="window_onload()">
+<p class="HEADER_BLUE">Network Settings</p>
+<form name="network" method="GET" action="http://10.20.20.242/Set.htm" onsubmit="return CheckValue(this)">
+<table width="100%" border="1"><tbody><tr><td width="30%">IP address</td><td width="70%">
+<input type="text" name="IP" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">Netmask</td><td width="70%"> <input type="text" name="Netmask" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">Gateway</td><td width="70%"> <input type="text" name="Gateway" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">IP configuration</td><td width="70%"> <select size="1" name="IPConfig"> <option value="0">Static</option>
+<option value="1">DHCP</option> <option value="2">DHCP/BOOTP</option> <option value="3">BOOTP</option> </select></td></tr>
+<tr><td width="30%">DNS server 1</td><td width="70%"> <input type="text" name="DNS1" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">DNS server 2</td><td width="70%"> <input type="text" name="DNS2" size="15" maxlength="15"></td></tr>
+<tr><td width="100%" colspan="2"><p class="TITLE">SNMP Setting</p></td></tr><tr><td width="30%">SNMP</td>
+<td width="70%"> <input type="radio" name="SnmpMode" value="0">Enable <input type="radio" name="SnmpMode" value="1">Disable</td></tr>
+<tr><td width="30%">Community name</td><td width="70%"> <input type="text" name="SnmpCommunity" size="31" maxlength="31"></td></tr>
+<tr><td width="30%">Contact</td><td width="70%"> <input type="text" name="SnmpContact" size="39" maxlength="39"></td></tr>
+<tr><td width="30%">Location</td><td width="70%"> <input type="text" name="SnmpLocation" size="39" maxlength="39"></td></tr>
+<tr><td width="100%" colspan="2"><p class="TITLE">IP Address report</p></td></tr><tr><td width="30%">Auto report to IP</td>
+<td width="70%"> <input type="text" name="IPLocationServer" size="39" maxlength="39"></td></tr>
+<tr><td width="30%">Auto report to UDP port</td><td width="70%"> <input type="text" name="IPLocationPort" size="5" maxlength="5"></td></tr>
+<tr><td width="30%">Auto report period</td><td width="70%"> <input type="text" name="IPLocationPeriod" size="2" maxlength="2">seconds</td></tr> </tbody></table>
+<p align="center"><input type="submit" value="Submit" name="Submit"></p> <input type="hidden" name="setfunc" value="Network"> </form>
+<script language="JavaScript">
+function set(sField,sValue)
+{
+document.network[sField].value=sValue;
+}
+function choose(sField,sValue)
+{
+document.network[sField].selectedIndex=sValue;
+}
+function setSnmp(flag)
+{
+document.network.SnmpMode[flag].checked=true;
+}
+function window_onload()
+{
+set("IP","10.20.20.242");set("Netmask","255.255.255.0");set("Gateway","10.20.30.3");choose("IPConfig",0);set("DNS1","10.20.20.33");
+set("DNS2","10.20.20.37"); setSnmp(0);set("SnmpCommunity", "public");set("SnmpContact", "Jorge");set("SnmpLocation", "");
+set("IPLocationServer", "");set("IPLocationPort", "4002");set("IPLocationPeriod", "10");}</script></body></html>
