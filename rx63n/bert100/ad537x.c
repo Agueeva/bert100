@@ -9,6 +9,7 @@
 #include "iodefine.h"
 #include "config.h"
 #include "timer.h"
+#include "pvar.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -52,6 +53,41 @@ typedef struct ReadbackVar {
 	uint16_t addrCode;
         uint8_t nrArgs;
 } ReadbackVar;
+
+const char *dac0ChannelName[NR_CHANNELS] = {
+	"ModBias1",	
+	"ModBias2",	
+	"ModBias3",	
+	"ModBias4",	
+	"Vg11",
+	"Vg12",
+	"Vg13",
+	"Vg14",
+	"Vg21",
+	"Vg22",
+	"Vg23",
+	"Vg24",
+	"Vg31",
+	"Vg32",
+	"Vg33",
+	"Vg34",
+	"Vd11",
+	"Vd12",
+	"Vd13",
+	"Vd14",
+	"Vd21",
+	"Vd22",
+	"Vd23",
+	"Vd24",
+	"VS1",
+	"VS2",
+	"VS3",
+	"VS4",
+	"Res28",
+	"Res29",
+	"Res30",
+	"Res31",
+};	
 
 static ReadbackVar rbvars[] = {
 	{
@@ -183,11 +219,6 @@ AD537x_Write(uint32_t value)
 	return inval;
 }
 
-void
-DAC_Set(uint16_t channel,uint16_t value)
-{
-	AD537x_Write(value | ((uint32_t)(channel + 8) << 16) | (UINT32_C(3) << 22));
-}
 
 static inline void 
 AD537x_SFWrite(uint8_t sfc,uint16_t value)
@@ -251,6 +282,44 @@ static void
 DACOFS1_Write(uint16_t value) {
 	uint16_t addrCode = 3;
 	AD537x_SFWrite(addrCode,value);
+}
+
+static bool 
+DAC_Set(uint8_t chNr,float value)
+{
+	int32_t inputCode = ((value * 65536 + 10) / 20) + 32768;  		
+	if(inputCode > 65535) {
+		if(inputCode > 65540) {
+			return false;
+		} else {
+			inputCode = 65535;
+		}
+	} else if(inputCode < 0){
+		if(inputCode < -5) {
+			return false;
+		} else {
+			inputCode = 0;
+		}
+	}
+	DACX_Set(chNr,inputCode);
+	return true;
+}
+
+static bool 
+DAC_Get(uint8_t chNr,float *valRet)
+{
+	float anaVOut;
+	uint8_t channelAddr = chNr + 8;
+	uint16_t inputCode; 
+	uint16_t M = 65535;
+	uint16_t C = 32768;
+	int32_t dacCode;
+	int32_t offsCode = 8192;
+	inputCode = AD537x_Readback(0,channelAddr); /* Read X1A of channel */
+	dacCode = (int64_t)inputCode * ((uint32_t)M + 1) / 65536 + C - 32768;
+	anaVOut = (4 * 5.0 * (dacCode - (offsCode * 4))) / 65536 /* + ad->anaVSigGnd */;
+	*valRet = anaVOut;
+	return true;
 }
 
 static int8_t
@@ -424,16 +493,24 @@ INTERP_CMD(dacmCmd, "dacm", cmd_dacm,
 INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
            "dacr                   # reset dac");
 
-
-static void
-PVDac_SetRaw (void *cbData, uint32_t chNr, const char *strP)
+static bool 
+PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
 {
-
+	float val;	
+	val = astrtof32(strP);
+	return DAC_Set(chNr,val);
 }
 
-static void
-PVDac_GetRaw (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+static bool 
+PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
+	float dacval;
+        uint8_t cnt;
+	bool retval;
+	retval = DAC_Get(chNr,&dacval);
+        cnt = f32toa(dacval,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
 }
 
 void
@@ -461,12 +538,15 @@ AD537x_Init(const char *name)
 	DACOFS0_Write(0x2000);
 	DACOFS1_Write(0x2000);
  	for(ch = 0; ch < NR_CHANNELS; ch++) {
-		uint16_t value = 0x8000;
-		DACC_Set(ch,value);
+		uint16_t value;
 		value = 0xffff;
 		DACM_Set(ch,value);
 		value = 0x8000;
 		DACX_Set(ch,value);
+		value = 0x8000;
+		DACC_Set(ch,value);
+		//PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vo",dac0ChannelName[ch]);
+		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vout%d",ch);
 	}
 		
 	LDAC_LOW;

@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_WIN_SZ 1460
+#define MAX_WIN_SZ 1460 
 #define MAX_SEG_SZ 1460
 #define MAX_RETRANSMITS	(25)
 
@@ -118,6 +118,7 @@ struct Tcb {
 	uint8_t myIp[4];
 	uint16_t srcPort;
 	uint16_t dstPort;
+	uint16_t maxWinSz;
 
 	/* RFC 793 Section 3.2 */
 	uint32_t ISS;		/* Initial send sequence number */
@@ -253,6 +254,7 @@ TCB_Alloc(void)
 			tc->do_close = false;
 			tc->busy = false;
 			tc->currDataLen = 0;
+			tc->maxWinSz = MAX_WIN_SZ; 
 			Timer_Start(&tc->watchdogTimer, 5000);
 			//Con_Printf("Alloced tc %08lx",tc);
 			return tc;
@@ -314,6 +316,11 @@ Tcb_RegisterOps(Tcb * tcb, Tcb_Operations * tcops, void *eventData)
 	tcb->dataSrc = tcops->srcProc;
 	tcb->closeProc = tcops->closeProc;
 	tcb->eventData = eventData;
+}
+
+void 
+Tcb_SetMaxWinSize(Tcb *tcb,uint16_t maxWinSz) {
+	tcb->maxWinSz = maxWinSz;
 }
 
 /**
@@ -476,7 +483,7 @@ Tcp_Send(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 	tcpHdr->srcPort = htons(tcb->dstPort);
 	tcpHdr->dstPort = htons(tcb->srcPort);
 	tcpHdr->urgentPtr = 0;
-	tcpHdr->window = htons(MAX_WIN_SZ);
+	tcpHdr->window = htons(tcb->maxWinSz);
 	tcpHdr->flags = flags;
 	tcpHdr->chksum = 0;
 	switch (tcb->state) {
@@ -568,7 +575,7 @@ Tcp_Send(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 static void
 Tcp_SendData(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 {
-	if (dataLen > 512) {
+	if (dataLen > 256) {
 		uint16_t half = dataLen >> 1;
 		Tcp_Send(tcb, flags, dataP, half);
 		Tcp_Send(tcb, flags, dataP + half, dataLen - half);
@@ -745,7 +752,7 @@ Tcp_Rst(IpHdr * ipHdr, Skb * skbReq)
 	tcpHdrReply->srcPort = tcpHdrReq->dstPort;
 	tcpHdrReply->dstPort = tmpPort;
 	tcpHdrReply->urgentPtr = 0;
-	tcpHdrReply->window = htons(MAX_WIN_SZ);
+	tcpHdrReply->window = htons(MAX_WIN_SZ); /* No TCB, use default WIN_SZ */
 	tcpHdrReply->flags = TCPFLG_RST | TCPFLG_ACK;
 	tcpHdrReply->chksum = 0;
 	tcpHdrReply->hdrLen = (tcphdrlen >> 2) << 4;
@@ -793,17 +800,21 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 		    ("Got SYN, a new con on port %u, src %u IRS %lu\n", ntohs(tcpHdr->dstPort),
 		     ntohs(tcpHdr->srcPort), seqNr));
 		tcb = TcpFindConnection(ipHdr->srcaddr, ntohs(tcpHdr->srcPort));
-		if (!tcb || (tcb->state != TCPS_SYN_RCVD)) {
-			tcb = NULL;
-			ssock = find_server_socket(ntohs(tcpHdr->dstPort));
+		if(tcb) {
+			if(tcb->IRS == seqNr) {
+				Con_Printf("Repeated SYN with same IRS\n");
+				return;
+			} else {
+				Con_Printf("Repeated SYN with diff IRS\n");
+				TCB_Lock(tcb);
+			}
 		} else {
-			TCB_Lock(tcb);
+			ssock = find_server_socket(ntohs(tcpHdr->dstPort));
 		}
 		if (ssock) {
 			tcb = TCB_Alloc();
 			if (!tcb) {
 				Con_Printf("Out of TCB's\n");
-				Tcp_Rst(ipHdr, skb);
 				return;
 			}
 			tcb->rxTimeStampMs = TimeMs_Get();
@@ -815,16 +826,14 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 						      tcpHdr->srcPort);
 			}
 			if (result != true) {
-				DBG(Con_Printf("nobody listening on TCP port %d\n", ntohs(tcpHdr->dstPort)));
+				DBG(Con_Printf("accept failed TCP port %d\n", ntohs(tcpHdr->dstPort)));
 				TCB_Close(tcb);
-				Tcp_Rst(ipHdr, skb);
 				TCB_Unlock(tcb);
 				return;
 			}
 		}
 		if (!tcb) {
-			DBG(Con_Printf("No ssock, sending RST\n"));
-			Tcp_Rst(ipHdr, skb);
+			DBG(Con_Printf("No ssock, ignoring\n"));
 			return;
 		}
 		tcb->srcPort = ntohs(tcpHdr->srcPort);

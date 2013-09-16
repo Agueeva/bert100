@@ -9,6 +9,7 @@
 uint16_t astrtoi16(const char *str);
 uint32_t astrtoi32(const char *str);
 uint64_t astrtoi64(const char *str);
+float astrtof32(const char *str);
 
 /* 
  * Convert an 8 bit interger value to a 2 digit hexnumber, 
@@ -23,4 +24,5 @@ uint8_t uitoa32(uint32_t value, char *buf);
 uint8_t itoa32(int32_t value, char *buf);
 uint8_t uitoa64(uint64_t value, char *buf);
 uint8_t itoa64(int64_t value, char *buf);
+uint8_t f32toa(float value,char *buf,int maxlen);
 uint8_t ishexnum(char *str);

@@ -56,6 +56,7 @@ set_frequency(SiXO *xo,uint32_t freq)
 	int i;
 	uint8_t i2c_result;
 	uint32_t n1,hs_div;
+	uint32_t best_n1,best_hs_div;
 	uint64_t rfreq;
 	uint32_t div;
 	uint32_t fxtal = xo->fXTAL;
@@ -63,29 +64,43 @@ set_frequency(SiXO *xo,uint32_t freq)
 	uint64_t mindco = UINT64_C(4850000000);
 	uint64_t optdco = (maxdco + mindco) >> 1; 
 	uint32_t optDividers = optdco / freq;
+	float dev_factor,best_factor;
+
 	if(freq > xo->maxFreq || freq < xo->minFreq) {
 		return false;
 	}
 	if(freq == xo->outFreq) {
 		return true;
 	}
-//	Con_Printf("Optimal dividers %lu\n",(uint32_t)optDividers);
+	//Con_Printf("Optimal dividers %lu\n",(uint32_t)optDividers);
+	best_factor = 1000;
+	best_n1 = best_hs_div =  0;
 	for(i = 0; i < array_size(hsdiv_tab); i++) {
 		hs_div = hsdiv_tab[i];
 		n1 = optDividers / hs_div;	
-		if((n1 >= 1) && (n1 < 129)) {
-			break;
+		if((n1 < 1) || (n1 > 129)) {
+			continue;
+		}
+		dev_factor = 1.0 * optDividers / (n1 * hs_div);
+		if(dev_factor < 1) {
+			dev_factor = 1 / dev_factor;
+		}
+		if(dev_factor < best_factor) {
+			best_factor = dev_factor;
+			best_n1 = n1;
+			best_hs_div = hs_div;
+			//Con_Printf("opt %f, bestn1 %d, best_hs_div %d\n",best_factor,best_n1,hs_div);
 		}
 	}
-	if(i == array_size(hsdiv_tab)) {
-		Con_Printf("No hsdiv_match\n");
-		return false;
-	}
+	n1 = best_n1; 
+	hs_div = best_hs_div;
 	div = fxtal * hs_div * n1;
 	rfreq = ((1 << 28) * (uint64_t)freq + (fxtal >> 1)) / fxtal * hs_div * n1;
-//	Con_Printf("n1 %lu hsdiv %lu\n",n1,hs_div);
-//	Con_Printf("rfreq %llx\n",rfreq);
-//	SleepMs(100);
+#if 0
+	Con_Printf("n1 %lu hsdiv %lu\n",n1,hs_div);
+	Con_Printf("rfreq %llx\n",rfreq);
+	SleepMs(100);
+#endif
 	/* Now write everything to the I2C registers */
 	buf[0] = FREEZE_DCO;
 	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE_DCO, buf,1);
@@ -185,16 +200,17 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 }
 INTERP_CMD(synthCmd,"synth", cmd_synth, "synth  ?<freq>? # Set/Get frequency of synthesizer");
 
-static void
+static bool 
 PVSynth_SetFreq (void *cbData, uint32_t adId, const char *strP)
 {
 	SiXO *xo = cbData;
 	uint64_t freq;
 	freq = astrtoi32(strP);
 	set_frequency(xo,freq);
+	return true;
 }
 
-static void
+static bool 
 PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	SiXO *xo = cbData;
@@ -202,6 +218,7 @@ PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 		read_frequency(xo,&xo->outFreq);
 	}
 	SNPrintf(bufP,maxlen,"%lu",xo->outFreq);
+	return true;
 }
 
 

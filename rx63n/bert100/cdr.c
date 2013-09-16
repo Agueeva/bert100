@@ -750,7 +750,7 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
 
-void
+bool
 PVReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	const CdrRegister *reg;
@@ -758,14 +758,15 @@ PVReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	uint16_t value;
 	if(adId >= array_size(gCdrRegister)) {
 		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
-		return;
+		return false;
 	}
 	reg = &gCdrRegister[adId];
 	value = Cdr_ReadPart(cdr->phyAddr,reg->regNo,reg->lastBit,reg->firstBit);
         bufP[uitoa16(value,bufP)] = 0;
+	return true;
 }
 
-void
+bool
 PVReg_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	const CdrRegister *reg;
@@ -773,11 +774,12 @@ PVReg_Set(void *cbData, uint32_t adId, const char *strP)
 	uint16_t value;
 	if(adId >= array_size(gCdrRegister)) {
 		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
-		return;
+		return false;
 	}
 	reg = &gCdrRegister[adId];
 	value = astrtoi16(strP);
 	Cdr_WritePart(cdr->phyAddr,reg->regNo,reg->lastBit,reg->firstBit,value);
+	return true;
 }
 
 /**
@@ -785,7 +787,7 @@ PVReg_Set(void *cbData, uint32_t adId, const char *strP)
  * Access to a register in the 256 Byte RX/TX lane private spaces.
  *******************************************************************************
  */
-void
+bool
 PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	const CdrRegister *reg;
@@ -795,14 +797,15 @@ PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	uint16_t lane = adId >> 16;
 	if((regNr >= array_size(gCdrLaneRegister)) || (lane > 3)) {
 		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
-		return;
+		return false;
 	}
 	reg = &gCdrLaneRegister[regNr];
 	value = Cdr_ReadPart(cdr->phyAddr,reg->regNo + (lane << 8),reg->lastBit,reg->firstBit);
         bufP[uitoa16(value,bufP)] = 0;
+	return true;
 }
 
-void
+bool
 PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	const CdrRegister *reg;
@@ -812,11 +815,12 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 	uint16_t lane = adId >> 16;
 	if((regNr >= array_size(gCdrLaneRegister)) || (lane > 3)) {
 		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
-		return;
+		return false;
 	}
 	reg = &gCdrRegister[regNr];
 	value = astrtoi16(strP);
 	Cdr_WritePart(cdr->phyAddr,reg->regNo + (lane << 8),reg->lastBit,reg->firstBit,value);
+	return true;
 }
 
 /*

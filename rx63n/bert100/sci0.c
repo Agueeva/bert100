@@ -23,7 +23,7 @@
 #define TXFIFO_SIZE	(16)
 #define TXFIFO_RP(uart) ((uart)->txbuf_rp & (TXFIFO_SIZE-1))
 #define TXFIFO_WP(uart) ((uart)->txbuf_wp & (TXFIFO_SIZE-1))
-#define TXFIFO_CNT(uart) ((uart)->txbuf_wp - (uart)->txbuf_rp)
+#define TXFIFO_CNT(uart) (((uart)->txbuf_wp - (uart)->txbuf_rp) % (TXFIFO_SIZE << 1))
 
 typedef struct Sci0 {
 	Sci0SinkProc *dataSinkProc; /**< The data sink for received data. */
@@ -327,13 +327,12 @@ Sci0_Init(uint32_t baudrate)
 	SCI0.SCR.BIT.RE = 0;
 	SCI0.SCR.BIT.TE = 0;
 
-
-	
 	MPC.P21PFS.BIT.PSEL = 0x0a;
 	MPC.P20PFS.BIT.PSEL = 0x0a;
 	BSET(0,PORT2.PDR.BYTE);
 	BSET(1,PORT2.PDR.BYTE);
 	PORT2.PMR.BYTE |= 3;
+
 	//BSET(1, PORT2.ICR.BYTE);
 
 	if (baudrate >= 57600) {

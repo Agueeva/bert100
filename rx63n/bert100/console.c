@@ -152,6 +152,18 @@ Con_PrintToVA(PrintCharProc * printChar, void *cbData, const char *format, va_li
 				    }
 				    rightpad(&pfs, printChar, len);
 				    pfs.state = PRINTF_STATE_IDLE;
+			    } else if ((c == 'f')) {
+				    uint8_t len;
+				    union {
+			 	    	float fval;
+				    	uint32_t val;
+				    } val;
+				    val.val = va_arg(ap, uint32_t);
+				    len = f32toa(val.fval, str,sizeof(str));
+
+				    for (i = 0; i < len; i++) {
+					    printChar(cbData, str[i]);
+				    }
 			    } else if ((c == 'd') || (c == 'u')) {
 				    uint8_t len = 0;
 				    uint64_t value;

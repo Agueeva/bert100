@@ -59,8 +59,8 @@ typedef struct I2C_Master {
 
 static I2C_Master gI2cm[2];
 
-static uint8_t i2c_delay = 8;
-static uint8_t i2c_fast_delay = 8;
+static uint8_t i2c_delay = 10;
+static uint8_t i2c_fast_delay = 10;
 static uint8_t i2c_lsdelay = 40;
 
 INLINE void

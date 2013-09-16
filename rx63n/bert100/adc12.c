@@ -46,14 +46,15 @@ int16_t ADC12_Read(int channel)
     return adc_value;
 }
 
-static void
+static bool 
 PVAdc12_SetRaw (void *cbData, uint32_t adId, const char *strP)
 {
 	ADCChan *ch = cbData;
 	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
+	return false;
 }
 
-static void
+static bool 
 PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
@@ -62,6 +63,7 @@ PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	rawAdval = ADC12_Read(ch->channelNr);
 	cnt = uitoa16(rawAdval,bufP);		
 	bufP[cnt] = 0;
+	return true;
 }
 
 /**
@@ -73,11 +75,18 @@ static int8_t
 cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 {
 	int channel;
+	char buf[30];
 	if(argc < 2) {
 		return -EC_BADNUMARGS;
 	}
 	channel = astrtoi16(argv[1]);	
 	Con_Printf("ADVAL: %u\n",ADC12_Read(channel));
+	buf[f32toa(1.23456,buf,sizeof(buf))] = 0;
+	Con_Printf("Buf \"%s\"\n",buf);
+	buf[f32toa(-1.00123,buf,sizeof(buf))] = 0;
+	Con_Printf("Buf \"%s\"\n",buf);
+	buf[f32toa(4290967290.5,buf,sizeof(buf))] = 0;
+	Con_Printf("Buf \"%s\"\n",buf);
 	return 0;
 }
 
