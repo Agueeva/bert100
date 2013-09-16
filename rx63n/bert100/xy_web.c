@@ -729,7 +729,6 @@ WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t l
 		if ((j & 0x3f) == 0x3f) {
 			EV_Yield();
 		}
-		Con_Printf("%c",buf[j]);
 	}
 	wc->reqbuf[wc->reqbuf_wp] = 0;	// we kept one byte for termination 
 	EV_Yield();
