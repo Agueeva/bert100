@@ -74,6 +74,7 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,uint32_t adId
 {
         PVar *pvar;
 	char printfBuf[42];
+	const char *varname;
         PVarTable *pvt = &g_PVarTable;
         va_list ap;
         StrHashEntry *she;
@@ -81,12 +82,18 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,uint32_t adId
         VSNPrintf(printfBuf,array_size(printfBuf),format,ap);
         va_end(ap);
         pvar = PVar_Find(printfBuf);
+	if(strcmp(printfBuf,format) == 0) {
+		/* This saves probably from making a copy from flash to RAM */
+		varname = format;	
+	} else {
+		varname = printfBuf;
+	}
         if(pvar) {
 		Con_Printf("Variable already exists");
                 return pvar;
         }
 	Mutex_Lock(&pvt->lock);
-        she = StrHash_CreateEntry(pvt->varHashTable,printfBuf);
+        she = StrHash_CreateEntry(pvt->varHashTable,varname);
         if(!she) {
                 while(1) {
                         Con_Printf("Can not create string hash entry\n");
