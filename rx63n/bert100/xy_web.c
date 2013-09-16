@@ -73,6 +73,9 @@ typedef struct WebPageRegistration {
 	XYWebAuthInfo *authInfo;
 } WebPageRegistration;
 
+
+#define WS_TCP_MAX_WIN_SZ 500
+
 #define WSMSGS_OPC	(0)
 #define WSMSGS_PLLB	(1)
 #define WSMSGS_PLL16HI	(2)
@@ -92,8 +95,8 @@ typedef struct WebPageRegistration {
 #define WSMSGS_PAYLOAD	(16)
 #define WSMSGS_IGNORE	(17)
 
-#define WS_OUTBUF_SIZE	(1024)
-#define WS_INBUF_SIZE	(1024)
+#define WS_OUTBUF_SIZE	(1536)
+#define WS_INBUF_SIZE	(512)
 
 /**
  ****************************************************************
@@ -140,7 +143,7 @@ struct WebSocket {
 	uint8_t inBuf[WS_INBUF_SIZE];
 };
 
-static void WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t len);
+static uint16_t WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t len);
 static struct Tcb_Operations websockTcbOps;
 static struct Tcb_Operations fileTcbOps;
 
@@ -703,7 +706,7 @@ Feed_PostData(WebCon * wc, const uint8_t * data, uint16_t len, uint16_t flags)
  * receive a request
  ***********************************************************
  */
-static void
+static uint16_t 
 WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t len)
 {
 	WebCon *wc = (WebCon *) eventData;
@@ -712,14 +715,14 @@ WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t l
 	old_wp = wc->reqbuf_wp;
 	if (wc->http_state == HTS_POST) {
 		Feed_PostData(wc, buf, len, 0);
-		return;
+		return len;
 	} else if (wc->http_state == HTS_GET) {
-		return;
+		return len;
 	}
 	for (j = 0; j < len; j++) {
 		if (wc->reqbuf_wp == (REQBUFLEN - 1)) {
 			Tcp_Close(wc->tcb);
-			return;
+			return len;
 		}
 		wc->reqbuf[wc->reqbuf_wp] = buf[j];
 		wc->reqbuf_wp++;
@@ -743,7 +746,7 @@ WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t l
 						Feed_PostData(wc, (uint8_t *) wc->reqbuf + j,
 							      wc->reqbuf_wp - j - 1, POST_FLG_START);
 					}
-					return;
+					return len;
 				}
 			}
 			if (wc->linec < (MAX_VARS - 1)) {
@@ -753,7 +756,7 @@ WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t l
 			wc->linev[wc->linec] = wc->reqbuf + j;
 		}
 	}
-	return;
+	return len;
 }
 
 /**
@@ -801,6 +804,7 @@ WebServ_DataSrc(void *eventData, uint32_t fpos, void **_buf, uint16_t maxlen)
 			//Con_Printf("\nHandover to WebSocket Server\n");
 			ws->tcb = wc->tcb;
 			Tcb_RegisterOps(ws->tcb, &websockTcbOps, ws);
+			Tcb_SetMaxWinSize(ws->tcb,WS_TCP_MAX_WIN_SZ);
 			ws->handoverWc = wc;
 			//WebCon_Free(wc);
 			//WebSocket_SendMsg(ws,WSOP_TEXT,"Kasper hat Geburtstag",21) ;
@@ -826,24 +830,28 @@ WebSocket_AllocObufSpace(WebSocket * ws, uint16_t size)
 	uint8_t *buf;
 	if (ws->outbuf_wp < ws->outbuf_una) {
 		if ((ws->outbuf_wp + size) > ws->outbuf_una) {
-			return NULL;
+			buf = NULL;
 		} else {
-			return ws->outBuf + ws->outbuf_wp;
+			buf = ws->outBuf + ws->outbuf_wp;
 		}
 	} else if ((ws->outbuf_wp + size) >= WS_OUTBUF_SIZE) {
 		if (size > ws->outbuf_una) {
 			/* temporarily failed;  */
-			return NULL;
+			buf = NULL;
 		} else {
 			ws->outbuf_wrap_pt = ws->outbuf_wp;
 			//ws->outbuf_wp = size;
 			ws->outbuf_wp = 0;
-			return ws->outBuf;
+			buf = ws->outBuf;
 		}
 	} else {
 		buf = ws->outBuf + ws->outbuf_wp;
-		return buf;
 	}
+#if 0
+	Con_Printf("sz %u, obwp %u, wpt %u, una %u, ofs %lu, buf %lu\n",
+		size,ws->outbuf_wp,ws->outbuf_wrap_pt,ws->outbuf_una,buf - ws->outBuf,buf);
+#endif
+	return buf;
 }
 
 void
@@ -1466,7 +1474,7 @@ WebSocket_MsgEval(WebSocket * ws, uint8_t opc, uint8_t * data, uint16_t len)
  *******************************************************************************
  */
 
-static void
+static uint16_t
 WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * data, uint16_t len)
 {
 	uint16_t i;
@@ -1540,7 +1548,7 @@ WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * data, uint16_
 			    if (data[i]) {
 				    Con_Printf("Ignoring monster messages because of RAM size\n");
 				    // trigger a close is missing here;     
-				    return;
+				    return len;
 			    }
 			    break;
 
@@ -1580,7 +1588,7 @@ WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * data, uint16_
 				    ws->inbuf_wp++;
 			    } else {
 				    Con_Printf("Input buffer overflow\n");
-				    return;
+				    return len;
 			    }
 			    ws->msg_plrcvd++;
 			    if (ws->msg_plrcvd == ws->msg_pllen) {
@@ -1592,6 +1600,7 @@ WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * data, uint16_
 			    break;
 		}
 	}
+	return len;
 }
 
 /**
