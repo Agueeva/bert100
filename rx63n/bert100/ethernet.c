@@ -728,12 +728,12 @@ Ethernet_Init(EthDriver *drv)
 	/* Check the broadcast bit */
 	//if(eth->if_mac[0] & 1) {
 		//Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
-		eth->if_mac[0] = 0x00;
-		eth->if_mac[1] = 0x05;
-		eth->if_mac[2] = 0x51;
-		eth->if_mac[3] = 0x03;
-		eth->if_mac[4] = 0x71;
-		eth->if_mac[5] = 0xe3;
+		eth->if_mac[0] = 0xbe;
+		eth->if_mac[1] = 0x77;
+		eth->if_mac[2] = 0xc6;
+		eth->if_mac[3] = 0x4d;
+		eth->if_mac[4] = 0x30;
+		eth->if_mac[5] = 0x8a;
 	//}
 	eth->drv = drv;
 	drv->regPktSink(drv,Eth_PktRx,eth);
