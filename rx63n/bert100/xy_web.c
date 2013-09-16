@@ -729,6 +729,7 @@ WebServ_DataSink(void *eventData, uint32_t fpos, const uint8_t * buf, uint16_t l
 		if ((j & 0x3f) == 0x3f) {
 			EV_Yield();
 		}
+		Con_Printf("%c",buf[j]);
 	}
 	wc->reqbuf[wc->reqbuf_wp] = 0;	// we kept one byte for termination 
 	EV_Yield();
@@ -1690,7 +1691,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
-	XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	//XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	if(labviewPortNr >= 0) {
 		XY_NewLabviewServer(wops,labviewPortNr);
 	}
