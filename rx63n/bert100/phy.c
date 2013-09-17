@@ -19,7 +19,7 @@
 #define PIR_MMD	(1 << 1)	/* 1 == Write, 0 == Read */
 #define PIR_MDO	(1 << 2)
 #define PIR_MDI	(1 << 3)
-#define PHY_ADDR	(31)
+#define PHY_ADDR	(1)
 
 #define phy_delay() DelayNs(200)
 

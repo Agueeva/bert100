@@ -962,7 +962,7 @@ UsbStor_HandleScsiCmd(UsbStor * us, uint8_t * cmdblock, uint16_t word)
 		    break;
 
 	    case SC_PREV_ALLOW_REMOVAL:
-		    dbgprintf("SC_PREV_ALLOW_REMOVAL\n");
+		    //dbgprintf("SC_PREV_ALLOW_REMOVAL\n");
 		    csws = UsbStor_SCPrevAllowRemoval(us, cmdblock);
 		    break;
 
@@ -1140,15 +1140,15 @@ Usb_GetStringDescr(void *evData, uint8_t epNr, UsbSetupBuffer * sb)
 		    break;
 
 	    case 1:		/* iManufacturer        */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "Neutronics", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "Munich-Instruments", maxlen);
 		    break;
 
 	    case 2:		/* iProductId           */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "Bert100", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "C-Bert", maxlen);
 		    break;
 
 	    case 3:		/* iSerialNumber        */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "ERNIE4711AQ", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, "00000000001", maxlen);
 		    break;
 
 	    case 4:		/* iConfiguration       */
