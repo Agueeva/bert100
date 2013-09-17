@@ -77,16 +77,16 @@ blinkProc(void *eventData)
 	static uint8_t toggle = 0;
 	Timer_Start(&blinkTimer,500);
 	toggle ^= 1;
- 	BMOD(5,PORTA.PODR.BYTE,toggle);
 #ifdef  BOARD_SAKURA
  	BSET(0,PORTA.PDR.BYTE);
  	BMOD(0,PORTA.PODR.BYTE,toggle);
+#else 
+ 	BMOD(5,PORTA.PODR.BYTE,toggle);
 #endif
- //	BMOD(6,PORT8.PODR.BYTE,toggle);
 }
 
-
-int main(void)
+int 
+main(void)
 {
 
 	Interp *interp;
@@ -103,13 +103,15 @@ int main(void)
  	* USB host VBus Power enable
  	***********************************************
  	*/
- 	BSET(6,PORT1.PDR.BYTE);
- 	BSET(6,PORT1.PODR.BYTE);
+ 	//BSET(6,PORT1.PDR.BYTE);
+ 	//BSET(6,PORT1.PODR.BYTE);
 
+#if 0 
  	BSET(3,PORT0.PDR.BYTE);
  	BCLR(3,PORT0.PODR.BYTE);
  	BSET(5,PORT0.PDR.BYTE);
  	BCLR(5,PORT0.PODR.BYTE);
+#endif
 
 	/* Alive LED */
 	BSET(5,PORTA.PDR.BYTE);
@@ -119,6 +121,7 @@ int main(void)
 	TPOS_Init();
 	Timers_Init();
 	Sci0_Init(115200);
+	DelayUs(300);
 	interp = Interp_Init(Con_OutStr, Con_PrintVA);
 	editor = Editor_Init(Interp_Feed, interp);
 	Con_RegisterSink(Editor_Feed, editor);

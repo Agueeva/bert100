@@ -790,13 +790,18 @@ SDCard_Init(SDCard * sdc)
 		if (SDCard_ACmd41(sdc) != 1) {
 			break;
 		}
+		SDCard_Lock(sdc);
 		SleepMs(10);
+		SDCard_Unlock(sdc);
 	}
 	/* CMD58 (Read OCR) is needed a second time to update OCR_CCS */
 	SDCard_Cmd58(sdc);
 	if (SDCard_Cmd16(sdc) != SPIR1_NOREPLY) {
 		Timer_Start(&sdc->pluggedTimer, 500);
 		sdc->status = 0;
+		SDCard_Lock(sdc);
+		SleepMs(100);
+		SDCard_Unlock(sdc);
 		return true;
 	} else {
 		Con_Printf("SD-Card Init failed\n");
