@@ -13,32 +13,32 @@
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
-#define SYNC_DIROUT	BSET(5,PORTC.PDR.BYTE)
-#define SYNC_HIGH	BSET(5,PORTC.PODR.BYTE)
-#define SYNC_LOW	BCLR(5,PORTC.PODR.BYTE)	
+#define SYNC_DIROUT	BSET(0,PORT5.PDR.BYTE)
+#define SYNC_HIGH	BSET(0,PORT5.PODR.BYTE)
+#define SYNC_LOW	BCLR(0,PORT5.PODR.BYTE)	
 
-#define SDI_DIROUT	BSET(3,PORTC.PDR.BYTE)
-#define SDI_HIGH	BSET(3,PORTC.PODR.BYTE)	
-#define SDI_LOW		BCLR(3,PORTC.PODR.BYTE)
+#define SDI_DIROUT	BSET(6,PORTC.PDR.BYTE)
+#define SDI_HIGH	BSET(6,PORTC.PODR.BYTE)	
+#define SDI_LOW		BCLR(6,PORTC.PODR.BYTE)
 
-#define SCLK_DIROUT	BSET(2,PORTC.PDR.BYTE)
-#define SCLK_HIGH	BSET(2,PORTC.PODR.BYTE)
-#define SCLK_LOW	BCLR(2,PORTC.PODR.BYTE)
+#define SCLK_DIROUT	BSET(1,PORT5.PDR.BYTE)
+#define SCLK_HIGH	BSET(1,PORT5.PODR.BYTE)
+#define SCLK_LOW	BCLR(1,PORT5.PODR.BYTE)
 
-#define SDO_DIRIN	BCLR(4,PORTC.PDR.BYTE)
-#define SDO_READ	PORTC.PIDR.BIT.B4	
+#define SDO_DIRIN	BCLR(5,PORTC.PDR.BYTE)
+#define SDO_READ	PORTC.PIDR.BIT.B5	
 
-#define RESET_DIROUT	BSET(6,PORTC.PDR.BYTE)
-#define RESET_HIGH	BSET(6,PORTC.PODR.BYTE)
-#define RESET_LOW	BCLR(6,PORTC.PODR.BYTE)
+#define RESET_DIROUT	BSET(2,PORTC.PDR.BYTE)
+#define RESET_HIGH	BSET(2,PORTC.PODR.BYTE)
+#define RESET_LOW	BCLR(2,PORTC.PODR.BYTE)
 
-#define CLR_DIROOUT	BSET(1,PORT5.PDR.BYTE)
-#define CLR_HIGH	BSET(1,PORT5.PODR.BYTE)
-#define CLR_LOW		BCLR(1,PORT5.PODR.BYTE)
+#define CLR_DIROUT	BSET(3,PORTC.PDR.BYTE)
+#define CLR_HIGH	BSET(3,PORTC.PODR.BYTE)
+#define CLR_LOW		BCLR(3,PORTC.PODR.BYTE)
 
-#define LDAC_DIROUT	BSET(0,PORT5.PDR.BYTE)
-#define LDAC_HIGH	BSET(0,PORT5.PODR.BYTE)
-#define LDAC_LOW	BCLR(0,PORT5.PODR.BYTE)
+#define LDAC_DIROUT	BSET(4,PORTC.PDR.BYTE)
+#define LDAC_HIGH	BSET(4,PORTC.PODR.BYTE)
+#define LDAC_LOW	BCLR(4,PORTC.PODR.BYTE)
 
 #define NR_CHANNELS	(32)
 
@@ -288,6 +288,9 @@ static bool
 DAC_Set(uint8_t chNr,float value)
 {
 	int32_t inputCode = ((value * 65536 + 10) / 20) + 32768;  		
+	if(chNr > 31) {
+		return false;
+	}
 	if(inputCode > 65535) {
 		if(inputCode > 65540) {
 			return false;
@@ -315,25 +318,56 @@ DAC_Get(uint8_t chNr,float *valRet)
 	uint16_t C = 32768;
 	int32_t dacCode;
 	int32_t offsCode = 8192;
+	if(chNr > 31) {
+		*valRet = 0;
+		return false;
+	}
 	inputCode = AD537x_Readback(0,channelAddr); /* Read X1A of channel */
 	dacCode = (int64_t)inputCode * ((uint32_t)M + 1) / 65536 + C - 32768;
 	anaVOut = (4 * 5.0 * (dacCode - (offsCode * 4))) / 65536 /* + ad->anaVSigGnd */;
 	*valRet = anaVOut;
 	return true;
 }
+static int8_t
+cmd_dac(Interp *interp,uint8_t argc, char *argv[]) 
+{
+	float val;	
+	bool result;
+	uint8_t channel;
+	if(argc == 3) {
+		channel = astrtoi16(argv[1]);
+		val = astrtof32(argv[2]);
+	 	result = DAC_Set(channel,val);
+		if(result == false) {
+			Con_Printf("Failed to set DAC %u\n",channel);
+			return 0;
+		} else {
+			return 0;
+		}
+	} else if(argc == 2) {
+		channel = astrtoi16(argv[1]);
+		result = DAC_Get(channel,&val);
+		if(result == true) {
+			Con_Printf("DAC Ch%u: %f\n",channel,val);
+		} else {
+			Con_Printf("DAC Ch%u not readable\n",channel);
+		}
+		return 0;
+	}
+	return -EC_BADNUMARGS;
+}
 
 static int8_t
-cmd_dacr(Interp *interp,uint8_t argc,char *argv[])
+cmd_dacrreset(Interp *interp,uint8_t argc,char *argv[])
 {
 	RESET_LOW;
-	//_delay_us(1);
+	DelayNs(1000);
 	RESET_HIGH;
-	//_delay_us(300);
 	return 0;
 }
 
 static int8_t
-cmd_dac(Interp *interp,uint8_t argc,char *argv[])
+cmd_dacreg(Interp *interp,uint8_t argc,char *argv[])
 {
 	uint8_t i;
 	uint8_t channel;
@@ -478,7 +512,7 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 	return 0;
 }
 
-INTERP_CMD(dacCmd, "dac", cmd_dac,
+INTERP_CMD(dacregCmd, "dacreg", cmd_dacreg,
            "dac <regname> ?<channel>? ?<value>? # ");
 
 INTERP_CMD(dacxCmd, "dacx", cmd_dacx,
@@ -490,8 +524,11 @@ INTERP_CMD(daccCmd, "dacc" , cmd_dacc,
 INTERP_CMD(dacmCmd, "dacm", cmd_dacm,
            "dacm <channel> <value> # ");
 
-INTERP_CMD(dacrCmd, "dacr", cmd_dacr,
-           "dacr                   # reset dac");
+INTERP_CMD(dacresetCmd, "dacreset", cmd_dacrreset,
+           "dacrreset                   # reset dac");
+
+INTERP_CMD(dacCmd, "dac", cmd_dac,
+           "dacr                  # write to dac");
 
 static bool 
 PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
@@ -531,7 +568,7 @@ AD537x_Init(const char *name)
 	SDO_DIRIN;
 
 	CLR_HIGH;
-	CLR_DIROOUT;
+	CLR_DIROUT;
 
 	LDAC_HIGH;
 	LDAC_DIROUT;
@@ -552,9 +589,10 @@ AD537x_Init(const char *name)
 	LDAC_LOW;
 	LDAC_DIROUT;
 
-	Interp_RegisterCmd(&dacCmd);
+	Interp_RegisterCmd(&dacregCmd);
 	Interp_RegisterCmd(&dacxCmd);
 	Interp_RegisterCmd(&daccCmd);
 	Interp_RegisterCmd(&dacmCmd);
-	Interp_RegisterCmd(&dacrCmd);
+	Interp_RegisterCmd(&dacCmd);
+	Interp_RegisterCmd(&dacresetCmd);
 }

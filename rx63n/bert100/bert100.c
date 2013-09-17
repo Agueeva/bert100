@@ -77,7 +77,7 @@ blinkProc(void *eventData)
 	static uint8_t toggle = 0;
 	Timer_Start(&blinkTimer,500);
 	toggle ^= 1;
- 	BMOD(3,PORT0.PODR.BYTE,toggle);
+ 	BMOD(5,PORTA.PODR.BYTE,toggle);
 #ifdef  BOARD_SAKURA
  	BSET(0,PORTA.PDR.BYTE);
  	BMOD(0,PORTA.PODR.BYTE,toggle);
@@ -111,9 +111,8 @@ int main(void)
  	BSET(5,PORT0.PDR.BYTE);
  	BCLR(5,PORT0.PODR.BYTE);
 
-	/* Backlight LCD */
- 	BSET(6,PORT8.PDR.BYTE);
- //	BSET(6,PORT8.PODR.BYTE);
+	/* Alive LED */
+	BSET(5,PORTA.PDR.BYTE);
 
 	ConfigureClocks();
 	Threads_Init();
