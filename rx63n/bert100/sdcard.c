@@ -800,7 +800,7 @@ SDCard_Init(SDCard * sdc)
 		Timer_Start(&sdc->pluggedTimer, 500);
 		sdc->status = 0;
 		SDCard_Lock(sdc);
-		SleepMs(100);
+		SleepMs(200);
 		SDCard_Unlock(sdc);
 		return true;
 	} else {
