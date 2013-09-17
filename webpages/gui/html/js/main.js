@@ -33,42 +33,38 @@ var newUrl = "";
 var pageLoading = false;
 var timeout;
 function laodpage(url,id) {
+           //$(id).stop();
+           //$("#content div").stop();
+           $(id).hide();
+           $("#content div").show();
+
            if (pageLoading) {
-                  requestToRelaod=true;
-                  newUrl = url;
-                  return;
+                      clearTimeout (timeout);
+                      pageLoading = false;
+                      requestToRelaod = true;
+                     //laodpage(url,id);
+                    // return;
            }
-           $("#content div").fadeIn(200);
-           $(id).stop().fadeOut(200);
+
            pageLoading = true;
            timeout = setTimeout(function(){
-                      $(id).hide();
-                      if (requestToRelaod) {
-                                 pageLoading = false;
-                                 requestToRelaod = false;
-                                 clearTimeout (timeout);
-                                 laodpage(newUrl,id);
-                                 return;
-                      }
 		      $(id).attr("src",url);
                       $(id).load(function() {
-                                 pageLoading = false;
-                                 if (requestToRelaod) {
-                                            requestToRelaod = false;
-                                            clearTimeout (timeout);
-                                            laodpage(newUrl,id);
-                                            return;
+                                 if (!requestToRelaod) {
+                                            $(id).fadeIn(200);
+                                            $("#content div").fadeOut(200);
+                                            setTimeout(function(){
+                                                       pageLoading = false;
+                                            },210);
                                  }else{
-                                      $(id).fadeIn(200);
-                                      $("#content div").fadeOut(200);
-                                      window_onload();
+                                            requestToRelaod=false;
+                                            window_onload();
                                  }
                        });
 		      },210);
            return;
 
 }
-
 /**---------------------TreeMenu---------------------------
 /**
 * This function creates a simple tree menu out of a "ul" list.
@@ -98,22 +94,25 @@ function laodpage(url,id) {
 var selected = null;
 function createTreeMenu(id) {
            // go over tree to setup classes
+           $("#"+id).parent().addClass("category")
            $("#"+id+" li").each(function(index) {
                       //console.log(index);
                       var $$ = $(this);
                       $$.addClass("item");
-                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");
+                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");          
            });
-
+           
+           $("#"+id+" li:first").addClass("selected");
+           
            //hide all sub entries
-           $("#"+id).find("ul").css("display", "none");
-
+           $("#"+id).find("ul").hide();
+      
            $("#"+id+" .category > a").click(function() {
                       var $$ = $(this).parent();
 		      var childid = $$.find("ul:first");
                       // open/close a entry
                       if ($(childid).css("display") == "none") {
-                                 $(childid).fadeIn();
+                                 $(childid).fadeIn(200);
                                 // $(childid).css("display", "block");
                       }else{
                                  $(childid).hide();
@@ -126,12 +125,12 @@ function createTreeMenu(id) {
                                  $$.removeClass("cat_open").addClass("cat_close");
                       }
 		});
-
+           
            $("#"+id+" .item > a").click(function() {
-                      $("#treemenu .selected").removeClass("selected");
-                      $(this).addClass("selected");
+                      $("#"+id+" .selected").removeClass("selected").addClass("item");
+                      $(this).parent().removeClass("item");
+                      $(this).parent().addClass("selected");
            });
-           //$(id).hide();
 }
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
@@ -195,7 +194,7 @@ case 2:
 default:
 
 }
-  
+
 }
 
 

@@ -1,8 +1,7 @@
 * { margin: 0; padding: 0; }
-body { font: 14px Georgia, serif;}
-
-#page-wrap {
-    margin: 40px auto; color: white;
+body {
+    font: 14px Arial, serif;
+    overflow:hidden;
 }
 
 #page-wrap > div {
@@ -11,46 +10,57 @@ body { font: 14px Georgia, serif;}
 
 #wrapper_all{
     position: relative;
-    left:10px;
-    width: 98%;
-    height: 90%;
+    height: 100%;
+    margin:  10px 10px 10px 10px;
 }
 
 #header {
     padding: 0 0 0 0 !important;
     position: relative;
     width: 100%;
- 
+    eight: 90px;
     box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
-    background-image: url(../img/header_raw_loop.jpg);
-    background-color: rgb(1,1,1);
-    background-repeat:repeat;
-    background-size:9px 100px;
+    background: url(../img/header_loop.jpg); 
+    background-color: #00aeeb;
+    background-position: 63px 0;
+    border-radius: 10px;
     overflow:hidden;
 }
 
+#companylogo{
+    position: absolute;
+    right:0;
+    bottom:-17px;
+    
+}
 
-#header img {
+#logo {
 
     position:relative;
     top:0;
-    left:0;
-    height: 100px;
+    right:0;
+    height: 90px;
 }
 
 #wrapper{
-    position: relative;
-    top:5px;
+    position: absolute;
+    width: 100%;
+    top: 100px;
+    bottom: 20px;
     display: block;
-    height: 80%;
+    border-radius: 10px;
+    overflow:hidden;
 }
 
 #menu {
-    position: relative;
-    width: 300px;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 200px;
     float: left;
-    background: #bbffff;
+    background: url(../img/menu_bg.jpg) no-repeat;
+    background-position: -440px -170px;
+    background-color: #00aeeb;
     box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
     overflow:hidden
 }
@@ -59,28 +69,43 @@ body { font: 14px Georgia, serif;}
     position: relative;
     padding: 4px 2px 2px 0 !important;
     width: 100%;
+}
 
+#menu a{
+    text-decoration:none;
+    font-weight:bold;
+    color:#FFFFFF;
+    
 }
 
 #content {
-    position:relative;
-    margin-left: 300px;
-    margin-right: 3px;
-    
-    height: 100%;
+    position:absolute;
+    left:200px;
+    right:1px;
+    top: 0;
+    bottom: 0;
+    background: url(../img/content_loop.jpg); 
 
-    left:4px;
-    background: #d9ffff;
+    border-style:solid;
+    border-width:5px;
+    border-color:#00aeeb;
     box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.4);
     overflow:hidden;
 
 }
 
-#content div{
+#c_bert_bg{
     position:absolute;
-    top:50%;
-    left:50%;
-    margin:-150px 20 20 -150px;
+    bottom: 0;
+    right:0;
+    height:100px;
+}
+
+#content div{
+    position:relative;
+    width: 220px;
+    top:50px;
+    margin:0 auto;
 }
 #frame{
 
@@ -90,6 +115,13 @@ body { font: 14px Georgia, serif;}
     border:0;
     overflow-x:auto;
     overflow-y:auto;
+}
+
+#menubg{
+     position:absolute;
+     top:-40px;
+     left:-400px;
+    
 }
 /* TREE MENU*/
 ul.menu, .item-list ul {
@@ -103,16 +135,33 @@ ul.menu, .item-list ul {
     padding: 0 0 2px 18px;
     list-style-type: none;
     list-style-image: none;
+   
     background: url(../img/item.png) no-repeat 0 2px; 
     background-repeat:no-repeat;
     background-position:left top;
-}
 
-.selected {
     text-decoration:none;
     font-weight:bold;
-    color:#2e82ff;
-    }
+    color:#FFFFFF;
+}
+
+.selected{
+    position:relative;
+    left:0px;
+    padding: 0 0 2px 18px;
+    list-style-type: none;
+    list-style-image: none;
+   
+    background: url(../img/item_selected.png) no-repeat 0 2px; 
+    background-repeat:no-repeat;
+    background-position:left top;
+    
+    font-weight:bold;
+    text-decoration:underline;
+    color:#FFFFFF;
+    text-shadow: 0 1px 2px #000000,
+    0 0 1px #000000;  
+}
 
 .cat_close {
     position:relative;
@@ -120,6 +169,7 @@ ul.menu, .item-list ul {
     padding: 0 0 0px 18px;
     list-style-type: none;
     list-style-image: none;
+    color:#fff7b3;
     background-image:url(../img/closed.png);
     background-repeat:no-repeat;
     background-position:left top;
@@ -135,6 +185,9 @@ ul.menu, .item-list ul {
     background-position:left top;
 }
 
-a.item, a.cat_close, a.cat_open {
-    text-decoration:none;
+.category a{
+    font-weight:bold;
+    color:#FFFFFF;
+    text-decoration:none;  
 }
+
