@@ -575,7 +575,7 @@ Tcp_Send(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 static void
 Tcp_SendData(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 {
-	if (dataLen > 256) {
+	if (dataLen > 128) {
 		uint16_t half = dataLen >> 1;
 		Tcp_Send(tcb, flags, dataP, half);
 		Tcp_Send(tcb, flags, dataP + half, dataLen - half);
@@ -1027,9 +1027,9 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			return;
 		}
 		if (missing < tcb->currDataLen) {
-			tcb->currDataLen -= missing;
-			tcb->currDataP += missing;
+			tcb->currDataP += (tcb->currDataLen - missing);
 			tcb->currDataSeqNr = ackNr;
+			tcb->currDataLen = missing;
 
 //                      Con_Printf("Partial %lu, UNA %lu, NXT %lu\n",ackNr,tcb->SND_UNA,tcb->SND_NXT);
 			tcb->SND_UNA = ackNr;

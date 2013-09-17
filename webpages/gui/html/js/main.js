@@ -5,9 +5,11 @@
   var myVarDrTr= new Array("synth0.freq");
   var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';
      var socket = new WebSocket(urlWS);
+     function keepAlive() {
+          socket.send(JSON.stringify({get: "test.var1"}));
+     }
      socket.onopen = function() {
-		//alert('Verbindung aufgebaut');
-
+	     setInterval(keepAlive,30000);
      };
      socket.onclose = function() {
 		alert('Verbindung unterbrochen');

@@ -1690,7 +1690,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
-	XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	//XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
 	if(labviewPortNr >= 0) {
 		XY_NewLabviewServer(wops,labviewPortNr);
 	}
