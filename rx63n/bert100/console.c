@@ -164,6 +164,7 @@ Con_PrintToVA(PrintCharProc * printChar, void *cbData, const char *format, va_li
 				    for (i = 0; i < len; i++) {
 					    printChar(cbData, str[i]);
 				    }
+				    pfs.state = PRINTF_STATE_IDLE;
 			    } else if ((c == 'd') || (c == 'u')) {
 				    uint8_t len = 0;
 				    uint64_t value;
