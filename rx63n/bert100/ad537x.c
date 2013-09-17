@@ -54,39 +54,47 @@ typedef struct ReadbackVar {
         uint8_t nrArgs;
 } ReadbackVar;
 
-const char *dac0ChannelName[NR_CHANNELS] = {
-	"ModBias1",	
-	"ModBias2",	
-	"ModBias3",	
-	"ModBias4",	
-	"Vg11",
-	"Vg12",
-	"Vg13",
-	"Vg14",
-	"Vg21",
-	"Vg22",
-	"Vg23",
-	"Vg24",
-	"Vg31",
-	"Vg32",
-	"Vg33",
-	"Vg34",
-	"Vd11",
-	"Vd12",
-	"Vd13",
-	"Vd14",
-	"Vd21",
-	"Vd22",
-	"Vd23",
-	"Vd24",
-	"VS1",
-	"VS2",
-	"VS3",
-	"VS4",
-	"Res28",
-	"Res29",
-	"Res30",
-	"Res31",
+typedef struct DacAlias {
+	const char *name;
+	uint8_t flags;
+} DacAlias;
+
+#define FLG_READABLE 	(1)
+#define FLG_WRITABLE 	(2)
+
+const DacAlias dac0AliasesEml[NR_CHANNELS] = {
+	{NULL,0},
+	{NULL,0},
+	{NULL,0},
+	{NULL,0},
+	{"emlAmp1.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp2.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp3.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp4.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp1.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp2.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp3.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"emlAmp4.vg2", FLG_READABLE | FLG_WRITABLE },
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{"emlAmp1.vd1", FLG_READABLE },
+	{"emlAmp2.vd1", FLG_READABLE },
+	{"emlAmp3.vd1", FLG_READABLE },
+	{"emlAmp4.vd1", FLG_READABLE },
+	{"emlAmp1.vd2", FLG_READABLE },
+	{"emlAmp2.vd2", FLG_READABLE },
+	{"emlAmp3.vd2", FLG_READABLE },
+	{"emlAmp4.vd2", FLG_READABLE },
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
 };	
 
 static ReadbackVar rbvars[] = {
@@ -576,14 +584,22 @@ AD537x_Init(const char *name)
 	DACOFS1_Write(0x2000);
  	for(ch = 0; ch < NR_CHANNELS; ch++) {
 		uint16_t value;
+		const DacAlias *alias;
 		value = 0xffff;
 		DACM_Set(ch,value);
 		value = 0x8000;
 		DACX_Set(ch,value);
 		value = 0x8000;
 		DACC_Set(ch,value);
-		//PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vo",dac0ChannelName[ch]);
-		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.vout%d",ch);
+		alias = &dac0AliasesEml[ch];
+		if(alias->name) {
+			if(alias->flags == (FLG_READABLE | FLG_WRITABLE)) {
+				PVar_New(PVDac_Get,PVDac_Set,NULL,ch,alias->name);
+			} else if(alias->flags == FLG_READABLE) {
+				PVar_New(PVDac_Get,NULL,NULL,ch,alias->name);
+			}
+		}
+		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.ch%d",ch);
 	}
 		
 	LDAC_LOW;
