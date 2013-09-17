@@ -513,7 +513,7 @@ cmd_dacm(Interp *interp,uint8_t argc,char *argv[])
 }
 
 INTERP_CMD(dacregCmd, "dacreg", cmd_dacreg,
-           "dac <regname> ?<channel>? ?<value>? # ");
+           "dacreg <regname> ?<channel>? ?<value>? # ");
 
 INTERP_CMD(dacxCmd, "dacx", cmd_dacx,
            "dacx <channel> <value> # ");
@@ -528,7 +528,7 @@ INTERP_CMD(dacresetCmd, "dacreset", cmd_dacrreset,
            "dacrreset                   # reset dac");
 
 INTERP_CMD(dacCmd, "dac", cmd_dac,
-           "dacr                  # write to dac");
+           "dac                  # write to dac");
 
 static bool 
 PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
