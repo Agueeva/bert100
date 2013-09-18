@@ -4,7 +4,7 @@
 #include "strhash.h"
 #include "tcp.h"
 
-#define XY_WEBSERVERNAME "Neutronics-4711 (TPOS)"
+#define XY_WEBSERVERNAME "Munich-Systems (TPOS)"
 
 #define XY_WEBPAGEBUF 2048 
 
