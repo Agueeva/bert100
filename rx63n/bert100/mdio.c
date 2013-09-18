@@ -165,7 +165,6 @@ MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
 		SetMDC(0);
 		mdio_delay();
 	}
-	//outval = 0x5002;
 	outval = 0x0002;
 	outval |= ((phy_addr & 0x1f) << 7);
 	outval |= (devType & 0x1f) << 2;	

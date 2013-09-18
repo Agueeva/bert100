@@ -10,7 +10,6 @@
 #include "console.h"
 #include "iram.h"
 
-#define NR_HASH_BUCKETS	64
 #define Calloc IRam_Calloc
 #define Strdup IRam_Strdup
 
@@ -18,7 +17,6 @@ struct StrHashEntry {
 	const char *key;
 	void *value;
 	struct StrHashEntry *next;
-	//struct StrHashEntry *prev;
 };
 
 struct StrHashTable {
@@ -28,13 +26,13 @@ struct StrHashTable {
 
 
 INLINE uint16_t 
-StrHashBucket(const char *str) {
-	return CRC16_String(str) % (NR_HASH_BUCKETS - 1);	
+StrHashBucket(StrHashTable *table,const char *str) {
+	return CRC16_String(str) & (table->nr_buckets - 1);	
 }
 
 INLINE uint16_t 
-StrNHashBucket(const char *str,uint16_t len) {
-	return CRC16(0,str,len) % (NR_HASH_BUCKETS - 1);	
+StrNHashBucket(StrHashTable *table,const char *str,uint16_t len) {
+	return CRC16(0,str,len) & (table->nr_buckets - 1);	
 }
 
 /**
@@ -45,7 +43,7 @@ StrNHashBucket(const char *str,uint16_t len) {
 StrHashEntry *
 StrHash_CreateEntry(StrHashTable *table,const char *key) 
 {
-	uint16_t idx = StrHashBucket(key);
+	uint16_t idx = StrHashBucket(table,key);
 	StrHashEntry **first = &table->buckets[idx];
 	StrHashEntry *cursor;
 	StrHashEntry *newentry;
@@ -85,7 +83,7 @@ StrHash_CreateEntry(StrHashTable *table,const char *key)
 StrHashEntry *
 StrHash_FindEntry(StrHashTable *table,const char *key) 
 {
-	uint16_t idx = StrHashBucket(key);
+	uint16_t idx = StrHashBucket(table,key);
 	StrHashEntry **first = &table->buckets[idx];
 	StrHashEntry *cursor;
 	for(cursor = *first; cursor; cursor = cursor->next) {
@@ -99,7 +97,7 @@ StrHash_FindEntry(StrHashTable *table,const char *key)
 StrHashEntry *
 StrNHash_FindEntry(StrHashTable *table,const char *key,uint16_t keylen) 
 {
-	uint16_t idx = StrNHashBucket(key,keylen);
+	uint16_t idx = StrNHashBucket(table,key,keylen);
  	StrHashEntry **first = &table->buckets[idx];
 	StrHashEntry *cursor;
 	for(cursor = *first; cursor; cursor = cursor->next) {
@@ -168,10 +166,16 @@ StrHash_GetKey(StrHashEntry *she)
 	return she->key;
 }
 
+/**
+  ***********************************************************************
+  * Create a new String hash Table. The number of buckets must
+  * be a power of two because of speed.
+  ***********************************************************************
+  */
 StrHashTable * 
-StrHash_New(void) {
+StrHash_New(uint32_t nrBuckets) {
 	StrHashTable *sht = Calloc(sizeof(*sht));
-	sht->buckets = (StrHashEntry **)Calloc(sizeof(void *) * NR_HASH_BUCKETS);
-	sht->nr_buckets = NR_HASH_BUCKETS;
+	sht->buckets = (StrHashEntry **)Calloc(sizeof(void *) * nrBuckets);
+	sht->nr_buckets = nrBuckets;
 	return sht;
 }

@@ -1270,7 +1270,7 @@ XY_NewWebServer(void)
 		return NULL;
 	Tcp_ServerSocket(80, WebServ_Accept, wserv);
 	wserv->connections = 0;
-	wserv->rqHandlerHash = StrHash_New();
+	wserv->rqHandlerHash = StrHash_New(16);
 	Web_PoolsInit();
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
 	XY_WebAddMD5Auth(wserv, "/sd/", REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */

@@ -232,6 +232,7 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 	} else if(jp->isGet) {
 		jp->value[sizeof(jp->value) - 1] = 0;	
 		if(PVar_Get(jp->pvar,jp->value,sizeof(jp->value)) == true) {
+	//		Con_Printf("Got %s: %s\n",jp->name,jp->value);
 			SendVar(jp,ws);
 		} else {
 			SendNak(jp,ws);
@@ -239,6 +240,7 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 	} else {
 		if(PVar_Set(jp->pvar,jp->value) == true) {
 			SendAck(jp,ws);
+		//	Con_Printf("Set %s to %s\n",jp->name,jp->value);
 		} else {
 			SendNak(jp,ws);
 		}

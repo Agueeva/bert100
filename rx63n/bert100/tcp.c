@@ -1013,7 +1013,6 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			return;
 		}
 	} else if (((ackNr - tcb->SND_UNA) >= 0) && ((int32_t) (ackNr - tcb->SND_NXT) < 0)) {
-
 #if 1
 		/* Fast Retransmit */
 		uint32_t missing;
