@@ -448,11 +448,7 @@ cmd_fatmkfs(Interp * interp, uint8_t argc, char *argv[])
 	if (res != FR_OK) {
 		Interp_Printf_P(interp, "Failed with EC %d\n", res);
 	}
-	if (drv == 0) {
-		f_setlabel("0:Ernie");
-	} else {
-		f_setlabel("1:RedBox");
-	}
+	f_setlabel("0:C-Bert");
 	return 0;
 }
 
