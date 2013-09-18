@@ -1174,7 +1174,7 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 		Con_Printf("CDR %s Unexpected ID %lu\n",__func__,adId);
 		return false;
 	}
-	reg = &gCdrRegister[regNr];
+	reg = &gCdrLaneRegister[regNr];
 	value = astrtoi16(strP);
 	Cdr_WritePart(cdr->phyAddr,reg->regNo + (lane << 8),reg->lastBit,reg->firstBit,value);
 	return true;

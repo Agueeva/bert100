@@ -240,13 +240,20 @@ cmd_pvar(Interp * interp, uint8_t argc, char *argv[])
         pvar = PVar_Find(argv[1]);
         if(pvar) {
                 if(argc > 2) {
-			PVar_Set(pvar,argv[2]);
+			if(PVar_Set(pvar,argv[2]) == false) {
+				Con_Printf("Can not set \"%s\" to \"%s\"\n",argv[1],argv[2]);
+			}
                 } else {
-			char str[40];
-			PVar_Get(pvar,str,sizeof(str));
-			Interp_Printf_P(interp,"%s\n",str);
+			char str[80];
+			if(PVar_Get(pvar,str,sizeof(str)) == false) {
+				Con_Printf("Can not read variable \"%s\"\n",argv[1]);
+			} else {
+				Interp_Printf_P(interp,"%s\n",str);
+			}
                 }
-        }
+        } else {
+		Con_Printf("Variable \"%s\" does not exist \n",argv[1]);
+	}
         return 0;
 }
 INTERP_CMD(pvarCmd,"pvar", cmd_pvar, "pvar  <name> # read a pvar");
