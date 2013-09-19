@@ -598,7 +598,7 @@ Tcp_RetransTimer(void *eventData)
 		Timer_Start(&tcb->retransTimer, 20);
 		return;
 	}
-	Con_Printf("Retrans Timer\n");
+	Con_Printf("Retrans Timer, rSeqNr %lu\n",tcb->currDataSeqNr - tcb->ISS);
 	if (tcb->retransCanceled) {
 		Con_Printf("BUG: Retrans called with canceled timer\n");
 	}
@@ -1013,7 +1013,6 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			return;
 		}
 	} else if (((ackNr - tcb->SND_UNA) >= 0) && ((int32_t) (ackNr - tcb->SND_NXT) < 0)) {
-#if 1
 		/* Fast Retransmit */
 		uint32_t missing;
 		missing = tcb->SND_NXT - ackNr;
@@ -1036,22 +1035,22 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 			TCB_Unlock(tcb);
 			return;
 		} else if ((TimeMs_Get() - tcb->timeRetransEnqMs) < 20) {
-
-			/* Leave this if and continue with a stanard ack */
-//                      Con_Printf("to early for retransmit, now %lu ,retr %lu ",TimeMs_Get() , tcb->timeRetransEnqMs);
-//                      Con_Printf("ack %lu, SND_NXT %lu, SND_UNA %lu\n",ackNr,tcb->SND_NXT,tcb->SND_UNA);
+			/* Do nothing in this case, fallthrough to ack */
 		} else {
 			DBG(Con_Printf("Fast retransmit all\n"));
 			DBG(Con_Printf
 			    ("ack %lu, SND_NXT %lu, SND_UNA %lu\n", ackNr, tcb->SND_NXT, tcb->SND_UNA));
 			tcb->SND_NXT = tcb->currDataSeqNr;
 			tcb->SND_WND = ackNr + ntohs(tcpHdr->window);
+#if 0
+		if(Timer_Busy(&tcb->retransTimer)) {
+			Timer_Mod(&tcb->retransTimer,150);
+		}
+#endif
 			Tcp_SendData(tcb, tcb->currFlags, tcb->currDataP, tcb->currDataLen);
 			TCB_Unlock(tcb);
 			return;
 		}
-
-#endif				/*  */
 	}
 	flags = TCPFLG_ACK;
 	if (needToSendFin) {
