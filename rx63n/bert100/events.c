@@ -56,14 +56,16 @@ _EventCancel(Event * ev)
 {
 	if (ev == queueHead) {
 		queueHead = ev->next;
+		if (queueHead == NULL) {
+			queueTail = NULL;
+		}
 	} else {
 		ev->prev->next = ev->next;
-	}
-	if (ev == queueTail) {
-		queueTail = ev->prev;
-		queueTail->next = NULL;
-	} else {
-		ev->next->prev = ev->prev;
+		if (ev == queueTail) {
+			queueTail = ev->prev;
+		} else {
+			ev->next->prev = ev->prev;
+		}
 	}
 	ev->evState = EV_StateIdle;
 }
