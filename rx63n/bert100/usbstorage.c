@@ -314,8 +314,8 @@ UsbStor_SCInquire(UsbStor * us)
 	data[3] = 2;		/* SCSI level */
 	data[4] = 31;
 	data[5] = data[6] = data[7] = 0;
-	strncpy((char *)data + 8, "Neuner  ", 8);
-	strncpy((char *)data + 16, "Bert100         ", 16);
+	strncpy((char *)data + 8, "Munich-I", 8);
+	strncpy((char *)data + 16, "C-BERT          ", 16);
 	strncpy((char *)data + 32, "0001", 4);
 	UsbStor_DataIn(us, data, 36);
 	SC_SetSense(us, SK_NO_SENSE, 0, 0, 0);
