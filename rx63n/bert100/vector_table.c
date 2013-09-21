@@ -18,6 +18,7 @@ typedef void (*fp) (void);
 extern void PowerON_Reset (void);
 extern void stack (void);
 
+#if 0
 #define FVECT_SECT          __attribute__ ((section (".fvectors")))
 
 const void *HardwareVectors[] FVECT_SECT  = {
@@ -95,6 +96,7 @@ const void *HardwareVectors[] FVECT_SECT  = {
 //;<<VECTOR DATA END (POWER ON RESET)>>
 };
 
+#endif
 
 #define RVECT_SECT          __attribute__ ((section (".rvectors")))
 

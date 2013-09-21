@@ -23,10 +23,9 @@
 	/*reset_program.asm*/
 
 	.list
-	.section .text
-	.global _PowerON_Reset    /*global Start routine */
+	.section        .bootloader_flash,"ax"
+	.global _Bootloader_Reset    /*global Start routine */
 	
-	.extern _HardwareSetup  /*external Sub-routine to initialise Hardware*/
 	.extern _data
 	.extern _mdata
 	.extern _ebss
@@ -41,10 +40,10 @@
 #endif
 
 	
-_PowerON_Reset :
+_Bootloader_Reset :
 /* initialise user stack pointer */
 	//mvtc	#_ustack,USP
-	mvtc #_thread0_stack + THREAD_STACKSIZE,USP
+	mvtc    #0x17c00,USP
 
 /* initialise interrupt stack pointer */
 	//mvtc	#_istack,ISP
@@ -58,12 +57,23 @@ _PowerON_Reset :
 
 /* load data section from ROM to RAM */
 
+#if 0
 	mov     #_mdata,r2      /* src ROM address of data section in R2 */
 	mov     #_data,r1       /* dest start RAM address of data section in R1 */
 	mov     #_edata,r3      /* end RAM address of data section in R3 */
 	sub    r1,r3            /* size of data section in R3 (R3=R3-R1) */
 	smovf                   /* block copy R3 bytes from R2 to R1 */
+#endif
 
+/* Copy the Bootloader from flash to RAM */
+        mov             #0xfffff004,r2                  /* src ROM address of bootloader */
+        mov             #_bootloader_start,r1   /* destination RAM address of bootloader */
+        mov             #_bootloader_end,r3             /* end RAM address of bootloader */
+        sub             r1,r3                                   /* size of data section in R3 */
+        smovf
+
+
+#if 0
 /* bss initialisation : zero out bss */
 
 	mov	#00h,r2  	/* load R2 reg with zero */
@@ -71,17 +81,17 @@ _PowerON_Reset :
 	mov	#_bss, r1 	/* store the start address of bss in R1 */
 	sub   r1,r3	   	/* size of bss section in R3 (R3=R3-R1) */
 	sstr.b
-#ifndef GDB_SIMULATOR_DEBUG
+
 /* call the hardware initialiser */
 	bsr.a	_HardwareSetup	
+#endif
 	nop
 
 /* setup PSW */
-	mvtc	#10000h, psw			/* Set Ubit & Ibit for PSW */
+	mvtc	#00000h, psw			/* Clear Ubit & Ibit for PSW */
 
 /* change PSW PM to user-mode */
 	MVFC   PSW,R1
-	//OR     #00100000h,R1
 	OR     #00020000h,R1
 	PUSH.L R1
 	MVFC   PC,R1
@@ -90,105 +100,12 @@ _PowerON_Reset :
 	RTE
 	NOP
 	NOP
-#ifdef CPPAPP
-    bsr.a	__rx_init
-#endif
-#endif	
+
 /* start user program */
-	bsr.a	_main		
-	bsr.a 	_exit
+ .global _BootloaderStart    /*global Start routine */
+	bra.a _BootloaderStart
 
-#ifdef CPPAPP
-	.global	_rx_run_preinit_array
-	.type	_rx_run_preinit_array,@function
-_rx_run_preinit_array:
-	mov	#__preinit_array_start,r1
-	mov	#__preinit_array_end,r2
-	bra.a	_rx_run_inilist
-
-	.global	_rx_run_init_array
-	.type	_rx_run_init_array,@function
-_rx_run_init_array:
-	mov	#__init_array_start,r1
-	mov	#__init_array_end,r2
-	mov	#4, r3
-	bra.a	_rx_run_inilist
-
-	.global	_rx_run_fini_array
-	.type	_rx_run_fini_array,@function
-_rx_run_fini_array:
-	mov	#__fini_array_start,r2
-	mov	#__fini_array_end,r1
-	mov	#-4, r3
-	/* fall through */
-
-_rx_run_inilist:
-next_inilist:
-	cmp	r1,r2
-	beq.b	done_inilist
-	mov.l	[r1],r4
-	cmp	#-1, r4
-	beq.b	skip_inilist
-	cmp	#0, r4
-	beq.b	skip_inilist
-	pushm	r1-r3
-	jsr	r4
-	popm	r1-r3
-skip_inilist:
-	add	r3,r1
-	bra.b	next_inilist
-done_inilist:
-	rts
-
-	.section	.init,"ax"
-	.balign 4
-
-	.global __rx_init
-__rx_init:
-
-	.section	.fini,"ax"
-	.balign 4
-
-	.global __rx_fini
-__rx_fini:
-	bsr.a	_rx_run_fini_array
-
-        .section .sdata
-        .balign 4
-        .global __gp
-	.weak   __gp
-__gp:   
-
-	.section .data
-	.global ___dso_handle
-	.weak   ___dso_handle
-___dso_handle:
-	.long	0
-
-     .section        .init,"ax"
-     bsr.a   _rx_run_preinit_array
-     bsr.a   _rx_run_init_array
-     rts
-	 
-    .global __rx_init_end
-__rx_init_end:
-
-    .section        .fini,"ax"
-
-    rts
-    .global __rx_fini_end
-__rx_fini_end:
-
-#endif
-
-/* call to exit*/
-_exit:
-	bra  _loop_here
-_loop_here:
-    bra _loop_here
-    
-
-.section .jmptable,"ax"
+.section .fvectors,"ax"
 //;0xffffff80  MDES - Endian Select Register
     .long  0xffffffff
 //;0xffffff84  Reserved
@@ -230,17 +147,17 @@ _loop_here:
 //;0xffffffCC  Reserved
     .long  0xffffffff
 //;0xffffffd0  Exception(Supervisor Instruction)
-    BRA.A _Excep_SuperVisorInst
+    .long  0xffffEfd0
 //;0xffffffd4  Reserved
     .long  0
 //;0xffffffd8  Reserved
     .long  0
 //;0xffffffdc  Exception(Undefined Instruction)
-    BRA.A _Excep_UndefinedInst
+    .long 0xffffEfdc
 //;0xffffffe0  Reserved
     .long  0
 //;0xffffffe4  Exception(Floating Point)
-    BRA.A _Excep_FloatingPoint
+    .long 0xffffEfe4
 //;0xffffffe8  Reserved
     .long  0
 //;0xffffffec  Reserved
@@ -250,9 +167,9 @@ _loop_here:
 //;0xfffffff4  Reserved
     .long  0
 //;0xfffffff8  NMI
-    BRA.A _NonMaskableInterrupt
+    .long 0xffffeff8
 //;0xfffffffc  RESET
-    BRA.A _PowerON_Reset                                                                                                                  
+    .long _Bootloader_Reset                                                                                                                  
 .text	
 .end
 

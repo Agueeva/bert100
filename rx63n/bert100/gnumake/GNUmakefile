@@ -1,6 +1,6 @@
 VPATH=..
 CROSS=rx-elf-
-CFLAGS=-g -O9 -Wall -fno-strict-overflow -funsigned-char -Wstrict-overflow=3 -Wno-unused-but-set-variable 
+CFLAGS=-g -O2 -Wall -fno-strict-overflow -funsigned-char -Wstrict-overflow=3 -Wno-unused-but-set-variable 
 CC=$(CROSS)gcc
 HOSTCC=gcc
 AS=$(CROSS)as
@@ -20,9 +20,9 @@ SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	tcp.c xy_string.c iram.c rx_crc.c strhash.c ccsbcs.c \
 	ad537x.c mdio.c cdr.c shiftreg.c i2cmaster.c skb.c  xy_web.c \
 	pvar_websock.c adc12.c pvar.c flash.c usbdev.c usbstorage.c \
-	leds.c xo.c version.c
+	leds.c xo.c version.c bootloader.c
 
-ASMFILES=reset_program.asm switch_context.asm 
+ASMFILES=reset_program.asm switch_context.asm bootloader_setup.asm
 
 %.s: %.asm
 	$(CPP) $< -o $@

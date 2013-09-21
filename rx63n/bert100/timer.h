@@ -120,8 +120,16 @@ uint64_t TimeNs_Get(void);
 uint64_t TimeUs_Get(void);
 void SleepUs_Get(uint32_t us);
 
+/**
+ ***********************************************************************
+ * delay loop needs 4 clock cycles per loopcnt
+ * According to ABI specification rej10j2062_ccrx_v100um.pdf page 203
+ * the first argument of a function is in the register r1.
+ ***********************************************************************
+ */
+
 static inline void
-delay_loop(uint32_t loopcnt)
+_delay_loop(uint32_t loopcnt)
 {
         __asm__ volatile(
 	    "label9279%=:      \n\t"
@@ -136,8 +144,9 @@ delay_loop(uint32_t loopcnt)
  * calling the delay loop.
  ***************************************************************************
  */
-#define DelayNs(ns)  { delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
-#define DelayUs(us)  { delay_loop(((us) * (F_CPU / 1000) / 4000)); }
+#define DelayNs(ns)  { _delay_loop(((ns) * (F_CPU / 100000) / 40000)); }
+#define DelayUs(us)  { _delay_loop(((us) * (F_CPU / 1000) / 4000)); }
+void DelayMs(uint32_t ms);
 
 void Timers_Init(void);
 #endif

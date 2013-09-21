@@ -13,7 +13,6 @@
 static Timer *timerHead = NULL;
 volatile TimeMs_t g_TimeClockTick = 0;
 
-
 void
 SleepUs(uint32_t sleepUs)
 {
@@ -149,23 +148,6 @@ TimeUs_Get(void)
 	return (uint64_t)now * 1000 + us;
 }
 
-/**
- ***********************************************************************
- * delay loop needs 4 clock cycles per loopcnt
- * According to ABI specification rej10j2062_ccrx_v100um.pdf page 203
- * the first argument of a function is in the register r1.
- ***********************************************************************
- */
-#if 0
- __attribute__ ((noinline)) void
-_delay_loop(uint32_t loopcnt)
-{
-        asm("label9279%=:      \n\t"
-	    "	sub #1,%0    \n\t"
-	    "	bpz.b label9279%="::"g" (loopcnt));
-}
-#endif
-
 #define DELAY 120 
 #define DELAY_US 5 
 
@@ -213,6 +195,22 @@ INTERP_CMD(delayCmd, "delay", cmd_delay,
        "delay   # test the delay loop");
 
 
+/**
+ *************************************************************
+ * \fn void DelayMs(uint32_t ms)
+ * Delay for some milliseconds. Use with care, better
+ * use SleepMs when possible because this eats up the
+ * CPU time. 
+ *************************************************************
+ */
+void
+DelayMs(uint32_t ms)
+{
+	uint32_t i;
+	for(i = 0; i < ms; i++) {
+		DelayUs(1000);
+	}
+}
 /*
  **************************************************************
  * \fn void Timers_Init(void)

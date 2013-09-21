@@ -27,7 +27,7 @@
 
 #define DAY ((__DATE__ [4]==' ' ? 0 : __DATE__[4]-'0')*16+(__DATE__[5]-'0'))
 
-#define SWNAME	"EMLBERT"
+#define SWNAME	"CBEML"
 
 static char g_Version[16];
 
