@@ -135,7 +135,7 @@ function createTreeMenu(id) {
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
 {
-           laodpage("html/main.html","#frame");
+          laodpage("html/main.html","#frame");
 
 	//Click.
 	$( "#homeBut" ).click(function() {
