@@ -390,7 +390,363 @@ static const CdrRegister gCdrRegister[] = {
 	 	.lastBit = 2,
 	 	.firstBit = 0,
 	},
+	{
+		.name = "custom_tst_patL",
+		.regNo = 30,
+		.lastBit = 15,
+		.firstBit = 0,
+	},
+	{
+		.name = "custom_tst_patM",
+		.regNo = 31,
+		.lastBit = 15,
+		.firstBit = 0,
+	},
+	{
+		.name = "custom_tst_patH",
+		.regNo = 32,
+		.lastBit = 7,
+		.firstBit = 0,
+	},
+	{
+		.name = "l0.no_prbs_lck",
+		.regNo = 33,
+		.firstBit = 0,
+		.lastBit = 0,
+	},
+	{
+		.name = "l1.no_prbs_lck",
+		.regNo = 33,
+		.firstBit = 1,
+		.lastBit = 1,
+	},
+	{
+		.name = "l2.no_prbs_lck",
+		.regNo = 33,
+		.firstBit = 2,
+		.lastBit = 2,
+	},
+	{
+		.name = "l3.no_prbs_lck",
+		.regNo = 33,
+		.firstBit = 3,
+		.lastBit = 3,
+	},
+	{
+		.name = "l0.no_prot_lck",
+		.regNo = 33,
+		.firstBit = 4,
+		.lastBit = 4,
+	},
+	{
+		.name = "l1.no_prot_lck",
+		.regNo = 33,
+		.firstBit = 5,
+		.lastBit = 5,
+	},
+	{
+		.name = "l2.no_prot_lck",
+		.regNo = 33,
+		.firstBit = 6,
+		.lastBit = 6,
+	},
+	{
+		.name = "l3.no_prot_lck",
+		.regNo = 33,
+		.firstBit = 6,
+		.lastBit = 6,
+	},
+	{
+		.name = "l0.lol_stat",
+		.regNo = 33,
+		.firstBit = 8,
+		.lastBit = 8,
+	},
+	{
+		.name = "l1.lol_stat",
+		.regNo = 33,
+		.firstBit = 9,
+		.lastBit = 9,
+	},
+	{
+		.name = "l2.lol_stat",
+		.regNo = 33,
+		.firstBit = 10,
+		.lastBit = 10,
+	},
+	{
+		.name = "l3.lol_stat",
+		.regNo = 33,
+		.firstBit = 11,
+		.lastBit = 11,
+	},
+	{
+		.name = "l0.latched_lol",
+		.regNo = 33,
+		.firstBit = 12,
+		.lastBit = 12,
+	},
+	{
+		.name = "l1.latched_lol",
+		.regNo = 33,
+		.firstBit = 13,
+		.lastBit = 13,
+	},
+	{
+		.name = "l2.latched_lol",
+		.regNo = 33,
+		.firstBit = 14,
+		.lastBit = 14,
+	},
+	{
+		.name = "l3.latched_lol",
+		.regNo = 33,
+		.firstBit = 15,
+		.lastBit = 15,
+	},
+	/* FIFO underrun register */
+	{
+		.name = "l0.fifo_urun",
+		.regNo = 37,
+		.firstBit = 0,
+		.lastBit = 0,
+	},
+	{
+		.name = "l1.fifo_urun",
+		.regNo = 37,
+		.firstBit = 1,
+		.lastBit = 1,
+	},
+	{
+		.name = "l2.fifo_urun",
+		.regNo = 37,
+		.firstBit = 2,
+		.lastBit = 2,
+	},
+	{
+		.name = "l3.fifo_urun",
+		.regNo = 37,
+		.firstBit = 3,
+		.lastBit = 3,
+	},
+	{
+		.name = "l0.fifo_orun",
+		.regNo = 37,
+		.firstBit = 4,
+		.lastBit = 4,
+	},
+	{
+		.name = "l1.fifo_orun",
+		.regNo = 37,
+		.firstBit = 5,
+		.lastBit = 5,
+	},
+	{
+		.name = "l2.fifo_orun",
+		.regNo = 37,
+		.firstBit = 6,
+		.lastBit = 6,
+	},
+	{
+		.name = "l3.fifo_orun",
+		.regNo = 37,
+		.firstBit = 7,
+		.lastBit = 7,
+	},
+	{
+		.name = "l0.FIFO_error",
+		.regNo = 37,
+		.firstBit = 8,
+		.lastBit = 8,
+	},
+	{
+		.name = "l1.FIFO_error",
+		.regNo = 37,
+		.firstBit = 9,
+		.lastBit = 9,
+	},
+	{
+		.name = "l2.FIFO_error",
+		.regNo = 37,
+		.firstBit = 10,
+		.lastBit = 10,
+	},
+	{
+		.name = "l3.FIFO_error",
+		.regNo = 37,
+		.firstBit = 11,
+		.lastBit = 11,
+	},
+	{
+		.name = "reset_on_lol",
+		.regNo = 37,
+		.firstBit = 13,
+		.lastBit = 13,
+	},
+	{
+		.name = "reset_on_err",
+		.regNo = 37,
+		.firstBit = 14,
+		.lastBit = 14,
+	},
+	{
+		.name = "fifo_reset",
+		.regNo = 37,
+		.firstBit = 15,
+		.lastBit = 15,
+	},
+	{
+		.name = "txpll_cal_bus_force_fine",
+		.regNo = 39,
+		.firstBit = 0,
+		.lastBit = 2,
+	},
+	{
+		.name = "txpll_cal_bus_force_coarse",
+		.regNo = 39,
+		.firstBit = 3,
+		.lastBit = 7,
+	},
+	{
+		.name = "txpll_force_cal_bus",
+		.regNo = 39,
+		.firstBit = 8,
+		.lastBit = 8,
+	},
+	{
+		.name = "txpll_charge_pump_curr",
+		.regNo = 39,
+		.firstBit = 9,
+		.lastBit = 11, 
+	},
+	{
+		.name = "txpll_cal_step",
+		.regNo = 39,
+		.firstBit = 13,
+		.lastBit = 14, 
+	},
+	{
+		.name = "txpll_recalib",
+		.regNo = 39,
+		.firstBit = 15,
+		.lastBit = 15, 
+	},
+	{
+		.name = "txpll_cal_read_fine",
+		.regNo = 40,
+		.firstBit = 0,
+		.lastBit = 0,
+	},
+	{
+		.name = "txpll_cal_read_coarse",
+		.regNo = 40,
+		.firstBit = 1,
+		.lastBit = 1,
+	},
+	{
+		.name = "txpll_lock",
+		.regNo = 40,
+		.firstBit = 2,
+		.lastBit = 2,
+	},
+	{
+		.name = "txpll_lco_ampl",
+		.regNo = 40,
+		.firstBit = 11, 
+		.lastBit = 13,
+	},
+	{
+		.name = "txpll_vctlref",
+		.regNo = 40,
+		.firstBit = 14, 
+		.lastBit = 15,
+	},
+	{
+		.name = "rxpll_cal_bus_force_fine",
+		.regNo = 41,
+		.firstBit = 0,
+		.lastBit = 2,
+	},
+	{
+		.name = "rxpll_cal_bus_force_coarse",
+		.regNo = 41,
+		.firstBit = 3,
+		.lastBit = 7,
+	},
+	{
+		.name = "rxpll_force_cal_bus",
+		.regNo = 41,
+		.firstBit = 8,
+		.lastBit = 8,
+	},
+	{
+		.name = "rxpll_charge_pump_curr",
+		.regNo = 41,
+		.firstBit = 9,
+		.lastBit = 11, 
+	},
+	{
+		.name = "rxpll_cal_step",
+		.regNo = 41,
+		.firstBit = 13,
+		.lastBit = 14, 
+	},
+	{
+		.name = "rxpll_recalib",
+		.regNo = 41,
+		.firstBit = 15,
+		.lastBit = 15, 
+	},
+	{
+		.name = "rxpll_cal_read_fine",
+		.regNo = 42,
+		.firstBit = 0,
+		.lastBit = 0,
+	},
+	{
+		.name = "rxpll_cal_read_coarse",
+		.regNo = 42,
+		.firstBit = 1,
+		.lastBit = 1,
+	},
+	{
+		.name = "rxpll_lock",
+		.regNo = 42,
+		.firstBit = 2,
+		.lastBit = 2,
+	},
+	{
+		.name = "rxpll_lco_ampl",
+		.regNo = 42,
+		.firstBit = 11, 
+		.lastBit = 13,
+	},
+	{
+		.name = "rxpll_vctlref",
+		.regNo = 42,
+		.firstBit = 14, 
+		.lastBit = 15,
+	},
 };
+#if 0
+#define CDR_MANUAL_RESET_CONTROL                44
+#define CDR_LANE0_ERROR_COUNTER                 48
+#define CDR_LANE1_ERROR_COUNTER                 49
+#define CDR_LANE2_ERROR_COUNTER                 50
+#define CDR_LANE3_ERROR_COUNTER                 51
+#define CDR_LANE0_SAMPLE0_READ                  64
+#define CDR_LANE0_SAMPLE1_READ                  65      
+#define CDR_LANE0_SAMPLE2_READ                  66
+#define CDR_LANE1_SAMPLE0_READ                  0x44    
+#define CDR_LANE1_SAMPLE1_READ                  0x45
+#define CDR_LANE1_SAMPLE2_READ                  0x46
+#define CDR_LANE2_SAMPLE0_READ                  0x48
+#define CDR_LANE2_SAMPLE1_READ                  0x49
+#define CDR_LANE2_SAMPLE2_READ                  0x4a
+#define CDR_LANE3_SAMPLE0_READ                  0x4c
+#define CDR_LANE3_SAMPLE1_READ                  0x4d
+#define CDR_LANE3_SAMPLE2_READ                  0x4e
+#endif
 
 /**
  ****************************************************************************+
@@ -430,6 +786,7 @@ static const CdrRegister gCdrLaneRegister[] =
 		.firstBit = 0,
 	}
 };
+
 /**
  ************************************************************************
  * \fn void Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
