@@ -11,8 +11,36 @@
 #include "swupdate.h"
 #include "types.h"
 
+#define SWUP_CRC32_START        (0x73911293)
 #define FLASH_ADDR_SWUPDATE	(32768-2048)
 #define FLASH_SIZE_SWUPDATE	(2048)
+
+#define POLY 0xEDB88320
+
+static uint32_t
+CRC32Byte_Eth(uint32_t crc, uint8_t val)
+{
+        int i;
+        for (i = 0; i < 8; i++) {
+                int carry = !(crc & 1);
+                int inbit = ! !(val & (1 << i));
+                crc = (crc >> 1) | (UINT32_C(1) << 31);
+                if (inbit ^ carry) {
+                        crc = crc ^ POLY;
+                }
+        }
+        return crc;
+}
+
+static uint32_t
+CRC32_Eth(uint32_t crc, uint8_t * buf, uint32_t len)
+{
+        uint32_t i;
+        for (i = 0; i < len; i++) {
+                crc = CRC32Byte_Eth(crc, buf[i]);
+        }
+        return crc;
+}
 
 static bool
 write_chain_entry(uint16_t entry_nr, uint32_t firstsect, uint32_t nsectors)
@@ -23,6 +51,27 @@ write_chain_entry(uint16_t entry_nr, uint32_t firstsect, uint32_t nsectors)
         data[1] = nsectors;
         result = DFlash_Write(FLASH_ADDR_SWUPDATE + ((entry_nr + 1) << 3), data, 8);
         return result;
+}
+
+/**
+ ************************************************************************************
+ * Clear the signature of sector chain in Data flash
+ ************************************************************************************
+ */
+static void
+ClearUpdateSignature()
+{
+        bool result;
+        uint8_t signature[8];
+        if (*(uint32_t *) DFLASH_MAP_ADDR(FLASH_ADDR_SWUPDATE) == 0x08154711) {
+                Con_Printf("Erasing Software update Signature from Data Flash\n");
+                memset(signature, 0xff, 8);
+                DFlash_Erase(FLASH_ADDR_SWUPDATE,8);
+                result = DFlash_Write(FLASH_ADDR_SWUPDATE + 0, signature, 8);
+                if (result == false) {
+                        Con_Printf("failed\n");
+                }
+        }
 }
 
 static bool
@@ -98,5 +147,81 @@ store_sector_chain(const char *filename)
         result = DFlash_Write(FLASH_ADDR_SWUPDATE + 0, signature, 8);
         f_close(&file);
         return result;
+}
+
+static bool
+CheckWriteSignature(const char *filename, bool checkOnly)
+{
+        FRESULT res;
+	FIL infile;
+        unsigned int i;
+        uint8_t buf[32];
+        uint32_t crc32 =  SWUP_CRC32_START;
+        UINT sz;
+        res = f_open(&infile, filename, FA_OPEN_EXISTING | FA_READ | FA_WRITE);
+        if (res != FR_OK) {
+                Con_Printf("Can't open file\n");
+                return 0;
+        }
+        for (i = 0; i < 0xFF000; i += sizeof(buf)) {
+                res = f_read(&infile, buf, sizeof(buf), &sz);
+                if (sz != sizeof(buf)) {
+                        Con_Printf("Read failed\n");
+                        return 0;
+                }
+                crc32 = CRC32_Eth(crc32, buf, sz);
+        }
+        if (checkOnly) {
+                if (f_read(&infile, buf, 4, &sz) != FR_OK) {
+                        return false;
+                }
+                f_close(&infile);
+                crc32 = CRC32_Eth(crc32, buf, 4);
+                if (crc32 == 0xffffffff) {
+                        return true;
+                } else {
+                        return false;
+                }
+        } else {
+                buf[0] = ~crc32 & 0xff;
+                buf[1] = (~crc32 >> 8) & 0xff;
+                buf[2] = (~crc32 >> 16) & 0xff;
+                buf[3] = (~crc32 >> 24) & 0xff;
+                if (f_write(&infile, buf, 4, &sz) != FR_OK) {
+                        Con_Printf("Write failed\n");
+                }
+                f_close(&infile);
+        }
+        return true;
+}
+
+
+uint8_t 
+SWUpdate_Execute(const char *filepath)
+{
+        if (CheckWriteSignature(filepath, true) == false) {
+                Con_Printf("Updatefile %s has bad CRC\n", filepath);
+                return SWUP_EC_CRC;
+        }
+        if (store_sector_chain(filepath) != true) {
+                Con_Printf("Can not create sector chain in dataflash\n");
+        }
+        DISABLE_IRQ();
+        //Wdg_Reboot();
+	return 0;
+}
+
+
+/**
+ *****************************************************************************
+ * Initialize the Software updater
+ *****************************************************************************
+ */
+void
+SWUpdate_Init(void)
+{
+        ClearUpdateSignature();
+        //Interp_RegisterCmd(&swupdateCmd);
+        //Interp_RegisterCmd(&chainCmd);
 }
 
