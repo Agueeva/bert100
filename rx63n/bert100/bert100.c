@@ -41,13 +41,13 @@
 #include "pvar.h"
 #include "pvar_websock.h"
 #include "adc12.h"
-#include "flash.h"
 #include "config.h"
 #include "usbdev.h"
 #include "usbstorage.h"
 #include "xo.h"
 #include "leds.h"
 #include "version.h"
+#include "dataflash.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -142,7 +142,7 @@ main(void)
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	ADC12_Init();
-	Flash_Init();
+	DataFlash_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	Version_Init();

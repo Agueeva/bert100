@@ -16,10 +16,6 @@ SECTIONS
                 *(.bootloader.*)
                 _bootloader_end = .;
         }
-	.dummy 0x17000: {
-		_bla = .;
-		_blaend = .;
-	}
         .bootloader_flash LOADADDR(.bootloader) + SIZEOF (.bootloader): AT(LOADADDR(.bootloader) + SIZEOF (.bootloader))
         {
                 *(.bootloader_flash)

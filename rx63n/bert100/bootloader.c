@@ -74,7 +74,7 @@
 #define FCU_RAM_TOP     0x007F8000
 #define FCU_RAM_SIZE    0x2000
 
-
+/* Same for RX62N and RX63N */
 #define FLASH_BLOCK_SECTOR_CHAIN   0x00107800	/*   DB15 2KB: 0x00107800 - 0x00107FFF */
 
 RAMCODE_DATA static bool card_is_sdhc;
@@ -104,9 +104,9 @@ static inline void
 delay_loop(uint32_t loopcnt)
 {
         __asm__ volatile(
-            "label9279%=:    \n\t"
+            "label%=:    \n\t"
             "   sub #1,%0    \n\t"
-            "   bpz.b label9279%=":"=r" (loopcnt):"0"(loopcnt):);
+            "   bpz.b label%=":"=r" (loopcnt):"0"(loopcnt):);
 }
 
 RAMCODE NOINLINE static void
@@ -393,6 +393,7 @@ RAMCODE static void
 copy_to_fcu_ram(void)
 {
 	uint32_t *src, *dst;
+	uint32_t i;
 	/* Before writing data to the FCU RAM, clear FENTRYR to stop the FCU. */
 	if (FLASH.FENTRYR.WORD != 0x0000) {
 		/* Disable the FCU from accepting commands - Clear both the
@@ -404,17 +405,12 @@ copy_to_fcu_ram(void)
 	FLASH.FCURAME.WORD = 0xC401;
 	src = (uint32_t *) FCU_PRG_TOP;
 	dst = (uint32_t *) FCU_RAM_TOP;
-#if 1
-	__builtin_memcpy((void *)FCU_RAM_TOP, (void *)FCU_PRG_TOP, FCU_RAM_SIZE);
-#else
-	uint16_t i;
 	/* Iterate for loop to copy the FCU firmware */
 	for (i = 0; i < (FCU_RAM_SIZE / 4); i++) {
 		*dst = *src;
 		src++;
 		dst++;
 	}
-#endif
 	return;
 }
 
@@ -690,9 +686,8 @@ BootloaderStart(void)
         SYSTEM.SCKCR2.WORD = 0x033;
         SYSTEM.SCKCR3.WORD = 0x400;
 	
-#if 0
+	/* Enable the last 2k of Data flash for reading, Same as RX62N */
 	FLASH.DFLRE1.WORD = 0xD200 | 0x0080;
-#endif
 
 	Do_SWUpdate((uint32_t *) FLASH_BLOCK_SECTOR_CHAIN);
 	/* Jump to normal boot */
