@@ -15,6 +15,8 @@
 #include "console.h"
 #include "fat.h"
 
+#define DFLASH_BLOCK(n)         (0x100000 + ((n) << 3))
+
 #define FCU_PRG_TOP             0xFEFFE000
 #define FCU_RAM_TOP             0x007F8000
 #define FCU_RAM_SIZE    	0x2000
@@ -202,7 +204,7 @@ Enter_PEMode(uint8_t mode, volatile uint8_t * pAddr, uint16_t bytes)
  * Erase a single 32 Byte flash block from Data flash.
  *********************************************************************
  */
-bool
+static bool
 DFlash_EraseBlock(uint32_t block_addr)
 {
         uint8_t mode;
@@ -236,6 +238,27 @@ DFlash_EraseBlock(uint32_t block_addr)
  done:
         Mutex_Unlock(&flashSema);
         return retval;
+}
+
+/**
+ * The interface to the outside eats addresses relative to
+ * the begin of the dataflash; 
+ */
+bool
+DFlash_Erase(uint32_t relAddr,uint32_t len)
+{
+	bool retval = true;
+	uint32_t i;
+	if((relAddr & 31) || (len & 31)) {
+		return false;
+	}
+	for(i = 0;i < len; i+= 32) {
+		retval = DFlash_EraseBlock(relAddr + DFLASH_BLOCK(0) + i);
+		if(retval == false) {
+			return retval;
+		}
+	}
+	return retval;
 }
 
 /**
@@ -428,7 +451,5 @@ DataFlash_Init(void)
         FLASH.DFLWE1.WORD = 0xE100 | ((write_en_mask >> 8) & 0x00FF);
 
 	Interp_RegisterCmd(&flashCmd);
-  //      Interp_RegisterCmd(&cflashCmd);
-   //     Interp_RegisterCmd(&fcudumpCmd);
 }
 

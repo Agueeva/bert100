@@ -194,6 +194,8 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" "User" "C source file" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.h" "User" "C header file" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\switch_context.asm" "User" "Preprocess Assembly file" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.c" "User" "C source file" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.h" "User" "C header file" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.c" "User" "C source file" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.h" "User" "C header file" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" "User" "C source file" 2 
@@ -274,6 +276,7 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" "0ef4b41780a9ec10" 3 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" "0d4fca3f70a9ec10" 3 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\switch_context.asm" "005e5daecdf2ec10" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.c" "0c72381a4d7bec10" 3 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.c" "0cbbdf6e70a9ec10" 3 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" "0a56cf4ecdf2ec10" 3 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\timer.c" "0a56cf4ecdf2ec10" 3 
@@ -290,7 +293,7 @@
 [OPTIONS_Debug_GNU Library Generator]
 "Single Shot" "0f43ec63bdf2ec10" 1 
 [OPTIONS_Debug_GNU Linker]
-"Single Shot" "018aae014c7bec10" 5 
+"Single Shot" "0abb781a4d7bec10" 5 
 [OPTIONS_Debug]
 "" 0 
 "[V|VERSION|2] [S|OBJPATH|^"$(CONFIGDIR)\$(FILELEAF).o^"] [I|DEBUGLV|2] [B|LINCHLS|1] [B|LINCASS|1] [B|LINCSYM|1] [S|LFILE|^"$(CONFIGDIR)\$(FILELEAF).^"] [S|PROJECTTYPE|CAPPPROJECT] [S|INCDIR|^"$(PROJDIR)^"] [S|CPUTYPE|RX600] [S|ENDIAN|LITTLE] [S|CPU|RX63N] " 4 
@@ -345,6 +348,7 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" "0ef4b41780a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" "0d4fca3f70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\switch_context.asm" "06efdbe784c4ec10" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.c" "0c72381a4d7bec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.c" "0cbbdf6e70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" "06efdbe784c4ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\timer.c" "06efdbe784c4ec10" 2 
@@ -361,7 +365,7 @@
 [OPTIONS_Debug_RX600_E1_E20_SYSTEM_GNU Library Generator]
 "Single Shot" "0f43ec63bdf2ec10" 1 
 [OPTIONS_Debug_RX600_E1_E20_SYSTEM_GNU Linker]
-"Single Shot" "018aae014c7bec10" 4 
+"Single Shot" "0abb781a4d7bec10" 4 
 [OPTIONS_Debug_RX600_E1_E20_SYSTEM]
 "" 0 
 "[V|VERSION|2] [B|DOEXTF|1] [S|INCDIR|^"$(TCINSTALL)\rx-elf\lib\gcc\rx-elf\4.7-GNURX_v12.03^"|^"$(CONFIGDIR)^"] [B|RSARCH|1] [B|FIXUPLIBS|1] [S|ARCHIVE|libgcc.a*lib$(PROJECTNAME).a] [S|OUTFORM|BOTH] [B|MFILEGEN|1] [S|PLMFILE|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|OUTFILE|^"$(CONFIGDIR)\$(PROJECTNAME).x^"] [S|GROUPDET|.fvectors|0|0||1|0xFFFFFF80|0|1|0|.fvectors|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.text|0|0||1|0xFFFC0000|0|0|0|.text|All-files|<<FEND>>|0|.text.*|All-files|<<FEND>>|0|P|All-files|<<FEND>>|1|etext|<<FEND>>|<<CEND>>|<<GEND>>|.rvectors|0|0||0||0|1|1|_rvectors_start|<<FEND>>|0|.rvectors|All-files|<<FEND>>|1|_rvectors_end|<<FEND>>|<<CEND>>|<<GEND>>|.init|0|0||0||0|0|0|.init|All-files|<<FEND>>|1|__preinit_array_start|<<FEND>>|0|.preinit_array|All-files|<<FEND>>|1|__preinit_array_end|<<FEND>>|1|__init_array_start____=____(.____+____3)____&____~____3|<<FEND>>|0|.init_array|All-files|<<FEND>>|0|SORT(.init_array.*)|All-files|<<FEND>>|1|__init_array_end|<<FEND>>|1|__fini_array_start|<<FEND>>|0|.fini_array|All-files|<<FEND>>|0|SORT(.fini_array.*)|All-files|<<FEND>>|1|__fini_array_end|<<FEND>>|<<CEND>>|<<GEND>>|.fini|0|0||0||0|0|0|.fini|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.got|0|0||0||0|0|0|.got|All-files|<<FEND>>|0|.got.plt|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.rodata|0|0||0||0|0|0|.rodata|All-files|<<FEND>>|0|.rodata.*|All-files|<<FEND>>|0|C_1|All-files|<<FEND>>|0|C_2|All-files|<<FEND>>|0|C|All-files|<<FEND>>|1|_erodata|<<FEND>>|<<CEND>>|<<GEND>>|.eh_frame_hdr|0|0||0||0|0|0|.eh_frame_hdr|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.eh_frame|0|0||0||0|0|0|.eh_frame|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.jcr|0|0||0||0|0|0|.jcr|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.tors|0|0||0||0|0|1|__CTOR_LIST__|<<FEND>>|1|___ctors|<<FEND>>|0|.ctors|All-files|<<FEND>>|1|___ctors_end|<<FEND>>|1|__CTOR_END__|<<FEND>>|1|__DTOR_LIST__|<<FEND>>|1|___dtors|<<FEND>>|0|.dtors|All-files|<<FEND>>|1|___dtors_end|<<FEND>>|1|__DTOR_END__|<<FEND>>|1|_mdata|<<FEND>>|<<CEND>>|<<GEND>>|.data|0|2|_mdata|1|0x00001001|0|0|1|_data|<<FEND>>|0|.data|All-files|<<FEND>>|0|.data.*|All-files|<<FEND>>|0|D|All-files|<<FEND>>|0|D_1|All-files|<<FEND>>|0|D_2|All-files|<<FEND>>|1|_edata|<<FEND>>|<<CEND>>|<<GEND>>|.gcc_exc|0|0||0||0|0|0|.gcc_exc|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.bss|0|0||0||0|0|1|_bss|<<FEND>>|0|.bss|All-files|<<FEND>>|0|.bss.*|All-files|<<FEND>>|0|COMMON|All-files|<<FEND>>|0|B|All-files|<<FEND>>|0|B_1|All-files|<<FEND>>|0|B_2|All-files|<<FEND>>|1|_ebss|<<FEND>>|1|_end|<<FEND>>|<<CEND>>|<<GEND>>|] [S|APPTXT|^"-e _PowerON_Reset^"] [S|CPUTYPE|RX600] [S|ENDIAN|LITTLE] [S|CPU|Other] [I|RMINTREGVAL|0] [I|RMMAXCONSTVAL|0] [I|RMMAXVARSVAL|0] [S|PROJECTTYPE|CAPPPROJECT] [B|DOOPTLIB|1] [B|DOPROJBUILT|1]
@@ -417,6 +421,7 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" "0ef4b41780a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" "0d4fca3f70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\switch_context.asm" "005e5daecdf2ec10" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.c" "0c72381a4d7bec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.c" "0cbbdf6e70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" "0a56cf4ecdf2ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\timer.c" "0a56cf4ecdf2ec10" 2 
@@ -433,7 +438,7 @@
 [OPTIONS_Debug_RX_E1_E20_SYSTEM_GNU Library Generator]
 "Single Shot" "0f43ec63bdf2ec10" 1 
 [OPTIONS_Debug_RX_E1_E20_SYSTEM_GNU Linker]
-"Single Shot" "01309d106c7bec10" 4 
+"Single Shot" "0abb781a4d7bec10" 4 
 [OPTIONS_Debug_RX_E1_E20_SYSTEM]
 "" 0 
 "[V|VERSION|2] [B|DOEXTF|1] [S|INCDIR|^"$(TCINSTALL)\rx-elf\lib\gcc\rx-elf\4.7-GNURX_v12.03^"|^"$(CONFIGDIR)^"] [B|RSARCH|1] [B|FIXUPLIBS|1] [S|ARCHIVE|lib$(PROJECTNAME).a*libgcc.a] [S|OUTFORM|BOTH] [B|MFILEGEN|1] [S|PLMFILE|^"$(CONFIGDIR)\$(PROJECTNAME).map^"] [S|OUTFILE|^"$(CONFIGDIR)\$(PROJECTNAME).x^"] [S|GROUPDET|.fvectors|0|0||1|0xFFFFFF80|0|1|0|.fvectors|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.jmptable|0|0||1|0xFFFFEF80|0|0|0|.jmptable|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.text|0|0||1|0xFFFC0000|0|0|0|.text|All-files|<<FEND>>|0|.text.*|All-files|<<FEND>>|0|P|All-files|<<FEND>>|1|etext|<<FEND>>|<<CEND>>|<<GEND>>|.rvectors|0|0||0||0|1|1|_rvectors_start|<<FEND>>|0|.rvectors|All-files|<<FEND>>|1|_rvectors_end|<<FEND>>|<<CEND>>|<<GEND>>|.init|0|0||0||0|0|0|.init|All-files|<<FEND>>|1|__preinit_array_start|<<FEND>>|0|.preinit_array|All-files|<<FEND>>|1|__preinit_array_end|<<FEND>>|1|__init_array_start____=____(.____+____3)____&____~____3|<<FEND>>|0|.init_array|All-files|<<FEND>>|0|SORT(.init_array.*)|All-files|<<FEND>>|1|__init_array_end|<<FEND>>|1|__fini_array_start|<<FEND>>|0|.fini_array|All-files|<<FEND>>|0|SORT(.fini_array.*)|All-files|<<FEND>>|1|__fini_array_end|<<FEND>>|<<CEND>>|<<GEND>>|.fini|0|0||0||0|0|0|.fini|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.got|0|0||0||0|0|0|.got|All-files|<<FEND>>|0|.got.plt|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.rodata|0|0||0||0|0|0|.rodata|All-files|<<FEND>>|0|.rodata.*|All-files|<<FEND>>|0|C_1|All-files|<<FEND>>|0|C_2|All-files|<<FEND>>|0|C|All-files|<<FEND>>|1|_erodata|<<FEND>>|<<CEND>>|<<GEND>>|.eh_frame_hdr|0|0||0||0|0|0|.eh_frame_hdr|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.eh_frame|0|0||0||0|0|0|.eh_frame|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.jcr|0|0||0||0|0|0|.jcr|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.tors|0|0||0||0|0|1|__CTOR_LIST__|<<FEND>>|1|___ctors|<<FEND>>|0|.ctors|All-files|<<FEND>>|1|___ctors_end|<<FEND>>|1|__CTOR_END__|<<FEND>>|1|__DTOR_LIST__|<<FEND>>|1|___dtors|<<FEND>>|0|.dtors|All-files|<<FEND>>|1|___dtors_end|<<FEND>>|1|__DTOR_END__|<<FEND>>|1|_mdata|<<FEND>>|<<CEND>>|<<GEND>>|.istack|0|0||1|0x00001808|0|0|1|_istack|<<FEND>>|<<CEND>>|<<GEND>>|.ustack|0|0||1|0x00001708|0|0|1|_ustack|<<FEND>>|<<CEND>>|<<GEND>>|.data|0|2|_mdata|1|0x00001001|0|0|1|_data|<<FEND>>|0|.data|All-files|<<FEND>>|0|.data.*|All-files|<<FEND>>|0|D|All-files|<<FEND>>|0|D_1|All-files|<<FEND>>|0|D_2|All-files|<<FEND>>|1|_edata|<<FEND>>|<<CEND>>|<<GEND>>|.gcc_exc|0|0||0||0|0|0|.gcc_exc|All-files|<<FEND>>|<<CEND>>|<<GEND>>|.bss|0|0||0||0|0|1|_bss|<<FEND>>|0|.bss|All-files|<<FEND>>|0|.bss.*|All-files|<<FEND>>|0|COMMON|All-files|<<FEND>>|0|B|All-files|<<FEND>>|0|B_1|All-files|<<FEND>>|0|B_2|All-files|<<FEND>>|1|_ebss|<<FEND>>|1|_end|<<FEND>>|<<CEND>>|<<GEND>>|.bootloader|0|1|0xFFFFF004|1|0x00016000|0|0|1|_bootloader_start|<<FEND>>|0|.bootloader|All-files|<<FEND>>|0|.bootloader.*|All-files|<<FEND>>|1|_bootloader_end|<<FEND>>|<<CEND>>|<<GEND>>|] [S|APPTXT|^"-e _PowerON_Reset^"] [S|CPUTYPE|RX600] [S|ENDIAN|LITTLE] [S|CPU|Other] [I|RMINTREGVAL|0] [I|RMMAXCONSTVAL|0] [I|RMMAXVARSVAL|0] [S|PROJECTTYPE|CAPPPROJECT] [B|DOOPTLIB|1] [B|DOPROJBUILT|1]
@@ -488,6 +493,7 @@
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" "0ef4b41780a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" "0d4fca3f70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\switch_context.asm" "005e5daecdf2ec10" 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\swupdate.c" "0c72381a4d7bec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tcp.c" "0cbbdf6e70a9ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" "0a56cf4ecdf2ec10" 2 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\timer.c" "0a56cf4ecdf2ec10" 2 
@@ -504,7 +510,7 @@
 [OPTIONS_Release_GNU Library Generator]
 "Single Shot" "0f43ec63bdf2ec10" 1 
 [OPTIONS_Release_GNU Linker]
-"Single Shot" "018aae014c7bec10" 4 
+"Single Shot" "0abb781a4d7bec10" 4 
 [OPTIONS_Release]
 "" 0 
 "[V|VERSION|2] [S|OBJPATH|^"$(CONFIGDIR)\$(FILELEAF).o^"] [I|DEBUGLV|0] [B|LINCHLS|1] [B|LINCASS|1] [B|LINCSYM|1] [S|LFILE|^"$(CONFIGDIR)\$(FILELEAF).^"] [S|PROJECTTYPE|CAPPPROJECT] [S|INCDIR|^"$(PROJDIR)^"] [S|CPUTYPE|RX600] [S|ENDIAN|LITTLE] [S|CPU|RX63N] " 3 
