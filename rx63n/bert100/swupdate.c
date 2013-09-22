@@ -211,6 +211,37 @@ SWUpdate_Execute(const char *filepath)
 	return 0;
 }
 
+/**
+ ***********************************************************************************
+ * \fn static int8_t cmd_chain(Interp *interp,uint8_t argc,char *argv[]) 
+ * Shell command for creating the sector chain in data flash.
+ ***********************************************************************************
+ */
+static int8_t
+cmd_chain(Interp * interp, uint8_t argc, char *argv[])
+{
+        char *filename;
+        bool result;
+        unsigned int i;
+        if (argc == 2) {
+                filename = argv[1];
+                result = store_sector_chain(filename);
+                if (result == false) {
+                        Con_Printf("failed\n");
+                        return 0;
+                }
+        }
+        for (i = 0; i < 32; i++) {
+                uint32_t dword = *(uint32_t *) (FLASH_ADDR_SWUPDATE + (i << 2));
+                Con_Printf("%08lx ", dword);
+                if ((i % 8) == 7) {
+                        Con_Printf("\n", dword);
+                }
+        }
+        return 0;
+}
+
+INTERP_CMD(chainCmd, "chain", cmd_chain, "chain <filename>  # store a cluster chain in data flash");
 
 /**
  *****************************************************************************
@@ -222,6 +253,6 @@ SWUpdate_Init(void)
 {
         ClearUpdateSignature();
         //Interp_RegisterCmd(&swupdateCmd);
-        //Interp_RegisterCmd(&chainCmd);
+        Interp_RegisterCmd(&chainCmd);
 }
 
