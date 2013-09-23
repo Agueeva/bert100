@@ -3,30 +3,47 @@
   var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel"); //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert"
   var myVarTX= new Array("txa_swing");
   var myVarDrTr= new Array("synth0.freq");
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';
-     var socket = new WebSocket(urlWS);
-     function keepAlive() {
-          socket.send(JSON.stringify({get: "test.var1"}));
+  var my_Interval, bl_Communication, all;
+  var socket;
+  var urlWS='ws://tneuner.homeip.net:8080/messages';  //'ws://' + document.domain + ':' + document.location.port + '/messages';
+     //alert(urlWS);
+     bl_Communication=false;
+   function SocketNew() {
+     delete socket;
+     socket = new WebSocket(urlWS);
+     
+ socket = new WebSocket(urlWS);
+ socket.onopen = function() {
+             alert("Verbindung open");
+             bl_Communication=true;
+	     my_Interval=setInterval(keepAlive,30000);
+
      }
-     socket.onopen = function() {
-	     setInterval(keepAlive,30000);
-     };
      socket.onclose = function() {
 		alert('Verbindung unterbrochen');
-     };
+		bl_Communication=false;
+                my_Interval=clearInterval();
+     }
      socket.onmessage = function(evt) {
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-	if(typeof arr['var'] != "undefined") {
-		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
-	}
 
+        var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
+
+        if(typeof var_id == "undefined") {
+         var_id=$("#frame").contents().find("#var_val").val(value);
+
+         }
+         else{
+          $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+         }
      }
-
-
-
+  function keepAlive() {
+          socket.send(JSON.stringify({get: "test.var1"}));
+     }
+     }
 //---------------------Laod page---------------------
 var requestToRelaod = false;
 var newUrl = "";
@@ -39,7 +56,7 @@ function laodpage(url,id) {
            $("#content div").show();
 
            if (pageLoading) {
-                      clearTimeout (timeout);
+                      clearTimeout(timeout);
                       pageLoading = false;
                       requestToRelaod = true;
                      //laodpage(url,id);
@@ -53,11 +70,12 @@ function laodpage(url,id) {
                                  if (!requestToRelaod) {
                                             $(id).fadeIn(200);
                                             $("#content div").fadeOut(200);
-                                            setTimeout(function(){
-                                                       pageLoading = false;
-                                            },210);
+                                            //timeout=setTimeout(function(){
+                                            //           pageLoading = false;
+                                           // },210);
                                  }else{
                                             requestToRelaod=false;
+
                                             window_onload();
                                  }
                        });
@@ -99,14 +117,14 @@ function createTreeMenu(id) {
                       //console.log(index);
                       var $$ = $(this);
                       $$.addClass("item");
-                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");          
+                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");
            });
-           
+
            $("#"+id+" li:first").addClass("selected");
-           
+
            //hide all sub entries
            $("#"+id).find("ul").hide();
-      
+
            $("#"+id+" .category > a").click(function() {
                       var $$ = $(this).parent();
 		      var childid = $$.find("ul:first");
@@ -125,7 +143,7 @@ function createTreeMenu(id) {
                                  $$.removeClass("cat_open").addClass("cat_close");
                       }
 		});
-           
+
            $("#"+id+" .item > a").click(function() {
                       $("#"+id+" .selected").removeClass("selected").addClass("item");
                       $(this).parent().removeClass("item");
@@ -135,8 +153,9 @@ function createTreeMenu(id) {
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
 {
+        	n=3;
           laodpage("html/main.html","#frame");
-
+         SocketNew();
 	//Click.
 	$( "#homeBut" ).click(function() {
 
@@ -149,6 +168,7 @@ $(document).ready(function()
 	$( "#PatternBut" ).click(function() {
 		myElement=myVarPattern;
 		n=1;
+                all=false;
 		laodpage("html/pattern.html","#frame");
 		return false;
 	});
@@ -165,15 +185,27 @@ $(document).ready(function()
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
+        $( "#Variables" ).click(function() {
+		n=3;
+		laodpage("html/variablen.html","#frame");
+		return false;
+	});
 
            createTreeMenu("treemenu");
 });
 
-
+function ReadVar(variable){
+   //  alert(bl_Communication);
+     if(!bl_Communication) SocketNew();
+     var my_var;
+     my_var=variable.value;
+     socket.send(JSON.stringify({get: my_var}));
+     }
 
 
 function window_onload()
 {
+if(!bl_Communication) SocketNew();
   var my_var;
   var j,i;
   switch(n)
@@ -182,6 +214,7 @@ case 1:
   for (j = 0; j < myElement.length; j++){
   for (i = 0; i <= 3; i++){
   my_var="cdr0.l"+i+"."+myElement[j];
+ 
   socket.send(JSON.stringify({get: my_var}));
   }}
   break;
@@ -189,10 +222,11 @@ case 2:
   for (j = 0; j < myElement.length; j++){
   my_var=myElement[j];
   socket.send(JSON.stringify({get: my_var}));
+//  alert(my_var);
 }
   break;
 default:
-
+break;
 }
 
 }
@@ -203,7 +237,7 @@ function myCheckAll(box)
 {
 var j,i,item;
 if (box.checked){
-
+all=true;
 for (j = 0; j < myElement.length; j++){
 for (i = 1; i <= 3; i++){
 item="cdr0.l"+i+"."+myElement[j];
@@ -211,6 +245,7 @@ item="cdr0.l"+i+"."+myElement[j];
 }}
 }
 else {
+all=false;
 for (j = 0; j < myElement.length; j++){
 for (i = 1; i <= 3; i++){
 item="cdr0.l"+i+"."+myElement[j];
@@ -219,23 +254,31 @@ item="cdr0.l"+i+"."+myElement[j];
 }
 }
 
-function SaveVar(myVar){
+function SaveVar(myVar, typeVar){
+if(!bl_Communication) SocketNew();
 var formval, myID, myForm, myBool;
-myForm=	$("#frame").contents().find("#all");
-myBool=myForm.checked;
-
 myID=myVar.id;
 formval=myVar.value;
-if (formval=="checkbox") formval=myVar.checked?1:0;
-if(myBool) {
+ switch(typeVar)
+{
+case 1:  //einfach
+     
+socket.send(JSON.stringify({set: myID,val: formval}));
+  break;
+case 2:  //all vorhandeln
+
+if(all) {
 for (i = 0; i <= 3; i++) {
 socket.send(JSON.stringify({set: myID,val: formval}));
-myID=myID.replace("l"+i, "l"+(i+1));
+myID=myID.replace(".l"+i, ".l"+(i+1));
 }
 }
 else {
 socket.send(JSON.stringify({set: myID,val: formval}));
-
+}
+  break;
+default:
+break;
 }
 }
 
