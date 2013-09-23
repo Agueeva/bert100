@@ -41,19 +41,21 @@
 #include "pvar.h"
 #include "pvar_websock.h"
 #include "adc12.h"
-#include "flash.h"
 #include "config.h"
 #include "usbdev.h"
 #include "usbstorage.h"
 #include "xo.h"
 #include "leds.h"
 #include "version.h"
+#include "dataflash.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
 ConfigureClocks(void)
 {
 	uint32_t i;
+	SYSTEM.SCKCR3.WORD = 0x0;
+	SYSTEM.PLLCR2.BIT.PLLEN = 1; 
 	SYSTEM.MOSCWTCR.BYTE = 0x0d;
 	SYSTEM.PLLWTCR.BYTE = 0xE;
 	SYSTEM.PLLCR.WORD = 0x0f00;
@@ -98,20 +100,6 @@ main(void)
 	/* Disable Pin function write protections permanently */	
 	MPC.PWPR.BYTE = 0x00;
 	MPC.PWPR.BYTE = 0x40;
-	/*
- 	***********************************************
- 	* USB host VBus Power enable
- 	***********************************************
- 	*/
- 	//BSET(6,PORT1.PDR.BYTE);
- 	//BSET(6,PORT1.PODR.BYTE);
-
-#if 0 
- 	BSET(3,PORT0.PDR.BYTE);
- 	BCLR(3,PORT0.PODR.BYTE);
- 	BSET(5,PORT0.PDR.BYTE);
- 	BCLR(5,PORT0.PODR.BYTE);
-#endif
 
 	/* Alive LED */
 	BSET(5,PORTA.PDR.BYTE);
@@ -154,7 +142,7 @@ main(void)
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	ADC12_Init();
-	Flash_Init();
+	DataFlash_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	Version_Init();

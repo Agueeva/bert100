@@ -20,24 +20,46 @@
 
 #define SWUP_CRC32_START	(0x73911293)
 
-#define SPI_MISO		PORTA.PORT.BIT.B7
-#define SPI_MOSI(val)	BMOD(6,PORTA.DR.BYTE,(val))
+#ifdef BOARD_SAKURA
+#define SD_CS(val) BMOD(0,PORTC.PODR.BYTE,(val))
+#define SPI_CLK_BIT_NR  (5)
+#define SPI_MISO_BIT_NR (7)
+#define SPI_MOSI_BIT_NR (6)
+#define SPI_MISO        PORTC.PIDR.BIT.B7
+#define SPI_MOSI(val)   BMOD(6,PORTC.PODR.BYTE,(val))
+#define SPI_CLK_PODR    PORTC.PODR.BYTE
+#define SPI_MISO_PIDR   PORTC.PIDR.BYTE
+#define SPI_MOSI_PODR   PORTC.PODR.BYTE
 
-#define SPI_CLK_LOW		BCLR(5,PORTA.DR.BYTE)
-#define SPI_CLK_HIGH	BSET(5,PORTA.DR.BYTE)
-#define SPI_MOSI_LOW	BCLR(6,PORTA.DR.BYTE)
-#define SPI_MOSI_HIGH	BSET(6,PORTA.DR.BYTE)
+#define SPI_CLK_LOW  BCLR(5,PORTC.PODR.BYTE)
+#define SPI_CLK_HIGH BSET(5,PORTC.PODR.BYTE)
+#define SPI_MOSI_LOW BCLR(6,PORTC.PODR.BYTE)
+#define SPI_MOSI_HIGH BSET(6,PORTC.PODR.BYTE)
+#else
+#define SD_CS(val) BMOD(2,PORT2.PODR.BYTE,(val))
+#define SPI_CLK_BIT_NR  (4)
+#define SPI_MISO_BIT_NR (5)
+#define SPI_MOSI_BIT_NR (3)
+#define SPI_MISO        PORT2.PIDR.BIT.B5
+#define SPI_MOSI(val)   BMOD(3,PORT2.PODR.BYTE,(val))
+#define SPI_CLK_PODR    PORT2.PODR.BYTE
+#define SPI_MISO_PIDR   PORT2.PIDR.BYTE
+#define SPI_MOSI_PODR   PORT2.PODR.BYTE
 
-#define SD_CS(val)		BMOD(1,PORTA.DR.BYTE,(val))
-#define SD_nON(val)		BMOD(6,PORTB.DR.BYTE,(val))
-#define SD_nON_DIR(val)	BMOD(6,PORTB.DDR.BYTE,(val))
+#define SPI_CLK_LOW  BCLR(4,PORT2.PODR.BYTE)
+#define SPI_CLK_HIGH BSET(4,PORT2.PODR.BYTE)
+#define SPI_MOSI_LOW BCLR(3,PORT2.PODR.BYTE)
+#define SPI_MOSI_HIGH BSET(3,PORT2.PODR.BYTE)
+#endif
+
+#define SD_nON(val)		
+#define SD_nON_DIR(val)	
 
 #define SPIR1_ERRMSK        (0xfe)
 #define SPIR1_NOREPLY       (0xff)
 
 #define RAMCODE			__attribute__ ((section (".bootloader")))
 #define RAMCODE_DATA	__attribute__ ((section (".bootloader.P_1")))
-#define NOINLINE		__attribute__ ((noinline))
 
 /*  Bottom of User Flash Area */
 #define ROM_PE_ADDR     0x00F80000
@@ -47,9 +69,12 @@
 #define WAIT_MAX_ERASE      1000000
 #define WAIT_MAX_ROM_WRITE  1000000
 
+/* FCU RAM/ROM areas are the ame for RX62N and RX63N  */
 #define FCU_PRG_TOP     0xFEFFE000
 #define FCU_RAM_TOP     0x007F8000
 #define FCU_RAM_SIZE    0x2000
+
+/* Same for RX62N and RX63N */
 #define FLASH_BLOCK_SECTOR_CHAIN   0x00107800	/*   DB15 2KB: 0x00107800 - 0x00107FFF */
 
 RAMCODE_DATA static bool card_is_sdhc;
@@ -75,16 +100,22 @@ spix(uint8_t data)
 	return data;
 }
 
+static inline void
+delay_loop(uint32_t loopcnt)
+{
+        __asm__ volatile(
+            "label%=:    \n\t"
+            "   sub #1,%0    \n\t"
+            "   bpz.b label%=":"=r" (loopcnt):"0"(loopcnt):);
+}
+
 RAMCODE NOINLINE static void
 delayMs(unsigned int ms)
 {
 	unsigned int cnt;	
 	for(cnt = 0; cnt < ms;cnt++) {
-        asm("mov.l  %0, r1": : "g"((F_CPU/4000) - 1):"memory","r1");
-        asm("xlabel992: ":::);
-        asm("sub    #1, r1":::"r1");
-        asm("bne    xlabel992":::);
-    }
+		delay_loop(F_CPU / 4000);
+      	}
 }
 
 RAMCODE static inline void
@@ -313,20 +344,24 @@ RAMCODE static bool
 MinSD_Init(void)
 {
 	int i;
-	BSET(1, PORTA.DDR.BYTE);
-	/* SD-CD does not work correctly because the pin is DPUPEB  */
-	BSET(4, PORT1.ICR.BYTE);
-	BCLR(4, PORT1.DDR.BYTE);
-
-	/* SPI_MOSI */
-	SPI_MOSI_HIGH;
-	BSET(6, PORTA.DDR.BYTE);
-	/* SPI_MISO */
-	BCLR(7, PORTA.DDR.BYTE);
-	BSET(7, PORTA.ICR.BYTE);
-	/* SPI_CLK */
-	SPI_CLK_HIGH;
-	BSET(5, PORTA.DDR.BYTE);
+       SPI_MOSI_HIGH;
+#ifdef BOARD_SAKURA
+        /* SPI_MOSI */
+        BSET(6, PORTC.PDR.BYTE);
+        /* SPI_MISO */
+        BCLR(7, PORTC.PDR.BYTE);
+        /* SPI_CLK */
+        SPI_CLK_HIGH;
+        BSET(5, PORTC.PDR.BYTE);
+#else
+        /* SPI_MOSI */
+        BSET(3, PORT2.PDR.BYTE);
+        /* SPI_MISO */
+        BCLR(5, PORT2.PDR.BYTE);
+        /* SPI_CLK */
+        SPI_CLK_HIGH;
+        BSET(4, PORT2.PDR.BYTE);
+#endif
 	SD_nON_DIR(1);
 	SD_nON(0);
 
@@ -358,6 +393,7 @@ RAMCODE static void
 copy_to_fcu_ram(void)
 {
 	uint32_t *src, *dst;
+	uint32_t i;
 	/* Before writing data to the FCU RAM, clear FENTRYR to stop the FCU. */
 	if (FLASH.FENTRYR.WORD != 0x0000) {
 		/* Disable the FCU from accepting commands - Clear both the
@@ -369,17 +405,12 @@ copy_to_fcu_ram(void)
 	FLASH.FCURAME.WORD = 0xC401;
 	src = (uint32_t *) FCU_PRG_TOP;
 	dst = (uint32_t *) FCU_RAM_TOP;
-#if 1
-	__builtin_memcpy((void *)FCU_RAM_TOP, (void *)FCU_PRG_TOP, FCU_RAM_SIZE);
-#else
-	uint16_t i;
 	/* Iterate for loop to copy the FCU firmware */
 	for (i = 0; i < (FCU_RAM_SIZE / 4); i++) {
 		*dst = *src;
 		src++;
 		dst++;
 	}
-#endif
 	return;
 }
 
@@ -559,7 +590,7 @@ Do_SWUpdate(uint32_t * sectorChainP)
 	 * one
 	 ***************************************************************************************
 	 */
-	for (addr = UINT32_C(0xFFF80000); addr <= UINT32_C(0xfffff000); addr += 512) {
+	for (addr = UINT32_C(0xFFF00000); addr <= UINT32_C(0xfffff000); addr += 512) {
 		if (MinSD_ReadBlock(buf, sector) != 512) {
 			return false;
 		}
@@ -601,14 +632,14 @@ Do_SWUpdate(uint32_t * sectorChainP)
 	sector = dflashP[0];
 	nsectors = dflashP[1];
 	crc32 = SWUP_CRC32_START;
-	for (addr = UINT32_C(0xFFF80000); addr < UINT32_C(0xFFFFF000); addr += 4) {
+	for (addr = UINT32_C(0xFFF00000); addr < UINT32_C(0xFFFFF000); addr += 4) {
 		val = *(uint32_t *) addr;
 		if (val != 0xFFFFFFFF) {
 			Flash_Erase((uint8_t *) (addr & 0x00ffffff));
 			addr = (addr & ~UINT32_C(0xfff)) + 0x1000;
 		}
 	}
-	for (addr = UINT32_C(0xFFF80000); addr != 0xFFFFF000; addr += 512) {
+	for (addr = UINT32_C(0xFFF00000); addr != 0xFFFFF000; addr += 512) {
 		if (MinSD_ReadBlock(buf, sector) != 512) {
 			while (1) ;
 		}
@@ -625,10 +656,9 @@ Do_SWUpdate(uint32_t * sectorChainP)
 			}
 		}
 	}
-	crc32 = CRC32_Eth(crc32, (uint8_t *) 0xFFF80000, 0x7f000);
+	crc32 = CRC32_Eth(crc32, (uint8_t *) 0xFFF00000, 0xff000);
 	if (expected_crc != crc32) {
 		/* Second time the CRC was different. Give the user a second chance by rebooting */
-		/* Battery off ? */
 		while (1) ;
 	}
 	return true;
@@ -642,14 +672,25 @@ BootloaderStart(void)
 {
 	uint32_t addr;
 	void (*fn) (void);
-	SYSTEM.SCKCR.LONG = 0x00820100;
+        uint32_t i;
+	/* Configure the clocks of the CPU */
+        SYSTEM.MOSCWTCR.BYTE = 0x0d;
+        SYSTEM.PLLWTCR.BYTE = 0xE;
+        SYSTEM.PLLCR.WORD = 0x0f00;
+        SYSTEM.MOSCCR.BYTE = 0x00;
+        SYSTEM.PLLCR2.BIT.PLLEN = 0;
+        for(i = 0; i < 3000;i++) {
+                asm("nop":::"memory");
+        }
+        SYSTEM.SCKCR.LONG = 0x21821222;
+        SYSTEM.SCKCR2.WORD = 0x033;
+        SYSTEM.SCKCR3.WORD = 0x400;
+	
+	/* Enable the last 2k of Data flash for reading, Same as RX62N */
 	FLASH.DFLRE1.WORD = 0xD200 | 0x0080;
 
-    /* Enable the power from battery */
-    BSET(5, PORTD.DDR.BYTE);
-    BSET(5, PORTD.DR.BYTE);
-
 	Do_SWUpdate((uint32_t *) FLASH_BLOCK_SECTOR_CHAIN);
+	/* Jump to normal boot */
 	addr = 0xFFFFeFFC;
 	fn = (typeof(fn)) addr;
 	fn();

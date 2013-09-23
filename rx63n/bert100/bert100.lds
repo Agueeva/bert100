@@ -5,7 +5,23 @@ SECTIONS
 	{
 		KEEP(*(.fvectors))
 	}
-	.text 0xFFFC0000 : AT (0xFFFC0000)
+	.jmptable 0xFFFFeF80 : AT (0xFFFFeF80)
+        {
+                KEEP(*(.jmptable))
+        }
+	.bootloader 0x16000: AT (0xFFFFF004) /* For bytes are for CRC32 */
+        {
+                _bootloader_start = .;
+                *(.bootloader)
+                *(.bootloader.*)
+                _bootloader_end = .;
+        }
+        .bootloader_flash LOADADDR(.bootloader) + SIZEOF (.bootloader): AT(LOADADDR(.bootloader) + SIZEOF (.bootloader))
+        {
+                *(.bootloader_flash)
+                *(.bootloader_flash.*)
+        }
+	.text 0xFFF80000 : AT (0xFFF80000)
 	{
 		*(.text)
 		*(.text.*)
