@@ -2,7 +2,7 @@
 <FORM  ID="Form_PG">
 <TABLE ALIGN="center" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="80%">
 <TR ALIGN="left" VALIGN="middle"><TH>Pattern</TH>
-<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript: window.parent.myCheckAll(this)" VALUE ="checkbox"></TH>
+<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript: window.parent.myCheckAll(this,'cdr0.l','.l',0)" VALUE ="checkbox"></TH>
 <TH></TH>
 <TH></TH>
 <TH></TH></TR>
@@ -14,28 +14,28 @@
 	<TH>Channel 4</TH></TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH><font size="1" color="red">pat_gen_sel</font></TH>
-<TH> <SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  onChange="javascript: window.parent.SaveVar(this,2); document.getElementById('cdr0.l0.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l0.pat_ver_sel'),2)" >
+<TH> <SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0); document.getElementById('cdr0.l0.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l0.pat_ver_sel'),2,'.l',0)" >
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
 <OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel1" ID="cdr0.l1.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1); document.getElementById('cdr0.l1.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l1.pat_ver_sel'),1)" >
+</SELECT></TH><TH><SELECT NAME="pat_gen_sel1" ID="cdr0.l1.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0); document.getElementById('cdr0.l1.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l1.pat_ver_sel'),1,'.l',0)" >
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
 <OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel2" ID="cdr0.l2.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1); document.getElementById('cdr0.l2.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l2.pat_ver_sel'),1)" >
+</SELECT></TH><TH><SELECT NAME="pat_gen_sel2" ID="cdr0.l2.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0); document.getElementById('cdr0.l2.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l2.pat_ver_sel'),1,'.l',0)" >
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
 <OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel3" ID="cdr0.l3.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1); document.getElementById('cdr0.l3.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l3.pat_ver_sel'),1)" >
+</SELECT></TH><TH><SELECT NAME="pat_gen_sel3" ID="cdr0.l3.pat_gen_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0); document.getElementById('cdr0.l3.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l3.pat_ver_sel'),1,'.l',0)" >
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
@@ -46,65 +46,65 @@
 <TR ALIGN="left">
 <TH><font size="1" color="red">prbs_gen_inv</font></TH>
 
-<TH><SELECT NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,2)">
+<TH><SELECT NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
 <OPTION VALUE="1">true
 <OPTION VALUE ="0">Invers
 </SELECT></TH>
-<TH><SELECT NAME="prbs_gen_inv1" ID="cdr0.l1.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1)">
+<TH><SELECT NAME="prbs_gen_inv1" ID="cdr0.l1.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="1">true
 <OPTION VALUE ="0">Invers
 </SELECT></TH>
-<TH><SELECT NAME="prbs_gen_inv2" ID="cdr0.l2.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1)">
+<TH><SELECT NAME="prbs_gen_inv2" ID="cdr0.l2.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="1">true
 <OPTION VALUE ="0">Invers
 </SELECT></TH>
-<TH><SELECT NAME="prbs_gen_inv3" ID="cdr0.l3.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1)">
+<TH><SELECT NAME="prbs_gen_inv3" ID="cdr0.l3.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="1">true
 <OPTION VALUE ="0">Invers
 </SELECT></TH></TR>
 <TR ALIGN="left">
 <TH><font size="1" color="red">prbs_autovr</font></TH>
-<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,2)">
+<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,2,'.l',0)">
 <OPTION VALUE="0">no
 <OPTION VALUE ="1">yes
 </SELECT>
 </TH>
-<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1)">
+<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="0">no
 <OPTION VALUE ="1">yes
 </SELECT>
 </TH>
-<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1)">
+<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="0">no
 <OPTION VALUE ="1">yes
 </SELECT>
 </TH>
-<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1)">
+<TH>Auto Sync  ED: <SELECT NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  onClick="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="0">no
 <OPTION VALUE ="1">yes
 </SELECT>
 </TH></TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH><font size="1" color="red">pat_ver_sel</font></TH>
-<TH> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,2)">
+<TH> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
-</SELECT></TH><TH><SELECT NAME="pat_ver_sel1" ID="cdr0.l1.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1)">
+</SELECT></TH><TH><SELECT NAME="pat_ver_sel1" ID="cdr0.l1.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
-</SELECT></TH><TH><SELECT NAME="pat_ver_sel2" ID="cdr0.l2.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1)">
+</SELECT></TH><TH><SELECT NAME="pat_ver_sel2" ID="cdr0.l2.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
-</SELECT></TH><TH><SELECT NAME="pat_ver_sel3" ID="cdr0.l3.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1)">
+</SELECT></TH><TH><SELECT NAME="pat_ver_sel3" ID="cdr0.l3.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 <OPTION VALUE="7">2E7-1
 <OPTION VALUE ="1">2E9-1
 <OPTION VALUE ="6">2E15-1
