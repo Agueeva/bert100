@@ -1,32 +1,53 @@
   var myElement=new Array();
   var n=0;
   var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel"); //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert"
-  var myVarTX= new Array("txa_swing");
+  var myVarTX= new Array("vg1","vg2");
   var myVarDrTr= new Array("synth0.freq");
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';
-     var socket = new WebSocket(urlWS);
-     function keepAlive() {
-          socket.send(JSON.stringify({get: "test.var1"}));
+  var my_Interval, bl_Communication, all;
+  var socket,page_k,page_pref;
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  //
+     //alert(urlWS);
+     bl_Communication=true;
+   function SocketNew() {
+     delete socket;
+     socket = new WebSocket(urlWS);
+
+ socket = new WebSocket(urlWS);
+ socket.onopen = function() {
+             //alert("Verbindung open");
+             bl_Communication=true;
+	     my_Interval=setInterval(keepAlive,3000);
+
      }
-     socket.onopen = function() {
-	     setInterval(keepAlive,30000);
-     };
      socket.onclose = function() {
 		alert('Verbindung unterbrochen');
-     };
+	//	bl_Communication=false;
+                my_Interval=clearInterval();
+     }
      socket.onmessage = function(evt) {
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-	if(typeof arr['var'] != "undefined") {
-		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
-	}
+        if (item=="test.var1") {
+          document.getElementById(item).value=value;
+        }
+        else {
+        var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
 
+        if(typeof var_id == "undefined") {
+         var_id=$("#frame").contents().find("#var_val").val(value);
+
+         }
+         else{
+          $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+         }
      }
-
-
-
+     }
+  function keepAlive() {
+          socket.send(JSON.stringify({get: "test.var1"}));
+     }
+     }
 //---------------------Laod page---------------------
 var requestToRelaod = false;
 var newUrl = "";
@@ -36,10 +57,10 @@ function laodpage(url,id) {
            //$(id).stop();
            //$("#content div").stop();
            $(id).hide();
-           $("#content div").show();
+           $("#content_wrapper div").show();
 
            if (pageLoading) {
-                      clearTimeout (timeout);
+                      clearTimeout(timeout);
                       pageLoading = false;
                       requestToRelaod = true;
                      //laodpage(url,id);
@@ -52,12 +73,13 @@ function laodpage(url,id) {
                       $(id).load(function() {
                                  if (!requestToRelaod) {
                                             $(id).fadeIn(200);
-                                            $("#content div").fadeOut(200);
-                                            setTimeout(function(){
-                                                       pageLoading = false;
-                                            },210);
+                                            $("#content_wrapper div").fadeOut(200);
+                                            //timeout=setTimeout(function(){
+                                            //           pageLoading = false;
+                                           // },210);
                                  }else{
                                             requestToRelaod=false;
+
                                             window_onload();
                                  }
                        });
@@ -99,14 +121,14 @@ function createTreeMenu(id) {
                       //console.log(index);
                       var $$ = $(this);
                       $$.addClass("item");
-                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");          
+                      $$.has("ul").removeClass("item").addClass("cat_close").addClass("category");
            });
-           
+
            $("#"+id+" li:first").addClass("selected");
-           
+
            //hide all sub entries
            $("#"+id).find("ul").hide();
-      
+
            $("#"+id+" .category > a").click(function() {
                       var $$ = $(this).parent();
 		      var childid = $$.find("ul:first");
@@ -125,7 +147,7 @@ function createTreeMenu(id) {
                                  $$.removeClass("cat_open").addClass("cat_close");
                       }
 		});
-           
+
            $("#"+id+" .item > a").click(function() {
                       $("#"+id+" .selected").removeClass("selected").addClass("item");
                       $(this).parent().removeClass("item");
@@ -135,8 +157,9 @@ function createTreeMenu(id) {
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
 {
+        	n=3;
           laodpage("html/main.html","#frame");
-
+         SocketNew();
 	//Click.
 	$( "#homeBut" ).click(function() {
 
@@ -149,13 +172,19 @@ $(document).ready(function()
 	$( "#PatternBut" ).click(function() {
 		myElement=myVarPattern;
 		n=1;
+                all=false;
+                page_pref="cdr0.l";
+                page_k=0;
 		laodpage("html/pattern.html","#frame");
 		return false;
 	});
 	$( "#TXBut" ).click(function() {
 	        myElement=myVarTX;
 		n=1;
-		laodpage("html/tx.html","#frame");
+		all=false;
+                page_pref="emlAmp";
+                page_k=1;
+		laodpage("html/tx_eml.html","#frame");
 		return false;
 	});
 
@@ -165,15 +194,27 @@ $(document).ready(function()
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
+        $( "#Variables" ).click(function() {
+		n=3;
+		laodpage("html/variablen.html","#frame");
+		return false;
+	});
 
            createTreeMenu("treemenu");
 });
 
-
+function ReadVar(variable){
+   //  alert(bl_Communication);
+     if(!bl_Communication) SocketNew();
+     var my_var;
+     my_var=variable.value;
+     socket.send(JSON.stringify({get: my_var}));
+     }
 
 
 function window_onload()
 {
+if(!bl_Communication) SocketNew();
   var my_var;
   var j,i;
   switch(n)
@@ -181,7 +222,7 @@ function window_onload()
 case 1:
   for (j = 0; j < myElement.length; j++){
   for (i = 0; i <= 3; i++){
-  my_var="cdr0.l"+i+"."+myElement[j];
+  my_var=page_pref+(i+page_k)+"."+myElement[j];
   socket.send(JSON.stringify({get: my_var}));
   }}
   break;
@@ -189,53 +230,71 @@ case 2:
   for (j = 0; j < myElement.length; j++){
   my_var=myElement[j];
   socket.send(JSON.stringify({get: my_var}));
+//  alert(my_var);
 }
   break;
 default:
-
+break;
 }
 
 }
 
 
 
-function myCheckAll(box)
+function myCheckAll(box,prefB,pref,k)
 {
-var j,i,item;
+var j,i,item, my_var;
 if (box.checked){
-
+all=true;
 for (j = 0; j < myElement.length; j++){
+item =prefB+k+"."+myElement[j];
+var iframe = document.getElementById('frame');
+var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+my_var = frameDoc.getElementById(item);
+SaveVar(my_var, 2,pref,k);
 for (i = 1; i <= 3; i++){
-item="cdr0.l"+i+"."+myElement[j];
+item=prefB + (i+k) + "." + myElement[j];
+
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
 }}
+
 }
 else {
+all=false;
 for (j = 0; j < myElement.length; j++){
 for (i = 1; i <= 3; i++){
-item="cdr0.l"+i+"."+myElement[j];
+item=prefB + (i+k) + "." + myElement[j];
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
 }}
 }
 }
 
-function SaveVar(myVar){
+function SaveVar(myVar, typeVar,pref,k){
+if(!bl_Communication) SocketNew();
 var formval, myID, myForm, myBool;
-myForm=	$("#frame").contents().find("#all");
-myBool=myForm.checked;
 
 myID=myVar.id;
 formval=myVar.value;
-if (formval=="checkbox") formval=myVar.checked?1:0;
-if(myBool) {
+ switch(typeVar)
+{
+case 1:  //einfach
+//alert(myID+"="+formval);
+socket.send(JSON.stringify({set: myID,val: formval}));
+  break;
+case 2:  //all vorhandeln
+
+if(all) {
 for (i = 0; i <= 3; i++) {
 socket.send(JSON.stringify({set: myID,val: formval}));
-myID=myID.replace("l"+i, "l"+(i+1));
+myID=myID.replace(pref+(i+k), pref+(i+1+k));
 }
 }
 else {
 socket.send(JSON.stringify({set: myID,val: formval}));
-
+}
+  break;
+default:
+  break;
 }
 }
 

@@ -78,6 +78,25 @@ body {
     
 }
 
+#bert{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    min-height: 60px;
+    hight:60px;
+    background-color: #00aeeb;
+    overflow:hidden
+}
+
+#content_wrapper{
+    position: absolute;
+    top:60px;
+    left:0;
+    bottom:0;
+    right:0;
+}
+
 #content {
     position:absolute;
     left:200px;
@@ -101,7 +120,7 @@ body {
     height:100px;
 }
 
-#content div{
+#content_wrapper div{
     position:relative;
     width: 220px;
     top:50px;
