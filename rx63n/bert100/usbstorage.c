@@ -314,7 +314,7 @@ UsbStor_SCInquire(UsbStor * us)
 	data[3] = 2;		/* SCSI level */
 	data[4] = 31;
 	data[5] = data[6] = data[7] = 0;
-#ifdef SAKURA
+#ifdef BOARD_SAKURA
 	strncpy((char *)data + 8, "Renesas ", 8);
 	strncpy((char *)data + 16, "Sakura Board    ", 16);
 #else

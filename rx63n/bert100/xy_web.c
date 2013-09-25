@@ -25,7 +25,7 @@
 #include "iram.h"
 #include "md5.h"
 
-#ifdef SAKURA
+#ifdef BOARD_SAKURA
 #define REALM	"Guten Morgen!"
 #else
 #define REALM	"Munich Instruments C-BERT"
