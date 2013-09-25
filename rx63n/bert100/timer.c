@@ -17,8 +17,8 @@ void
 SleepUs(uint32_t sleepUs)
 {
 	uint64_t starttime = TimeNs_Get();
-	uint64_t sleepNs = 1000 * (uint64_t)sleepUs;
-	while((TimeNs_Get() - starttime) < sleepNs) {
+	uint64_t sleepNs = 1000 * (uint64_t) sleepUs;
+	while ((TimeNs_Get() - starttime) < sleepNs) {
 		EV_Yield();
 	}
 }
@@ -145,55 +145,53 @@ TimeUs_Get(void)
 		now = TimeMs_Get();
 		us = CMT0.CMCNT * 160 / 1000;
 	} while (now != TimeMs_Get());
-	return (uint64_t)now * 1000 + us;
+	return (uint64_t) now *1000 + us;
 }
 
-#define DELAY 120 
-#define DELAY_US 5 
+#define DELAY 120
+#define DELAY_US 5
 
 static int8_t
 cmd_delay(Interp * interp, uint8_t argc, char *argv[])
 {
-        TimeMs_t beforeMs,afterMs;
-        uint32_t i;
-        beforeMs = TimeMs_Get();
-        for(i = 0; i < (10000000/DELAY); i++) {
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-                DelayNs(DELAY);
-        }
-        afterMs = TimeMs_Get();
+	TimeMs_t beforeMs, afterMs;
+	uint32_t i;
+	beforeMs = TimeMs_Get();
+	for (i = 0; i < (10000000 / DELAY); i++) {
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+		DelayNs(DELAY);
+	}
+	afterMs = TimeMs_Get();
 	EV_Yield();
-        Con_Printf("Needed %lu ms \n",afterMs - beforeMs);
-        beforeMs = TimeMs_Get();
-        for(i = 0; i < (10000/DELAY_US); i++) {
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-                DelayUs(DELAY_US);
-        }
-        afterMs = TimeMs_Get();
+	Con_Printf("Needed %lu ms \n", afterMs - beforeMs);
+	beforeMs = TimeMs_Get();
+	for (i = 0; i < (10000 / DELAY_US); i++) {
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+		DelayUs(DELAY_US);
+	}
+	afterMs = TimeMs_Get();
 	EV_Yield();
-        Con_Printf("Needed %lu ms \n",afterMs - beforeMs);
-        return 0;
+	Con_Printf("Needed %lu ms \n", afterMs - beforeMs);
+	return 0;
 }
 
-INTERP_CMD(delayCmd, "delay", cmd_delay,
-       "delay   # test the delay loop");
-
+INTERP_CMD(delayCmd, "delay", cmd_delay, "delay   # test the delay loop");
 
 /**
  *************************************************************
@@ -207,10 +205,29 @@ void
 DelayMs(uint32_t ms)
 {
 	uint32_t i;
-	for(i = 0; i < ms; i++) {
+	for (i = 0; i < ms; i++) {
 		DelayUs(1000);
 	}
 }
+
+/**
+ ******************************************************************
+ * \fn static int8_t cmd_uptime(Interp *interp);
+ * Printf the system uptime.
+ ******************************************************************
+ */
+static int8_t
+cmd_uptime(Interp * interp, uint8_t argc, char *argv[])
+{
+	TimeMs_t uptime = TimeMs_Get();
+	Interp_Printf_P(interp, "%luh %lumin %lus\n", uptime / UINT32_C(3600000),
+			(uptime % UINT32_C(3600000)) / UINT32_C(60000),
+			(uptime % UINT32_C(60000)) / UINT32_C(1000));
+	return 0;
+}
+
+INTERP_CMD(uptimeCmd, "uptime", cmd_uptime, "uptime     # Print the system uptime");
+
 /*
  **************************************************************
  * \fn void Timers_Init(void)
@@ -229,4 +246,5 @@ Timers_Init(void)
 	IPR(CMT0, CMI0) = 2;
 	IEN(CMT0, CMI0) = 1;
 	Interp_RegisterCmd(&delayCmd);
+	Interp_RegisterCmd(&uptimeCmd);
 }
