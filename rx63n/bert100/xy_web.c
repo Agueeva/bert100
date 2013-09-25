@@ -9,7 +9,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <string.h>
-
+#include "config.h"
 #include "types.h"
 #include "base64.h"
 #include "xy_web.h"
@@ -25,7 +25,11 @@
 #include "iram.h"
 #include "md5.h"
 
+#ifdef SAKURA
+#define REALM	"Guten Morgen!"
+#else
 #define REALM	"Munich Instruments C-BERT"
+#endif
 
 char *content_string[] = {
 	"text/html",
