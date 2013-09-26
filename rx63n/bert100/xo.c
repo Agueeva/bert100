@@ -13,7 +13,7 @@
 #include "i2cmaster.h"
 
 
-#if 1
+#if 0
 #define REG_N1H_HSDIV	(7)
 #define REG_N1L_RFREQ32	(8)
 #define REG_RFREQ24	(9)
