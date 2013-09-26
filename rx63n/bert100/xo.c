@@ -13,12 +13,22 @@
 #include "i2cmaster.h"
 
 
+#if 1
+#define REG_N1H_HSDIV	(7)
+#define REG_N1L_RFREQ32	(8)
+#define REG_RFREQ24	(9)
+#define REG_RFREQ16	(10)
+#define REG_RFREQ8	(11)
+#define REG_RFREQ0	(12)
+#else
 #define REG_N1H_HSDIV	(13)
 #define REG_N1L_RFREQ32	(14)
 #define REG_RFREQ24	(15)
 #define REG_RFREQ16	(16)
 #define REG_RFREQ8	(17)
 #define REG_RFREQ0	(18)
+#endif
+
 #define REG_FREEZE	(135)
 #define 	RST_REG         (1 << 7)
 #define 	NEW_FREQ        (1 << 6)
@@ -193,6 +203,11 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 			Con_Printf("Read Frequency failed\n");	
 		}
 		return 0;
+#if 0
+	} else if(strcmp(argv[1],"ppm") == 0) {
+		float ppm = fabs((1. - (xo->fXTAL /  114285000)));	
+		Con_Printf("ppm %lu\n",(1. - (xo->fXTAL /  114285000)));	
+#endif
 	}
 	freq = astrtoi32(argv[1]);
 	set_frequency(xo,freq);
@@ -222,15 +237,24 @@ PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 
+#define ORDERED_FREQUENCY 644531250		
+
 void
 XO_Init(const char *name,uint16_t i2cAddr) 
 {
 	SiXO *xo = &gSiXO[0];	
+	uint8_t buf[6];
+	uint32_t freqRet;
 	xo->i2cAddr = i2cAddr;	
 	xo->fXTAL = 114285000;
 	xo->maxFreq = 810 * 1000000;
 	xo->minFreq = 10 * 1000000;
 	xo->outFreq = 0;
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
+	buf[0] = RECALL;
+	if(read_frequency(xo,&freqRet) == false) {
+		Con_Printf("Failed to read frequency from Synthesizer\n");
+	}
+	xo->fXTAL = ((uint64_t)xo->fXTAL * ORDERED_FREQUENCY) / freqRet;
 	Interp_RegisterCmd(&synthCmd);
 }

@@ -598,7 +598,7 @@ Tcp_RetransTimer(void *eventData)
 		Timer_Start(&tcb->retransTimer, 20);
 		return;
 	}
-	Con_Printf("Retrans Timer, rSeqNr %lu\n",tcb->currDataSeqNr - tcb->ISS);
+	//Con_Printf("Retrans Timer, rSeqNr %lu\n",tcb->currDataSeqNr - tcb->ISS);
 	if (tcb->retransCanceled) {
 		Con_Printf("BUG: Retrans called with canceled timer\n");
 	}
