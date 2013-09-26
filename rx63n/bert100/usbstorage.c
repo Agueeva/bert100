@@ -13,6 +13,7 @@
 #include "console.h"
 #include "scsi.h"
 #include "diskio.h"
+#include "config.h"
 
 #if 1
 #define dbgprintf(x...) Con_Printf(x)
