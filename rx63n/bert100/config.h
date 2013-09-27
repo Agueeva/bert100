@@ -1,3 +1,3 @@
 #define F_PCLK UINT32_C(48000000)
 #define F_CPU  UINT32_C(96000000)
-#define notBOARD_SAKURA
+#define BOARD_SAKURA

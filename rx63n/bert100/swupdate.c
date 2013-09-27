@@ -12,7 +12,7 @@
 #include "types.h"
 
 #define SWUP_CRC32_START        (0x73911293)
-#define FLASH_ADDR_SWUPDATE	(32768-2048)
+#define FLASH_ADDR_SWUPDATE	DFLASH_MAP_ADDR(32768-2048)
 #define FLASH_SIZE_SWUPDATE	(2048)
 
 #define POLY 0xEDB88320
@@ -50,6 +50,7 @@ write_chain_entry(uint16_t entry_nr, uint32_t firstsect, uint32_t nsectors)
         data[0] = firstsect;
         data[1] = nsectors;
         result = DFlash_Write(FLASH_ADDR_SWUPDATE + ((entry_nr + 1) << 3), data, 8);
+	Con_Printf("from %lu nsectors %lu\n",firstsect,nsectors); 
         return result;
 }
 
@@ -63,15 +64,19 @@ ClearUpdateSignature()
 {
         bool result;
         uint8_t signature[8];
-        if (*(uint32_t *) DFLASH_MAP_ADDR(FLASH_ADDR_SWUPDATE) == 0x08154711) {
+        if (*(uint32_t *)FLASH_ADDR_SWUPDATE == 0x08154711) {
                 Con_Printf("Erasing Software update Signature from Data Flash\n");
                 memset(signature, 0xff, 8);
-                DFlash_Erase(FLASH_ADDR_SWUPDATE,8);
+                DFlash_Erase(FLASH_ADDR_SWUPDATE,32);
+		Con_Printf("Erased\n");
                 result = DFlash_Write(FLASH_ADDR_SWUPDATE + 0, signature, 8);
                 if (result == false) {
                         Con_Printf("failed\n");
                 }
-        }
+		Con_Printf("written\n");
+        } else {
+		Con_Printf("nothing to clear\n");
+	}
 }
 
 static bool
@@ -88,10 +93,6 @@ store_sector_chain(const char *filename)
         uint16_t entry_nr = 0;
         uint32_t i;
         uint32_t signature[2];
-        if ((filename[0] != '0') || (filename[1] != ':')) {
-                Con_Printf("Wrong drive\n");
-                return false;
-        }
         res = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
         if (res != FR_OK) {
                 Con_Printf("Can not open file \"%s\"\n", filename);
@@ -100,6 +101,7 @@ store_sector_chain(const char *filename)
         if (DFlash_Erase(FLASH_ADDR_SWUPDATE,FLASH_SIZE_SWUPDATE) == false) {
                 return false;
         }
+	Con_Printf("Flash erase was successful\n");
         clust = file.sclust;
         cluster_size = fat_clustersize(file.fs);
         if (cluster_size == 0) {

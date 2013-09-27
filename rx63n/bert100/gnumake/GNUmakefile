@@ -48,7 +48,7 @@ version.o: $(SRCFILES) $(ASMFILES)
 	$(CC) $(CFLAGS) -c $(VPATH)/version.c -o $@
 
 
-all: depend bert100.mot
+all: depend bert100.mot bert100.pat
 
 bert100.bin: bert100.mot
 	$(OBJCOPY) --gap-fill 0xff -I srec -O binary $< $@	
