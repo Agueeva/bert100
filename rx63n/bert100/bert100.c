@@ -143,6 +143,7 @@ main(void)
 	PVarSocket_New(wserv);	
 	ADC12_Init();
 	DataFlash_Init();
+	SWUpdate_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	Version_Init();

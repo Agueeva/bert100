@@ -7,43 +7,25 @@
 [GENERAL_DATA]
 [BREAKPOINTS]
 [OPEN_WORKSPACE_FILES]
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\base64.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bert100.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader_setup.asm" 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\dataflash.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\hardware_setup.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\interrupt_handlers.c" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\iodefine.h" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\reset_program.asm" 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\rxether.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\stack.h" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tpos.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbdev.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbstorage.c" 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\xy_web.c" 
 [WORKSPACE_FILE_STATES]
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\base64.c" 110 145 1130 369 0 10 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bert100.c" 22 29 751 364 0 4 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader.c" 66 87 1130 397 0 17 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader_setup.asm" 44 58 1130 397 0 16 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.c" -4 -30 1270 605 1 2 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\hardware_setup.c" 88 116 1130 397 0 18 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\interrupt_handlers.c" 132 174 1130 369 0 11 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader.c" -4 -30 1270 605 1 6 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\bootloader_setup.asm" 44 58 1130 397 0 5 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\dataflash.c" 132 174 943 397 0 9 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\events.c" 0 0 1270 605 0 2 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\hardware_setup.c" 88 116 1130 397 0 7 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\iodefine.h" 88 116 751 364 0 3 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\reset_program.asm" 0 0 1270 595 0 8 
+"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\reset_program.asm" 110 145 943 397 0 8 
 "C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\rxether.c" 22 29 751 364 0 1 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\spi.c" 0 0 1130 397 0 12 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\stack.h" 22 29 1130 397 0 13 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\strhash.c" 44 58 1130 369 0 9 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\threads.c" 66 87 1130 397 0 15 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\tpos.c" 0 0 1270 623 0 14 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbdev.c" 0 0 1270 595 0 6 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\usbstorage.c" 44 58 751 364 0 5 
-"C:\cygwin\home\user\workspace\mach_zehnder\rx63n\bert100\xy_web.c" 110 145 1130 351 0 7 
 [LOADED_PROJECTS]
 "bert100" 
 [END]

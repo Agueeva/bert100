@@ -62,7 +62,7 @@
 #define RAMCODE_DATA	__attribute__ ((section (".bootloader.P_1")))
 
 /*  Bottom of User Flash Area */
-#define ROM_PE_ADDR     0x00F80000
+//define ROM_PE_ADDR     0x00F00000
 
 #define PCLK_FREQUENCY 48
 #define WAIT_t10USEC 2000
@@ -344,8 +344,9 @@ RAMCODE static bool
 MinSD_Init(void)
 {
 	int i;
-       SPI_MOSI_HIGH;
+        SPI_MOSI_HIGH;
 #ifdef BOARD_SAKURA
+	BSET(0, PORTC.PDR.BYTE); /* Chip select to output */
         /* SPI_MOSI */
         BSET(6, PORTC.PDR.BYTE);
         /* SPI_MISO */
@@ -354,6 +355,7 @@ MinSD_Init(void)
         SPI_CLK_HIGH;
         BSET(5, PORTC.PDR.BYTE);
 #else
+	BSET(2, PORT2.PDR.BYTE); /* Chip select to output */
         /* SPI_MOSI */
         BSET(3, PORT2.PDR.BYTE);
         /* SPI_MISO */
@@ -420,15 +422,41 @@ Flash_Write(volatile uint8_t * flash_addr, uint8_t * data, uint32_t len)
 	volatile uint32_t wait_cnt;
 	uint32_t i;
 	bool retval = true;
+	uint16_t fentryr;
+	
+	uint32_t addr = (uint32_t)flash_addr;
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
+
 	FLASH.FENTRYR.WORD = 0xAA00;
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
+
 	asm("nop");
 	asm("nop");
-	FLASH.FENTRYR.WORD = 0xaa01;
+	asm("nop");
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
+	fentryr = 0xaa00 | (8 >> ((addr >> 19) & 3));
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
+	
+	FLASH.FENTRYR.WORD = fentryr;
 	FLASH.FWEPROR.BYTE = 0x01;
 
 	FLASH.PCKAR.WORD = PCLK_FREQUENCY;
 	/* Execute Peripheral Clock Notification Commands */
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
 	*flash_addr = 0xE9;
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
 	*flash_addr = 0x03;
 	*(volatile uint16_t *)flash_addr = 0x0F0F;
 	barrier();
@@ -440,15 +468,19 @@ Flash_Write(volatile uint8_t * flash_addr, uint8_t * data, uint32_t len)
 	while ((FLASH.FSTATR0.BIT.FRDY == 0) && wait_cnt) {
 		wait_cnt--;
 	}
+	if(FLASH.FASTAT.BIT.ROMAE) {
+		while(1);
+	}
 	if (wait_cnt == 0) {
 		retval = false;
 	}
-	while (len >= 256) {
+	while (len >= 128) {
 		uint32_t addr;
 		FLASH.FPROTR.WORD = 0x5501;
 		*flash_addr = 0xE8;
-		*flash_addr = 0x80;
-		for (i = 0; i < 128; i++) {
+		*flash_addr = 0x40;
+
+		for (i = 0; i < 64; i++) {
 			addr = (uint32_t) flash_addr + (i << 1);
 			if ((addr >= 0x00FFFFA0) && (addr <= 0x00FFFFAF)) {
 				/* Protect against ID code */
@@ -457,23 +489,27 @@ Flash_Write(volatile uint8_t * flash_addr, uint8_t * data, uint32_t len)
 				*(volatile uint16_t *)flash_addr = *(uint16_t *) data;
 			}
 			data += 2;
+
 		}
 		*flash_addr = 0xD0;
+
 		wait_cnt = WAIT_MAX_ROM_WRITE;
 		while ((FLASH.FSTATR0.BIT.FRDY == 0) && wait_cnt) {
 			wait_cnt--;
 		}
+
 		if (wait_cnt == 0) {
 			retval = false;
 		}
-		len -= 256;
-		flash_addr += 256;
+		len -= 128;
+		flash_addr += 128;
 	}
 	if (len || FLASH.FASTAT.BYTE) {
 		retval = false;
 	}
-	*(volatile uint8_t *)ROM_PE_ADDR = 0x50;	/* Clear status */
-	FLASH.FENTRYR.WORD = 0xAA00, FLASH.FWEPROR.BYTE = 0x02;
+	*(volatile uint8_t *)(flash_addr - 2) = 0x50;	/* Clear status */
+	FLASH.FENTRYR.WORD = 0xAA00; 
+	FLASH.FWEPROR.BYTE = 0x02;
 	asm("nop");
 	asm("nop");
 	asm("nop");
@@ -491,10 +527,13 @@ Flash_Erase(volatile uint8_t * flash_addr)
 {
 	uint32_t wait_cnt;
 	bool retval = true;
+	uint16_t fentryr;
+	uint32_t addr = (uint32_t) flash_addr;
 	FLASH.FENTRYR.WORD = 0xAA00;
 	asm("nop");
 	asm("nop");
-	FLASH.FENTRYR.WORD = 0xaa01;
+	fentryr = 0xaa00 | (8 >> ((addr >> 19) & 3));
+	FLASH.FENTRYR.WORD = fentryr;
 	FLASH.FWEPROR.BYTE = 0x01;
 	asm("nop");
 	asm("nop");
@@ -525,8 +564,9 @@ Flash_Erase(volatile uint8_t * flash_addr)
 	if (FLASH.FASTAT.BYTE || (wait_cnt == 0)) {
 		retval = false;
 	}
-	*(volatile uint8_t *)ROM_PE_ADDR = 0x50;	/* Clear status */
-	FLASH.FENTRYR.WORD = 0xAA00, FLASH.FWEPROR.BYTE = 0x02;
+	*(volatile uint8_t *)flash_addr = 0x50;	/* Clear status */
+	FLASH.FENTRYR.WORD = 0xAA00; 
+	FLASH.FWEPROR.BYTE = 0x02;
 	asm("nop");
 	asm("nop");
 	asm("nop");
@@ -644,7 +684,16 @@ Do_SWUpdate(uint32_t * sectorChainP)
 			while (1) ;
 		}
 		Flash_Write((uint8_t *) (addr & 0x00FFFFFF), buf, 256);
-		Flash_Write((uint8_t *) ((addr + 256) & 0x00FFFFFF), buf + 256, 256);
+		Flash_Write((uint8_t *) ((addr + 128) & 0x00FFFFFF), buf + 128, 128);
+		Flash_Write((uint8_t *) ((addr + 256) & 0x00FFFFFF), buf + 256, 128);
+		Flash_Write((uint8_t *) ((addr + 384) & 0x00FFFFFF), buf + 384, 128);
+	
+		for(i = 0; i < 512; i++) {
+			uint8_t *pAddr = (uint8_t *)(addr + i);
+			if(buf[i] != *pAddr) {
+				while(1);
+			}
+		}
 		nsectors--;
 		sector++;
 		if (nsectors == 0) {
@@ -673,6 +722,12 @@ BootloaderStart(void)
 	uint32_t addr;
 	void (*fn) (void);
         uint32_t i;
+	/* Disable the register protection */
+	SYSTEM.PRCR.WORD = 0xa50b;
+        /* Disable Pin function write protections permanently */
+        MPC.PWPR.BYTE = 0x00;
+        MPC.PWPR.BYTE = 0x40;
+
 	/* Configure the clocks of the CPU */
         SYSTEM.MOSCWTCR.BYTE = 0x0d;
         SYSTEM.PLLWTCR.BYTE = 0xE;

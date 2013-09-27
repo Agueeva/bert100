@@ -160,7 +160,8 @@ Exit_PEMode(uint8_t current_mode)
                         *pAddr = 0x50;
                 }
         }
-        FLASH.FENTRYR.WORD = 0xAA00, FLASH.FWEPROR.BYTE = 0x02;
+        FLASH.FENTRYR.WORD = 0xAA00;
+		FLASH.FWEPROR.BYTE = 0x02;
 }
 
 /*
@@ -172,6 +173,8 @@ static bool
 Enter_PEMode(uint8_t mode, volatile uint8_t * pAddr, uint16_t bytes)
 {
         FLASH.FENTRYR.WORD = 0xAA00;
+        asm("nop");
+        asm("nop");
         asm("nop");
         asm("nop");
         if (mode == FLD_PE_MODE) {
@@ -212,6 +215,7 @@ DFlash_EraseBlock(uint32_t block_addr)
         bool retval = true;
         volatile uint8_t *pAddr = (volatile uint8_t *)(block_addr & 0x00FFFFFF);
 
+	Con_Printf("EraseBlock %08lx, %08lx\n",block_addr,pAddr);
         Mutex_Lock(&flashSema);
         mode = FLD_PE_MODE;
         if (Enter_PEMode(mode, pAddr, 0) == false) {
@@ -250,10 +254,11 @@ DFlash_Erase(uint32_t relAddr,uint32_t len)
 	bool retval = true;
 	uint32_t i;
 	if((relAddr & 31) || (len & 31)) {
+		Con_Printf("Wrong alignment in DFlash erase\n");
 		return false;
 	}
 	for(i = 0;i < len; i+= 32) {
-		retval = DFlash_EraseBlock(relAddr + DFLASH_BLOCK(0) + i);
+		retval = DFlash_EraseBlock(relAddr+ i);
 		if(retval == false) {
 			return retval;
 		}
@@ -306,15 +311,15 @@ DFlash_BlankCheck2(uint32_t addr)
 
 /**
  *********************************************************************************
- * \fn static bool DataFlash_Write(uint32_t address,uint8_t *data,uint32_t size) 
+ * \fn static bool DataFlash_Write(uint32_t address,uint8_t *data) 
  *********************************************************************************
  */
 static bool
-_DataFlash_Write(uint32_t address, uint8_t * data, uint32_t size)
+_DataFlash_Write(uint32_t address, uint8_t * data)
 {
         TimeMs_t startTimeMs;
         *(volatile uint8_t *)DF_ADDRESS = 0xE8;
-        *(volatile uint8_t *)DF_ADDRESS = size >> 1;
+        *(volatile uint8_t *)DF_ADDRESS = 1;
 	*(volatile uint16_t *)address = *(uint16_t *) data;
         *(volatile uint8_t *)(DF_ADDRESS) = 0xD0;
         startTimeMs = TimeMs_Get();
@@ -354,7 +359,7 @@ DFlash_Write(uint32_t flash_addr, void *buf, uint32_t len)
         }
         FLASH.FPROTR.WORD = 0x5501;
         while (len >= 2) {
-                retval = _DataFlash_Write(flash_addr, buf, 2);
+                retval = _DataFlash_Write(flash_addr, buf);
                 if (retval == false) {
                         Con_Printf("DataFlash_Write failed\n");
                         break;
@@ -385,8 +390,9 @@ cmd_flash(Interp * interp, uint8_t argc, char *argv[])
                 Con_Printf("%02x ", *(uint8_t *) (DFLASH_BLOCK(0) + i));
         }
         Con_Printf("\n");
+	SleepMs(1000);
         Con_Printf("BlankCheck %u\n", DFlash_BlankCheck2(DFLASH_BLOCK(0)));
-        Con_Printf("DF-Write: %d\n", DFlash_Write(DFLASH_BLOCK(0), data, 2));
+        Con_Printf("DF-Write: %d\n", DFlash_Write(DFLASH_BLOCK(0), data, 8));
         for (i = 0; i < 8; i++) {
                 Con_Printf("%02x ", *(uint8_t *) (DFLASH_BLOCK(0) + i));
         }
@@ -439,7 +445,7 @@ DataFlash_Init(void)
 {
         uint16_t read_en_mask = 0xffff;
         uint16_t write_en_mask = 0xffff;
-//        Mutex_Init(&flashSema);
+        Mutex_Init(&flashSema);
         copy_to_fcu_ram();
         /* Set Read access for the Data Flash blocks DB0-DB7 */
         FLASH.DFLRE0.WORD = 0x2D00 | (read_en_mask & 0x00FF);
