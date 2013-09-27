@@ -1049,10 +1049,8 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	for (lane = 0; lane < 4; lane++) {
 		Cdr_WritePart(phy_addr, 441 + 256 * lane, 0, 0, 1);
 	}
-	if(status == 1) {
-		Con_Printf("Part is ready\n");
-	} else {
-		Con_Printf("Error: Part is not ready\n");
+	if(status != 1) {
+		Con_Printf("Error: CDR is not ready\n");
 	}
 	return status;
 }
@@ -1076,13 +1074,13 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	uint8_t phyAddr;
 	uint16_t val;
 	uint16_t regAddr;
-	if ((argc == 3) && (strcmp(argv[1], "startup") == 0)) {
-		uint8_t cdr = astrtoi16(argv[2]);
+	if ((argc == 3) && (strcmp(argv[2], "startup") == 0)) {
+		uint8_t cdr = astrtoi16(argv[1]);
 		Con_Printf("Calling Olgas CDR_Startup for CDR %u\n", cdr);
 		Cdr_Startup(cdr);
 		return 0;
-	} else if ((argc == 3) && (strcmp(argv[1], "init") == 0)) {
-		uint8_t cdr = astrtoi16(argv[2]);
+	} else if ((argc == 3) && (strcmp(argv[2], "init") == 0)) {
+		uint8_t cdr = astrtoi16(argv[1]);
 		Con_Printf("Calling Olgas CDR_InitCdr for CDR %u\n", cdr);
 		Cdr_InitCdr(cdr);
 		return 0;
@@ -1206,4 +1204,6 @@ CDR_Init(const char *name)
 			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
 		}
 	}
+	Cdr_Startup(0);
+	Cdr_InitCdr(0);
 }
