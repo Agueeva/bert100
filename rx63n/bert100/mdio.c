@@ -35,6 +35,11 @@
 
 //#define mdio_delay() DelayNs(200)
 #define mdio_delay() 
+typedef struct MDIOPort {
+	uint8_t preambleLen;
+} MDIOPort;
+
+static MDIOPort gMDIOPort;
 
 static inline void
 SetDirection(uint8_t dir) 
@@ -92,7 +97,7 @@ MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 	SetDirection(DIR_OUT);
 	mdio_delay();
 	/* Preamble */
-	for(i = 0; i < 32; i++) {
+	for(i = gMDIOPort.preambleLen; i > 0; i--) {
 		SetMDC(1);
 		mdio_delay();
 		SetMDC(0);
@@ -160,7 +165,7 @@ MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
 	SetMDO(1);
 	SetDirection(DIR_OUT);
 	mdio_delay();
-	for(i = 0; i < 32; i++) {
+	for(i = gMDIOPort.preambleLen; i > 0; i--) {
 		SetMDC(1);
 		mdio_delay();
 		SetMDC(0);
@@ -202,7 +207,7 @@ MDIO_Write(uint8_t phy_addr,uint8_t devType,uint16_t value)
 	SetMDO(1);
 	SetDirection(DIR_OUT);
 	mdio_delay();
-	for(i = 0; i < 32; i++) {
+	for(i = gMDIOPort.preambleLen; i > 0; i--) {
 		SetMDC(1);
 		mdio_delay();
 		SetMDC(0);
@@ -250,6 +255,8 @@ cmd_mdio(Interp * interp, uint8_t argc, char *argv[])
 		MDIO_Address(phyaddr,devtype,addr);
 		//MDIO_Write(phyaddr,devtype,val);
 		return 0;
+	} else if((argc == 3) && (strcmp(argv[1],"preamble") == 0)) {
+		gMDIOPort.preambleLen = astrtoi16(argv[2]);
 	} else if(argc == 3) {
 		phyaddr = astrtoi16(argv[1]);
 		devtype = astrtoi16(argv[2]);
