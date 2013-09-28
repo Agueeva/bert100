@@ -683,7 +683,7 @@ Do_SWUpdate(uint32_t * sectorChainP)
 		if (MinSD_ReadBlock(buf, sector) != 512) {
 			while (1) ;
 		}
-		Flash_Write((uint8_t *) (addr & 0x00FFFFFF), buf, 256);
+		Flash_Write((uint8_t *) (addr & 0x00FFFFFF), buf, 128);
 		Flash_Write((uint8_t *) ((addr + 128) & 0x00FFFFFF), buf + 128, 128);
 		Flash_Write((uint8_t *) ((addr + 256) & 0x00FFFFFF), buf + 256, 128);
 		Flash_Write((uint8_t *) ((addr + 384) & 0x00FFFFFF), buf + 384, 128);
