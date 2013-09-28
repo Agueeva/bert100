@@ -296,5 +296,6 @@ MDIO_Init(void)
 	SetDirection(DIR_IN);
 	DIRCTRL_DIROUT;
 	Interp_RegisterCmd(&mdioCmd);
+	gMDIOPort.preambleLen = 32;
 //	Timer_Start(&pollTimer,1);
 }
