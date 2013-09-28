@@ -7,7 +7,7 @@
   var myVarDrTr= new Array("synth0.freq");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://tneuner.homeip.net:8080/messages';  //'ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  //
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
