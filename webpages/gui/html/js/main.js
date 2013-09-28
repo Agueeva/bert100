@@ -1,13 +1,17 @@
   var myElement=new Array();
   var n=0;
-  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel"); //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert"
-  var myVarTX= new Array("vg1","vg2");
+  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1","emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2");
+  var myVarTX0= new Array("vg1","vg2");
+  var myVarTX1= new Array("txa_swing");
   var myVarDrTr= new Array("synth0.freq");
   var my_Interval, bl_Communication, all;
-  var socket,page_k,page_pref;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  //
+  var socket,page_k,page_pref, all_pat, all_tx;
+  var urlWS='ws://tneuner.homeip.net:8080/messages';  //'ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  //
      //alert(urlWS);
      bl_Communication=true;
+     all_pat=false;
+     all_tx=false;
    function SocketNew() {
      delete socket;
      socket = new WebSocket(urlWS);
@@ -172,7 +176,7 @@ $(document).ready(function()
 	$( "#PatternBut" ).click(function() {
 		myElement=myVarPattern;
 		n=1;
-                all=false;
+                all=all_pat;
                 page_pref="cdr0.l";
                 page_k=0;
 		laodpage("html/pattern.html","#frame");
@@ -180,8 +184,8 @@ $(document).ready(function()
 	});
 	$( "#TXBut" ).click(function() {
 	        myElement=myVarTX;
-		n=1;
-		all=false;
+		n=2;
+		all=all_tx;
                 page_pref="emlAmp";
                 page_k=1;
 		laodpage("html/tx_eml.html","#frame");
@@ -199,9 +203,19 @@ $(document).ready(function()
 		laodpage("html/variablen.html","#frame");
 		return false;
 	});
+        $( "#VariablesDAC0" ).click(function() {
+		n=3;
+		laodpage("html/variablendac0.html","#frame");
+		return false;
+	});
+        $( "#VariablesADC12" ).click(function() {
+		n=3;
+		laodpage("html/variablenadc12.html","#frame");
+		return false;
+	});
 
            createTreeMenu("treemenu");
-});
+     });
 
 function ReadVar(variable){
    //  alert(bl_Communication);
@@ -257,7 +271,7 @@ item=prefB + (i+k) + "." + myElement[j];
 
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
 }}
-
+window_onload();
 }
 else {
 all=false;

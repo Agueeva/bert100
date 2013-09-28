@@ -3,77 +3,95 @@
 <FORM onsubmit="return false" ID="Form_PG">
 <TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="90%">
 <TR ALIGN="left" VALIGN="middle"><TH></TH>
-<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript: window.parent.myCheckAll(this,'emlAmp','Amp',1)" VALUE ="checkbox"></TH>
-
+<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript:  window.parent.all_tx=this.checked; window.parent.myElement=window.parent.myVarTX0; window.parent.myCheckAll(this,'emlAmp','Amp',1); window.parent.myElement=window.parent.myVarTX1; window.parent.myCheckAll(this,'cdr0.l','.l',0)" VALUE ="checkbox"></TH>
+<TH></TH>
+<TH></TH>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
         <TH>Channel</TH>
         <TH>Amplitude<font size="2" color="red">  emlAmp*.vg1</font></TH>
 	<TH>Crossing<font size="2" color="red">   emlAmp*.vg2</font></TH>
-	
+	<TH>TX Swing<font size="2" color="red">   cdr0.l*.txa_swing</font></TH>   
+	<TH></TH>
 	</TR>
 <TR ALIGN="left" VALIGN="middle"><TH>1</TH><TH>
-  <button type="button" onclick="javascript: ClickUp(1,2,10,2)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUp(1,2,1,2)">down</button>
-<input type="text" name="emlAmp1.vg1" id="emlAmp1.vg1" value="0" onChange="javascript: TestVal(1); window.parent.SaveVar(this,2,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUp(1,1,1,2)">up</button>
-  <button type="button" onclick="javascript: ClickUp(1,1,10,2)">UP</button>
+  <button type="button" onclick="javascript: ClickUp(1,2,10,2)">D</button>
+  <button type="button" onclick="javascript: ClickUp(1,2,1,2)">d</button>
+<input type="text" name="emlAmp1.vg1" id="emlAmp1.vg1" value="0" size=10 onChange="javascript: TestVal(1); window.parent.SaveVar(this,2,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUp(1,1,1,2)">u</button>
+  <button type="button" onclick="javascript: ClickUp(1,1,10,2)">U</button>
 </TH>
 	<TH>
-<button type="button" onclick="javascript: ClickUpCr(1,2,10,2)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUpCr(1,2,1,2)">down</button>
-<input type="text" name="emlAmp1.vg2" id="emlAmp1.vg2" value="0" onChange="javascript: TestValCr(1); window.parent.SaveVar(this,2,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUpCr(1,1,1,2)">up</button>
-  <button type="button" onclick="javascript: ClickUpCr(1,1,10,2)">UP</button>
+<button type="button" onclick="javascript: ClickUpCr(1,2,10,2)">D</button>
+  <button type="button" onclick="javascript: ClickUpCr(1,2,1,2)">d</button>
+<input type="text" name="emlAmp1.vg2" id="emlAmp1.vg2" value="0" size=10 onChange="javascript: TestValCr(1); window.parent.SaveVar(this,2,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUpCr(1,1,1,2)">u</button>
+  <button type="button" onclick="javascript: ClickUpCr(1,1,10,2)">U</button>
 </TH>
-	
+	<TH><SELECT NAME="cdr0.l0.txa_swing" ID="cdr0.l0.txa_swing"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="2">2
+</SELECT></TH>
+<TH></TH>
 	</TR>
 <TR ALIGN="left" VALIGN="middle"><TH>2</TH><TH>
-  <button type="button" onclick="javascript: ClickUp(2,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUp(2,2,1,1)">down</button>
-<input type="text" name="emlAmp2.vg1" id="emlAmp2.vg1" value="0" onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUp(2,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUp(2,1,10,1)">UP</button>
+  <button type="button" onclick="javascript: ClickUp(2,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUp(2,2,1,1)">d</button>
+<input type="text" name="emlAmp2.vg1" id="emlAmp2.vg1" value="0" size=10 onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUp(2,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUp(2,1,10,1)">U</button>
 </TH>
-	<TH> <button type="button" onclick="javascript: ClickUpCr(2,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUpCr(2,2,1,1)">down</button>
-<input type="text" name="emlAmp2.vg2" id="emlAmp2.vg2" value="0" onChange="javascript: TestValCr(2); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUpCr(2,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUpCr(2,1,10,1)">UP</button>
+	<TH> <button type="button" onclick="javascript: ClickUpCr(2,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUpCr(2,2,1,1)">d</button>
+<input type="text" name="emlAmp2.vg2" id="emlAmp2.vg2" value="0" size=10 onChange="javascript: TestValCr(2); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUpCr(2,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUpCr(2,1,10,1)">U</button>
 </TH>
-	
+	<TH><SELECT NAME="cdr0.l1.txa_swing" ID="cdr0.l1.txa_swing"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="2">2
+</SELECT></TH>
+<TH></TH>
 	</TR>
 
 <TR ALIGN="left" VALIGN="middle"><TH>3</TH><TH>
-  <button type="button" onclick="javascript: ClickUp(3,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUp(3,2,1,1)">down</button>
-<input type="text" name="emlAmp3.vg1" id="emlAmp3.vg1" value="0" onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUp(3,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUp(3,1,10,1)">UP</button>
+  <button type="button" onclick="javascript: ClickUp(3,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUp(3,2,1,1)">d</button>
+<input type="text" name="emlAmp3.vg1" id="emlAmp3.vg1" value="0" size=10 onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUp(3,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUp(3,1,10,1)">U</button>
 </TH>
-	<TH><button type="button" onclick="javascript: ClickUpCr(3,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUpCr(3,2,1,1)">down</button>
-<input type="text" name="emlAmp3.vg2" id="emlAmp3.vg2" value="0" onChange="javascript: TestValCr(3); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUpCr(3,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUpCr(3,1,10,1)">UP</button>
+	<TH><button type="button" onclick="javascript: ClickUpCr(3,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUpCr(3,2,1,1)">d</button>
+<input type="text" name="emlAmp3.vg2" id="emlAmp3.vg2" value="0" size=10 onChange="javascript: TestValCr(3); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUpCr(3,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUpCr(3,1,10,1)">U</button>
 </TH>
-	
+	<TH><SELECT NAME="cdr0.l2.txa_swing" ID="cdr0.l2.txa_swing"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="2">2
+</SELECT></TH>
+<TH></TH>
 	</TR>
 
 <TR ALIGN="left" VALIGN="middle"><TH>4</TH><TH>
-  <button type="button" onclick="javascript: ClickUp(4,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUp(4,2,1,1)">down</button>
-<input type="text" name="emlAmp4.vg1" id="emlAmp4.vg1" value="0" onChange="javascript: TestVal(4); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUp(4,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUp(4,1,10,1)">UP</button>
+  <button type="button" onclick="javascript: ClickUp(4,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUp(4,2,1,1)">d</button>
+<input type="text" name="emlAmp4.vg1" id="emlAmp4.vg1" value="0" size=10 onChange="javascript: TestVal(4); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUp(4,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUp(4,1,10,1)">U</button>
 </TH>
-	<TH><button type="button" onclick="javascript: ClickUpCr(4,2,10,1)">DOWN</button>
-  <button type="button" onclick="javascript: ClickUpCr(4,2,1,1)">down</button>
-<input type="text" name="emlAmp4.vg2" id="emlAmp4.vg2" value="0" onChange="javascript: TestValCr(4); window.parent.SaveVar(this,1,'Amp',1)">
-  <button type="button" onclick="javascript: ClickUpCr(4,1,1,1)">up</button>
-  <button type="button" onclick="javascript: ClickUpCr(4,1,10,1)">UP</button>
+	<TH><button type="button" onclick="javascript: ClickUpCr(4,2,10,1)">D</button>
+  <button type="button" onclick="javascript: ClickUpCr(4,2,1,1)">d</button>
+<input type="text" name="emlAmp4.vg2" id="emlAmp4.vg2" value="0" size=10 onChange="javascript: TestValCr(4); window.parent.SaveVar(this,1,'Amp',1)">
+  <button type="button" onclick="javascript: ClickUpCr(4,1,1,1)">u</button>
+  <button type="button" onclick="javascript: ClickUpCr(4,1,10,1)">U</button>
 </TH>
-	
+	<TH><SELECT NAME="cdr0.l3.txa_swing" ID="cdr0.l3.txa_swing"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="2">2
+</SELECT></TH>
+<TH></TH>
 	</TR>
 
 
@@ -148,5 +166,15 @@ if(my_item.value < 0) { my_item.value=0;}
 if(my_item.value > 1) { my_item.value=1;}
 }
 
+
+var my_all=document.getElementById('all');
+
+if (window.parent.all_tx) {
+	my_all.checked=true;
+	window.parent.myElement=window.parent.myVarTX0;
+	window.parent.myCheckAll(my_all,'emlAmp','Amp',1);
+	window.parent.myElement=window.parent.myVarTX1;
+	window.parent.myCheckAll(my_all,'cdr0.l','.l',0);
+}
 -->
 	</script>

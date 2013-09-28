@@ -2,7 +2,7 @@
 <FORM  ID="Form_PG">
 <TABLE ALIGN="center" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="80%">
 <TR ALIGN="left" VALIGN="middle"><TH>Pattern</TH>
-<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript: window.parent.myCheckAll(this,'cdr0.l','.l',0)" VALUE ="checkbox"></TH>
+<TH>all channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript:  window.parent.all_pat=this.checked;  window.parent.myCheckAll(this,'cdr0.l','.l',0)" VALUE ="checkbox"></TH>
 <TH></TH>
 <TH></TH>
 <TH></TH></TR>
@@ -47,20 +47,20 @@
 <TH><font size="1" color="red">prbs_gen_inv</font></TH>
 
 <TH><SELECT NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
-<OPTION VALUE="1">true
-<OPTION VALUE ="0">Invers
+<OPTION VALUE="1">Invers
+<OPTION VALUE ="0">true
 </SELECT></TH>
 <TH><SELECT NAME="prbs_gen_inv1" ID="cdr0.l1.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
-<OPTION VALUE="1">true
-<OPTION VALUE ="0">Invers
+<OPTION VALUE="1">Invers
+<OPTION VALUE ="0">true
 </SELECT></TH>
 <TH><SELECT NAME="prbs_gen_inv2" ID="cdr0.l2.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
-<OPTION VALUE="1">true
-<OPTION VALUE ="0">Invers
+<OPTION VALUE="1">Invers
+<OPTION VALUE ="0">true
 </SELECT></TH>
 <TH><SELECT NAME="prbs_gen_inv3" ID="cdr0.l3.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
-<OPTION VALUE="1">true
-<OPTION VALUE ="0">Invers
+<OPTION VALUE="1">Invers
+<OPTION VALUE ="0">true
 </SELECT></TH></TR>
 <TR ALIGN="left">
 <TH><font size="1" color="red">prbs_autovr</font></TH>
@@ -84,6 +84,7 @@
 <OPTION VALUE ="1">yes
 </SELECT>
 </TH></TR>
+
 <TR ALIGN="left" VALIGN="middle">
 <TH><font size="1" color="red">pat_ver_sel</font></TH>
 <TH> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
@@ -192,13 +193,44 @@
 <TH><INPUT TYPE="TEXT" name="error_insert1" ID="cdr0.l1.error_insert"></TH>
 <TH><INPUT TYPE="TEXT" name="error_insert2" ID="cdr0.l2.error_insert"></TH>
 <TH><INPUT TYPE="TEXT" name="error_insert3" ID="cdr0.l3.error_insert"></TH></TR>
--->
+
 <TR ALIGN="left" VALIGN="middle">
 <TH></TH>
 <TH></TH>
 <TH></TH>
 <TH></TH>
 <TH></TH></TR>
+-->
 </TABLE>
 </FORM>
+<script type="text/javascript">
+	<!--
+/*function Check_Auto(n){
+	var i;
+	if (n==0) {
+	i=2;	
+	}
+	else {
+		i=1;
+		}
+var my_item=document.getElementById('cdr0.l'+n+'.prbs_autovr');
+if (my_item.value==1) {
+	my_item=document.getElementById('cdr0.l'+n+'.pat_ver_sel');
+        my_item.value=document.getElementById('cdr0.l'+n+'.pat_gen_sel').value;
+	my_item.disabled=true;
+	window.parent.SaveVar(my_item,i,'.l',0);
+}
+else {
+document.getElementById('cdr0.l'+n+'.pat_ver_sel').disabled=false;	
+}
 
+	
+}  */
+var my_all=document.getElementById('all');
+
+if (window.parent.all_pat) {
+	my_all.checked=true;
+	 window.parent.myCheckAll(my_all,'cdr0.l','.l',0)
+}
+-->
+	</script>
