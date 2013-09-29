@@ -978,6 +978,7 @@ Cdr_SoftReset(uint16_t phy_addr)
 {
 	uint8_t lane;
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+#if 0
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
 	for(lane = 0; lane < 4; lane++) {
 		/* Set 128 steps for PI resolution inside reset */
@@ -985,6 +986,7 @@ Cdr_SoftReset(uint16_t phy_addr)
 	}
 	/* Deassert datapath soft reset */
 	Cdr_Write(phy_addr, 0, 0);
+#endif
 }
 
 /**
@@ -1015,6 +1017,7 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	}
 #if 0
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+#endif
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
 	for(lane = 0; lane < 4; lane++) {
 		/* Set 128 steps for PI resolution inside reset */
@@ -1022,7 +1025,6 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	}
 	/* Deassert datapath soft reset */
 	Cdr_Write(phy_addr, 0, 0);
-#endif
 
 	// CDR recal of TxPLL while PI3 is locked
 	Cdr_WritePart(phy_addr, 1184, 1, 1, 1);	// Lockint Rx3 PI
@@ -1032,8 +1034,8 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	Cdr_WritePart(phy_addr, CDR_TXPLL_CONFIG1, 15, 15, 0);
 	SleepMs(100);		// wait for it to lock
 	// regWrite(device + "30.1184.1",0)        # and unlock PI3
-	Cdr_WritePart(phy_addr, 1184, 1, 1, 0); // and unlock PI3
-	SleepMs(100);
+	//Cdr_WritePart(phy_addr, 1184, 1, 1, 0); // and unlock PI3
+	//SleepMs(100);
 	//for lane in range(4):                   # EQ offset override is set
 	for (lane = 0; lane < 4; lane++) {
 		Cdr_WritePart(phy_addr, 441 + 256 * lane, 0, 0, 1);	// Olga  Achtung!!!!!! Die Länge ist 0
