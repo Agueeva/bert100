@@ -112,6 +112,31 @@
 <OPTION VALUE ="5">2E23-1
 <OPTION VALUE ="4">2E31-1
 </SELECT></TH></TR>
+
+<TR ALIGN="left" VALIGN="middle">
+<TH><font size="1" color="red">prbs_lock</font></TH>
+<TH> 
+<SELECT NAME="cdr0.l0.prbs_lock" ID="cdr0.l0.prbs_lock"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
+<TH> 
+<SELECT NAME="cdr0.l1.prbs_lock" ID="cdr0.l1.prbs_lock"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
+<TH> 
+<SELECT NAME="cdr0.l2.prbs_lock" ID="cdr0.l2.prbs_lock"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
+<TH> 
+<SELECT NAME="cdr0.l3.prbs_lock" ID="cdr0.l3.prbs_lock"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH></TR>
+
+
 <!--
 <TR ALIGN="left">
 <TH><font size="1" color="red">Loopback_en</font></TH>
@@ -230,7 +255,7 @@ var my_all=document.getElementById('all');
 
 if (window.parent.all_pat) {
 	my_all.checked=true;
-	 window.parent.myCheckAll(my_all,'cdr0.l','.l',0)
+	 window.parent.myDisableAll(my_all,'cdr0.l','.l',0)
 }
 -->
 	</script>

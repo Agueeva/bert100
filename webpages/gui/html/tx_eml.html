@@ -11,8 +11,8 @@
         <TH>Channel</TH>
         <TH>Amplitude<font size="2" color="red">  emlAmp*.vg1</font></TH>
 	<TH>Crossing<font size="2" color="red">   emlAmp*.vg2</font></TH>
-	<TH>TX Swing<font size="2" color="red">   cdr0.l*.txa_swing</font></TH>   
-	<TH></TH>
+	<TH>TX Swing<br><font size="2" color="red">cdr0.l*.txa_swing</font></TH>   
+	<TH>Swap_TXP_N<br><font size="2" color="red">cdr0.l*.Swap_TXP_N</font></TH>  </TH>
 	</TR>
 <TR ALIGN="left" VALIGN="middle"><TH>1</TH><TH>
   <button type="button" onclick="javascript: ClickUp(1,2,10,2)">D</button>
@@ -32,7 +32,10 @@
 <OPTION VALUE="0">0
 <OPTION VALUE ="2">2
 </SELECT></TH>
-<TH></TH>
+<TH><SELECT NAME="cdr0.l0.Swap_TXP_N" ID="cdr0.l0.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
 	</TR>
 <TR ALIGN="left" VALIGN="middle"><TH>2</TH><TH>
   <button type="button" onclick="javascript: ClickUp(2,2,10,1)">D</button>
@@ -51,7 +54,10 @@
 <OPTION VALUE="0">0
 <OPTION VALUE ="2">2
 </SELECT></TH>
-<TH></TH>
+<TH><SELECT NAME="cdr0.l1.Swap_TXP_N" ID="cdr0.l1.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
 	</TR>
 
 <TR ALIGN="left" VALIGN="middle"><TH>3</TH><TH>
@@ -71,7 +77,10 @@
 <OPTION VALUE="0">0
 <OPTION VALUE ="2">2
 </SELECT></TH>
-<TH></TH>
+<TH><SELECT NAME="cdr0.l2.Swap_TXP_N" ID="cdr0.l2.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
 	</TR>
 
 <TR ALIGN="left" VALIGN="middle"><TH>4</TH><TH>
@@ -91,7 +100,10 @@
 <OPTION VALUE="0">0
 <OPTION VALUE ="2">2
 </SELECT></TH>
-<TH></TH>
+<TH><SELECT NAME="cdr0.l3.Swap_TXP_N" ID="cdr0.l3.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+<OPTION VALUE="0">0
+<OPTION VALUE ="1">1
+</SELECT></TH>
 	</TR>
 
 
@@ -122,6 +134,9 @@ my_item.value=1.8; }
 default:
 break;
 }
+TestVal(i);
+my_item=document.getElementById('emlAmp'+i+'.vg1');
+alert(my_item);
 window.parent.SaveVar(my_item,k,'Amp',1);
 }
 
@@ -172,9 +187,10 @@ var my_all=document.getElementById('all');
 if (window.parent.all_tx) {
 	my_all.checked=true;
 	window.parent.myElement=window.parent.myVarTX0;
-	window.parent.myCheckAll(my_all,'emlAmp','Amp',1);
+	window.parent.myDisableAll(my_all,'emlAmp','Amp',1);
 	window.parent.myElement=window.parent.myVarTX1;
-	window.parent.myCheckAll(my_all,'cdr0.l','.l',0);
+	window.parent.myDisableAll(my_all,'cdr0.l','.l',0);
+	window.parent.myElement=window.parent.myVarTX;
 }
 -->
 	</script>
