@@ -48,6 +48,7 @@
 #include "leds.h"
 #include "version.h"
 #include "dataflash.h"
+#include "swupdate.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void

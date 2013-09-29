@@ -36,7 +36,7 @@
 #define SPI_MOSI_LOW BCLR(6,PORTC.PODR.BYTE)
 #define SPI_MOSI_HIGH BSET(6,PORTC.PODR.BYTE)
 #else
-#define SD_CS(val) BMOD(2,PORT2.PODR.BYTE,(val))
+#define SD_CS(val)		BMOD(2,PORT2.PODR.BYTE,(val))
 #define SPI_CLK_BIT_NR  (4)
 #define SPI_MISO_BIT_NR (5)
 #define SPI_MOSI_BIT_NR (3)

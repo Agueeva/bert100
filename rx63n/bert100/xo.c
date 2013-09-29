@@ -175,7 +175,7 @@ read_frequency(SiXO *xo,uint32_t *freqRet)
 	rfreq |= (uint32_t)(buf[5]) << 0;
 	outfreq = rfreq / hsdiv / n1 * xo->fXTAL / (1 << 28);
 	fdco = rfreq / 64 * xo->fXTAL / (1 << 22);
-	//Con_Printf("RFREQ %llx\n",rfreq);	
+	//Con_Printf("RFREQ %llx\n",rfreq);
 	//Con_Printf("DCO %llu\n",fdco);	
 	//Con_Printf("len %u\n",uitoa64(fdco,str));
 	//Con_Printf("DCO %s\n",str);	
@@ -199,6 +199,7 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 	if(argc < 2) {
 		if(read_frequency(xo,&freq) == true) {
 			Con_Printf("XO Frequency %lu\n",freq);	
+			Con_Printf("XTAL Frequency %lu\n",xo->fXTAL);	
 		} else {
 			Con_Printf("Read Frequency failed\n");	
 		}
@@ -236,6 +237,15 @@ PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+static bool 
+PVSynth_GetFXTAL(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	SiXO *xo = cbData;
+	SNPrintf(bufP,maxlen,"%lu",xo->fXTAL);
+	return true;
+}
+
+
 
 #define ORDERED_FREQUENCY 644531250		
 
@@ -251,10 +261,12 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	xo->minFreq = 10 * 1000000;
 	xo->outFreq = 0;
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
+	PVar_New(PVSynth_GetFXTAL,NULL,xo,0,"%s.fxtal",name);
 	buf[0] = RECALL;
 	if(read_frequency(xo,&freqRet) == false) {
 		Con_Printf("Failed to read frequency from Synthesizer\n");
+	} else {
+		xo->fXTAL = ((uint64_t)xo->fXTAL * ORDERED_FREQUENCY + (freqRet >> 1)) / freqRet;
 	}
-	xo->fXTAL = ((uint64_t)xo->fXTAL * ORDERED_FREQUENCY) / freqRet;
 	Interp_RegisterCmd(&synthCmd);
 }

@@ -215,7 +215,7 @@ DFlash_EraseBlock(uint32_t block_addr)
         bool retval = true;
         volatile uint8_t *pAddr = (volatile uint8_t *)(block_addr & 0x00FFFFFF);
 
-	Con_Printf("EraseBlock %08lx, %08lx\n",block_addr,pAddr);
+	//Con_Printf("EraseBlock %08lx, %08lx\n",block_addr,pAddr);
         Mutex_Lock(&flashSema);
         mode = FLD_PE_MODE;
         if (Enter_PEMode(mode, pAddr, 0) == false) {
@@ -245,8 +245,8 @@ DFlash_EraseBlock(uint32_t block_addr)
 }
 
 /**
- * The interface to the outside eats addresses relative to
- * the begin of the dataflash; 
+ ******************************************************************************
+ ******************************************************************************
  */
 bool
 DFlash_Erase(uint32_t relAddr,uint32_t len)
@@ -455,7 +455,5 @@ DataFlash_Init(void)
         FLASH.DFLWE0.WORD = 0x1E00 | (write_en_mask & 0x00FF);
         /* Set Erase/Program access for the Data Flash blocks DB8-DB15 */
         FLASH.DFLWE1.WORD = 0xE100 | ((write_en_mask >> 8) & 0x00FF);
-
 	Interp_RegisterCmd(&flashCmd);
 }
-

@@ -33,8 +33,9 @@
 #define MDC_HIGH	BSET(7,PORTE.PODR.BYTE)
 #define MDC_LOW		BCLR(7,PORTE.PODR.BYTE)
 
-//#define mdio_delay() DelayNs(200)
+/// mdio_delay() DelayNs(200)
 #define mdio_delay() 
+
 typedef struct MDIOPort {
 	uint8_t preambleLen;
 } MDIOPort;

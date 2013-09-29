@@ -10,6 +10,7 @@
 #include "wdta.h"
 #include "swupdate.h"
 #include "types.h"
+#include "wdta.h"
 
 #define SWUP_CRC32_START        (0x73911293)
 #define FLASH_ADDR_SWUPDATE	DFLASH_MAP_ADDR(32768-2048)
@@ -17,6 +18,12 @@
 
 #define POLY 0xEDB88320
 
+/**
+ ***************************************************************************************
+ * Ethernet CRC calculation. The initial and final XOR by 0xFFFFFFFF is not required
+ * because a negated algorithm is used. 
+ ***************************************************************************************
+ */
 static uint32_t
 CRC32Byte_Eth(uint32_t crc, uint8_t val)
 {
@@ -50,7 +57,7 @@ write_chain_entry(uint16_t entry_nr, uint32_t firstsect, uint32_t nsectors)
         data[0] = firstsect;
         data[1] = nsectors;
         result = DFlash_Write(FLASH_ADDR_SWUPDATE + ((entry_nr + 1) << 3), data, 8);
-	Con_Printf("from %lu nsectors %lu\n",firstsect,nsectors); 
+	//Con_Printf("from %lu nsectors %lu\n",firstsect,nsectors); 
         return result;
 }
 
@@ -151,6 +158,12 @@ store_sector_chain(const char *filename)
         return result;
 }
 
+/*
+ *********************************************************************************************
+ * \fn static bool CheckWriteSignature(const char *filename, bool checkOnly)
+ * Check or write the signature of a Software update file
+ *********************************************************************************************
+ */
 static bool
 CheckWriteSignature(const char *filename, bool checkOnly)
 {
@@ -202,14 +215,17 @@ uint8_t
 SWUpdate_Execute(const char *filepath)
 {
         if (CheckWriteSignature(filepath, true) == false) {
-                Con_Printf("Updatefile %s has bad CRC\n", filepath);
+                Con_Printf("No vailid checksum found in %s\n", filepath);
                 return SWUP_EC_CRC;
         }
         if (store_sector_chain(filepath) != true) {
                 Con_Printf("Can not create sector chain in dataflash\n");
-        }
+        } else {
+                Con_Printf("Software Update is valid, Updating now !\n");
+		SleepMs(10);
+	}
         DISABLE_IRQ();
-        //Wdg_Reboot();
+        WDTA_Reboot();
 	return 0;
 }
 
@@ -245,6 +261,18 @@ cmd_chain(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(chainCmd, "chain", cmd_chain, "chain <filename>  # store a cluster chain in data flash");
 
+static int8_t
+cmd_swupdate(Interp * interp, uint8_t argc, char *argv[])
+{
+	if(argc < 2) {
+		return -EC_BADNUMARGS;
+	}
+	SWUpdate_Execute(argv[1]);
+        return 0;
+}
+
+INTERP_CMD(swupdateCmd, "swupdate", cmd_swupdate, "swupdate <filename>  # Update the software");
+
 /**
  *****************************************************************************
  * Initialize the Software updater
@@ -254,7 +282,7 @@ void
 SWUpdate_Init(void)
 {
         ClearUpdateSignature();
-        //Interp_RegisterCmd(&swupdateCmd);
+        Interp_RegisterCmd(&swupdateCmd);
         Interp_RegisterCmd(&chainCmd);
 }
 

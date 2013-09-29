@@ -8,6 +8,15 @@
 #include "hex.h"
 #include "console.h"
 
+void 
+WDTA_Reboot()
+{
+	WDT.WDTCR.WORD = 0x3300; /* Divider 4, Timeout 1023 */
+	DISABLE_IRQ();
+	WDT.WDTRR = 0;	
+	WDT.WDTRR = 0xff;	
+	while(1);
+}
 /**
  ****************************************************************************
  * \fn static int8_t cmd_sci0(Interp * interp, uint8_t argc, char *argv[])
@@ -26,11 +35,7 @@ INTERP_CMD(wdtaCmd, "wdta", cmd_wdta, "wdta # Watchdog Timer A");
 static int8_t
 cmd_reboot(Interp * interp, uint8_t argc, char *argv[])
 {
-	WDT.WDTCR.WORD = 0x3300; /* Divider 4, Timeout 1023 */
-	DISABLE_IRQ();
-	WDT.WDTRR = 0;	
-	WDT.WDTRR = 0xff;	
-	while(1);
+	WDTA_Reboot();
 	return 0;
 }
 
