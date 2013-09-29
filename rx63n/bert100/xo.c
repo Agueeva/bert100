@@ -206,7 +206,7 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 		return 0;
 #if 0
 	} else if(strcmp(argv[1],"ppm") == 0) {
-		float ppm = fabs((1. - (xo->fXTAL /  114285000)));	
+		float ppm = 1000000 * fabs((1. - (xo->fXTAL /  114285000)));	
 		Con_Printf("ppm %lu\n",(1. - (xo->fXTAL /  114285000)));	
 #endif
 	}

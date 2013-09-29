@@ -978,15 +978,6 @@ Cdr_SoftReset(uint16_t phy_addr)
 {
 	uint8_t lane;
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
-#if 0
-	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
-	for(lane = 0; lane < 4; lane++) {
-		/* Set 128 steps for PI resolution inside reset */
-		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
-	}
-	/* Deassert datapath soft reset */
-	Cdr_Write(phy_addr, 0, 0);
-#endif
 }
 
 /**
@@ -1086,6 +1077,7 @@ Cdr_HwReset(void)
 	SleepMs(1);
 	CDR_RESET_DR = 1; 
 }
+
 /**
  ************************************************************************
  * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
