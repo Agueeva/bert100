@@ -707,10 +707,7 @@ Ethernet_Init(EthDriver *drv)
 	eth->if_ip[1] = 168;
 	eth->if_ip[2] = 80;
 	eth->if_ip[3] = 10;
-	//Param_Read(netmask,&netmask_bits);
-	if(netmask_bits > 32) {
-		netmask_bits = 24;
-	}
+	netmask_bits = 24;
 	if(netmask_bits == 0) {
 		Write32(UINT32_C(~0),eth->if_netmask);
 	} else {
