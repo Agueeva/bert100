@@ -855,10 +855,10 @@ Cdr_InitCdr(uint16_t phy_addr)
 	Cdr_Write(phy_addr, 513, 0X0000);
 	Cdr_Write(phy_addr, 769, 0X0000);
 	Cdr_Write(phy_addr, 1025, 0X0000);
-	Cdr_Write(phy_addr, 258, 0X0000);
+	Cdr_Write(phy_addr, 258, 0X0002);
 	Cdr_Write(phy_addr, 514, 0X0002);
-	Cdr_Write(phy_addr, 770, 0X0000);
-	Cdr_Write(phy_addr, 1026, 0X0000);
+	Cdr_Write(phy_addr, 770, 0X0002);
+	Cdr_Write(phy_addr, 1026, 0X0002);
 	Cdr_Write(phy_addr, 384, 0X0004);
 	Cdr_Write(phy_addr, 640, 0X0004);
 	Cdr_Write(phy_addr, 896, 0X0004);
@@ -969,6 +969,25 @@ Cdr_ReadPart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uS
 }
 
 /**
+ ************************************************************
+ * \fn static void Cdr_SoftReset(uint16_t phy_addr) 
+ ************************************************************
+ */
+static void 
+Cdr_SoftReset(uint16_t phy_addr) 
+{
+	uint8_t lane;
+	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
+	for(lane = 0; lane < 4; lane++) {
+		/* Set 128 steps for PI resolution inside reset */
+		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
+	}
+	/* Deassert datapath soft reset */
+	Cdr_Write(phy_addr, 0, 0);
+}
+
+/**
 ************************************************************************
 * \fn void Cdr_Startup(uint16_t phy_addr=1)
 * from Python startup_cdr.py
@@ -976,7 +995,7 @@ Cdr_ReadPart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uS
 */
 
 static uint8_t
-Cdr_Startup(uint16_t phy_addr)	// Olga
+Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 {
 	/*  Startup for CDR A0 and B0 */
 	uint16_t uVal;
@@ -994,6 +1013,7 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 		Con_Printf("Error: Unsupported CDR version A0\n");
 		return 0;	
 	}
+#if 0
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
 	for(lane = 0; lane < 4; lane++) {
@@ -1002,6 +1022,8 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 	}
 	/* Deassert datapath soft reset */
 	Cdr_Write(phy_addr, 0, 0);
+#endif
+
 	// CDR recal of TxPLL while PI3 is locked
 	Cdr_WritePart(phy_addr, 1184, 1, 1, 1);	// Lockint Rx3 PI
 	// Re-Calibrating Tx PLL
@@ -1056,7 +1078,7 @@ Cdr_Startup(uint16_t phy_addr)	// Olga
 }
 
 static void
-CDR_HwReset(void) 
+Cdr_HwReset(void) 
 {
 	CDR_RESET_DR = 0; 
 	SleepMs(1);
@@ -1074,10 +1096,10 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	uint8_t phyAddr;
 	uint16_t val;
 	uint16_t regAddr;
-	if ((argc == 3) && (strcmp(argv[2], "startup") == 0)) {
+	if ((argc == 3) && (strcmp(argv[2], "recal") == 0)) {
 		uint8_t cdr = astrtoi16(argv[1]);
 		Con_Printf("Calling Olgas CDR_Startup for CDR %u\n", cdr);
-		Cdr_Startup(cdr);
+		Cdr_Recalibrate(cdr);
 		return 0;
 	} else if ((argc == 3) && (strcmp(argv[2], "init") == 0)) {
 		uint8_t cdr = astrtoi16(argv[1]);
@@ -1095,8 +1117,11 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		regAddr = astrtoi16(argv[2]);
 		val = astrtoi16(argv[3]);
 		Cdr_Write(phyAddr, regAddr, val);
-	} else if (argc == 2 && (strcmp(argv[1],"reset") == 0)) {
-		CDR_HwReset();
+	} else if ((argc == 3) && (strcmp(argv[2],"reset") == 0)) {
+		phyAddr = astrtoi16(argv[1]);
+		Cdr_SoftReset(phyAddr);
+	} else if ((argc == 3) && (strcmp(argv[2],"hardreset") == 0)) {
+		Cdr_HwReset();
 	} else {
 		return -EC_BADARG;
 	}
@@ -1204,6 +1229,7 @@ CDR_Init(const char *name)
 			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
 		}
 	}
-	Cdr_Startup(0);
+	Cdr_SoftReset(0);
+	Cdr_Recalibrate(0);
 	Cdr_InitCdr(0);
 }
