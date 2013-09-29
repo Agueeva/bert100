@@ -1,9 +1,9 @@
   var myElement=new Array();
   var n=0;
-  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
-  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1","emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2","cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing");
+  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel","prbs_lock");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1","emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2","cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing","cdr0.l0.Swap_TXP_N","cdr0.l1.Swap_TXP_N","cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
   var myVarTX0= new Array("vg1","vg2");
-  var myVarTX1= new Array("txa_swing");
+  var myVarTX1= new Array("txa_swing","Swap_TXP_N");
   var myVarDrTr= new Array("synth0.freq");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
@@ -33,11 +33,22 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-        if (item=="test.var1") {
-          document.getElementById(item).value=value;
-        }
-        else {
-        var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
+      
+      switch(item)
+{
+case "test.var1":
+  document.getElementById(item).value=value;
+  break;
+case "synth0.freq":
+  if (value>644531240 && value<644531260) {
+    value=644531250;
+  }
+   if (value>698812325 && value<698812345) {
+    value=698812335;
+  }
+  break;
+default:
+     var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
 
         if(typeof var_id == "undefined") {
          var_id=$("#frame").contents().find("#var_val").val(value);
@@ -46,7 +57,9 @@
          else{
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
          }
-     }
+break;
+}  
+        
      }
   function keepAlive() {
           socket.send(JSON.stringify({get: "test.var1"}));
@@ -91,32 +104,7 @@ function laodpage(url,id) {
            return;
 
 }
-/**---------------------TreeMenu---------------------------
-/**
-* This function creates a simple tree menu out of a "ul" list.
-* Icons can be defined via a css file.
-*
-* The syntax in your html should look like this:
-* <ul id="treemenuID" class="menu">
-*	   <li><a href='javascript:void(0);'>Item 1</a></li>
-*	   <li>
-*                     <a href='javascript:void(0);'>Folder 2</a>
-*		      <ul>
-*                                <li><a href='javascript:void(0);'>Item 2.1</a></li>
-*                                <li><a href='javascript:void(0);'>Folder 2.2</a>
-*                                            <ul>
-*                                                       <li><a href='javascript:void(0);'>Item 2.2.1</a></li>
-*                                            </ul>
-*				 </li>
-*				 <li><a href='javascript:void(0);'>Item 2.3</a></li>
-*		      </ul>
-*          </li>
-* </ul>
-*
-* @param {Object} id    The name of the "ul" element that should be used for the tree menu.
-* @return {}   Returns nothing.
 
-*/
 var selected = null;
 function createTreeMenu(id) {
            // go over tree to setup classes
@@ -271,7 +259,31 @@ item=prefB + (i+k) + "." + myElement[j];
 
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
 }}
-window_onload();
+
+}
+else {
+all=false;
+for (j = 0; j < myElement.length; j++){
+for (i = 1; i <= 3; i++){
+item=prefB + (i+k) + "." + myElement[j];
+	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
+}}
+}
+}
+
+function myDisableAll(box,prefB,pref,k)
+{
+var j,i,item, my_var;
+if (box.checked){
+
+for (j = 0; j < myElement.length; j++){
+item =prefB+k+"."+myElement[j];
+for (i = 1; i <= 3; i++){
+item=prefB + (i+k) + "." + myElement[j];
+
+	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+}}
+
 }
 else {
 all=false;
