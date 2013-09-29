@@ -1100,7 +1100,7 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t regAddr;
 	if ((argc == 3) && (strcmp(argv[2], "recal") == 0)) {
 		uint8_t cdr = astrtoi16(argv[1]);
-		Con_Printf("Calling Olgas CDR_Startup for CDR %u\n", cdr);
+		Con_Printf("Calling Olgas CDR_Recal for CDR %u\n", cdr);
 		Cdr_Recalibrate(cdr);
 		return 0;
 	} else if ((argc == 3) && (strcmp(argv[2], "init") == 0)) {
@@ -1108,6 +1108,11 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("Calling Olgas CDR_InitCdr for CDR %u\n", cdr);
 		Cdr_InitCdr(cdr);
 		return 0;
+	} else if ((argc == 3) && (strcmp(argv[2],"reset") == 0)) {
+		phyAddr = astrtoi16(argv[1]);
+		Cdr_SoftReset(phyAddr);
+	} else if ((argc == 3) && (strcmp(argv[2],"hardreset") == 0)) {
+		Cdr_HwReset();
 	} else if (argc == 3) {
 		phyAddr = astrtoi16(argv[1]);
 		regAddr = astrtoi16(argv[2]);
@@ -1119,11 +1124,6 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		regAddr = astrtoi16(argv[2]);
 		val = astrtoi16(argv[3]);
 		Cdr_Write(phyAddr, regAddr, val);
-	} else if ((argc == 3) && (strcmp(argv[2],"reset") == 0)) {
-		phyAddr = astrtoi16(argv[1]);
-		Cdr_SoftReset(phyAddr);
-	} else if ((argc == 3) && (strcmp(argv[2],"hardreset") == 0)) {
-		Cdr_HwReset();
 	} else {
 		return -EC_BADARG;
 	}
