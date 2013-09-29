@@ -245,8 +245,6 @@ PVSynth_GetFXTAL(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
-
-
 #define ORDERED_FREQUENCY 644531250		
 
 void
@@ -254,6 +252,7 @@ XO_Init(const char *name,uint16_t i2cAddr)
 {
 	SiXO *xo = &gSiXO[0];	
 	uint8_t buf[6];
+	uint8_t i2c_result;
 	uint32_t freqRet;
 	xo->i2cAddr = i2cAddr;	
 	xo->fXTAL = 114285000;
@@ -263,7 +262,10 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
 	PVar_New(PVSynth_GetFXTAL,NULL,xo,0,"%s.fxtal",name);
 	buf[0] = RECALL;
-	if(read_frequency(xo,&freqRet) == false) {
+	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE, buf,1);
+	if(i2c_result != I2C_RESULT_OK) {
+		Con_Printf("Failed to read write to synthesizer\n");
+	} else if(read_frequency(xo,&freqRet) == false) {
 		Con_Printf("Failed to read frequency from Synthesizer\n");
 	} else {
 		xo->fXTAL = ((uint64_t)xo->fXTAL * ORDERED_FREQUENCY + (freqRet >> 1)) / freqRet;
