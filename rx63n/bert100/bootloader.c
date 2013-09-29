@@ -100,7 +100,7 @@ spix(uint8_t data)
 	return data;
 }
 
-static inline void
+RAMCODE static inline void
 delay_loop(uint32_t loopcnt)
 {
         __asm__ volatile(
