@@ -181,15 +181,16 @@ ArpCE_Enter(EthIf *eth,uint8_t *ip,uint8_t *mac)
 	uint16_t entry_nr = 0;
 	uint16_t i;
 	TimeMs_t now = TimeMs_Get();
-	TimeMs_t age = 0;
+	TimeMs_t maxage = 0;
 	for(i = 0; i < array_size(eth->arpCache); i++) {
 		ace = &eth->arpCache[i];
 		if(Read32(ip) == Read32(ace->arp_ip)) {
 			entry_nr = i;
 			break;
 		}
-		if((now - ace->timestamp) > age) {
-			entry_nr = i;	
+		if((now - ace->timestamp) > maxage) {
+			maxage = now - ace->timestamp;
+			entry_nr = i;
 		}
 	}
 	ace = &eth->arpCache[entry_nr];
