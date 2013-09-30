@@ -444,6 +444,7 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 	Con_Printf("RxBad:    %lu\n",re->statRxBadFrame);
 	Con_Printf("RRRClear: %lu\n",re->statRRRClear);
 	Con_Printf("EDRRR:    %lu\n",EDMAC.EDRRR.LONG);
+	Con_Printf("EDTRR:    %lu\n",EDMAC.EDTRR.LONG);
 	Con_Printf("RxWdg:    %lu\n",re->statRxWatchdog);
 	Con_Printf("evRxInUse %u\n",re->evRxInUse);
 	Con_Printf("evTxInUse %u\n",re->evTxInUse);
