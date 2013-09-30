@@ -105,6 +105,7 @@ typedef struct RxEth {
 	uint32_t statRxFrameOk;
 	uint32_t statRRRClear;
 	uint32_t statRxWatchdog;
+	uint32_t statTxWatchdog;
 } RxEth;
 
 static RxEth gRxEth;
@@ -312,7 +313,7 @@ RXEth_Transmit(EthDriver *drv,Skb *skb)
 	barrier();
 	txDescr->status |= (TXDS_FP1 | TXDS_FP0 | TXDS_ACT); /* activate Single buffer frame */
 	TX_DESCR_INC_WP(re);
-	if(EDMAC.EDTRR.LONG == 0) {
+	if(EDMAC.EDTRR.BIT.TR == 0) {
 		EDMAC.EDTRR.LONG = 1;
 	}
 }
@@ -403,23 +404,24 @@ RxEth_RxWatchdogTimerProc(void *eventData)
 	bool ok = false;
 	int i;
 	Timer_Start(&re->rxWatchdogTimer,1100);
-#if 1
-	if(EDMAC.EDRRR.LONG == 1) {
-		return;
-	}
-#endif
-	for(i = 0; i < RX_DESCR_NUM; i++) {
-		uint32_t status;
-		volatile Descriptor *rxDescr = &re->rxDescr[i];
-		status = rxDescr->status;
-		if(status & RXDS_ACT) {
-			ok = true;
+	if(EDMAC.EDRRR.BIT.RR != 1) {
+		for(i = 0; i < RX_DESCR_NUM; i++) {
+			uint32_t status;
+			volatile Descriptor *rxDescr = &re->rxDescr[i];
+			status = rxDescr->status;
+			if(status & RXDS_ACT) {
+				ok = true;
+			}
 		}
+		if(ok == false) {
+			re->statRxWatchdog++;
+		}
+		EV_Trigger(&re->evRxEvent);
 	}
-	if(ok == false) {
-		re->statRxWatchdog++;
+	if((EDMAC.EDTRR.BIT.TR != 1) && (re->txDescrWp != re->txDescrRp)) {
+		re->statTxWatchdog++;
+		EDMAC.EDTRR.BIT.TR = 1;
 	}
-	EV_Trigger(&re->evRxEvent);
 }
 /**
  ***********************************************************************************

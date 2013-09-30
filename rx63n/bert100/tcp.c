@@ -81,6 +81,7 @@ typedef struct TcpPseudoHdr {
 	uint16_be proto;
 	uint16_be payloadlen;
 } TcpPseudoHdr;
+
 static FIL tcp_logfile;
 static bool log_isopen;
 

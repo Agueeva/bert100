@@ -7,6 +7,8 @@
 #include "skb.h"
 #include "tpos.h"
 #include "console.h"
+#include "interpreter.h"
+#include "hex.h"
 
 #define SKB_POOLSIZE	(2)
 #define SKB_BUFSIZE	(1600)
@@ -14,6 +16,7 @@ static Skb skbPool[SKB_POOLSIZE];
 static bool skbFree[SKB_POOLSIZE];
 static CSema skbCSema;
 static uint8_t txbuf[SKB_BUFSIZE * SKB_POOLSIZE];
+static uint32_t skb_waiters = 0;
 
 static void
 Skb_Reset(Skb *skb,unsigned int index)
@@ -34,7 +37,9 @@ Skb_Alloc(void)
 {
 	static uint32_t cursor = 0;
 	uint32_t i;
+	skb_waiters++;
 	CSema_Down(&skbCSema);
+	skb_waiters--;
 	for(i = 0; i < SKB_POOLSIZE; i++) {
 		if(skbFree[cursor]) {
 			skbFree[cursor] = false;
@@ -63,6 +68,26 @@ Skb_Free(Skb *skb)
 	Con_Printf("Freeing skb which is not from Pool\n");
 }
 
+static int8_t
+cmd_skb(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint32_t i;
+	for(i = 0; i < SKB_POOLSIZE; i++) {
+		Con_Printf("Skb %u: ",i);
+		if(skbFree[i] == true) {
+			Con_Printf("Free\n");
+		} else {
+			Con_Printf("Busy\n");
+		}	
+	}
+	Con_Printf("Waiters: %u\n",skb_waiters);
+	return 0;
+}
+
+INTERP_CMD(skbCmd, "skb", cmd_skb, "skb  # Show socket buffer allocator status");
+
+/**
+ */
 void
 Skb_Init(void)
 {
@@ -71,4 +96,5 @@ Skb_Init(void)
 	for(i = 0; i < SKB_POOLSIZE; i++) {
 		Skb_Free(&skbPool[i]);
 	}
+	Interp_RegisterCmd(&skbCmd);
 }
