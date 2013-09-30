@@ -206,11 +206,11 @@ $(document).ready(function()
      });
 
 function ReadVar(variable){
-   //  alert(bl_Communication);
-     if(!bl_Communication) SocketNew();
-     var my_var;
-     my_var=variable.value;
-     socket.send(JSON.stringify({get: my_var}));
+	      //  alert(bl_Communication);
+		if(!bl_Communication) SocketNew();
+		var my_var;
+		my_var=variable.value;
+		socket.send(JSON.stringify({get: my_var}));
      }
 
 
@@ -220,24 +220,24 @@ if(!bl_Communication) SocketNew();
   var my_var;
   var j,i;
   switch(n)
-{
-case 1:
-  for (j = 0; j < myElement.length; j++){
-  for (i = 0; i <= 3; i++){
-  my_var=page_pref+(i+page_k)+"."+myElement[j];
-  socket.send(JSON.stringify({get: my_var}));
-  }}
-  break;
-case 2:
-  for (j = 0; j < myElement.length; j++){
-  my_var=myElement[j];
-  socket.send(JSON.stringify({get: my_var}));
-//  alert(my_var);
-}
-  break;
-default:
-break;
-}
+    {
+      case 1:
+	for (j = 0; j < myElement.length; j++){
+	for (i = 0; i <= 3; i++){
+	my_var=page_pref+(i+page_k)+"."+myElement[j];
+	socket.send(JSON.stringify({get: my_var}));
+	}}
+	break;
+      case 2:
+	for (j = 0; j < myElement.length; j++){
+	my_var=myElement[j];
+	socket.send(JSON.stringify({get: my_var}));
+      //  alert(my_var);
+      }
+	break;
+      default:
+        break;
+    }
 
 }
 
@@ -245,82 +245,76 @@ break;
 
 function myCheckAll(box,prefB,pref,k)
 {
-var j,i,item, my_var;
-if (box.checked){
-all=true;
-for (j = 0; j < myElement.length; j++){
-item =prefB+k+"."+myElement[j];
-var iframe = document.getElementById('frame');
-var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
-my_var = frameDoc.getElementById(item);
-SaveVar(my_var, 2,pref,k);
-for (i = 1; i <= 3; i++){
-item=prefB + (i+k) + "." + myElement[j];
-
-	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
-}}
-
-}
-else {
-all=false;
-for (j = 0; j < myElement.length; j++){
-for (i = 1; i <= 3; i++){
-item=prefB + (i+k) + "." + myElement[j];
-	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
-}}
-}
+    var j,i,item, my_var;
+    if (box.checked){
+      all=true;
+      for (j = 0; j < myElement.length; j++){
+	item =prefB+k+"."+myElement[j];
+	var iframe = document.getElementById('frame');
+	var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+	my_var = frameDoc.getElementById(item);
+	SaveVar(my_var, 2,pref,k);
+	for (i = 1; i <= 3; i++){
+	  item=prefB + (i+k) + "." + myElement[j];
+	  $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+      }}
+      }
+      else {
+	all=false;
+	for (j = 0; j < myElement.length; j++){
+	  for (i = 1; i <= 3; i++){
+	    item=prefB + (i+k) + "." + myElement[j];
+	    $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
+	}}
+    }
 }
 
 function myDisableAll(box,prefB,pref,k)
 {
-var j,i,item, my_var;
-if (box.checked){
-
-for (j = 0; j < myElement.length; j++){
-item =prefB+k+"."+myElement[j];
-for (i = 1; i <= 3; i++){
-item=prefB + (i+k) + "." + myElement[j];
-
-	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
-}}
-
-}
-else {
-all=false;
-for (j = 0; j < myElement.length; j++){
-for (i = 1; i <= 3; i++){
-item=prefB + (i+k) + "." + myElement[j];
+    var j,i,item, my_var;
+    if (box.checked){    
+    for (j = 0; j < myElement.length; j++){
+      item =prefB+k+"."+myElement[j];
+    for (i = 1; i <= 3; i++){
+      item=prefB + (i+k) + "." + myElement[j];
+      $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+    }}
+    
+    }
+    else {
+    all=false;
+    for (j = 0; j < myElement.length; j++){
+      for (i = 1; i <= 3; i++){
+	item=prefB + (i+k) + "." + myElement[j];
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
-}}
-}
+      }}
+    }
 }
 
 function SaveVar(myVar, typeVar,pref,k){
-if(!bl_Communication) SocketNew();
-var formval, myID, myForm, myBool;
-
-myID=myVar.id;
-formval=myVar.value;
- switch(typeVar)
-{
-case 1:  //einfach
-//alert(myID+"="+formval);
-socket.send(JSON.stringify({set: myID,val: formval}));
-  break;
-case 2:  //all vorhandeln
-
-if(all) {
-for (i = 0; i <= 3; i++) {
-socket.send(JSON.stringify({set: myID,val: formval}));
-myID=myID.replace(pref+(i+k), pref+(i+1+k));
-}
-}
-else {
-socket.send(JSON.stringify({set: myID,val: formval}));
-}
-  break;
-default:
-  break;
-}
+    if(!bl_Communication) SocketNew();
+      var formval, myID, myForm, myBool;     
+      myID=myVar.id;
+      formval=myVar.value;
+      switch(typeVar)
+    {
+	case 1:  //einfach
+	    //alert(myID+"="+formval);
+	    socket.send(JSON.stringify({set: myID,val: formval}));
+	    break;
+	case 2:  //all vorhandeln	
+	    if(all) {
+	    for (i = 0; i <= 3; i++) {
+	    socket.send(JSON.stringify({set: myID,val: formval}));
+	    myID=myID.replace(pref+(i+k), pref+(i+1+k));
+	    }
+	    }
+	    else {
+	    socket.send(JSON.stringify({set: myID,val: formval}));
+	    }
+	  break;
+	default:
+	    break;
+    }
 }
 
