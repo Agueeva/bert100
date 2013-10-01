@@ -34,7 +34,7 @@ static char g_Version[16];
 const char *
 Version_GetStr(void)
 {
-	SNPrintf(g_Version,sizeof(g_Version) - 1,"%s%02x%02x%02x",SWNAME,YEAR2,MONTH,DAY);
+	SNPrintf(g_Version,sizeof(g_Version) - 1,"\"%s%02x%02x%02x\"",SWNAME,YEAR2,MONTH,DAY);
 	return g_Version;
 }
 

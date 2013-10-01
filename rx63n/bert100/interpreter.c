@@ -208,7 +208,6 @@ Interp_ExecuteScript(void *eventData)
 		if (line[0] != '#') {
 			Interp_Feed(eventData, line);
 		}
-		Con_Printf("\n");
 		EV_Trigger(&interp->nextLineEvent);
 	} else {
 		f_close(&interp->file);
