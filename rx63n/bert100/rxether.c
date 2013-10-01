@@ -448,6 +448,7 @@ cmd_ethstat(Interp * interp, uint8_t argc, char *argv[])
 	Con_Printf("EDRRR:    %lu\n",EDMAC.EDRRR.LONG);
 	Con_Printf("EDTRR:    %lu\n",EDMAC.EDTRR.LONG);
 	Con_Printf("RxWdg:    %lu\n",re->statRxWatchdog);
+	Con_Printf("TxWdg:    %lu\n",re->statTxWatchdog);
 	Con_Printf("evRxInUse %u\n",re->evRxInUse);
 	Con_Printf("evTxInUse %u\n",re->evTxInUse);
 	if(argc > 1) {
