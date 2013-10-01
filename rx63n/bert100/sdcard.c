@@ -570,7 +570,7 @@ SDCard_ReadData(SDCard * sdc, uint8_t * buf, uint16_t count)
 				Spi_Xmit(SPI_BUS, &data, 1, SPI_FLAG_READ);
 			}
 #endif
-			Con_Printf("Read error: token %02x\n", data);
+			Con_Printf("Read: Bad Token %02x, sector %lu, loopcnt %lu\n", data,sdc->next_multsect_block,loopcnt);
 		}
 		return 0;
 	}
