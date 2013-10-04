@@ -1,13 +1,16 @@
   var myElement=new Array();
+  var myQueue=new Array();
+  var myQueueBool=false;
+  var myQueueCount=0;
   var n=0;
-  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel","prbs_lock");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1","emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2","cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing","cdr0.l0.Swap_TXP_N","cdr0.l1.Swap_TXP_N","cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX1= new Array("txa_swing","Swap_TXP_N");
   var myVarDrTr= new Array("synth0.freq");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages';  //'ws://tneuner.homeip.net:8080/messages';  
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
@@ -25,7 +28,7 @@
      }
      socket.onclose = function() {
 		alert('Verbindung unterbrochen');
-	//	bl_Communication=false;
+		bl_Communication=false;
                 my_Interval=clearInterval();
      }
      socket.onmessage = function(evt) {
@@ -46,16 +49,19 @@ case "synth0.freq":
    if (value>698812325 && value<698812345) {
     value=698812335;
   }
+   $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
   break;
 default:
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
-
         if(typeof var_id == "undefined") {
          var_id=$("#frame").contents().find("#var_val").val(value);
-
          }
          else{
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+         }
+         if (myQueueBool) {
+          //setTimeout(callback, 100);
+          window_onload_variable();
          }
 break;
 }  
@@ -218,30 +224,49 @@ function window_onload()
 {
 if(!bl_Communication) SocketNew();
   var my_var;
-  var j,i;
+  var j,i,k;
+  k=0;
   switch(n)
     {
       case 1:
 	for (j = 0; j < myElement.length; j++){
 	for (i = 0; i <= 3; i++){
 	my_var=page_pref+(i+page_k)+"."+myElement[j];
-	socket.send(JSON.stringify({get: my_var}));
+         myQueue[k]=my_var;
+         k++;
+	//socket.send(JSON.stringify({get: my_var}));
+        //setTimeout(callback, 50);
 	}}
+        myQueueBool=true;
+        myQueueCount=1;
+        socket.send(JSON.stringify({get: myQueue[0]}));
 	break;
       case 2:
 	for (j = 0; j < myElement.length; j++){
 	my_var=myElement[j];
-	socket.send(JSON.stringify({get: my_var}));
-      //  alert(my_var);
+        myQueue[k]=my_var;
+         k++;
+	//socket.send(JSON.stringify({get: my_var}));
       }
+        myQueueBool=true;
+        myQueueCount=1;
+        socket.send(JSON.stringify({get: myQueue[0]}));
 	break;
       default:
         break;
     }
-
 }
 
-
+function window_onload_variable()
+{
+    // setTimeout(callback, 500);
+     if (myQueueCount<myQueue.length) {     
+  socket.send(JSON.stringify({get: myQueue[myQueueCount]}));
+  myQueueCount++;
+     }
+     else {myQueueBool=false;
+     myDisableAuto();}
+}
 
 function myCheckAll(box,prefB,pref,k)
 {
@@ -289,6 +314,20 @@ function myDisableAll(box,prefB,pref,k)
 	$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
       }}
     }
+}
+function myDisableAuto()
+{
+  
+    for (i = 0; i < 4; i++){
+      item='cdr0.l'+i+'.prbs_autovr';
+      if ($("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val()==1) {
+         item='cdr0.l'+i+'.pat_ver_sel'; 
+        $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+      }
+      
+    }
+    
+   
 }
 
 function SaveVar(myVar, typeVar,pref,k){
