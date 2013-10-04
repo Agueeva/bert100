@@ -8,9 +8,10 @@
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX1= new Array("txa_swing","Swap_TXP_N");
   var myVarDrTr= new Array("synth0.freq");
+   var myVarErr= new Array("synth0.freq","cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS='ws://tneuner.homeip.net:8080/messages'; //'ws://' + document.domain + ':' + document.location.port + '/messages'; //
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
@@ -49,8 +50,8 @@ case "synth0.freq":
    if (value>698812325 && value<698812345) {
     value=698812335;
   }
-   $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
-  break;
+  // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+  //break;
 default:
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
         if(typeof var_id == "undefined") {
@@ -60,7 +61,8 @@ default:
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
          }
          if (myQueueBool) {
-          //setTimeout(callback, 100);
+          
+          
           window_onload_variable();
          }
 break;
@@ -207,6 +209,12 @@ $(document).ready(function()
 		laodpage("html/variablenadc12.html","#frame");
 		return false;
 	});
+        $( "#MeasureBut" ).click(function() {
+		myElement=myVarErr;
+                n=2;
+		laodpage("html/error.html","#frame");
+		return false;
+	});
 
            createTreeMenu("treemenu");
      });
@@ -259,6 +267,7 @@ if(!bl_Communication) SocketNew();
 
 function window_onload_variable()
 {
+   
     // setTimeout(callback, 500);
      if (myQueueCount<myQueue.length) {     
   socket.send(JSON.stringify({get: myQueue[myQueueCount]}));
