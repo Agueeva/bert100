@@ -787,7 +787,7 @@ static const CdrRegister gCdrLaneRegister[] =
 	},
 	{
 		.name = "eq_state",
-		.regNo = 428,
+		.regNo = 421,
 		.lastBit = 3,
 		.firstBit = 0,
 	}
