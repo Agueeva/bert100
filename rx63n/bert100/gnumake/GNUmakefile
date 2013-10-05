@@ -24,6 +24,7 @@ SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 
 ASMFILES=reset_program.asm switch_context.asm bootloader_setup.asm
 
+
 %.s: %.asm
 	$(CPP) $< -o $@
 

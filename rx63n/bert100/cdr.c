@@ -784,6 +784,12 @@ static const CdrRegister gCdrLaneRegister[] =
 		.regNo = 258,
 		.lastBit = 2,
 		.firstBit = 0,
+	},
+	{
+		.name = "eq_state",
+		.regNo = 428,
+		.lastBit = 3,
+		.firstBit = 0,
 	}
 };
 
@@ -976,7 +982,6 @@ Cdr_ReadPart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uS
 static void 
 Cdr_SoftReset(uint16_t phy_addr) 
 {
-	uint8_t lane;
 	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
 }
 
