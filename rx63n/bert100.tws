@@ -9,9 +9,11 @@
 [OPEN_WORKSPACE_FILES]
 "C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\cdr.c" 
 "C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\cdr.h" 
+"C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\pvar.c" 
 [WORKSPACE_FILE_STATES]
-"C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\cdr.c" -8 -30 945 668 1 2 
+"C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\cdr.c" -8 -30 810 668 1 2 
 "C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\cdr.h" 25 25 729 430 0 1 
+"C:\Users\Agueeva\Documents\GitHub\bert100\rx63n\bert100\pvar.c" 75 75 594 430 0 3 
 [LOADED_PROJECTS]
 "bert100" 
 [END]

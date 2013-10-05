@@ -1,12 +1,16 @@
-<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>BER Measurement</b>
+<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+
+<div class="headline">BER Measurement</div>
+
+<div name="wrap_BER_Measurement">
 <FORM  ID="Form_PG">
-<TABLE ALIGN="center" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="80%">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="90%">
 
 <TR ALIGN="left" VALIGN="middle">
-        <TH>Data Rate:<SELECT NAME="synth0.freq" ID="synth0.freq"  disabled>
-<OPTION VALUE="644531250">25.78125 Gbit/s
-<OPTION VALUE ="698812335">27.9524934 Gbit/s
+        <TH>Data Rate:
+	<SELECT class="whiteText" NAME="synth0.freq" ID="synth0.freq"  disabled>
+		<OPTION VALUE="644531250">25.78125 Gbit/s</OPTION>
+		<OPTION VALUE ="698812335">27.9524934 Gbit/s</OPTION>
 </SELECT></TH>
 	<TH>Channel 1</TH>
 	<TH>Channel 2</TH>
@@ -14,115 +18,128 @@
 	<TH>Channel 4</TH></TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>Pattern:</TH>
-<TH> <SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  disabled>
-<OPTION VALUE="7">2E7-1
-<OPTION VALUE ="1">2E9-1
-<OPTION VALUE ="6">2E15-1
-<OPTION VALUE ="5">2E23-1
-<OPTION VALUE ="4">2E31-1
-<OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel1" ID="cdr0.l1.pat_gen_sel"  disabled>
-<OPTION VALUE="7">2E7-1
-<OPTION VALUE ="1">2E9-1
-<OPTION VALUE ="6">2E15-1
-<OPTION VALUE ="5">2E23-1
-<OPTION VALUE ="4">2E31-1
-<OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel2" ID="cdr0.l2.pat_gen_sel"  disabled>
-<OPTION VALUE="7">2E7-1
-<OPTION VALUE ="1">2E9-1
-<OPTION VALUE ="6">2E15-1
-<OPTION VALUE ="5">2E23-1
-<OPTION VALUE ="4">2E31-1
-<OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH><TH><SELECT NAME="pat_gen_sel3" ID="cdr0.l3.pat_gen_sel"  disabled>
-<OPTION VALUE="7">2E7-1
-<OPTION VALUE ="1">2E9-1
-<OPTION VALUE ="6">2E15-1
-<OPTION VALUE ="5">2E23-1
-<OPTION VALUE ="4">2E31-1
-<OPTION VALUE ="2">8:8 Square wave pattern
-</SELECT></TH></TR>
+
+<TD> <SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  disabled>
+<OPTION VALUE="7">2E7-1</OPTION>
+<OPTION VALUE ="1">2E9-1</OPTION>
+<OPTION VALUE ="6">2E15-1</OPTION>
+<OPTION VALUE ="5">2E23-1</OPTION>
+<OPTION VALUE ="4">2E31-1</OPTION>
+<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+</SELECT></TD>
+
+<TD><SELECT NAME="pat_gen_sel1" ID="cdr0.l1.pat_gen_sel"  disabled>
+<OPTION VALUE="7">2E7-1</OPTION>
+<OPTION VALUE ="1">2E9-1</OPTION>
+<OPTION VALUE ="6">2E15-1</OPTION>
+<OPTION VALUE ="5">2E23-1</OPTION>
+<OPTION VALUE ="4">2E31-1</OPTION>
+<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+</SELECT></TD>
+
+<TD><SELECT NAME="pat_gen_sel2" ID="cdr0.l2.pat_gen_sel"  disabled>
+<OPTION VALUE="7">2E7-1</OPTION>
+<OPTION VALUE ="1">2E9-1</OPTION>
+<OPTION VALUE ="6">2E15-1</OPTION>
+<OPTION VALUE ="5">2E23-1</OPTION>
+<OPTION VALUE ="4">2E31-1</OPTION>
+<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+</SELECT></TD>
+
+<TD><SELECT NAME="pat_gen_sel3" ID="cdr0.l3.pat_gen_sel"  disabled>
+<OPTION VALUE="7">2E7-1</OPTION>
+<OPTION VALUE ="1">2E9-1</OPTION>
+<OPTION VALUE ="6">2E15-1</OPTION>
+<OPTION VALUE ="5">2E23-1</OPTION>
+<OPTION VALUE ="4">2E31-1</OPTION>
+<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+</SELECT></TD>
+</TR>
 <TR ALIGN="left">
-<TH>Error:</TH>
+<TH>Error period:</TH>
 
-<TH><INPUT TYPE="Text" NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" style="background-color:#cef0ef;" Value="" readonly>
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_gen_inv1" ID="cdr0.l1.prbs_gen_inv" style="background-color:#cef0ef;" Value="" readonly>
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_gen_inv2" ID="cdr0.l2.prbs_gen_inv" style="background-color:#cef0ef;" Value="" readonly>
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_gen_inv3" ID="cdr0.l3.prbs_gen_inv" style="background-color:#cef0ef;" Value="" readonly>
-</TH></TR>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv"  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_gen_inv1" ID="cdr0.l1.prbs_gen_inv" Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_gen_inv2" ID="cdr0.l2.prbs_gen_inv" Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_gen_inv3" ID="cdr0.l3.prbs_gen_inv" Value="" readonly>
+</TD></TR>
 <TR ALIGN="left">
-<TH>Rate:</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  Value="" readonly>
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  Value="" readonly>
-
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  Value="" readonly>
-
-</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly>
-
-</TH></TR>
+<TH>current BER:</TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly>
+</TD></TR>
 
 <TR ALIGN="left" VALIGN="middle">
 <TH>Rate per:</TH>
-<TH> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: ">
-<OPTION VALUE="10">10
-<OPTION VALUE ="100">100
-<OPTION VALUE ="1000">1000
-</SELECT><INPUT TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TH>
-<TH><SELECT NAME="pat_ver_sel1" ID="cdr0.l1.pat_ver_sel" onChange="javascript: ">
-<OPTION VALUE="10">10
-<OPTION VALUE ="100">100
-<OPTION VALUE ="1000">1000
-</SELECT><INPUT TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TH>
-<TH><SELECT NAME="pat_ver_sel2" ID="cdr0.l2.pat_ver_sel" onChange="javascript: ">
-<OPTION VALUE="10">10
-<OPTION VALUE ="100">100
-<OPTION VALUE ="1000">1000
-</SELECT><INPUT TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TH>
-<TH><SELECT NAME="pat_ver_sel3" ID="cdr0.l3.pat_ver_sel" onChange="javascript: ">
-<OPTION VALUE="10">10
-<OPTION VALUE ="100">100
-<OPTION VALUE ="1000">1000
-</SELECT><INPUT TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TH>
+<TD>
+	<SELECT class="selectkl" NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: ">
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE ="100">100</OPTION>
+		<OPTION VALUE ="1000">1000</OPTION>
+</SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
+<TD>
+	<SELECT class="selectkl" NAME="pat_ver_sel1" ID="cdr0.l1.pat_ver_sel" onChange="javascript: ">
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE ="100">100</OPTION>
+		<OPTION VALUE ="1000">1000</OPTION>
+</SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
+<TD>
+	<SELECT class="selectkl" NAME="pat_ver_sel2" ID="cdr0.l2.pat_ver_sel" onChange="javascript: ">
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE ="100">100</OPTION>
+		<OPTION VALUE ="1000">1000</OPTION>
+</SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
+<TD>
+	<SELECT class="selectkl" NAME="pat_ver_sel3" ID="cdr0.l3.pat_ver_sel" onChange="javascript: ">
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE ="100">100</OPTION>
+		<OPTION VALUE ="1000">1000</OPTION>
+</SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>Sync:</TH>
-<TH><INPUT TYPE="Text" style="background-color:#ff0000;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
-<INPUT TYPE="Text" style="background-color:#39c200;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TH>
-<TH><INPUT TYPE="Text" style="background-color:#ff0000;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
-<INPUT TYPE="Text" style="background-color:#39c200;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TH>
-<TH><INPUT TYPE="Text" style="background-color:#ff0000;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
-<INPUT TYPE="Text" style="background-color:#39c200;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TH>
-<TH><INPUT TYPE="Text" style="background-color:#ff0000;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
-<INPUT TYPE="Text" style="background-color:#39c200;" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TH>
+<TH>Sync | Sync-Fail:</TH>
+<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
+<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TD>
+<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
+<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TD>
+<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
+<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TD>
+<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr" boug Value="Loss" readonly>
+<INPUT class="redfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="Mem"></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>Input EQ State:</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TD>
 </TR>
 
 <TR ALIGN="left" VALIGN="middle">
 <TH>Measurement</TH>
-<TH><button type="button" onclick="javascript: "><font size="4" color="gree">Start</font></button></TH>
-<TH><button type="button" onclick="javascript: "><font size="4" color="red">Stop</font></button></TH>
+<TD><button class="buttonGreen" type="button" onclick="javascript: ">Start</button></TD>
+<TD><button class="buttonRed" type="button" onclick="javascript: ">Stop</button></TD>
+<TD></TD>
+<TD></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>Time elapsed:</TH>
-<TH><INPUT TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value=""></TH>
-<TH></TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
+<TD></TD>
+<TD></TD>
 </TR>
 
 </TABLE>
 </FORM>
+</div>
 <script type="text/javascript">
 	<!--
 	
