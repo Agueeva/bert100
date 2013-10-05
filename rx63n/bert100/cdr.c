@@ -727,13 +727,33 @@ static const CdrRegister gCdrRegister[] = {
 		.firstBit = 14, 
 		.lastBit = 15,
 	},
+//CDR_MANUAL_RESET_CONTROL                44
+	{
+		.name = "l0.err_cntr",
+		.regNo = 48,
+		.firstBit = 0,
+		.lastBit = 15,
+	},
+	{
+		.name = "l1.err_cntr",
+		.regNo = 49,
+		.firstBit = 0,
+		.lastBit = 15,
+	},
+	{
+		.name = "l2.err_cntr",
+		.regNo = 50,
+		.firstBit = 0,
+		.lastBit = 15,
+	},
+	{
+		.name = "l3.err_cntr",
+		.regNo = 51,
+		.firstBit = 0,
+		.lastBit = 15,
+	}
 };
 #if 0
-#define CDR_MANUAL_RESET_CONTROL                44
-#define CDR_LANE0_ERROR_COUNTER                 48
-#define CDR_LANE1_ERROR_COUNTER                 49
-#define CDR_LANE2_ERROR_COUNTER                 50
-#define CDR_LANE3_ERROR_COUNTER                 51
 #define CDR_LANE0_SAMPLE0_READ                  64
 #define CDR_LANE0_SAMPLE1_READ                  65      
 #define CDR_LANE0_SAMPLE2_READ                  66
