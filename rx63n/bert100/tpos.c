@@ -200,9 +200,6 @@ CSema_Up(CSema * cs)
 	SAVE_FLAGS_SET_IPL(flags, EVENTS_IPL);
 	cnt = ++cs->cnt;
 	RESTORE_FLAGS(flags);
-	if (cnt != 1) {
-		return;
-	}
 	SAVE_FLAGS_SET_IPL(flags, EVENTS_IPL);
 	if (cs->waitHead) {
 		th = cs->waitHead;
