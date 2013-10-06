@@ -13,7 +13,7 @@ INCLUDES += $(patsubst %,-I$(VPATH)/%,$(SUBMODULES)) -I$(VPATH)
 
 .PHONY: depend clean all $(SUBMODULES)
 
-SRCFILES= bert100.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
+SRCFILES= main.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	vector_table.c console.c  events.c  hex.c interrupt_handlers.c  \
 	threads.c tpos.c rxether.c phy.c base64.c sha1.c md5.c \
 	wdta.c ethernet.c spi.c fat.c fatcmds.c diskio.c sdcard.c \
