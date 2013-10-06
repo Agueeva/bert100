@@ -1244,6 +1244,26 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+bool
+PVBerCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	CDR *cdr = cbData;
+	uint32_t lane = adId;
+	uint64_t value = cdr->berCntr[lane];
+        bufP[uitoa64(value,bufP)] = 0;
+	return true;
+}
+
+bool
+PVBerCntr_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	CDR *cdr = cbData;
+	uint64_t value;
+	uint32_t lane = adId;
+	value  = astrtoi64(strP);
+	cdr->berCntr[lane] = value;
+	return true;
+}
 
 /**
  *****************************************************************
@@ -1288,6 +1308,9 @@ CDR_Init(const char *name)
 		for(lane = 0; lane < 4; lane++) {
 			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
 		}
+	}
+	for(lane = 0; lane < 4; lane++) {
+		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"errCntr");
 	}
 	Cdr_SoftReset(0);
 	Cdr_Recalibrate(0);
