@@ -14,10 +14,10 @@
   var myVarErr= new Array("synth0.freq","cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel",
                           "cdr0.l3.pat_gen_sel","cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state",
                           "cdr0.l3.eq_state","cdr0.l0.err_cntr","cdr0.l1.err_cntr","cdr0.l2.err_cntr",
-                          "cdr0.l3.err_cntr","cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat",
                           "cdr0.l0.latched_lol","cdr0.l1.latched_lol","cdr0.l2.latched_lol","cdr0.l3.latched_lol",
                           "cdr0.l0.prbs_lock","cdr0.l1.prbs_lock","cdr0.l2.prbs_lock","cdr0.l3.prbs_lock",
-                          "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck" );
+                          "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
+                          "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
@@ -46,7 +46,9 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-      
+      if (item.substr(0, 6)=="emlAmp") {
+          value=Math.round(value * 100) / 100;
+      }
       switch(item)
 {
 case "test.var1":
@@ -251,20 +253,13 @@ if(!bl_Communication) SocketNew();
 	my_var=page_pref+(i+page_k)+"."+myElement[j];
          myQueue[k]=my_var;
          k++;
-	//socket.send(JSON.stringify({get: my_var}));
-        //setTimeout(callback, 50);
 	}}
         myQueueBool=true;
         myQueueCount=1;
         socket.send(JSON.stringify({get: myQueue[0]}));
 	break;
       case 2:
-	for (j = 0; j < myElement.length; j++){
-	my_var=myElement[j];
-        myQueue[k]=my_var;
-         k++;
-	//socket.send(JSON.stringify({get: my_var}));
-      }
+        myQueue=myElement;
         myQueueBool=true;
         myQueueCount=1;
         socket.send(JSON.stringify({get: myQueue[0]}));
