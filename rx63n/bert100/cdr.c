@@ -16,6 +16,7 @@
 #include "pvar.h"
 #include "iodefine.h"
 
+#define CDR_IPL		(1)
 /* Pin definitions */
 #define CDR_RESET_DIR PORTE.PDR.BIT.B3
 #define CDR_RESET_DR  PORTE.PODR.BIT.B3
@@ -728,6 +729,7 @@ static const CdrRegister gCdrRegister[] = {
 		.lastBit = 15,
 	},
 };
+
 #if 0
 #define CDR_MANUAL_RESET_CONTROL                44
 #define CDR_LANE0_ERROR_COUNTER                 48
@@ -787,7 +789,7 @@ static const CdrRegister gCdrLaneRegister[] =
 	},
 	{
 		.name = "eq_state",
-		.regNo = 428,
+		.regNo = 421,
 		.lastBit = 3,
 		.firstBit = 0,
 	}
@@ -803,8 +805,11 @@ static const CdrRegister gCdrLaneRegister[] =
 void
 Cdr_Write(uint8_t phyAddr, uint16_t regAddr, uint16_t value)
 {
+	Flags_t flags;
+        SAVE_FLAGS_SET_IPL(flags, CDR_IPL);
 	MDIO_Address(phyAddr, DEVTYPE, regAddr);
 	MDIO_Write(phyAddr, DEVTYPE, value);
+	RESTORE_FLAGS(flags);
 }
 
 /**
@@ -817,8 +822,13 @@ Cdr_Write(uint8_t phyAddr, uint16_t regAddr, uint16_t value)
 uint16_t
 Cdr_Read(uint8_t phyAddr, uint16_t regAddr)
 {
+	Flags_t flags;
+	uint16_t regVal;
+        SAVE_FLAGS_SET_IPL(flags, CDR_IPL);
 	MDIO_Address(phyAddr, DEVTYPE, regAddr);
-	return MDIO_Read(phyAddr, DEVTYPE);
+	regVal = MDIO_Read(phyAddr, DEVTYPE);
+	RESTORE_FLAGS(flags);
+	return regVal;
 }
 
 
