@@ -261,7 +261,7 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	xo->outFreq = 0;
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
 	PVar_New(PVSynth_GetFXTAL,NULL,xo,0,"%s.fxtal",name);
-	buf[0] = RECALL;
+	buf[0] = RECALL | NEW_FREQ;
 	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE, buf,1);
 	if(i2c_result != I2C_RESULT_OK) {
 		Con_Printf("Failed to read write to synthesizer\n");
