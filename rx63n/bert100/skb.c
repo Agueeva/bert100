@@ -59,9 +59,13 @@ Skb_Free(Skb *skb)
 	for(i = 0; i < SKB_POOLSIZE; i++) {
 		cursor = (cursor + 1) % SKB_POOLSIZE;
 		if(&skbPool[cursor] == skb) {
-			skbFree[cursor] = true;	
-			Skb_Reset(skb,cursor);
-			CSema_Up(&skbCSema);
+			if(skbFree[cursor] == false) {
+				skbFree[cursor] = true;	
+				Skb_Reset(skb,cursor);
+				CSema_Up(&skbCSema);
+			} else {
+				Con_Printf("Bug: Freeing free SKB\n");
+			}
 			return;
 		} 
 	}
