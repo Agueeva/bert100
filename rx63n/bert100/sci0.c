@@ -158,6 +158,20 @@ Excep_SCI0_RXI0(void)
 	g_uart.stat_rxints++;
 	g_uart.rxbuf_wp++;
 	rx_avail(&g_uart);
+	if(SCI0.SSR.BYTE & (0x38)) { /* PER, FER, ORER */ 
+		if(SCI0.SSR.BIT.ORER) {
+			g_uart.stat_overints++;
+			SCI0.SSR.BIT.ORER = 0;
+		}	
+		if(SCI0.SSR.BIT.FER) {
+			g_uart.stat_ferints++;
+			SCI0.SSR.BIT.FER = 0;
+		}
+		if(SCI0.SSR.BIT.PER) {
+			g_uart.stat_perints++;
+			SCI0.SSR.BIT.PER = 0;
+		}
+	}
 }
 #if 0
 /**

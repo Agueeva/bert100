@@ -1277,9 +1277,11 @@ Excep_CMT1_CMI1(void)
 	unsigned int i;
 	CDR *cdr = &gCDR[0];
 	ENABLE_IRQ();
+	MDIO_Address(0, DEVTYPE, CDR_LANE0_ERROR_COUNTER);
 	for(i = 0;i < 4; i++) {
 		uint16_t errCnt;
-		errCnt = Cdr_ReadIrq(0, CDR_LANE0_ERROR_COUNTER + i);
+		errCnt = MDIO_ReadInc(0, DEVTYPE);
+		//errCnt = Cdr_ReadIrq(0, CDR_LANE0_ERROR_COUNTER + i);
 		cdr->berCntr[i] += errCnt;
 	}
 }

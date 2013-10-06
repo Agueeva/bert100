@@ -92,8 +92,8 @@ GetMDI()
 uint16_t 
 MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 {
-	uint8_t i;
-	uint16_t outval,inval;
+	uint32_t i;
+	uint32_t outval,inval;
 	SetMDO(1);
 	SetDirection(DIR_OUT);
 	mdio_delay();
@@ -148,6 +148,63 @@ MDIO_Read(uint8_t phy_addr,uint8_t regAddr)
 	return inval;
 }
 
+uint16_t 
+MDIO_ReadInc(uint8_t phy_addr,uint8_t regAddr)
+{
+	uint32_t i;
+	uint32_t outval,inval;
+	SetMDO(1);
+	SetDirection(DIR_OUT);
+	mdio_delay();
+	/* Preamble */
+	for(i = gMDIOPort.preambleLen; i > 0; i--) {
+		SetMDC(1);
+		mdio_delay();
+		SetMDC(0);
+		mdio_delay();
+	}
+	outval = 0x0800;
+	outval |= (phy_addr << 5);
+	outval |= (regAddr & 0x1f);
+	for(i = 0; i < 14; i++,  outval <<= 1) {
+		uint8_t mdo = (outval & 0x2000) ? 1 : 0; 
+		SetMDO(mdo);
+		SetMDC(1);
+		mdio_delay();
+		SetMDC(0);
+		mdio_delay();
+	}
+	/* Bus release with one clock cycle */
+	SetDirection(DIR_IN);
+	SetMDC(1);
+	mdio_delay();
+	SetMDC(0);
+	mdio_delay();
+
+	inval = 0;
+	for(i = 0; i < 16; i++) {
+		SetMDC(1);
+		mdio_delay();
+		inval <<= 1;
+		SetMDC(0);
+		mdio_delay();
+		/* 
+		 ******************************************************
+		 * delay of data is up to 300ns from rising edge so 
+		 * better sample behind falling edge 
+		 ******************************************************
+		 */
+		if(GetMDI()) {
+			inval |= 1;
+		}
+	}
+	/* Let the device release the bus ? */
+	SetMDC(1);
+	mdio_delay();
+	SetMDC(0);
+	mdio_delay();
+	return inval;
+}
 /**
  ************************************************************************
  * \fn void MDIO_Address(uint16_t phy_addr,uint16_t devType,uint16_t addr)
