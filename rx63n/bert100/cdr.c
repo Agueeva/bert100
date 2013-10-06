@@ -780,13 +780,13 @@ static const CdrRegister gCdrRegister[] = {
 static const CdrRegister gCdrLaneRegister[] = 
 {
 	{
-		.name = "LoopbackOE",
+		.name = "Swap_TXP_N",
 		.regNo = 256,
-		.lastBit = 1,
-		.firstBit = 1,
+		.lastBit = 0,
+		.firstBit = 0,
 	},
 	{
-		.name = "Swap_TXP_N",
+		.name = "LoopbackOE",
 		.regNo = 256,
 		.lastBit = 1,
 		.firstBit = 1,
