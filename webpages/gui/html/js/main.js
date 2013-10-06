@@ -20,7 +20,7 @@
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck" );
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
@@ -39,7 +39,7 @@
      socket.onclose = function() {
 		alert('Verbindung unterbrochen');
 		bl_Communication=false;
-                my_Interval=clearInterval();
+                my_Interval=clearInterval(my_Interval);
      }
      socket.onmessage = function(evt) {
 	var arr = JSON.parse(evt.data);

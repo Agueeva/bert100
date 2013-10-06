@@ -151,18 +151,18 @@
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l2.no_prbs_lck" ID="cdr0.l2.no_prbs_lck"  Value="" readonly></TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l3.no_prbs_lck" ID="cdr0.l3.no_prbs_lck"  Value="" readonly></TD>
 </TR>
-<!-- /Test -->
+<!-- /Test Time elapsed-->
 
 <TR ALIGN="left" VALIGN="middle">
 <TH>Measurement</TH>
-<TD><button class="buttonGreen" type="button" onclick="javascript: ">Start</button></TD>
-<TD><button class="buttonRed" type="button" onclick="javascript: ">Stop</button></TD>
+<TD><button class="buttonGreen" type="button" onclick="javascript: clickStart()">Start</button></TD>
+<TD><button class="buttonRed" type="button" onclick="javascript: clickStop()">Stop</button></TD>
 <TD></TD>
 <TD></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>Time elapsed:</TH>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
+<TH>Time, msek:</TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="msek"  Value="500" ></TD>
 <TD></TD>
 <TD></TD>
 </TR>
@@ -172,6 +172,20 @@
 </div>
 <script type="text/javascript">
 	<!--
+var my_Inter, my_sek;	
+function clickStart(){
 	
+	if(typeof my_Inter !== "undefined") my_Inter=clearInterval();
+	if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
+	my_sek=500;	
+	}
+	else {my_sek=parseInt(document.getElementById("msek").value);}
+         my_Inter=setInterval(window.parent.window_onload,my_sek);	
+	}
+	
+function clickStop(){
+		my_Inter=clearInterval(my_Inter);
+		}
+		
 -->
 	</script>
