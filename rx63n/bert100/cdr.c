@@ -1310,7 +1310,7 @@ CDR_Init(const char *name)
 		}
 	}
 	for(lane = 0; lane < 4; lane++) {
-		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"errCntr");
+		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"err_cntr64");
 	}
 	Cdr_SoftReset(0);
 	Cdr_Recalibrate(0);
