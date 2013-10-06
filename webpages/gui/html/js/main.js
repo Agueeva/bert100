@@ -301,6 +301,7 @@ function myCheckAll(box,prefB,pref,k)
 	    $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",false);
 	}}
     }
+   
 }
 
 function myDisableAll(box,prefB,pref,k)
