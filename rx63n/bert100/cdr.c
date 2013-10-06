@@ -85,7 +85,7 @@ typedef struct CDR {
 	uint8_t phyAddr;
 } CDR;
 
-CDR gCDR[1];
+static CDR gCDR[1];
 
 typedef struct CdrRegister {
 	const char *name;
@@ -1276,6 +1276,7 @@ Excep_CMT1_CMI1(void)
 {
 	unsigned int i;
 	CDR *cdr = &gCDR[0];
+	ENABLE_IRQ();
 	for(i = 0;i < 4; i++) {
 		uint16_t errCnt;
 		errCnt = Cdr_ReadIrq(0, CDR_LANE0_ERROR_COUNTER + i);

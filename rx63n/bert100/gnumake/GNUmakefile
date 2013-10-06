@@ -49,12 +49,12 @@ version.o: $(SRCFILES) $(ASMFILES)
 	$(CC) $(CFLAGS) -c $(VPATH)/version.c -o $@
 
 
-all: depend bert100.mot bert100.pat
+all: depend bert100.mot bert100.fw
 
 bert100.bin: bert100.mot
 	$(OBJCOPY) --gap-fill 0xff -I srec -O binary $< $@	
 
-bert100.pat: bert100.bin crcsign 
+bert100.fw: bert100.bin crcsign 
 	./crcsign $< $@
 
 bert100: $(OBJS) $(VPATH)/bert100.lds
@@ -67,7 +67,7 @@ crcsign: crcsign.c
 	$(HOSTCC) -Wall $< -o $@
 
 clean::
-	rm -f *.bin bert100.pat $(OBJS) *.s bert100.mot bert100 .depend *.map
+	rm -f *.bin bert100.fw $(OBJS) *.s bert100.mot bert100 .depend *.map
 
 depend: .depend
 
