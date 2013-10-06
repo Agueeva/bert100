@@ -15,6 +15,7 @@
 #include "tpos.h"
 #include "pvar.h"
 #include "iodefine.h"
+#include "interrupt_handlers.h"
 
 #define CDR_IPL		(1)
 /* Pin definitions */
@@ -80,6 +81,7 @@
 /* The INPHY CDR's are of devive type 0x30 which means "Vendor specific" */
 #define DEVTYPE		(30)
 typedef struct CDR {
+	uint64_t berCntr[4];
 	uint8_t phyAddr;
 } CDR;
 
@@ -831,6 +833,17 @@ Cdr_Read(uint8_t phyAddr, uint16_t regAddr)
 	return regVal;
 }
 
+/*
+ * Same but from interrupt handler
+ */
+INLINE uint16_t
+Cdr_ReadIrq(uint8_t phyAddr, uint16_t regAddr)
+{
+	MDIO_Address(phyAddr, DEVTYPE, regAddr);
+	regVal = MDIO_Read(phyAddr, DEVTYPE);
+	return regVal;
+}
+
 
 /**
  ************************************************************************
@@ -1212,6 +1225,22 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+
+/**
+ *****************************************************************
+ * Timer Interrupt routine for reading the error rates
+ *****************************************************************
+ */
+
+void
+Excep_CMT1_CMI1(void)
+{
+	unsigned int i;
+	CDR *cdr = &gCDR[0];
+	for(i = 0;i < 4; i++) {
+	}
+}
+
 /*
  ************************************************************************************
  * Zum Webinterface exportierte Variablen:
@@ -1241,4 +1270,12 @@ CDR_Init(const char *name)
 	Cdr_SoftReset(0);
 	Cdr_Recalibrate(0);
 	Cdr_InitCdr(0);
+
+	MSTP(CMT1) = 0;
+        CMT.CMSTR0.BIT.STR1 = 1;
+        CMT1.CMCR.BIT.CKS = 0;
+        CMT1.CMCOR = (F_PCLK / 100 / 8);
+        CMT1.CMCR.BIT.CMIE = 1;
+        IPR(CMT1, CMI1) = CDR_IPL;
+        IEN(CMT1, CMI1) = 1;
 }
