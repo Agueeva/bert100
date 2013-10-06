@@ -1,24 +1,34 @@
+<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 
+<div class="headline">Data Rate & Trigger</div>
+
+<div name="wrap_data_rate">
 <FORM onsubmit="return false" ID="Form_PG">
 <TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="80%">
 
 
 
-<TR ALIGN="left" VALIGN="middle"><TH>Data Rate</TH>
-	<TH><SELECT NAME="synth0.freq" ID="synth0.freq" onChange="javascript: window.parent.SaveVar(this,1)">
-<OPTION VALUE="644531250">25.78125 Gbit/s
-<OPTION VALUE ="698812335">27.9524934 Gbit/s
-</SELECT></TH>
-	
-	</TR>
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Data Rate</TH>
+	<TD>
+	<SELECT NAME="synth0.freq" ID="synth0.freq" onChange="javascript: window.parent.SaveVar(this,1)">
+		<OPTION VALUE="644531250">25.78125 Gbit/s</OPTION>
+		<OPTION VALUE ="698812335">27.9524934 Gbit/s</OPTION>
+	</SELECT>
+	</TD>
+</TR>
+
 <TR ALIGN="left" VALIGN="middle"><TH>Trigger</TH>
-	<TH><SELECT NAME="undefined" ID="undefined" >
-<OPTION VALUE="0">0
-<OPTION VALUE ="1">1
-</SELECT></TH>
+	<TD>
+	<SELECT NAME="undefined" ID="undefined" >
+	<OPTION VALUE="0">0</OPTION>
+	<OPTION VALUE ="1">1</OPTION>
+	</SELECT>
+	</TD>
 	
 	</TR>
 
 </TABLE>
 </FORM>
+</div>
 
