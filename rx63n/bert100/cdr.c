@@ -860,8 +860,7 @@ INLINE uint16_t
 Cdr_ReadIrq(uint8_t phyAddr, uint16_t regAddr)
 {
 	MDIO_Address(phyAddr, DEVTYPE, regAddr);
-	regVal = MDIO_Read(phyAddr, DEVTYPE);
-	return regVal;
+	return MDIO_Read(phyAddr, DEVTYPE);
 }
 
 
@@ -1258,6 +1257,9 @@ Excep_CMT1_CMI1(void)
 	unsigned int i;
 	CDR *cdr = &gCDR[0];
 	for(i = 0;i < 4; i++) {
+		uint16_t errCnt;
+		errCnt = Cdr_ReadIrq(0, CDR_LANE0_ERROR_COUNTER + i);
+		cdr->berCntr[i] += errCnt;
 	}
 }
 
@@ -1294,7 +1296,7 @@ CDR_Init(const char *name)
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
-        CMT1.CMCOR = (F_PCLK / 100 / 8);
+        CMT1.CMCOR = (F_PCLK / 250 / 8);
         CMT1.CMCR.BIT.CMIE = 1;
         IPR(CMT1, CMI1) = CDR_IPL;
         IEN(CMT1, CMI1) = 1;
