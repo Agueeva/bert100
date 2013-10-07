@@ -67,7 +67,11 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 		if(tDiff) {
 			rate = 1000. * (errCntNew - errCntOld) / tDiff;
 			ratio = rate / freq; 
-			exp = -logf(ratio)/logf(10) + 0.99999999;
+			if(ratio == 0) {
+				exp = 0;
+			} else {
+				exp = -logf(ratio)/logf(10) + 0.99999999;
+			}
 			Con_Printf("Lane %u: rate %f/s, ratio %fe-%u\n",ch,rate,ratio * pow(10,exp),exp);
 		}
 	}
