@@ -17,7 +17,24 @@
 	height: 32px;
 	width: 50px;
 }
-
+.greenfield{
+	position: relative;
+	height: 32px;
+	width: 50px;
+	background-color: #ce0202;
+        font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+}
+.redfield{
+	position: relative;
+	height: 32px;
+	width: 50px;
+	background-color: #0cac00;
+        font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+}
 .textfild_error{
 	background-color: #FF0000;
 	color: #FFFFFF;
