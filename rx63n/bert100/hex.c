@@ -7,6 +7,7 @@
  */
 #include "types.h"
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 #include "hex.h"
 
@@ -423,4 +424,32 @@ f32toa(float fval, char *_str, int maxlen)
 	}
 	return str - _str;
 }
+
+uint8_t 
+f32toExp(float fval, char *_str, int maxlen)
+{
+	int16_t exp;
+	char *str = _str;
+	if(maxlen < 20) {
+		return 0;
+	}
+	if(fval == 0.0) {
+		exp = 0;
+	} else {
+		exp = logf(fabs(fval))/logf(10) - 0.99999999;
+	}
+	fval *= pow(10,-exp);
+	str += f32toa(fval, str, maxlen);
+	*str++ = 'e';	
+	if(exp < 0) {
+		*str++ = '-';	
+		exp = - exp;
+	}
+	if(exp < 10) {
+		*str++ = '0';	
+	}
+	str += uitoa16(exp, str);
+	return str - _str;
+}
+
 
