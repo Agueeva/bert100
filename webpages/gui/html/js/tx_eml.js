@@ -22,8 +22,23 @@ function ClickUp(i,ud,sr,k){
 TestVal(i);
 my_item=document.getElementById('emlAmp'+i+'.vg1');
 window.parent.SaveVar(my_item,k,'Amp',1);
+if (k==2) {
+  window.parent.myElement=window.parent.myVarTX;
+  window.parent.window_onload();
 }
-
+}
+//emlAmp1.vg1
+function TestVal(i){
+	var my_item=document.getElementById('emlAmp'+i+'.vg1');
+	if (isNaN(my_item.value)) {
+		
+	}else {
+		
+		if(my_item.value < 1.8) { my_item.value=1.8;}
+		if(my_item.value > 2.6) { my_item.value=2.6;}
+                
+	}
+}
 
 
 // Crossing
@@ -47,6 +62,10 @@ switch(ud){
     break;
 }
 window.parent.SaveVar(my_item,k,'Amp',1);
+if (k==2) {
+  window.parent.myElement=window.parent.myVarTX;
+  window.parent.window_onload();
+}
 }
 
 function TestValCr(i){
@@ -58,7 +77,7 @@ var my_item=document.getElementById('emlAmp'+i+'.vg2');
 		//$("#"+item.replace(/[.]/g,'\\.')).addClass("textfild_error");
 		
 	}else {
-		$("#"+item.replace(/[.]/g,'\\.')).removeClass("textfild_error");
+		
 		if(my_item.value < 0) { my_item.value=0;}
 		if(my_item.value > 1) { my_item.value=1;}
 }
