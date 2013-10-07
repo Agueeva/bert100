@@ -20,7 +20,8 @@ SRCFILES= main.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	tcp.c xy_string.c iram.c rx_crc.c strhash.c ccsbcs.c \
 	ad537x.c mdio.c cdr.c shiftreg.c i2cmaster.c skb.c  xy_web.c \
 	pvar_websock.c adc12.c pvar.c usbdev.c usbstorage.c \
-	leds.c xo.c version.c bootloader.c dataflash.c swupdate.c
+	leds.c xo.c version.c bootloader.c dataflash.c swupdate.c \
+	bert.c
 
 ASMFILES=reset_program.asm switch_context.asm bootloader_setup.asm
 
@@ -49,13 +50,18 @@ version.o: $(SRCFILES) $(ASMFILES)
 	$(CC) $(CFLAGS) -c $(VPATH)/version.c -o $@
 
 
-all: depend bert100.mot bert100.fw
+FWNAME := CBEs$(shell date +"%d%m%y").fw
+
+all: depend bert100.mot bert100.fw $(FWNAME)
 
 bert100.bin: bert100.mot
 	$(OBJCOPY) --gap-fill 0xff -I srec -O binary $< $@	
 
 bert100.fw: bert100.bin crcsign 
 	./crcsign $< $@
+
+$(FWNAME): bert100.fw
+	cp $< $@
 
 bert100: $(OBJS) $(VPATH)/bert100.lds
 	$(CC)  -nostartfiles -T $(VPATH)/bert100.lds $(OBJS) -o bert100  -lm  -Wl,-Map,bert100.map

@@ -17,7 +17,7 @@
 
 #define OPERATION_SET	(0)
 #define OPERATION_GET	(1)
-//#define OPERATION_MSG	(2)
+#define OPERATION_MSG	(2)
 typedef struct JSON_Parser {
 	uint16_t state;
 	bool isGet;
@@ -220,7 +220,7 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 		JSON_SMFeed(jp,(char)data[i]);
 	}	
 	if(jp->state != STATE_DONE) {
-		Con_Printf("Error in message\n");
+		Con_Printf("Err. in JSON data\n");
 		for(i = 0; i < len; i++) {
 			Con_Printf("%c",data[i]);
 		}
@@ -263,5 +263,6 @@ static WebSockOps pvarWsOps = {
 void
 PVarSocket_New(XY_WebServer *wserv) 
 {
-	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,NULL,-1);
+	JSON_Parser *jp = &gJSON_Parser;
+	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,jp,-1);
 }

@@ -42,7 +42,8 @@
 typedef struct SiXO {
 	uint16_t i2cAddr;
 	uint32_t fXTAL;
-	uint32_t outFreq;
+	uint32_t setFreq;
+	uint32_t readFreq;
 	uint32_t maxFreq;
 	uint32_t minFreq;
 } SiXO;
@@ -59,6 +60,12 @@ static const uint8_t hsdiv_tab[] = {
 };
 
 
+/**
+  ***************************************************************************
+  * \fn static bool set_frequency(SiXO *xo,uint32_t freq) 
+  * Write a frequency to the synthesizer.
+  ***************************************************************************
+  */
 static bool 
 set_frequency(SiXO *xo,uint32_t freq) 
 {
@@ -79,7 +86,7 @@ set_frequency(SiXO *xo,uint32_t freq)
 	if(freq > xo->maxFreq || freq < xo->minFreq) {
 		return false;
 	}
-	if(freq == xo->outFreq) {
+	if(freq == xo->setFreq) {
 		return true;
 	}
 	//Con_Printf("Optimal dividers %lu\n",(uint32_t)optDividers);
@@ -137,8 +144,9 @@ set_frequency(SiXO *xo,uint32_t freq)
 	buf[0] = NEW_FREQ;
 	i2c_result = I2C_Write8(xo->i2cAddr, REG_FREEZE, buf,1);
 
-	// Should check for lock before doing this : */
-	xo->outFreq = freq;
+	// Should check for lock before doing this ? */
+	xo->setFreq = freq;
+	xo->readFreq = 0; /* Make the old readback invalid */
 
 	return true;
 }
@@ -216,6 +224,19 @@ cmd_synth(Interp * interp, uint8_t argc, char *argv[])
 }
 INTERP_CMD(synthCmd,"synth", cmd_synth, "synth  ?<freq>? # Set/Get frequency of synthesizer");
 
+uint32_t
+Synth_GetFreq(uint8_t synthID)
+{
+	SiXO *xo = &gSiXO[0];	
+	if(synthID != 0) {
+		return 0;
+	}
+	if(xo->readFreq == 0) {
+		read_frequency(xo,&xo->readFreq);
+	}
+	return xo->readFreq;
+}
+
 static bool 
 PVSynth_SetFreq (void *cbData, uint32_t adId, const char *strP)
 {
@@ -226,14 +247,15 @@ PVSynth_SetFreq (void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+
 static bool 
 PVSynth_GetFreq (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	SiXO *xo = cbData;
-	if(xo->outFreq == 0) {
-		read_frequency(xo,&xo->outFreq);
+	if(xo->readFreq == 0) {
+		read_frequency(xo,&xo->readFreq);
 	}
-	SNPrintf(bufP,maxlen,"%lu",xo->outFreq);
+	SNPrintf(bufP,maxlen,"%lu",xo->readFreq);
 	return true;
 }
 
@@ -248,7 +270,7 @@ PVSynth_GetFXTAL(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 #define ORDERED_FREQUENCY 644531250		
 
 void
-XO_Init(const char *name,uint16_t i2cAddr) 
+Synth_Init(const char *name,uint16_t i2cAddr) 
 {
 	SiXO *xo = &gSiXO[0];	
 	uint8_t buf[6];
@@ -258,7 +280,8 @@ XO_Init(const char *name,uint16_t i2cAddr)
 	xo->fXTAL = 114285000;
 	xo->maxFreq = 810 * 1000000;
 	xo->minFreq = 10 * 1000000;
-	xo->outFreq = 0;
+	xo->setFreq = ORDERED_FREQUENCY;
+	xo->readFreq = 0;
 	PVar_New(PVSynth_GetFreq,PVSynth_SetFreq,xo,0,"%s.freq",name);
 	PVar_New(PVSynth_GetFXTAL,NULL,xo,0,"%s.fxtal",name);
 	buf[0] = RECALL | NEW_FREQ;

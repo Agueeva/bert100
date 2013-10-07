@@ -43,6 +43,7 @@ void
 Excep_CMT0_CMI0(void)
 {
 	Timer *timer;
+	ENABLE_IRQ();
 	g_TimeClockTick++;
 	while (timerHead && (timerHead->timeout == g_TimeClockTick)) {
 		timer = timerHead;

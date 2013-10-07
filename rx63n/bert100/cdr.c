@@ -1244,6 +1244,17 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+uint64_t 
+Cdr_GetErrCnt(uint8_t cdrID, uint8_t lane)
+{
+	CDR *cdr;
+	if((cdrID != 0) || (lane >= 4)) {
+		return 0;
+	}	
+	cdr = &gCDR[cdrID];
+	return cdr->berCntr[lane];
+}
+
 bool
 PVBerCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -1281,7 +1292,6 @@ Excep_CMT1_CMI1(void)
 	for(i = 0;i < 4; i++) {
 		uint16_t errCnt;
 		errCnt = MDIO_ReadInc(0, DEVTYPE);
-		//errCnt = Cdr_ReadIrq(0, CDR_LANE0_ERROR_COUNTER + i);
 		cdr->berCntr[i] += errCnt;
 	}
 }
@@ -1322,7 +1332,7 @@ CDR_Init(const char *name)
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
-        CMT1.CMCOR = (F_PCLK / 250 / 8);
+        CMT1.CMCOR = (F_PCLK / 500 / 8);
         CMT1.CMCR.BIT.CMIE = 1;
         IPR(CMT1, CMI1) = CDR_IPL;
         IEN(CMT1, CMI1) = 1;

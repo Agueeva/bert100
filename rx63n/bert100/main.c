@@ -49,6 +49,7 @@
 #include "version.h"
 #include "dataflash.h"
 #include "swupdate.h"
+#include "bert.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -132,7 +133,7 @@ main(void)
 	AD537x_Init("dac0");
 #endif
 	MDIO_Init();
-	XO_Init("synth0",0x10aa);
+	Synth_Init("synth0",0x10aa);
 	CDR_Init("cdr0");
 
 	Timer_Start(&blinkTimer,500);
@@ -148,6 +149,7 @@ main(void)
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	Version_Init();
+	Bert_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
 }

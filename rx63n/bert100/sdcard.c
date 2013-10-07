@@ -948,7 +948,7 @@ SDCard_ReadMultBlock(SDCard * sdc, uint8_t * buf, uint32_t sector)
 			    sdc->next_multsect_block = sector;
 		    }
 		    SDCard_Deselect(sdc);
-		    SDCard_IdleClk(sdc, 1);
+		    SDCard_IdleClk(sdc, 2);
 
 	    case STATE_MULTSECT_READ:
 		    sdc->statMultSectR++;
@@ -957,7 +957,7 @@ SDCard_ReadMultBlock(SDCard * sdc, uint8_t * buf, uint32_t sector)
 		    break;
 	}
 	SDCard_Deselect(sdc);
-	SDCard_IdleClk(sdc, 1);
+	SDCard_IdleClk(sdc, 2);
 	if (cnt == 512) {
 		sdc->next_multsect_block++;
 	}
