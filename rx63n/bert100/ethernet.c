@@ -592,8 +592,8 @@ cmd_arp(Interp * interp, uint8_t argc, char *argv[])
 	ArpCE *ace;
 	uint16_t i;
 	TimeMs_t now,age;
-	now = TimeMs_Get();
 	for(i = 0; i < array_size(eth->arpCache); i++) {
+		now = TimeMs_Get();  
 		ace = &eth->arpCache[i];
 		if(Read32(ace->arp_ip) == 0) {
 			continue;	
