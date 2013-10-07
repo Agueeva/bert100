@@ -14,7 +14,6 @@
   var myVarErr= new Array("synth0.freq",
                           "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
                           "cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state","cdr0.l3.eq_state",
-                          "cdr0.l0.err_cntr","cdr0.l1.err_cntr","cdr0.l2.err_cntr","cdr0.l3.err_cntr",
                           "cdr0.l0.latched_lol","cdr0.l1.latched_lol","cdr0.l2.latched_lol","cdr0.l3.latched_lol",
                           "cdr0.l0.prbs_lock","cdr0.l1.prbs_lock","cdr0.l2.prbs_lock","cdr0.l3.prbs_lock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
