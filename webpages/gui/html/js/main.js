@@ -370,15 +370,3 @@ function SaveVar(myVar, typeVar,pref,k){
     }
 }
 
-function TestVal(my_item,i){
-	var item = my_item.name;
-	if (isNaN(my_item.value)) {
-		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).addClass("textfild_error");
-		return false;
-	}else {
-		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).removeClass("textfild_error");
-		if(my_item.value < 1.8) { my_item.value=1.8;}
-		if(my_item.value > 2.6) { my_item.value=2.6;}
-                return true;
-	}
-}

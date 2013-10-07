@@ -105,15 +105,15 @@
 </SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  Value="" readonly></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>Sync | Sync-Fail:</TH>
-<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss0" boug Value="Loss" readonly>
-<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem0"  Value="Mem"></TD>
-<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss1" boug Value="Loss" readonly>
-<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem1"  Value="Mem"></TD>
-<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss2" boug Value="Loss" readonly>
-<INPUT class="redfield" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem2"  Value="Mem"></TD>
-<TD><INPUT class="greenfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss3" boug Value="Loss" readonly>
-<INPUT class="redfield" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Mem3"  Value="Mem"></TD>
+<TH>Sync - Mem:</TH>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss0" boug Value="" readonly>
+<INPUT class="textfild" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem0"  Value=""></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss1" boug Value="" readonly>
+<INPUT class="textfild" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem1"  Value=""></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss2" boug Value="" readonly>
+<INPUT class="textfild" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem2"  Value=""></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss3" boug Value="" readonly>
+<INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Mem3"  Value=""></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>Input EQ State:</TH>
@@ -180,7 +180,7 @@ function clickStart(){
 	my_sek=500;	
 	}
 	else {my_sek=parseInt(document.getElementById("msek").value);}
-	alert("Hier");
+	
          my_Inter=setInterval(window.parent.window_onload,my_sek);	
 	}
 	

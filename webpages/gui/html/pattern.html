@@ -14,7 +14,7 @@
 <TR ALIGN="left" VALIGN="middle">
 <TH>Pattern:</TH>
 <TD>
-	<SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0); document.getElementById('cdr0.l0.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l0.pat_ver_sel'),2,'.l',0)" >
+	<SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0); document.getElementById('cdr0.l0.pat_ver_sel').value=this.value; window.parent.SaveVar(document.getElementById('cdr0.l0.pat_ver_sel'),2,'.l',0);  window.parent.window_onload();" >
 	<OPTION VALUE="7">2E7-1</OPTION>
 	<OPTION VALUE ="1">2E9-1</OPTION>
 	<OPTION VALUE ="6">2E15-1</OPTION>
@@ -47,7 +47,7 @@
 <TR ALIGN="left">
 <TH>True/Invers:</TH>
 
-<TD><SELECT NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
+<TD><SELECT NAME="prbs_gen_inv0" ID="cdr0.l0.prbs_gen_inv" onChange="javascript: window.parent.SaveVar(this,2,'.l',0); window.parent.window_onload();">
 <OPTION VALUE="1">Invers</OPTION>
 <OPTION VALUE ="0">true</OPTION>
 </SELECT></TD>
@@ -65,7 +65,7 @@
 </SELECT></TD></TR>
 <TR ALIGN="left">
 <TH>Auto Sync  ED:</TH>
-<TD><SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onClick="javascript: Check_Auto(0); window.parent.SaveVar(this,2,'.l',0)">
+<TD><SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onClick="javascript: Check_Auto(0); window.parent.SaveVar(this,2,'.l',0); window.parent.window_onload();">
 <OPTION VALUE="0">no</OPTION>
 <OPTION VALUE ="1">yes</OPTION>
 </SELECT>
@@ -88,7 +88,7 @@
 
 <TR ALIGN="left" VALIGN="middle">
 <TH>Pattern verification:</TH>
-<TD> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,2,'.l',0)">
+<TD> <SELECT NAME="pat_ver_sel0" ID="cdr0.l0.pat_ver_sel" onChange="javascript: window.parent.SaveVar(this,2,'.l',0); window.parent.window_onload();">
 <OPTION VALUE="7">2E7-1</OPTION>
 <OPTION VALUE ="1">2E9-1</OPTION>
 <OPTION VALUE ="6">2E15-1</OPTION>
