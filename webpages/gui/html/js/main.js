@@ -11,16 +11,18 @@
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX1= new Array("txa_swing","Swap_TXP_N");
   var myVarDrTr= new Array("synth0.freq");
-  var myVarErr= new Array("synth0.freq","cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel",
-                          "cdr0.l3.pat_gen_sel","cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state",
-                          "cdr0.l3.eq_state","cdr0.l0.err_cntr","cdr0.l1.err_cntr","cdr0.l2.err_cntr",
+  var myVarErr= new Array("synth0.freq",
+                          "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
+                          "cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state","cdr0.l3.eq_state",
+                          "cdr0.l0.err_cntr","cdr0.l1.err_cntr","cdr0.l2.err_cntr","cdr0.l3.err_cntr",
                           "cdr0.l0.latched_lol","cdr0.l1.latched_lol","cdr0.l2.latched_lol","cdr0.l3.latched_lol",
                           "cdr0.l0.prbs_lock","cdr0.l1.prbs_lock","cdr0.l2.prbs_lock","cdr0.l3.prbs_lock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
-                          "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64");
+                          "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
+                          "cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat");
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
@@ -55,7 +57,7 @@ case "test.var1":
   document.getElementById(item).value=value;
   break;
 case "synth0.freq":
-  if (value>644531240 && value<644531260) {
+  if (value>644531240 && value<644531275) {
     value=644531250;
   }
    if (value>698812325 && value<698812345) {
@@ -333,12 +335,11 @@ function myDisableAuto()
 {
   
     for (i = 0; i < 4; i++){
-      item='cdr0.l'+i+'.prbs_autovr';
-      if ($("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val()==1) {
-         item='cdr0.l'+i+'.pat_ver_sel'; 
-        $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
-      }
-      
+     item='cdr0.l'+i+'.prbs_autovr';
+     if ($("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val()==1) {
+          item='cdr0.l'+i+'.pat_ver_sel'; 
+          $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+     }
     }
     
    
@@ -346,28 +347,39 @@ function myDisableAuto()
 
 function SaveVar(myVar, typeVar,pref,k){
     if(!bl_Communication) SocketNew();
-      var formval, myID, myForm, myBool;     
-      myID=myVar.id;
-      formval=myVar.value;
-      switch(typeVar)
-    {
+          var formval, myID, myForm, myBool;     
+          myID=myVar.id;
+          formval=myVar.value;
+          
+     switch(typeVar){
 	case 1:  //einfach
 	    //alert(myID+"="+formval);
 	    socket.send(JSON.stringify({set: myID,val: formval}));
 	    break;
 	case 2:  //all vorhandeln	
 	    if(all) {
-	    for (i = 0; i <= 3; i++) {
-	    socket.send(JSON.stringify({set: myID,val: formval}));
-	    myID=myID.replace(pref+(i+k), pref+(i+1+k));
-	    }
-	    }
-	    else {
-	    socket.send(JSON.stringify({set: myID,val: formval}));
-	    }
+               for (i = 0; i <= 3; i++) {
+                    socket.send(JSON.stringify({set: myID,val: formval}));
+                    myID=myID.replace(pref+(i+k), pref+(i+1+k));
+                    }
+               }else {
+                    socket.send(JSON.stringify({set: myID,val: formval}));
+               }
 	  break;
-	default:
-	    break;
+          default:
+	  break;
     }
 }
 
+function TestVal(my_item,i){
+	var item = my_item.name;
+	if (isNaN(my_item.value)) {
+		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).addClass("textfild_error");
+		return false;
+	}else {
+		$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).removeClass("textfild_error");
+		if(my_item.value < 1.8) { my_item.value=1.8;}
+		if(my_item.value > 2.6) { my_item.value=2.6;}
+                return true;
+	}
+}

@@ -14,55 +14,35 @@
 
 .textfild{
 	position: relative;
-	top:2px;
 	height: 32px;
+	width: 50px;
+}
+
+.textfild_error{
+	background-color: #FF0000;
+	color: #FFFFFF;
+	font-weight:bold;	
 }
 
 .textfild2{
 	position: relative;
 	height: 32px;
         width: 100%;
-        background-color:#F3F3F3;
-        border-width: 3px;
-        border-color: #00aeeb;
-}
-.textfild3{
-	position: relative;
-	height: 32px;
-        width: auto;
-        background-color:#F3F3F3;
+        background-color:transparent;
         border-width: 3px;
         border-color: #00aeeb;
 }
 
 .whiteText{
-	color: #FFFFFF;
-}
-
-/*TEXT FIELD*/
-.greenfield{
-	background-color: #0cac00;
-	font-size: 16px;
-	font-weight:bold;
-	color: #FFFFFF;
-}
-
-.redfield{
-	background-color: #ce0202;
-	font-size: 16px;
-	font-weight:bold;
-	color: #FFFFFF;
+    color: #FFFFFF;
 }
 
 /*Table*/
 table, th, td
 {
 	font-family: Arial;
-	border-collapse: separate;
-	border-spacing: 3px 3px;
-	border:0;
-	/*border: 1px solid #00aeeb;*/
-
+	border: 3px solid white;
+	border-collapse:collapse;
 }
 
 th
@@ -95,9 +75,8 @@ select {
          *border-radius: 6px;
          **/
 }
-
-.selectkl {
-	width: 80px;
+.selectkl{
+	width: 50%;
 	height: 32px;
 	padding: 5px;
 	font-size: 16px;
@@ -114,6 +93,7 @@ select {
          *border-radius: 6px;
          **/
 }
+
 /*Green Button*/
 .buttonRed{
 	height: 32px;
@@ -203,21 +183,30 @@ select {
 }
 
 .minus{
-	background: url(../img/minus.png);
+	background: url(../img/arrowDown.png);
 }
 
 .plus{
-	background: url(../img/plus.png);
+	background: url(../img/arrowUp.png);
 }
+
+.dminus{
+	background: url(../img/arrowDoubleDown.png);
+}
+
+.dplus{
+	background: url(../img/arrowDoubleUp.png);
+}
+
 .button_arrow{
-	height: 32px;
-	width: 32px;
+	height: 16px;
+	width: 16px;
 
 	background-repeat:no-repeat;
 	background-color: #00aeeb;
 	
 	border-width: 0;
-	border-radius: 6px;
+	border-radius: 3px;
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
 }
@@ -229,4 +218,43 @@ select {
 .button_arrow:active {
 	background-color: #009ad0;
 	box-shadow:inset 0 0 4px #016b90; 
+}
+
+.control{
+	height: 34px;
+	width: 100px;
+	overflow: hidden;
+}
+.control input{
+	position: relative;
+	top: -68px;
+}
+
+.control div:nth-child(1){
+	position: relative;
+	top: 0;
+	left: 52px;
+}
+
+.control div:nth-child(2){
+	position: relative;
+	top: -34px;
+	left: 73px;
+	clear: both;
+}
+.control_elements {
+	width: 16px;
+	height: 34px;
+	top:0;
+	
+}
+
+.control_elements button:nth-child(1){
+	float: left;
+}
+.control_elements button:nth-child(2){
+	position: relative;
+	top:2px;
+	float: left;
+	clear: left;
 }
