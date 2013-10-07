@@ -95,6 +95,7 @@ Excep_SCI0_TXI0(void)
 {
 	Sci0 *ua = &g_uart;
 	uint16_t c;
+	ENABLE_IRQ();
 	if (ua->txbuf_rp != ua->txbuf_wp) {
 		c = ua->txbuf[TXFIFO_RP(ua)];
 		if (ua->nineBit) {
@@ -148,6 +149,7 @@ void
 Excep_SCI0_RXI0(void)
 {
 	uint16_t rxchar;
+	ENABLE_IRQ();
 	if (g_uart.nineBit) {
 		rxchar = ((uint16_t) (SCI0.SSR.BIT.MPB)) << 8;
 		rxchar |= (uint16_t) (SCI0.RDR);
