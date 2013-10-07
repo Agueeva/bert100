@@ -55,7 +55,8 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 	for(ch = 0; ch < NR_CHANNELS; ch++) 
 	{
 		BeFifo *fifo = &bert->beFifo[ch];	
-		unsigned int rp,exp;
+		unsigned int rp;
+		int16_t exp;
 		float rate,ratio;
 		rp = BEFIFO_WP(fifo);
 		errCntOld = fifo->errCnt[rp];
@@ -70,26 +71,15 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 			if(ratio == 0) {
 				exp = 0;
 			} else {
-				exp = -logf(ratio)/logf(10) + 0.99999999;
+				exp = logf(ratio)/logf(10) - 0.99999999;
 			}
-			Con_Printf("Lane %u: rate %f/s, ratio %fe-%u\n",ch,rate,ratio * pow(10,exp),exp);
+			Con_Printf("Lane %u: rate %f/s, ratio %fe%d\n",ch,rate,ratio * pow(10,-exp),exp);
 		}
 	}
 	return 0;
 }
 
 INTERP_CMD(berCmd, "ber", cmd_ber, "ber # Get all Bit error ratios");
-
-
-#if 0
-static int8_t
-cmd_berate(Interp * interp, uint8_t argc, char *argv[])
-{
-	return 0;
-}
-
-INTERP_CMD(berateCmd, "berate", cmd_berate, "berate # Get all Bit error rates");
-#endif
 
 void
 Bert_Init(void) 
@@ -106,5 +96,4 @@ Bert_Init(void)
 		Timer_Start(&fifo->getErrCntTimer,250);
 	}
 	Interp_RegisterCmd(&berCmd);
-//	Interp_RegisterCmd(&berateCmd);
 }
