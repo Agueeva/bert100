@@ -1255,7 +1255,7 @@ Cdr_GetErrCnt(uint8_t cdrID, uint8_t lane)
 	return cdr->berCntr[lane];
 }
 
-bool
+static bool
 PVBerCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	CDR *cdr = cbData;
@@ -1265,7 +1265,7 @@ PVBerCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
-bool
+static bool
 PVBerCntr_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	CDR *cdr = cbData;

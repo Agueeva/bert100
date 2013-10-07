@@ -452,4 +452,3 @@ f32toExp(float fval, char *_str, int maxlen)
 	return str - _str;
 }
 
-

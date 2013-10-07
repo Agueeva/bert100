@@ -10,6 +10,7 @@
 #include "interpreter.h"
 #include "console.h"
 #include "hex.h"
+#include "pvar.h"
 #include <math.h>
 
 #define BEFIFO_SIZE	(4)
@@ -56,7 +57,6 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 	{
 		BeFifo *fifo = &bert->beFifo[ch];	
 		unsigned int rp;
-		int16_t exp;
 		float rate,ratio;
 		rp = BEFIFO_WP(fifo);
 		errCntOld = fifo->errCnt[rp];
@@ -68,12 +68,7 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 		if(tDiff) {
 			rate = 1000. * (errCntNew - errCntOld) / tDiff;
 			ratio = rate / freq; 
-			if(ratio == 0) {
-				exp = 0;
-			} else {
-				exp = logf(ratio)/logf(10) - 0.99999999;
-			}
-			Con_Printf("Lane %u: rate %f/s, ratio %fe%d\n",ch,rate,ratio * pow(10,-exp),exp);
+			Con_Printf("Lane %u: rate %f/s, ratio %e\n",ch,rate,ratio);
 		}
 	}
 	return 0;
@@ -81,11 +76,42 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(berCmd, "ber", cmd_ber, "ber # Get all Bit error ratios");
 
+static bool
+PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	BeFifo *fifo = &bert->beFifo[adId];	
+	unsigned int rp;
+	float rate,ratio;
+	uint64_t errCntOld,errCntNew;
+	uint32_t tStampNew,tStampOld;
+	uint32_t tDiff;
+	uint64_t freq = 40 * (uint64_t)Synth_GetFreq(0);
+	rp = BEFIFO_WP(fifo);
+	errCntOld = fifo->errCnt[rp];
+	tStampOld = fifo->tStamp[rp];
+	rp = (rp + BEFIFO_SIZE - 1) % BEFIFO_SIZE;
+	errCntNew = fifo->errCnt[rp];
+	tStampNew = fifo->tStamp[rp];
+	tDiff = tStampNew - tStampOld;
+	if(tDiff) {
+		rate = 1000. * (errCntNew - errCntOld) / tDiff;
+		ratio = rate / freq; 
+	} else {
+		ratio = 1;
+	}
+	bufP[f32toExp(ratio, bufP,  maxlen)] = 0;
+	return true;
+}
+
+
+
 void
 Bert_Init(void) 
 {
 	Bert *bert = &gBert;
 	BeFifo *fifo;
+	const char *name = "bert0";
 	unsigned int ch;
 	for(ch = 0 ; ch < NR_CHANNELS; ch++)
 	{
@@ -94,6 +120,7 @@ Bert_Init(void)
 		fifo->fifoWp = 0;
 		Timer_Init(&fifo->getErrCntTimer,GetErrCntTimerProc,fifo);
 		Timer_Start(&fifo->getErrCntTimer,250);
+		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beratio");
 	}
 	Interp_RegisterCmd(&berCmd);
 }
