@@ -37,24 +37,29 @@ typedef struct Bert {
 static Bert gBert;
 
 static const uint8_t EqStateToLed[16] = {
-	0xf,
-	0xf,
-	0xe,
-	0xe,
-	0xe,
-	0xc,
-	0xc,
-	0xc,
-	0xc,
-	0x8,
-	0x8,
-	0x8,
-	0x8,
-	0x8,
 	0x0,
 	0x0,
+	0x8,
+	0x8,
+	0x8,
+	0xc,
+	0xc,
+	0xc,
+	0xc,
+	0xe,
+	0xe,
+	0xe,
+	0xe,
+	0xe,
+	0xf,
+	0xf,
 };
 
+/*
+ ****************************************************
+ * Update the leds
+ ****************************************************
+ */
 static void
 UpdateLedsTimerProc(void *eventData) 
 {
@@ -64,7 +69,7 @@ UpdateLedsTimerProc(void *eventData)
 	Timer_Start(&bert->updateLedsTimer,250);
 	for(ch = 0; ch < NR_CHANNELS; ch++) {
 		uint16_t idx = Cdr_ReadEqObserve(0,ch) & 15;
-		ledOut = (ledOut << 4) | EqStateToLed[idx];
+		ledOut = (ledOut >> 4) | (uint32_t)EqStateToLed[idx] << 12;
 	}
 	ShiftReg_Out(ledOut);
 }
