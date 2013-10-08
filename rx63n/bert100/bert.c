@@ -11,6 +11,7 @@
 #include "console.h"
 #include "hex.h"
 #include "pvar.h"
+#include "shiftreg.h"
 #include <math.h>
 
 #define NR_CHANNELS	(4)
@@ -29,10 +30,44 @@ typedef struct BeFifo {
 
 typedef struct Bert {
 	BeFifo beFifo[NR_CHANNELS];
+	Timer updateLedsTimer;
 	uint32_t dataRate; 
 } Bert;
 
 static Bert gBert;
+
+static const uint8_t EqStateToLed[16] = {
+	0xf,
+	0xf,
+	0xe,
+	0xe,
+	0xe,
+	0xc,
+	0xc,
+	0xc,
+	0xc,
+	0x8,
+	0x8,
+	0x8,
+	0x8,
+	0x8,
+	0x0,
+	0x0,
+};
+
+static void
+UpdateLedsTimerProc(void *eventData) 
+{
+	unsigned int ch;
+	uint16_t ledOut = 0;
+	Bert *bert = eventData;
+	Timer_Start(&bert->updateLedsTimer,250);
+	for(ch = 0; ch < NR_CHANNELS; ch++) {
+		uint16_t idx = Cdr_ReadEqObserve(0,ch) & 15;
+		ledOut = (ledOut << 4) | EqStateToLed[idx];
+	}
+	ShiftReg_Out(ledOut);
+}
 
 static void 
 GetErrCntTimerProc(void *eventData)
@@ -108,7 +143,7 @@ static bool
 PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	Bert *bert = cbData;
-	BeFifo *fifo = &bert->beFifo[adId];	
+	//BeFifo *fifo = &bert->beFifo[adId];	
 	float rate,ratio;
 	uint64_t freq = 40 * (uint64_t)Synth_GetFreq(0);
 	rate = Bert_GetBerate(bert,adId);
@@ -145,5 +180,7 @@ Bert_Init(void)
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beratio");
 		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"berate");
 	}
+	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
+	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
 }

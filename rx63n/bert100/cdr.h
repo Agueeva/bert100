@@ -6,4 +6,5 @@ void Cdr_WritePart(uint16_t phy_addr,uint16_t uRegister,uint8_t uLastBit,uint8_t
 uint16_t Cdr_ReadPart(uint16_t phy_addr,uint16_t uRegister,uint8_t uLastBit,uint8_t uStartBit);
 #endif
 uint64_t Cdr_GetErrCnt(uint8_t cdrID, uint8_t lane);
+uint16_t Cdr_ReadEqObserve(uint8_t cdrId,uint8_t lane);
 

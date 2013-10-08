@@ -1155,6 +1155,12 @@ Cdr_HwReset(void)
 	CDR_RESET_DR = 1; 
 }
 
+uint16_t
+Cdr_ReadEqObserve(uint8_t cdr,uint8_t lane)
+{
+	uint8_t phyAddr = gCDR[0].phyAddr;
+	return Cdr_Read(phyAddr, CDR_RX_EQ_OBSERVE1(lane));
+}
 /**
  ************************************************************************
  * \fn static int8_t cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
