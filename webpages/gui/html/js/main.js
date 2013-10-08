@@ -10,7 +10,7 @@
                          "cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX1= new Array("txa_swing","Swap_TXP_N");
-  var myVarDrTr= new Array("synth0.freq");
+  var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
   var myVarErr= new Array("synth0.freq",
                           "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
                           "cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state","cdr0.l3.eq_state",
