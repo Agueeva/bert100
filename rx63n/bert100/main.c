@@ -51,6 +51,7 @@
 #include "swupdate.h"
 #include "bert.h"
 #include "pat_trig.h"
+#include "fanco.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -149,6 +150,7 @@ main(void)
 	SWUpdate_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
+	FanCo_Init();
 	Version_Init();
 	Bert_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
