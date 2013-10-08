@@ -24,6 +24,12 @@
 #define PATTRIGSHIFTL(val)  BMOD(2,PORT3.PODR.BYTE,val)
 #define PATTRIGSHIFTR(val)  BMOD(3,PORT3.PODR.BYTE,val)
 
+typedef struct PatTrigger {
+	uint8_t currPattern;	
+} PatTrigger;
+
+static PatTrigger gPatTrigger[1];
+
 static const char *patNames[] = {
 	"Off",
 	"PRBS7",
@@ -36,6 +42,16 @@ static const char *patNames[] = {
 void
 PatTrig_SelPat(uint8_t modId,TrigPattern pattern)
 {
+	PatTrigger *pt;
+	if(modId != 0) {
+		Con_Printf("PTrig: Illegal module selection %u\n",modId);
+		return;
+	}
+	if(pattern > 5) {
+		Con_Printf("PTrig: Illegal pattern %u\n",pattern);
+		return;
+	}
+	pt = &gPatTrigger[0];
 	PATTRIG1_SET(!!(pattern & 4));
 	PATTRIG2_SET(!!(pattern & 2));
 	PATTRIG2_SET(!!(pattern & 1));
@@ -44,6 +60,7 @@ PatTrig_SelPat(uint8_t modId,TrigPattern pattern)
 	} else {
 		PATTRIGPWR_SET(1);
 	}
+	pt->currPattern = pattern;
 }
 
 void
@@ -59,7 +76,12 @@ PatTrig_Shift(uint8_t modId,bool right)
 		PATTRIGSHIFTL(1);
 	}
 }
-
+/**
+ ***************************************************************************
+ * static int8_t cmd_ptrig(Interp * interp, uint8_t argc, char *argv[])
+ * Pattern trigger command shell interface.
+ ***************************************************************************
+ */
 static int8_t
 cmd_ptrig(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -77,16 +99,22 @@ cmd_ptrig(Interp * interp, uint8_t argc, char *argv[])
 		pat = astrtoi16(argv[1]);
 		if(pat <= 5) {
 			PatTrig_SelPat(0,pat);
-			Con_Printf("Pattern %s\n",patNames[pat]);
+			Con_Printf("Pattern: %s\n",patNames[pat]);
 		} else {
 			return -EC_ARGRANGE;
+		}
+		return 0;
+	} else {
+		PatTrigger *pt = &gPatTrigger[0];
+		if(pt->currPattern <= 5) {
+			Con_Printf("Pattern: %s\n",patNames[pt->currPattern]);
 		}
 		return 0;
 	}	
 	return -EC_BADNUMARGS;
 }
 
-INTERP_CMD(ptrigCmd, "ptrig", cmd_ptrig, "ptrig ?<patternNr>?   # select a pattern");
+INTERP_CMD(ptrigCmd, "ptrig", cmd_ptrig, "ptrig ?<patternNr>|left|right?   # select a pattern or shift");
 
 void
 PatTrig_Init(const char *name)
