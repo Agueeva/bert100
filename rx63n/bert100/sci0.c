@@ -23,7 +23,7 @@
 #define TXFIFO_SIZE	(16)
 #define TXFIFO_RP(uart) ((uart)->txbuf_rp & (TXFIFO_SIZE-1))
 #define TXFIFO_WP(uart) ((uart)->txbuf_wp & (TXFIFO_SIZE-1))
-#define TXFIFO_CNT(uart) (((uart)->txbuf_wp - (uart)->txbuf_rp) % (TXFIFO_SIZE << 1))
+#define TXFIFO_CNT(uart) ((unsigned)((uart)->txbuf_wp - (uart)->txbuf_rp) % (TXFIFO_SIZE << 1))
 
 typedef struct Sci0 {
 	Sci0SinkProc *dataSinkProc; /**< The data sink for received data. */
