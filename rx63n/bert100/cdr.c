@@ -806,15 +806,45 @@ static const CdrRegister gCdrLaneRegister[] =
 	{
 		.name = "txa_swing",
 		.regNo = 258,
-		.lastBit = 2,
 		.firstBit = 0,
+		.lastBit = 2,
 	},
 	{
 		.name = "eq_state",
 		.regNo = 421,
-		.lastBit = 3,
 		.firstBit = 0,
-	}
+		.lastBit = 3,
+	},
+	{
+		.name = "cdr2_trip",
+		.regNo = 423,
+		.firstBit = 0,
+		.lastBit = 13,
+	},
+	{
+		.name = "pi_pos1_pisel",
+		.regNo = 424,
+		.firstBit = 12,
+		.lastBit = 13,
+	},
+	{
+		.name = "pi_pos1_piquadr",
+		.regNo = 424,
+		.firstBit = 8,
+		.lastBit = 9,
+	},
+	{
+		.name = "pi_pos1_picode",
+		.regNo = 424,
+		.firstBit = 0,
+		.lastBit = 7,
+	},
+	{
+		.name = "sec_order_state",
+		.regNo = 426,
+		.firstBit = 0,
+		.lastBit = 4,
+	},
 };
 
 /**
