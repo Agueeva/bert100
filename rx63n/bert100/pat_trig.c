@@ -53,9 +53,9 @@ PatTrig_SelPat(uint8_t modId,TrigPattern pattern)
 		return;
 	}
 	pt = &gPatTrigger[0];
-	PATTRIG1_SET(!!(pattern & 4));
+	PATTRIG3_SET(!!(pattern & 4));
 	PATTRIG2_SET(!!(pattern & 2));
-	PATTRIG2_SET(!!(pattern & 1));
+	PATTRIG1_SET(!!(pattern & 1));
 	if(pattern == 0) {
 		PATTRIGPWR_SET(0);
 	} else {
@@ -69,11 +69,11 @@ PatTrig_Shift(uint8_t modId,bool right)
 {
 	if(right) {
 		PATTRIGSHIFTR(0);
-		DelayUs(10);	
+		DelayUs(50);	
 		PATTRIGSHIFTR(1);
 	} else {
 		PATTRIGSHIFTL(0);
-		DelayUs(10);	
+		DelayUs(50);	
 		PATTRIGSHIFTL(1);
 	}
 }
