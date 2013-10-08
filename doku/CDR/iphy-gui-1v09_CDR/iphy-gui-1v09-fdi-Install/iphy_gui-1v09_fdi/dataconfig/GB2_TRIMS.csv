@@ -1,0 +1,1813 @@
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 0.0  2012-09-17 Andre ,,,,
+! GB2 Initial version,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+,,,,
+,,,,
+R30.3840,eFuse Control,16'h2000,,
+30.3840.15,program,RW,,"Toggling this bit from a zero to a one state causes the eFuse register bit addressed by 30.3840.9:0 to be programmed to a one value. During programming 'done' (30.3840.13) will be de-asserted. Programming will not occur if the efuse is in its power-down state (30.3841.15=0), or if 'done' (30.3840.13) is not asserted."
+30.3840.14,fetch,RW,,"Toggling this bit from a zero to a one state causes the eFuse contents to be fetched and loaded into registers 30.1408 to 30.1420. Fetching will not occur if the efuse is in its power-down state (30.3841.15=0), or if 'done' (30.3840.13) is not asserted. Registers 30.1409 to 30.1440 will not be fetched if the content of the eFuse byte 0 (30.1408) is zero - ie if the eFuse has not been programmed."
+30.3840.13,done,R,,eFuse actions complete. 0=eFuse program or fetch operations are in progress.
+30.3840.12,read,RW,,"Toggling this bit from a zero to a one state causes the eFuse 16bit word addressed by 30.3840.7:1 to be read and loaded into register 30.3842. Reading will not occur if the efuse is in its power-down state (30.3841.15=0), or if 'done' (30.3840.13) is not asserted."
+30.3840.11,Reserved,R,,
+30.3840.10:8, bit address,RW,,This field indicates which eFuse bit (of a byte) to set to a one in a program operation.
+30.3840.7:0,byte address,RW,,This field indicates which eFuse byte to program in a program operation.
+,,,,
+R30.3841,eFuse Power-up,16'h0000,,
+30.3841.15,Power-up,RW,0=powerdn;1=power up,This bit controls the power state of the eFuse arrays after reset : 0 (default) = arrays are powered down; 1 = arrays are powered up; This bit must be set to a one in order to program or fetch the contents of the eFuse arrays.
+30.3841.14:00,Reserved,R,,
+R30.3842,efuse read value,16'h0000,,
+30.3842.15:0,read value,RW,, This register contains the 16bit data value read from the eFuse by a “Read” command.
+,,,,
+R30.3968,eFuse Control Byte,16'h0000,,
+30.3968.15:1,part_id [15:1],R,,2nd byte of device serial number
+30.3968.0,eFuse Control Bit,R,,"First (LS) byte of device serial number. If this byte is fetched as zero, no other bytes will be fetched (eFuse is unprogrammed)"
+R30.3969,Device serial number,16'h0000,,
+30.3969.15:0,part_id [31:16],R,,MS bytes of device serial number
+R30.3970,Misc trim Optical Serdes 0,16'h0000,,
+30.3970.15:0,misc_trim_o[15:0],R,,
+R30.3971,Misc trim Optical Serdes 1,16'h0000,,
+30.3971.15:0,misc_trim_o[31:16],R,,
+R30.3972,Misc trim Optical Serdes 2,16'h0000,,
+30.3972.15:0,misc_trim_o[47:32],R,,
+R30.3973,Misc trim Host Serdes 0,16'h0000,,
+30.3973.15:0,misc_trim_h[15:0],R,,
+R30.3974,Misc trim Host Serdes 1,16'h0000,,
+30.3974.15:0,misc_trim_h[31:16],R,,
+R30.3975,Misc trim Host Serdes 2,16'h0000,,
+30.3975.15:0,misc_trim_h[47:32],R,,
+,,,,
+R30.3976,Optical Tx  Lane 0 trim 0,16'h0000,,
+30.3976.15:0,s25et0_trim[15:0],R,,
+R30.3977,Optical Tx  Lane 0 trim 1,16'h0000,,
+30.3977.15:0,s25et0_trim[31:16],R,,
+R30.3978,Optical Tx  Lane 0 trim 2,16'h0000,,
+30.3978.15:0,s25et0_trim[47:32],R,,
+R30.3979,Optical Rx  Lane 0 trim 0,16'h0000,,
+30.3979.15:0,s25ir0_trim[15:0],R,,
+R30.3980,Optical Rx  Lane 0 trim 1,16'h0000,,
+30.3980.15:0,s25ir0_trim[31:16],R,,
+R30.3981,Optical Rx  Lane 0 trim 2,16'h0000,,
+30.3981.15:0,s25ir0_trim[47:32],R,,
+R30.3982,Optical Tx  Lane 1 trim 0,16'h0000,,
+30.3982.15:0,s25et1_trim[15:0],R,,
+R30.3983,Optical Tx  Lane 1 trim 1,16'h0000,,
+30.3983.15:0,s25et1_trim[31:16],R,,
+R30.3984,Optical Tx  Lane 1 trim 2,16'h0000,,
+30.3984.15:0,s25et1_trim[47:32],R,,
+R30.3985,Optical Rx  Lane 1 trim 0,16'h0000,,
+30.3985.15:0,s25ir1_trim[15:0],R,,
+R30.3986,Optical Rx  Lane 1 trim 1,16'h0000,,
+30.3986.15:0,s25ir1_trim[31:16],R,,
+R30.3987,Optical Rx  Lane 1 trim 2,16'h0000,,
+30.3987.15:0,s25ir1_trim[47:32],R,,
+R30.3988,Optical Tx  Lane 2 trim 0,16'h0000,,
+30.3988.15:0,s25et2_trim[15:0],R,,
+R30.3989,Optical Tx  Lane 2 trim 1,16'h0000,,
+30.3989.15:0,s25et2_trim[31:16],R,,
+R30.3990,Optical Tx  Lane 2 trim 2,16'h0000,,
+30.3990.15:0,s25et2_trim[47:32],R,,
+R30.3991,Optical Rx  Lane 2 trim 0,16'h0000,,
+30.3991.15:0,s25ir2_trim[15:0],R,,
+R30.3992,Optical Rx  Lane 2 trim 1,16'h0000,,
+30.3992.15:0,s25ir2_trim[31:16],R,,
+R30.3993,Optical Rx  Lane 2 trim 2,16'h0000,,
+30.3993.15:0,s25ir2_trim[47:32],R,,
+R30.3994,Optical Tx  Lane 3 trim 0,16'h0000,,
+30.3994.15:0,s25et3_trim[15:0],R,,
+R30.3995,Optical Tx  Lane 3 trim 1,16'h0000,,
+30.3995.15:0,s25et3_trim[31:16],R,,
+R30.3996,Optical Tx  Lane 3 trim 2,16'h0000,,
+30.3996.15:0,s25et3_trim[47:32],R,,
+R30.3997,Optical Rx  Lane 3 trim 0,16'h0000,,
+30.3997.15:0,s25ir3_trim[15:0],R,,
+R30.3998,Optical Rx  Lane 3 trim 1,16'h0000,,
+30.3998.15:0,s25ir3_trim[31:16],R,,
+R30.3999,Optical Rx  Lane 3 trim 2,16'h0000,,
+30.3999.15:0,s25ir3_trim[47:32],R,,
+R30.4000,Optical Tx  Lane 4 trim 0,16'h0000,,
+30.4000.15:0,s10et4_trim[15:0],R,,
+R30.4001,Optical Tx  Lane 4 trim 1,16'h0000,,
+30.4001.15:0,s10et4_trim[31:16],R,,
+R30.4002,Optical Tx  Lane 4 trim 2,16'h0000,,
+30.4002.15:0,s10et4_trim[47:32],R,,
+R30.4003,Optical Rx  Lane 4 trim 0,16'h0000,,
+30.4003.15:0,s10ir4_trim[15:0],R,,
+R30.4004,Optical Rx  Lane 4 trim 1,16'h0000,,
+30.4004.15:0,s10ir4_trim[31:16],R,,
+R30.4005,Optical Rx  Lane 4 trim 2,16'h0000,,
+30.4005.15:0,s10ir4_trim[47:32],R,,
+R30.4006,Optical Tx  Lane 5 trim 0,16'h0000,,
+30.4006.15:0,s10et5_trim[15:0],R,,
+R30.4007,Optical Tx  Lane 5 trim 1,16'h0000,,
+30.4007.15:0,s10et5_trim[31:16],R,,
+R30.4008,Optical Tx  Lane 5 trim 2,16'h0000,,
+30.4008.15:0,s10et5_trim[47:32],R,,
+R30.4009,Optical Rx  Lane 5 trim 0,16'h0000,,
+30.4009.15:0,s10ir5_trim[15:0],R,,
+R30.4010,Optical Rx  Lane 5 trim 1,16'h0000,,
+30.4010.15:0,s10ir5_trim[31:16],R,,
+R30.4011,Optical Rx  Lane 5 trim 2,16'h0000,,
+30.4011.15:0,s10ir5_trim[47:32],R,,
+R30.4012,Optical Tx  Lane 6 trim 0,16'h0000,,
+30.4012.15:0,s10et6_trim[15:0],R,,
+R30.4013,Optical Tx  Lane 6 trim 1,16'h0000,,
+30.4013.15:0,s10et6_trim[31:16],R,,
+R30.4014,Optical Tx  Lane 6 trim 2,16'h0000,,
+30.4014.15:0,s10et6_trim[47:32],R,,
+R30.4015,Optical Rx  Lane 6 trim 0,16'h0000,,
+30.4015.15:0,s10ir6_trim[15:0],R,,
+R30.4016,Optical Rx  Lane 6 trim 1,16'h0000,,
+30.4016.15:0,s10ir6_trim[31:16],R,,
+R30.4017,Optical Rx  Lane 6 trim 2,16'h0000,,
+30.4017.15:0,s10ir6_trim[47:32],R,,
+R30.4018,Optical Tx  Lane 7 trim 0,16'h0000,,
+30.4018.15:0,s10et7_trim[15:0],R,,
+R30.4019,Optical Tx  Lane 7 trim 1,16'h0000,,
+30.4019.15:0,s10et7_trim[31:16],R,,
+R30.4020,Optical Tx  Lane 7 trim 2,16'h0000,,
+30.4020.15:0,s10et7_trim[47:32],R,,
+R30.4021,Optical Rx  Lane 7 trim 0,16'h0000,,
+30.4021.15:0,s10ir7_trim[15:0],R,,
+R30.4022,Optical Rx  Lane 7 trim 1,16'h0000,,
+30.4022.15:0,s10ir7_trim[31:16],R,,
+R30.4023,Optical Rx  Lane 7 trim 2,16'h0000,,
+30.4023.15:0,s10ir7_trim[47:32],R,,
+R30.4024,Optical Tx  Lane 8 trim 0,16'h0000,,
+30.4024.15:0,s10et8_trim[15:0],R,,
+R30.4025,Optical Tx  Lane 8 trim 1,16'h0000,,
+30.4025.15:0,s10et8_trim[31:16],R,,
+R30.4026,Optical Tx  Lane 8 trim 2,16'h0000,,
+30.4026.15:0,s10et8_trim[47:32],R,,
+R30.4027,Optical Rx  Lane 8 trim 0,16'h0000,,
+30.4027.15:0,s10ir8_trim[15:0],R,,
+R30.4028,Optical Rx  Lane 8 trim 1,16'h0000,,
+30.4028.15:0,s10ir8_trim[31:16],R,,
+R30.4029,Optical Rx  Lane 8 trim 2,16'h0000,,
+30.4029.15:0,s10ir8_trim[47:32],R,,
+R30.4030,Optical Tx  Lane 9 trim 0,16'h0000,,
+30.4030.15:0,s10et9_trim[15:0],R,,
+R30.4031,Optical Tx  Lane 9 trim 1,16'h0000,,
+30.4031.15:0,s10et9_trim[31:16],R,,
+R30.4032,Optical Tx  Lane 9 trim 2,16'h0000,,
+30.4032.15:0,s10et9_trim[47:32],R,,
+R30.4033,Optical Rx  Lane 9 trim 0,16'h0000,,
+30.4033.15:0,s10ir9_trim[15:0],R,,
+R30.4034,Optical Rx  Lane 9 trim 1,16'h0000,,
+30.4034.15:0,s10ir9_trim[31:16],R,,
+R30.4035,Optical Rx  Lane 9 trim 2,16'h0000,,
+30.4035.15:0,s10ir9_trim[47:32],R,,
+,,,,
+R30.4036,Host Tx  Lane 0 trim 0,16'h0000,,
+30.4036.15:0,s10it0_trim[15:0],R,,
+R30.4037,Host Tx  Lane 0 trim 1,16'h0000,,
+30.4037.15:0,s10it0_trim[31:16],R,,
+R30.4038,Host Tx  Lane 0 trim 2,16'h0000,,
+30.4038.15:0,s10it0_trim[47:32],R,,
+R30.4039,Host Rx  Lane 0 trim 0,16'h0000,,
+30.4039.15:0,s10er0_trim[15:0],R,,
+R30.4040,Host Rx  Lane 0 trim 1,16'h0000,,
+30.4040.15:0,s10er0_trim[31:16],R,,
+R30.4041,Host Rx  Lane 0 trim 2,16'h0000,,
+30.4041.15:0,s10er0_trim[47:32],R,,
+R30.4042,Host Tx  Lane 1 trim 0,16'h0000,,
+30.4042.15:0,s10it1_trim[15:0],R,,
+R30.4043,Host Tx  Lane 1 trim 1,16'h0000,,
+30.4043.15:0,s10it1_trim[31:16],R,,
+R30.4044,Host Tx  Lane 1 trim 2,16'h0000,,
+30.4044.15:0,s10it1_trim[47:32],R,,
+R30.4045,Host Rx  Lane 1 trim 0,16'h0000,,
+30.4045.15:0,s10er1_trim[15:0],R,,
+R30.4046,Host Rx  Lane 1 trim 1,16'h0000,,
+30.4046.15:0,s10er1_trim[31:16],R,,
+R30.4047,Host Rx  Lane 1 trim 2,16'h0000,,
+30.4047.15:0,s10er1_trim[47:32],R,,
+R30.4048,Host Tx  Lane 2 trim 0,16'h0000,,
+30.4048.15:0,s10it2_trim[15:0],R,,
+R30.4049,Host Tx  Lane 2 trim 1,16'h0000,,
+30.4049.15:0,s10it2_trim[31:16],R,,
+R30.4050,Host Tx  Lane 2 trim 2,16'h0000,,
+30.4050.15:0,s10it2_trim[47:32],R,,
+R30.4051,Host Rx  Lane 2 trim 0,16'h0000,,
+30.4051.15:0,s10er2_trim[15:0],R,,
+R30.4052,Host Rx  Lane 2 trim 1,16'h0000,,
+30.4052.15:0,s10er2_trim[31:16],R,,
+R30.4053,Host Rx  Lane 2 trim 2,16'h0000,,
+30.4053.15:0,s10er2_trim[47:32],R,,
+R30.4054,Host Tx  Lane 3 trim 0,16'h0000,,
+30.4054.15:0,s10it3_trim[15:0],R,,
+R30.4055,Host Tx  Lane 3 trim 1,16'h0000,,
+30.4055.15:0,s10it3_trim[31:16],R,,
+R30.4056,Host Tx  Lane 3 trim 2,16'h0000,,
+30.4056.15:0,s10it3_trim[47:32],R,,
+R30.4057,Host Rx  Lane 3 trim 0,16'h0000,,
+30.4057.15:0,s10er3_trim[15:0],R,,
+R30.4058,Host Rx  Lane 3 trim 1,16'h0000,,
+30.4058.15:0,s10er3_trim[31:16],R,,
+R30.4059,Host Rx  Lane 3 trim 2,16'h0000,,
+30.4059.15:0,s10er3_trim[47:32],R,,
+R30.4060,Host Tx  Lane 4 trim 0,16'h0000,,
+30.4060.15:0,s10it4_trim[15:0],R,,
+R30.4061,Host Tx  Lane 4 trim 1,16'h0000,,
+30.4061.15:0,s10it4_trim[31:16],R,,
+R30.4062,Host Tx  Lane 4 trim 2,16'h0000,,
+30.4062.15:0,s10it4_trim[47:32],R,,
+R30.4063,Host Rx  Lane 4 trim 0,16'h0000,,
+30.4063.15:0,s10er4_trim[15:0],R,,
+R30.4064,Host Rx  Lane 4 trim 1,16'h0000,,
+30.4064.15:0,s10er4_trim[31:16],R,,
+R30.4065,Host Rx  Lane 4 trim 2,16'h0000,,
+30.4065.15:0,s10er4_trim[47:32],R,,
+R30.4066,Host Tx  Lane 5 trim 0,16'h0000,,
+30.4066.15:0,s10it5_trim[15:0],R,,
+R30.4067,Host Tx  Lane 5 trim 1,16'h0000,,
+30.4067.15:0,s10it5_trim[31:16],R,,
+R30.4068,Host Tx  Lane 5 trim 2,16'h0000,,
+30.4068.15:0,s10it5_trim[47:32],R,,
+R30.4069,Host Rx  Lane 5 trim 0,16'h0000,,
+30.4069.15:0,s10er5_trim[15:0],R,,
+R30.4070,Host Rx  Lane 5 trim 1,16'h0000,,
+30.4070.15:0,s10er5_trim[31:16],R,,
+R30.4071,Host Rx  Lane 5 trim 2,16'h0000,,
+30.4071.15:0,s10er5_trim[47:32],R,,
+R30.4072,Host Tx  Lane 6 trim 0,16'h0000,,
+30.4072.15:0,s10it6_trim[15:0],R,,
+R30.4073,Host Tx  Lane 6 trim 1,16'h0000,,
+30.4073.15:0,s10it6_trim[31:16],R,,
+R30.4074,Host Tx  Lane 6 trim 2,16'h0000,,
+30.4074.15:0,s10it6_trim[47:32],R,,
+R30.4075,Host Rx  Lane 6 trim 0,16'h0000,,
+30.4075.15:0,s10er6_trim[15:0],R,,
+R30.4076,Host Rx  Lane 6 trim 1,16'h0000,,
+30.4076.15:0,s10er6_trim[31:16],R,,
+R30.4077,Host Rx  Lane 6 trim 2,16'h0000,,
+30.4077.15:0,s10er6_trim[47:32],R,,
+R30.4078,Host Tx  Lane 7 trim 0,16'h0000,,
+30.4078.15:0,s10it7_trim[15:0],R,,
+R30.4079,Host Tx  Lane 7 trim 1,16'h0000,,
+30.4079.15:0,s10it7_trim[31:16],R,,
+R30.4080,Host Tx  Lane 7 trim 2,16'h0000,,
+30.4080.15:0,s10it7_trim[47:32],R,,
+R30.4081,Host Rx  Lane 7 trim 0,16'h0000,,
+30.4081.15:0,s10er7_trim[15:0],R,,
+R30.4082,Host Rx  Lane 7 trim 1,16'h0000,,
+30.4082.15:0,s10er7_trim[31:16],R,,
+R30.4083,Host Rx  Lane 7 trim 2,16'h0000,,
+30.4083.15:0,s10er7_trim[47:32],R,,
+R30.4084,Host Tx  Lane 8 trim 0,16'h0000,,
+30.4084.15:0,s10it8_trim[15:0],R,,
+R30.4085,Host Tx  Lane 8 trim 1,16'h0000,,
+30.4085.15:0,s10it8_trim[31:16],R,,
+R30.4086,Host Tx  Lane 8 trim 2,16'h0000,,
+30.4086.15:0,s10it8_trim[47:32],R,,
+R30.4087,Host Rx  Lane 8 trim 0,16'h0000,,
+30.4087.15:0,s10er8_trim[15:0],R,,
+R30.4088,Host Rx  Lane 8 trim 1,16'h0000,,
+30.4088.15:0,s10er8_trim[31:16],R,,
+R30.4089,Host Rx  Lane 8 trim 2,16'h0000,,
+30.4089.15:0,s10er8_trim[47:32],R,,
+R30.4090,Host Tx  Lane 9 trim 0,16'h0000,,
+30.4090.15:0,s10it9_trim[15:0],R,,
+R30.4091,Host Tx  Lane 9 trim 1,16'h0000,,
+30.4091.15:0,s10it9_trim[31:16],R,,
+R30.4092,Host Tx  Lane 9 trim 2,16'h0000,,
+30.4092.15:0,s10it9_trim[47:32],R,,
+R30.4093,Host Rx  Lane 9 trim 0,16'h0000,,
+30.4093.15:0,s10er9_trim[15:0],R,,
+R30.4094,Host Rx  Lane 9 trim 1,16'h0000,,
+30.4094.15:0,s10er9_trim[31:16],R,,
+R30.4095,Host Rx  Lane 9 trim 2,16'h0000,,
+30.4095.15:0,s10er9_trim[47:32],R,,
+,,,,
+,,,,
+,,,,
+R30.4099,Optical Tx Lane 0 Impedance ,16'h0007,,
+30.4099.15:12,Reserved,R,,
+30.4099.11:10,txa_vreg_comp,RW,,
+30.4099.9:5,Reserved,R,,
+30.4099.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.4355,Optical Tx Lane 1 Impedance ,16'h0007,,
+30.4355.15:12,Reserved,R,,
+30.4355.11:10,txa_vreg_comp,RW,,
+30.4355.9:5,Reserved,R,,
+30.4355.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.4611,Optical Tx Lane 2 Impedance ,16'h0007,,
+30.4611.15:12,Reserved,R,,
+30.4611.11:10,txa_vreg_comp,RW,,
+30.4611.9:5,Reserved,R,,
+30.4611.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.4867,Optical Tx Lane 3 Impedance ,16'h0007,,
+30.4867.15:12,Reserved,R,,
+30.4867.11:10,txa_vreg_comp,RW,,
+30.4867.9:5,Reserved,R,,
+30.4867.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.5123,Optical Tx Lane 4 Impedance ,16'h0007,,
+30.5123.15:12,Reserved,R,,
+30.5123.11:10,txa_vreg_comp,RW,,
+30.5123.9:5,Reserved,R,,
+30.5123.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.5379,Optical Tx Lane 5 Impedance ,16'h0007,,
+30.5379.15:12,Reserved,R,,
+30.5379.11:10,txa_vreg_comp,RW,,
+30.5379.9:5,Reserved,R,,
+30.5379.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.5635,Optical Tx Lane 6 Impedance ,16'h0007,,
+30.5635.15:12,Reserved,R,,
+30.5635.11:10,txa_vreg_comp,RW,,
+30.5635.9:5,Reserved,R,,
+30.5635.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.5891,Optical Tx Lane 7 Impedance ,16'h0007,,
+30.5891.15:12,Reserved,R,,
+30.5891.11:10,txa_vreg_comp,RW,,
+30.5891.9:5,Reserved,R,,
+30.5891.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.6147,Optical Tx Lane 8 Impedance ,16'h0007,,
+30.6147.15:12,Reserved,R,,
+30.6147.11:10,txa_vreg_comp,RW,,
+30.6147.9:5,Reserved,R,,
+30.6147.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.6403,Optical Tx Lane 9 Impedance ,16'h0007,,
+30.6403.15:12,Reserved,R,,
+30.6403.11:10,txa_vreg_comp,RW,,
+30.6403.9:5,Reserved,R,,
+30.6403.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.8195,Host Tx Lane 0 Impedance ,16'h0007,,
+30.8195.15:12,Reserved,R,,
+30.8195.11:10,txa_vreg_comp,RW,,
+30.8195.9:5,Reserved,R,,
+30.8195.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.8451,Host Tx Lane 1 Impedance ,16'h0007,,
+30.8451.15:12,Reserved,R,,
+30.8451.11:10,txa_vreg_comp,RW,,
+30.8451.9:5,Reserved,R,,
+30.8451.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.8707,Host Tx Lane 2 Impedance ,16'h0007,,
+30.8707.15:12,Reserved,R,,
+30.8707.11:10,txa_vreg_comp,RW,,
+30.8707.9:5,Reserved,R,,
+30.8707.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.8963,Host Tx Lane 3 Impedance ,16'h0007,,
+30.8963.15:12,Reserved,R,,
+30.8963.11:10,txa_vreg_comp,RW,,
+30.8963.9:5,Reserved,R,,
+30.8963.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.9219,Host Tx Lane 4 Impedance ,16'h0007,,
+30.9219.15:12,Reserved,R,,
+30.9219.11:10,txa_vreg_comp,RW,,
+30.9219.9:5,Reserved,R,,
+30.9219.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.9475,Host Tx Lane 5 Impedance ,16'h0007,,
+30.9475.15:12,Reserved,R,,
+30.9475.11:10,txa_vreg_comp,RW,,
+30.9475.9:5,Reserved,R,,
+30.9475.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.9731,Host Tx Lane 6 Impedance ,16'h0007,,
+30.9731.15:12,Reserved,R,,
+30.9731.11:10,txa_vreg_comp,RW,,
+30.9731.9:5,Reserved,R,,
+30.9731.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.9987,Host Tx Lane 7 Impedance ,16'h0007,,
+30.9987.15:12,Reserved,R,,
+30.9987.11:10,txa_vreg_comp,RW,,
+30.9987.9:5,Reserved,R,,
+30.9987.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.10243,Host Tx Lane 8 Impedance ,16'h0007,,
+30.10243.15:12,Reserved,R,,
+30.10243.11:10,txa_vreg_comp,RW,,
+30.10243.9:5,Reserved,R,,
+30.10243.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+R30.10499,Host Tx Lane 9 Impedance ,16'h0007,,
+30.10499.15:12,Reserved,R,,
+30.10499.11:10,txa_vreg_comp,RW,,
+30.10499.9:5,Reserved,R,,
+30.10499.4:0,txa_opz[4:0],RW,00000=Max;00001=00001;00011=00011;00111=normal;01111=01111;11111=Min,This register is used to trim the termination resistance as seen at the TXP/N output. This is a thermometer encoded field where each bit enables a trim resistance in parallel with the main termination resistance.
+,,,,
+,,,,
+R30.4100,Optical Tx Lane 0 phase trim ,16'h0000,,
+30.4100.15:12,Reserved,R,,
+30.4100.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.4100.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.4100.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.4100.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.4356,Optical Tx Lane 1 phase trim ,16'h0000,,
+30.4356.15:12,Reserved,R,,
+30.4356.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.4356.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.4356.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.4356.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.4612,Optical Tx Lane 2 phase trim ,16'h0000,,
+30.4612.15:12,Reserved,R,,
+30.4612.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.4612.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.4612.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.4612.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.4868,Optical Tx Lane 3 phase trim ,16'h0000,,
+30.4868.15:12,Reserved,R,,
+30.4868.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.4868.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.4868.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.4868.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.5124,Optical Tx Lane 4 phase trim ,16'h0000,,
+30.5124.15:12,Reserved,R,,
+30.5124.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.5124.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.5124.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.5124.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.5380,Optical Tx Lane 5 phase trim ,16'h0000,,
+30.5380.15:12,Reserved,R,,
+30.5380.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.5380.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.5380.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.5380.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.5636,Optical Tx Lane 6 phase trim ,16'h0000,,
+30.5636.15:12,Reserved,R,,
+30.5636.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.5636.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.5636.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.5636.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.5892,Optical Tx Lane 7 phase trim ,16'h0000,,
+30.5892.15:12,Reserved,R,,
+30.5892.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.5892.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.5892.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.5892.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.6148,Optical Tx Lane 8 phase trim ,16'h0000,,
+30.6148.15:12,Reserved,R,,
+30.6148.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.6148.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.6148.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.6148.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.6404,Optical Tx Lane 9 phase trim ,16'h0000,,
+30.6404.15:12,Reserved,R,,
+30.6404.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.6404.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.6404.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.6404.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.8196,Host Tx Lane 0 phase trim ,16'h0000,,
+30.8196.15:12,Reserved,R,,
+30.8196.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.8196.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.8196.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.8196.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.8452,Host Tx Lane 1 phase trim ,16'h0000,,
+30.8452.15:12,Reserved,R,,
+30.8452.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.8452.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.8452.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.8452.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.8708,Host Tx Lane 2 phase trim ,16'h0000,,
+30.8708.15:12,Reserved,R,,
+30.8708.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.8708.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.8708.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.8708.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.8964,Host Tx Lane 3 phase trim ,16'h0000,,
+30.8964.15:12,Reserved,R,,
+30.8964.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.8964.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.8964.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.8964.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.9220,Host Tx Lane 4 phase trim ,16'h0000,,
+30.9220.15:12,Reserved,R,,
+30.9220.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.9220.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.9220.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.9220.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.9476,Host Tx Lane 5 phase trim ,16'h0000,,
+30.9476.15:12,Reserved,R,,
+30.9476.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.9476.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.9476.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.9476.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.9732,Host Tx Lane 6 phase trim ,16'h0000,,
+30.9732.15:12,Reserved,R,,
+30.9732.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.9732.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.9732.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.9732.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.9988,Host Tx Lane 7 phase trim ,16'h0000,,
+30.9988.15:12,Reserved,R,,
+30.9988.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.9988.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.9988.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.9988.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.10244,Host Tx Lane 8 phase trim ,16'h0000,,
+30.10244.15:12,Reserved,R,,
+30.10244.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.10244.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.10244.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.10244.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+R30.10500,Host Tx Lane 9 phase trim ,16'h0000,,
+30.10500.15:12,Reserved,R,,
+30.10500.11:9,DEL_TRIM270,RW,,Delay trim bits for Tx Clock phase 270
+30.10500.8:6,DEL_TRIM180,RW,,Delay trim bits for Tx Clock phase 180
+30.10500.5:3,DEL_TRIM90,RW,,Delay trim bits for Tx Clock phase 90
+30.10500.2:0,DEL_TRIM0,RW,,Delay trim bits for Tx Clock phase 0
+,,,,
+,,,,
+,,,,
+R30.4614,VT Sensor Control,16'h0000,,
+30.4614.15:14,Reserved,R,,
+30.4614.13:11,Clock Div,RW,,Clock divider select
+30.4614.10:9,Volt mode Cal,RW,,Calibration control for voltage mode
+30.4614.8:7,Temp mode cal,RW,,Calibration control for temperature mode
+30.4614.6,Cal enable,RW,0=disable; 1=enable,Enable calibration mode
+30.4614.5:2,Volt Select,RW,,"In voltage sense mode, select which voltage sense point to measure"
+30.4614.1,VT mode,RW,0=temperature mode; 1=voltage mode,Sensor mode
+30.4614.0,enable,RW,0=disable; 1=enable,Enable the VT sensor
+,,,,
+R30.4615,VT Sensor Observe,16'h0000,,
+30.4615.15:10,Reserved,R,,
+30.4615.9:0,Sense val,R,,Sensor read value. Reading this field will return a binary value proportional to the temperature/voltage measurement being sensed. This value should be scaled by the value read from the temperature or voltage gain trim registers below before conversion to a temperature or voltage value. 
+,,,,
+R30.4616,VT Sensor Temp Gain,16'h0000,,
+30.4616.15:10,Reserved,R,,
+30.4616.9:0,Temp gain,RW,,This field allows the fuse trim value for the temperature gain to be read or overridden.
+,,,,
+R30.4617,VT Sensor Voltage Gain,16'h0000,,
+30.4617.15:10,Reserved,R,,
+30.4617.9:0,Voltage gain,RW,,This field allows the fuse trim value for the voltage gain to be read or overridden.
+,,,,
+R30.4112,Optical Tx Lane 0 Amux Select,16'h0006,,
+30.4112.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.4112.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.4112.7,Reserved,RW,,
+30.4112.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.4112.3,Reserved,RW,,
+30.4112.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.4370,Optical Tx Lane 1 Amux Select,16'h0006,,
+30.4370.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.4370.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.4370.7,Reserved,RW,,
+30.4370.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.4370.3,Reserved,RW,,
+30.4370.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.4624,Optical Tx Lane 2 Amux Select,16'h0006,,
+30.4624.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.4624.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.4624.7,Reserved,RW,,
+30.4624.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.4624.3,Reserved,RW,,
+30.4624.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.4880,Optical Tx Lane 3 Amux Select,16'h0006,,
+30.4880.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.4880.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.4880.7,Reserved,RW,,
+30.4880.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.4880.3,Reserved,RW,,
+30.4880.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.5136,Optical Tx Lane 4 Amux Select,16'h0006,,
+30.5136.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.5136.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.5136.7,Reserved,RW,,
+30.5136.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.5136.3,Reserved,RW,,
+30.5136.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.5392,Optical Tx Lane 5 Amux Select,16'h0006,,
+30.5392.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.5392.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.5392.7,Reserved,RW,,
+30.5392.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.5392.3,Reserved,RW,,
+30.5392.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.5648,Optical Tx Lane 6 Amux Select,16'h0006,,
+30.5648.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.5648.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.5648.7,Reserved,RW,,
+30.5648.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.5648.3,Reserved,RW,,
+30.5648.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.5904,Optical Tx Lane 7 Amux Select,16'h0006,,
+30.5904.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.5904.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.5904.7,Reserved,RW,,
+30.5904.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.5904.3,Reserved,RW,,
+30.5904.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.6160,Optical Tx Lane 8 Amux Select,16'h0006,,
+30.6160.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.6160.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.6160.7,Reserved,RW,,
+30.6160.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.6160.3,Reserved,RW,,
+30.6160.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.6416,Optical Tx Lane 9 Amux Select,16'h0006,,
+30.6416.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.6416.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.6416.7,Reserved,RW,,
+30.6416.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.6416.3,Reserved,RW,,
+30.6416.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.8208,Host Tx Lane 0 Amux Select,16'h0006,,
+30.8208.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.8208.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.8208.7,Reserved,RW,,
+30.8208.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.8208.3,Reserved,RW,,
+30.8208.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.8464,Host Tx Lane 1 Amux Select,16'h0006,,
+30.8464.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.8464.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.8464.7,Reserved,RW,,
+30.8464.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.8464.3,Reserved,RW,,
+30.8464.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.8720,Host Tx Lane 2 Amux Select,16'h0006,,
+30.8720.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.8720.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.8720.7,Reserved,RW,,
+30.8720.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.8720.3,Reserved,RW,,
+30.8720.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.8976,Host Tx Lane 3 Amux Select,16'h0006,,
+30.8976.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.8976.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.8976.7,Reserved,RW,,
+30.8976.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.8976.3,Reserved,RW,,
+30.8976.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.9242,Host Tx Lane 4 Amux Select,16'h0006,,
+30.9242.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.9242.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.9242.7,Reserved,RW,,
+30.9242.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.9242.3,Reserved,RW,,
+30.9242.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.9488,Host Tx Lane 5 Amux Select,16'h0006,,
+30.9488.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.9488.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.9488.7,Reserved,RW,,
+30.9488.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.9488.3,Reserved,RW,,
+30.9488.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.9744,Host Tx Lane 6 Amux Select,16'h0006,,
+30.9744.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.9744.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.9744.7,Reserved,RW,,
+30.9744.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.9744.3,Reserved,RW,,
+30.9744.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.10000,Host Tx Lane 7 Amux Select,16'h0006,,
+30.10000.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.10000.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.10000.7,Reserved,RW,,
+30.10000.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.10000.3,Reserved,RW,,
+30.10000.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.10256,Host Tx Lane 8 Amux Select,16'h0006,,
+30.10256.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.10256.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.10256.7,Reserved,RW,,
+30.10256.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.10256.3,Reserved,RW,,
+30.10256.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+R30.10512,Host Tx Lane 9 Amux Select,16'h0006,,
+30.10512.15:12,SPFUSE_TX,RW,,Override the Tx spare fuse bits
+30.10512.11:8,SPGCK_FUSE_TX,RW,,Override the Tx global clocking spare fuse bits
+30.10512.7,Reserved,RW,,
+30.10512.6:4,PLL_AMUX_SELECT,RW,000=High impedance (off); 001=VCTL_OUT; 010=IBG_40u_POLYIND; 011=IBG_40u_POLYDEP; 100=VREG_PLL; 101=VDDR; 110=VSS; 111=VSS;,"This selects one of seven analog monitor points in the Tx PLL which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+30.10512.3,Reserved,RW,,
+30.10512.2:0,TX_AMUX_SELECT,RW,000=High impedance (off); 001=VREG VSS; 010=VREG LDRV; 011=VREG CLK; 100=VDD; 101=VDDR; 110=Performance monitor; 111=VSS;,"This selects one of seven analog monitor points in the Tx which can be observed via the AMUX output. Code 000 is defined a high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off."
+,,,,
+,,,,
+R30.4113,Optical Tx Lane 0 Vreg control,16'h0006,,
+30.4113.15:12,Reserved,RW,,
+30.4113.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4113.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4113.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.4369,Optical Tx Lane 1 Vreg control,16'h0006,,
+30.4369.15:12,Reserved,RW,,
+30.4369.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4369.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4369.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.4625,Optical Tx Lane 2 Vreg control,16'h0006,,
+30.4625.15:12,Reserved,RW,,
+30.4625.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4625.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4625.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.4881,Optical Tx Lane 3 Vreg control,16'h0006,,
+30.4881.15:12,Reserved,RW,,
+30.4881.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4881.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.4881.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.5137,Optical Tx Lane 4 Vreg control,16'h0006,,
+30.5137.15:12,Reserved,RW,,
+30.5137.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5137.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5137.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.5393,Optical Tx Lane 5 Vreg control,16'h0006,,
+30.5393.15:12,Reserved,RW,,
+30.5393.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5393.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5393.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.5649,Optical Tx Lane 6 Vreg control,16'h0006,,
+30.5649.15:12,Reserved,RW,,
+30.5649.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5649.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5649.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.5905,Optical Tx Lane 7 Vreg control,16'h0006,,
+30.5905.15:12,Reserved,RW,,
+30.5905.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5905.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.5905.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.6161,Optical Tx Lane 8 Vreg control,16'h0006,,
+30.6161.15:12,Reserved,RW,,
+30.6161.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.6161.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.6161.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.6417,Optical Tx Lane 9 Vreg control,16'h0006,,
+30.6417.15:12,Reserved,RW,,
+30.6417.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.6417.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.6417.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.8209,Host Tx Lane 0 Vreg control,16'h0006,,
+30.8209.15:12,Reserved,RW,,
+30.8209.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8209.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8209.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.8465,Host Tx Lane 1 Vreg control,16'h0006,,
+30.8465.15:12,Reserved,RW,,
+30.8465.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8465.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8465.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.8721,Host Tx Lane 2 Vreg control,16'h0006,,
+30.8721.15:12,Reserved,RW,,
+30.8721.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8721.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8721.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.8977,Host Tx Lane 3 Vreg control,16'h0006,,
+30.8977.15:12,Reserved,RW,,
+30.8977.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8977.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.8977.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.9233,Host Tx Lane 4 Vreg control,16'h0006,,
+30.9233.15:12,Reserved,RW,,
+30.9233.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9233.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9233.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.9489,Host Tx Lane 5 Vreg control,16'h0006,,
+30.9489.15:12,Reserved,RW,,
+30.9489.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9489.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9489.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.9745,Host Tx Lane 6 Vreg control,16'h0006,,
+30.9745.15:12,Reserved,RW,,
+30.9745.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9745.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.9745.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.10001,Host Tx Lane 7 Vreg control,16'h0006,,
+30.10001.15:12,Reserved,RW,,
+30.10001.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10001.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10001.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.10257,Host Tx Lane 8 Vreg control,16'h0006,,
+30.10257.15:12,Reserved,RW,,
+30.10257.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10257.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10257.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+R30.10513,Host Tx Lane 9 Vreg control,16'h0006,,
+30.10513.15:12,Reserved,RW,,
+30.10513.11:8,CENTRAL_VREG_CONTROL,RW,,These bits control the voltage regulator trimming for the Tx global clocking. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by CENTRAL_VREG_CONTROL and the least significant bit is defined by bit 0 of  the SPGCK_FUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10513.7:4,TXA_VREG2_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG2. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG2_CTRL and the least significant bit is defined by bit 1 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+30.10513.3:0,TXA_VREG1_CTRL,RW,,These bits control the voltage regulator trimming for the Tx VREG1. The regulator trim in this revision uses a 5-bit trim value where the most significant four bits are defined by TXA_VREG1_CTRL and the least significant bit is defined by bit 0 of  the SPFUSE_TX bits. The combination of these bits gives a 5-bit decode
+,,,,
+,,,,
+R30.4626,Optical global clocking trim,16'h0006,,
+30.4626.15:12,RX_POLY_DEP_FUSE_TRIM,RW,,These bits provide an MDIO override of the rx_gclocking_polydep_trim_fuse value to the Rx global clocking 
+30.4626.11:8,RX_POLY_IND_FUSE_TRIM,RW,,These bits provide an MDIO override of the rx_gclocking_polyind_trim_fuse value to the Rx global clocking 
+30.4626.7:4,TX_POLY_DEP_FUSE_TRIM,RW,,These bits provide an MDIO override of the tx_gclocking_polydep_trim_fuse value to the Tx global clocking 
+30.4626.3:0,TX_POLY_IND_FUSE_TRIM,RW,,These bits provide an MDIO override of the tx_gclocking_polyind_trim_fuse value to the Tx global clocking 
+,,,,
+R30.9490,Host global clocking trim,16'h0006,,
+30.9490.15:12,RX_POLY_DEP_FUSE_TRIM,RW,,These bits provide an MDIO override of the rx_gclocking_polydep_trim_fuse value to the Rx global clocking 
+30.9490.11:8,RX_POLY_IND_FUSE_TRIM,RW,,These bits provide an MDIO override of the rx_gclocking_polyind_trim_fuse value to the Rx global clocking 
+30.9490.7:4,TX_POLY_DEP_FUSE_TRIM,RW,,These bits provide an MDIO override of the tx_gclocking_polydep_trim_fuse value to the Tx global clocking 
+30.9490.3:0,TX_POLY_IND_FUSE_TRIM,RW,,These bits provide an MDIO override of the tx_gclocking_polyind_trim_fuse value to the Tx global clocking 
+,,,,
+,,,,
+R30.4133,Optical Tx Lane 0 VT Fuse,16'h0000,,
+30.4133.15:14,Reserved,R,,
+30.4133.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.4133.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.4133.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.4389,Optical Tx Lane 1 VT Fuse,16'h0000,,
+30.4389.15:14,Reserved,R,,
+30.4389.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.4389.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.4389.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.4645,Optical Tx Lane 2 VT Fuse,16'h0000,,
+30.4645.15:14,Reserved,R,,
+30.4645.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.4645.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.4645.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.4901,Optical Tx Lane 3 VT Fuse,16'h0000,,
+30.4901.15:14,Reserved,R,,
+30.4901.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.4901.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.4901.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.5157,Optical Tx Lane 4 VT Fuse,16'h0000,,
+30.5157.15:14,Reserved,R,,
+30.5157.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.5157.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.5157.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.5413,Optical Tx Lane 5 VT Fuse,16'h0000,,
+30.5413.15:14,Reserved,R,,
+30.5413.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.5413.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.5413.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.5669,Optical Tx Lane 6 VT Fuse,16'h0000,,
+30.5669.15:14,Reserved,R,,
+30.5669.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.5669.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.5669.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.5925,Optical Tx Lane 7 VT Fuse,16'h0000,,
+30.5925.15:14,Reserved,R,,
+30.5925.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.5925.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.5925.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.6181,Optical Tx Lane 8 VT Fuse,16'h0000,,
+30.6181.15:14,Reserved,R,,
+30.6181.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.6181.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.6181.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.6437,Optical Tx Lane 9 VT Fuse,16'h0000,,
+30.6437.15:14,Reserved,R,,
+30.6437.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.6437.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.6437.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.8229,Host Tx Lane 0 VT Fuse,16'h0000,,
+30.8229.15:14,Reserved,R,,
+30.8229.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.8229.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.8229.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.8485,Host Tx Lane 1 VT Fuse,16'h0000,,
+30.8485.15:14,Reserved,R,,
+30.8485.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.8485.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.8485.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.8741,Host Tx Lane 2 VT Fuse,16'h0000,,
+30.8741.15:14,Reserved,R,,
+30.8741.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.8741.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.8741.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.8997,Host Tx Lane 3 VT Fuse,16'h0000,,
+30.8997.15:14,Reserved,R,,
+30.8997.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.8997.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.8997.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.9253,Host Tx Lane 4 VT Fuse,16'h0000,,
+30.9253.15:14,Reserved,R,,
+30.9253.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.9253.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.9253.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.9509,Host Tx Lane 5 VT Fuse,16'h0000,,
+30.9509.15:14,Reserved,R,,
+30.9509.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.9509.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.9509.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.9765,Host Tx Lane 6 VT Fuse,16'h0000,,
+30.9765.15:14,Reserved,R,,
+30.9765.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.9765.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.9765.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.10021,Host Tx Lane 7 VT Fuse,16'h0000,,
+30.10021.15:14,Reserved,R,,
+30.10021.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.10021.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.10021.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.10277,Host Tx Lane 8 VT Fuse,16'h0000,,
+30.10277.15:14,Reserved,R,,
+30.10277.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.10277.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.10277.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+R30.10533,Host Tx Lane 9 VT Fuse,16'h0000,,
+30.10533.15:14,Reserved,R,,
+30.10533.13:9,CYA_FUSE,RW,,This field allows the fuse value for the uncommitted bits to be overridden.
+30.10533.8:4,REGULATOR_FUSE,RW,,This field allows the fuse trim value for the regulator to be overridden.
+30.10533.3:0,PTAT_CURRENT_FUSE,RW,,This field allows the fuse trim value for the PTAT current to be overridden.
+,,,,
+,,,,
+R30.4134,Optical Tx Lane 0 VT debug,16'h0000,,
+30.4134.15:7,Reserved,R,,
+30.4134.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.4134.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.4134.he decode for this field is still TBD"
+,,,,
+R30.4390,Optical Tx Lane 1 VT debug,16'h0000,,
+30.4390.15:7,Reserved,R,,
+30.4390.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.4390.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.4390.he decode for this field is still TBD"
+,,,,
+R30.4646,Optical Tx Lane 2 VT debug,16'h0000,,
+30.4646.15:7,Reserved,R,,
+30.4646.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.4646.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.4646.he decode for this field is still TBD"
+,,,,
+R30.4902,Optical Tx Lane 3 VT debug,16'h0000,,
+30.4902.15:7,Reserved,R,,
+30.4902.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.4902.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.4902.he decode for this field is still TBD"
+,,,,
+R30.5158,Optical Tx Lane 4 VT debug,16'h0000,,
+30.5158.15:7,Reserved,R,,
+30.5158.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.5158.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.5158.he decode for this field is still TBD"
+,,,,
+R30.5414,Optical Tx Lane 5 VT debug,16'h0000,,
+30.5414.15:7,Reserved,R,,
+30.5414.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.5414.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.5414.he decode for this field is still TBD"
+,,,,
+R30.5670,Optical Tx Lane 6 VT debug,16'h0000,,
+30.5670.15:7,Reserved,R,,
+30.5670.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.5670.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.5670.he decode for this field is still TBD"
+,,,,
+R30.5926,Optical Tx Lane 7 VT debug,16'h0000,,
+30.5926.15:7,Reserved,R,,
+30.5926.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.5926.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.5926.he decode for this field is still TBD"
+,,,,
+R30.6182,Optical Tx Lane 8 VT debug,16'h0000,,
+30.6182.15:7,Reserved,R,,
+30.6182.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.6182.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.6182.he decode for this field is still TBD"
+,,,,
+R30.6438,Optical Tx Lane 9 VT debug,16'h0000,,
+30.6438.15:7,Reserved,R,,
+30.6438.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.6438.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.6438.he decode for this field is still TBD"
+,,,,
+R30.8230,Host Tx Lane 0 VT debug,16'h0000,,
+30.8230.15:7,Reserved,R,,
+30.8230.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.8230.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.8230.he decode for this field is still TBD"
+,,,,
+R30.8486,Host Tx Lane 1 VT debug,16'h0000,,
+30.8486.15:7,Reserved,R,,
+30.8486.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.8486.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.8486.he decode for this field is still TBD"
+,,,,
+R30.8742,Host Tx Lane 2 VT debug,16'h0000,,
+30.8742.15:7,Reserved,R,,
+30.8742.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.8742.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.8742.he decode for this field is still TBD"
+,,,,
+R30.8998,Host Tx Lane 3 VT debug,16'h0000,,
+30.8998.15:7,Reserved,R,,
+30.8998.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.8998.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.8998.he decode for this field is still TBD"
+,,,,
+R30.9254,Host Tx Lane 4 VT debug,16'h0000,,
+30.9254.15:7,Reserved,R,,
+30.9254.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.9254.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.9254.he decode for this field is still TBD"
+,,,,
+R30.9510,Host Tx Lane 5 VT debug,16'h0000,,
+30.9510.15:7,Reserved,R,,
+30.9510.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.9510.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.9510.he decode for this field is still TBD"
+,,,,
+R30.9766,Host Tx Lane 6 VT debug,16'h0000,,
+30.9766.15:7,Reserved,R,,
+30.9766.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.9766.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.9766.he decode for this field is still TBD"
+,,,,
+R30.10022,Host Tx Lane 7 VT debug,16'h0000,,
+30.10022.15:7,Reserved,R,,
+30.10022.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.10022.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.10022.he decode for this field is still TBD"
+,,,,
+R30.10278,Host Tx Lane 8 VT debug,16'h0000,,
+30.10278.15:7,Reserved,R,,
+30.10278.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.10278.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.10278.he decode for this field is still TBD"
+,,,,
+R30.10534,Host Tx Lane 9 VT debug,16'h0000,,
+30.10534.15:7,Reserved,R,,
+30.10534.6:3,VT_SPARE,RW,,This field controls the spare inputs to the VT sensor 
+30.10534.2:0,VT_AMUX,RW,,"This selects one of seven analog monitor points in the VT sensor which can be observed via the AMUX output. Code 000 is defined as high-impedance (off) to allow the common AMUX output to be shared across all Tx, Rx and Plls. For correct operation, only one AMUX should be enabled at any one time, all others should be off.
+30.10534.he decode for this field is still TBD"
+,,,,
+,,,,
+R30.4228,Optical Rx Lane 0 Misc Trim,16'h7500,,
+30.4228.15:12,ODT trim,RW,,
+30.4228.11,Reserved,R,,
+30.4228.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.4228.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.4228.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.4228.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.4484,Optical Rx Lane 1 Misc Trim,16'h7500,,
+30.4484.15:12,ODT trim,RW,,
+30.4484.11,Reserved,R,,
+30.4484.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.4484.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.4484.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.4484.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.4740,Optical Rx Lane 2 Misc Trim,16'h7500,,
+30.4740.15:12,ODT trim,RW,,
+30.4740.11,Reserved,R,,
+30.4740.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.4740.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.4740.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.4740.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.4996,Optical Rx Lane 3 Misc Trim,16'h7500,,
+30.4996.15:12,ODT trim,RW,,
+30.4996.11,Reserved,R,,
+30.4996.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.4996.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.4996.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.4996.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.5252,Optical Rx Lane 4 Misc Trim,16'h7500,,
+30.5252.15:12,ODT trim,RW,,
+30.5252.11,Reserved,R,,
+30.5252.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.5252.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.5252.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.5252.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.5508,Optical Rx Lane 5 Misc Trim,16'h7500,,
+30.5508.15:12,ODT trim,RW,,
+30.5508.11,Reserved,R,,
+30.5508.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.5508.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.5508.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.5508.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.5764,Optical Rx Lane 6 Misc Trim,16'h7500,,
+30.5764.15:12,ODT trim,RW,,
+30.5764.11,Reserved,R,,
+30.5764.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.5764.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.5764.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.5764.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.6020,Optical Rx Lane 7 Misc Trim,16'h7500,,
+30.6020.15:12,ODT trim,RW,,
+30.6020.11,Reserved,R,,
+30.6020.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.6020.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.6020.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.6020.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.6276,Optical Rx Lane 8 Misc Trim,16'h7500,,
+30.6276.15:12,ODT trim,RW,,
+30.6276.11,Reserved,R,,
+30.6276.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.6276.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.6276.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.6276.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.6532,Optical Rx Lane 9 Misc Trim,16'h7500,,
+30.6532.15:12,ODT trim,RW,,
+30.6532.11,Reserved,R,,
+30.6532.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.6532.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.6532.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.6532.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.8324,Host Rx Lane 0 Misc Trim,16'h7500,,
+30.8324.15:12,ODT trim,RW,,
+30.8324.11,Reserved,R,,
+30.8324.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.8324.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.8324.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.8324.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.8580,Host Rx Lane 1 Misc Trim,16'h7500,,
+30.8580.15:12,ODT trim,RW,,
+30.8580.11,Reserved,R,,
+30.8580.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.8580.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.8580.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.8580.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.8836,Host Rx Lane 2 Misc Trim,16'h7500,,
+30.8836.15:12,ODT trim,RW,,
+30.8836.11,Reserved,R,,
+30.8836.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.8836.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.8836.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.8836.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.9092,Host Rx Lane 3 Misc Trim,16'h7500,,
+30.9092.15:12,ODT trim,RW,,
+30.9092.11,Reserved,R,,
+30.9092.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.9092.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.9092.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.9092.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.9348,Host Rx Lane 4 Misc Trim,16'h7500,,
+30.9348.15:12,ODT trim,RW,,
+30.9348.11,Reserved,R,,
+30.9348.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.9348.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.9348.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.9348.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.9604,Host Rx Lane 5 Misc Trim,16'h7500,,
+30.9604.15:12,ODT trim,RW,,
+30.9604.11,Reserved,R,,
+30.9604.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.9604.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.9604.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.9604.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.9860,Host Rx Lane 6 Misc Trim,16'h7500,,
+30.9860.15:12,ODT trim,RW,,
+30.9860.11,Reserved,R,,
+30.9860.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.9860.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.9860.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.9860.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.10116,Host Rx Lane 7 Misc Trim,16'h7500,,
+30.10116.15:12,ODT trim,RW,,
+30.10116.11,Reserved,R,,
+30.10116.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.10116.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.10116.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.10116.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.10372,Host Rx Lane 8 Misc Trim,16'h7500,,
+30.10372.15:12,ODT trim,RW,,
+30.10372.11,Reserved,R,,
+30.10372.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.10372.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.10372.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.10372.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+R30.10628,Host Rx Lane 9 Misc Trim,16'h7500,,
+30.10628.15:12,ODT trim,RW,,
+30.10628.11,Reserved,R,,
+30.10628.10,CM adjust enable,RW,0=disable; 1=enable,This field enable Common Mode voltage adjusttment
+30.10628.9:8,CM adjust control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermocoded field take place downstream of this register before use."
+30.10628.7:4,Interpolator Bandgap trim,RW,,Controls trim for interpolator bandgap
+30.10628.3:0,Regulator Bandgap trim,RW,,Controls trim for regulator bandgap
+,,,,
+,,,,
+,,,,
+,,,,
+R30.4296,Optical Rx Lane 0 Voltage regulator ctl,16'h0777,,
+30.4296.15:12,Reserved,R,,
+30.4296.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.4296.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.4296.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.4552,Optical Rx Lane 1 Voltage regulator ctl,16'h0777,,
+30.4552.15:12,Reserved,R,,
+30.4552.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.4552.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.4552.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.4808,Optical Rx Lane 2 Voltage regulator ctl,16'h0777,,
+30.4808.15:12,Reserved,R,,
+30.4808.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.4808.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.4808.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.5064,Optical Rx Lane 3 Voltage regulator ctl,16'h0777,,
+30.5064.15:12,Reserved,R,,
+30.5064.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.5064.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.5064.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.5320,Optical Rx Lane 4 Voltage regulator ctl,16'h0777,,
+30.5320.15:12,Reserved,R,,
+30.5320.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.5320.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.5320.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.5576,Optical Rx Lane 5 Voltage regulator ctl,16'h0777,,
+30.5576.15:12,Reserved,R,,
+30.5576.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.5576.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.5576.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.5832,Optical Rx Lane 6 Voltage regulator ctl,16'h0777,,
+30.5832.15:12,Reserved,R,,
+30.5832.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.5832.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.5832.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.6088,Optical Rx Lane 7 Voltage regulator ctl,16'h0777,,
+30.6088.15:12,Reserved,R,,
+30.6088.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.6088.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.6088.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.6344,Optical Rx Lane 8 Voltage regulator ctl,16'h0777,,
+30.6344.15:12,Reserved,R,,
+30.6344.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.6344.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.6344.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.6600,Optical Rx Lane 9 Voltage regulator ctl,16'h0777,,
+30.6600.15:12,Reserved,R,,
+30.6600.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.6600.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.6600.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.8392,Host Rx Lane 0 Voltage regulator ctl,16'h0777,,
+30.8392.15:12,Reserved,R,,
+30.8392.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.8392.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.8392.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.8648,Host Rx Lane 1 Voltage regulator ctl,16'h0777,,
+30.8648.15:12,Reserved,R,,
+30.8648.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.8648.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.8648.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.8904,Host Rx Lane 2 Voltage regulator ctl,16'h0777,,
+30.8904.15:12,Reserved,R,,
+30.8904.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.8904.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.8904.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.9160,Host Rx Lane 3 Voltage regulator ctl,16'h0777,,
+30.9160.15:12,Reserved,R,,
+30.9160.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.9160.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.9160.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.9416,Host Rx Lane 4 Voltage regulator ctl,16'h0777,,
+30.9416.15:12,Reserved,R,,
+30.9416.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.9416.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.9416.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.9672,Host Rx Lane 5 Voltage regulator ctl,16'h0777,,
+30.9672.15:12,Reserved,R,,
+30.9672.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.9672.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.9672.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.9928,Host Rx Lane 6 Voltage regulator ctl,16'h0777,,
+30.9928.15:12,Reserved,R,,
+30.9928.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.9928.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.9928.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.10184,Host Rx Lane 7 Voltage regulator ctl,16'h0777,,
+30.10184.15:12,Reserved,R,,
+30.10184.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.10184.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.10184.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.10440,Host Rx Lane 8 Voltage regulator ctl,16'h0777,,
+30.10440.15:12,Reserved,R,,
+30.10440.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.10440.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.10440.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+R30.10696,Host Rx Lane 9 Voltage regulator ctl,16'h0777,,
+30.10696.15:12,Reserved,R,,
+30.10696.11:8,Clock regulator,RW,,Control Central clock generation voltage regulator
+30.10696.7:4,Regulator 2,RW,,Control RX 2nd voltage regulator output voltage
+30.10696.3:0,Regulator 1,RW,,Control RX 1st voltage regulator output voltage
+,,,,
+,,,,
+,,,,
+R30.4305,Optical Rx Lane 0 Spare Fuse,16'h0777,,
+30.4305.15:18,Reserved,R,,
+30.4305.7:4,Spare Rx Fuse bits,RW,,
+30.4305.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.4561,Optical Rx Lane 1 Spare Fuse,16'h0777,,
+30.4561.15:18,Reserved,R,,
+30.4561.7:4,Spare Rx Fuse bits,RW,,
+30.4561.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.4817,Optical Rx Lane 2 Spare Fuse,16'h0777,,
+30.4817.15:18,Reserved,R,,
+30.4817.7:4,Spare Rx Fuse bits,RW,,
+30.4817.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.5073,Optical Rx Lane 3 Spare Fuse,16'h0777,,
+30.5073.15:18,Reserved,R,,
+30.5073.7:4,Spare Rx Fuse bits,RW,,
+30.5073.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.5329,Optical Rx Lane 4 Spare Fuse,16'h0777,,
+30.5329.15:18,Reserved,R,,
+30.5329.7:4,Spare Rx Fuse bits,RW,,
+30.5329.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.5585,Optical Rx Lane 5 Spare Fuse,16'h0777,,
+30.5585.15:18,Reserved,R,,
+30.5585.7:4,Spare Rx Fuse bits,RW,,
+30.5585.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.5841,Optical Rx Lane 6 Spare Fuse,16'h0777,,
+30.5841.15:18,Reserved,R,,
+30.5841.7:4,Spare Rx Fuse bits,RW,,
+30.5841.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.6097,Optical Rx Lane 7 Spare Fuse,16'h0777,,
+30.6097.15:18,Reserved,R,,
+30.6097.7:4,Spare Rx Fuse bits,RW,,
+30.6097.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.6353,Optical Rx Lane 8 Spare Fuse,16'h0777,,
+30.6353.15:18,Reserved,R,,
+30.6353.7:4,Spare Rx Fuse bits,RW,,
+30.6353.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.6609,Optical Rx Lane 9 Spare Fuse,16'h0777,,
+30.6609.15:18,Reserved,R,,
+30.6609.7:4,Spare Rx Fuse bits,RW,,
+30.6609.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.8401,Host Rx Lane 0 Spare Fuse,16'h0777,,
+30.8401.15:18,Reserved,R,,
+30.8401.7:4,Spare Rx Fuse bits,RW,,
+30.8401.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.8657,Host Rx Lane 1 Spare Fuse,16'h0777,,
+30.8657.15:18,Reserved,R,,
+30.8657.7:4,Spare Rx Fuse bits,RW,,
+30.8657.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.8913,Host Rx Lane 2 Spare Fuse,16'h0777,,
+30.8913.15:18,Reserved,R,,
+30.8913.7:4,Spare Rx Fuse bits,RW,,
+30.8913.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.9169,Host Rx Lane 3 Spare Fuse,16'h0777,,
+30.9169.15:18,Reserved,R,,
+30.9169.7:4,Spare Rx Fuse bits,RW,,
+30.9169.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.9425,Host Rx Lane 4 Spare Fuse,16'h0777,,
+30.9425.15:18,Reserved,R,,
+30.9425.7:4,Spare Rx Fuse bits,RW,,
+30.9425.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.9681,Host Rx Lane 5 Spare Fuse,16'h0777,,
+30.9681.15:18,Reserved,R,,
+30.9681.7:4,Spare Rx Fuse bits,RW,,
+30.9681.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.9937,Host Rx Lane 6 Spare Fuse,16'h0777,,
+30.9937.15:18,Reserved,R,,
+30.9937.7:4,Spare Rx Fuse bits,RW,,
+30.9937.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.10193,Host Rx Lane 7 Spare Fuse,16'h0777,,
+30.10193.15:18,Reserved,R,,
+30.10193.7:4,Spare Rx Fuse bits,RW,,
+30.10193.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.10449,Host Rx Lane 8 Spare Fuse,16'h0777,,
+30.10449.15:18,Reserved,R,,
+30.10449.7:4,Spare Rx Fuse bits,RW,,
+30.10449.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.10705,Host Rx Lane 9 Spare Fuse,16'h0777,,
+30.10705.15:18,Reserved,R,,
+30.10705.7:4,Spare Rx Fuse bits,RW,,
+30.10705.3:0,Spare RxGck Fuse bits,RW,,
+,,,,
+R30.4288,Optical Rx Lane 0 Amux control,16'h0000,,
+30.4288.15:14,Reserved,R,,
+30.4288.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4288.11:9,Reserved,R,,
+30.4288.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4288.7,Reserved,R,,
+30.4288.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4288.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.4544,Optical Rx Lane 1 Amux control,16'h0000,,
+30.4544.15:14,Reserved,R,,
+30.4544.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4544.11:9,Reserved,R,,
+30.4544.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4544.7,Reserved,R,,
+30.4544.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4544.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.4800,Optical Rx Lane 2 Amux control,16'h0000,,
+30.4800.15:14,Reserved,R,,
+30.4800.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4800.11:9,Reserved,R,,
+30.4800.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4800.7,Reserved,R,,
+30.4800.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4800.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5056,Optical Rx Lane 3 Amux control,16'h0000,,
+30.5056.15:14,Reserved,R,,
+30.5056.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5056.11:9,Reserved,R,,
+30.5056.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5056.7,Reserved,R,,
+30.5056.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5056.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5312,Optical Rx Lane 4 Amux control,16'h0000,,
+30.5312.15:14,Reserved,R,,
+30.5312.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5312.11:9,Reserved,R,,
+30.5312.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5312.7,Reserved,R,,
+30.5312.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5312.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5568,Optical Rx Lane 5 Amux control,16'h0000,,
+30.5568.15:14,Reserved,R,,
+30.5568.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5568.11:9,Reserved,R,,
+30.5568.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5568.7,Reserved,R,,
+30.5568.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5568.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5824,Optical Rx Lane 6 Amux control,16'h0000,,
+30.5824.15:14,Reserved,R,,
+30.5824.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5824.11:9,Reserved,R,,
+30.5824.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5824.7,Reserved,R,,
+30.5824.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5824.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6080,Optical Rx Lane 7 Amux control,16'h0000,,
+30.6080.15:14,Reserved,R,,
+30.6080.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6080.11:9,Reserved,R,,
+30.6080.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6080.7,Reserved,R,,
+30.6080.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6080.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6336,Optical Rx Lane 8 Amux control,16'h0000,,
+30.6336.15:14,Reserved,R,,
+30.6336.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6336.11:9,Reserved,R,,
+30.6336.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6336.7,Reserved,R,,
+30.6336.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6336.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6592,Optical Rx Lane 9 Amux control,16'h0000,,
+30.6592.15:14,Reserved,R,,
+30.6592.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6592.11:9,Reserved,R,,
+30.6592.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6592.7,Reserved,R,,
+30.6592.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6592.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.8384,Host Rx Lane 0 Amux control,16'h0000,,
+30.8384.15:14,Reserved,R,,
+30.8384.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.8384.11:9,Reserved,R,,
+30.8384.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.8384.7,Reserved,R,,
+30.8384.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.8384.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.8640,Host Rx Lane 1 Amux control,16'h0000,,
+30.8640.15:14,Reserved,R,,
+30.8640.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.8640.11:9,Reserved,R,,
+30.8640.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.8640.7,Reserved,R,,
+30.8640.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.8640.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.8896,Host Rx Lane 2 Amux control,16'h0000,,
+30.8896.15:14,Reserved,R,,
+30.8896.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.8896.11:9,Reserved,R,,
+30.8896.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.8896.7,Reserved,R,,
+30.8896.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.8896.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.9152,Host Rx Lane 3 Amux control,16'h0000,,
+30.9152.15:14,Reserved,R,,
+30.9152.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.9152.11:9,Reserved,R,,
+30.9152.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.9152.7,Reserved,R,,
+30.9152.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.9152.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.9408,Host Rx Lane 4 Amux control,16'h0000,,
+30.9408.15:14,Reserved,R,,
+30.9408.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.9408.11:9,Reserved,R,,
+30.9408.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.9408.7,Reserved,R,,
+30.9408.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.9408.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.9664,Host Rx Lane 5 Amux control,16'h0000,,
+30.9664.15:14,Reserved,R,,
+30.9664.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.9664.11:9,Reserved,R,,
+30.9664.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.9664.7,Reserved,R,,
+30.9664.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.9664.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.9920,Host Rx Lane 6 Amux control,16'h0000,,
+30.9920.15:14,Reserved,R,,
+30.9920.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.9920.11:9,Reserved,R,,
+30.9920.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.9920.7,Reserved,R,,
+30.9920.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.9920.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.10176,Host Rx Lane 7 Amux control,16'h0000,,
+30.10176.15:14,Reserved,R,,
+30.10176.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.10176.11:9,Reserved,R,,
+30.10176.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.10176.7,Reserved,R,,
+30.10176.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.10176.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.10432,Host Rx Lane 8 Amux control,16'h0000,,
+30.10432.15:14,Reserved,R,,
+30.10432.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.10432.11:9,Reserved,R,,
+30.10432.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.10432.7,Reserved,R,,
+30.10432.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.10432.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.10688,Host Rx Lane 9 Amux control,16'h0000,,
+30.10688.15:14,Reserved,R,,
+30.10688.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.10688.11:9,Reserved,R,,
+30.10688.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.10688.7,Reserved,R,,
+30.10688.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.10688.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.4281,Optical Rx Lane 0 Eq offset control,16'h0000,,
+30.4281.15:14,Reserved,R,,
+30.4281.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4281.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4281.1,Reserved,R,,
+30.4281.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.4537,Optical Rx Lane 1 Eq offset control,16'h0000,,
+30.4537.15:14,Reserved,R,,
+30.4537.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4537.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4537.1,Reserved,R,,
+30.4537.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.4793,Optical Rx Lane 2 Eq offset control,16'h0000,,
+30.4793.15:14,Reserved,R,,
+30.4793.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4793.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4793.1,Reserved,R,,
+30.4793.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5049,Optical Rx Lane 3 Eq offset control,16'h0000,,
+30.5049.15:14,Reserved,R,,
+30.5049.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5049.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5049.1,Reserved,R,,
+30.5049.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5305,Optical Rx Lane 4 Eq offset control,16'h0000,,
+30.5305.15:14,Reserved,R,,
+30.5305.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5305.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5305.1,Reserved,R,,
+30.5305.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5561,Optical Rx Lane 5 Eq offset control,16'h0000,,
+30.5561.15:14,Reserved,R,,
+30.5561.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5561.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5561.1,Reserved,R,,
+30.5561.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5817,Optical Rx Lane 6 Eq offset control,16'h0000,,
+30.5817.15:14,Reserved,R,,
+30.5817.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5817.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5817.1,Reserved,R,,
+30.5817.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6073,Optical Rx Lane 7 Eq offset control,16'h0000,,
+30.6073.15:14,Reserved,R,,
+30.6073.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6073.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6073.1,Reserved,R,,
+30.6073.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6329,Optical Rx Lane 8 Eq offset control,16'h0000,,
+30.6329.15:14,Reserved,R,,
+30.6329.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6329.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6329.1,Reserved,R,,
+30.6329.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6585,Optical Rx Lane 9 Eq offset control,16'h0000,,
+30.6585.15:14,Reserved,R,,
+30.6585.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6585.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6585.1,Reserved,R,,
+30.6585.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.8377,Host Rx Lane 0 Eq offset control,16'h0000,,
+30.8377.15:14,Reserved,R,,
+30.8377.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.8377.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.8377.1,Reserved,R,,
+30.8377.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.8633,Host Rx Lane 1 Eq offset control,16'h0000,,
+30.8633.15:14,Reserved,R,,
+30.8633.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.8633.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.8633.1,Reserved,R,,
+30.8633.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.8889,Host Rx Lane 2 Eq offset control,16'h0000,,
+30.8889.15:14,Reserved,R,,
+30.8889.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.8889.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.8889.1,Reserved,R,,
+30.8889.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.9145,Host Rx Lane 3 Eq offset control,16'h0000,,
+30.9145.15:14,Reserved,R,,
+30.9145.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.9145.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.9145.1,Reserved,R,,
+30.9145.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.9401,Host Rx Lane 4 Eq offset control,16'h0000,,
+30.9401.15:14,Reserved,R,,
+30.9401.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.9401.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.9401.1,Reserved,R,,
+30.9401.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.9657,Host Rx Lane 5 Eq offset control,16'h0000,,
+30.9657.15:14,Reserved,R,,
+30.9657.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.9657.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.9657.1,Reserved,R,,
+30.9657.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.9913,Host Rx Lane 6 Eq offset control,16'h0000,,
+30.9913.15:14,Reserved,R,,
+30.9913.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.9913.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.9913.1,Reserved,R,,
+30.9913.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.10169,Host Rx Lane 7 Eq offset control,16'h0000,,
+30.10169.15:14,Reserved,R,,
+30.10169.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.10169.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.10169.1,Reserved,R,,
+30.10169.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.10425,Host Rx Lane 8 Eq offset control,16'h0000,,
+30.10425.15:14,Reserved,R,,
+30.10425.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.10425.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.10425.1,Reserved,R,,
+30.10425.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.10681,Host Rx Lane 9 Eq offset control,16'h0000,,
+30.10681.15:14,Reserved,R,,
+30.10681.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.10681.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.10681.1,Reserved,R,,
+30.10681.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.

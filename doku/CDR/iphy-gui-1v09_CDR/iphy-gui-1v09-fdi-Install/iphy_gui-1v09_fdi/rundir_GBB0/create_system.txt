@@ -1,0 +1,7 @@
+# Create system setup file
+# SYS,int(idNumber),str(device-name),int(PRTAD),str(csv-filename)
+
+#SYS,0,CDR0,0,../dataconfig/iCDR100_B0_user_MDIO.csv
+#SYS,0,CDR1,1,../dataconfig/iCDR100_B0_user_MDIO.csv
+SYS,0,GB0,2,../dataconfig/iPHY100_B0_user_MDIO.csv
+

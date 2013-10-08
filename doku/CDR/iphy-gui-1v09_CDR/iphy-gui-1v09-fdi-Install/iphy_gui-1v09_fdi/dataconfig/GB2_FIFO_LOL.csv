@@ -1,0 +1,314 @@
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 0.0  2012-09-17 Andre ,,,,
+! GB2 Initial version,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+,,,,
+,,,,
+R30.58,Ingress FIFO config,16'h0003,,
+30.58.15:14,Reserved,R,,
+30.58.13:12,i10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 local loopback mode 
+30.58.11:10,Reserved,R,,
+30.58.9:8,n10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 normal mode 
+30.58.7:6,Reserved,R,,
+30.58.5:4,Reserved,R,,
+30.58.3:2,Reserved,R,,
+30.58.1:0,n25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 25:10 normal mode 
+,,,,
+R30.59,Egress FIFO config,16'h0031,,
+30.59.15:14,Reserved,R,,
+30.59.13:12,r10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 remote loopback mode 
+30.59.11:10,Reserved,R,,
+30.59.9:8,n10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 normal mode 
+30.59.7:6,Reserved,R,,
+30.59.5:4,r25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 25:25 remote loopback mode 
+30.59.3:2,Reserved,R,,
+30.59.1:0,n25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:25 normal mode 
+,,,,
+,,,,
+R30.64,Ingress LOL Status Register,16'h83FF,,
+30.64.15,Ingress LOL ,R,,"Composite LOL : logical OR of bits 9:0 in 10:10 mode, Logical OR of bits 3:0 in 10:4 mode."
+30.64.14:10,Reserved,R,,
+30.64.9,Ingress LOL  Status 9,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.8,Ingress LOL  Status 8,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.7,Ingress LOL  Status 7,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.6,Ingress LOL  Status 6,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.5,Ingress LOL  Status 5,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.4,Ingress LOL  Status 4,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.3,Ingress LOL  Status 3,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.2,Ingress LOL  Status 2,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.1,Ingress LOL  Status 1,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.0,Ingress LOL  Status 0,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+,,,,
+R30.65,Ingress LOL Event Register,16'h83FF,,
+30.65.15,Ingress LOL event,R,,Composite LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.14:10,Reserved,R,,
+30.65.9,Ingress LOL  Event 9,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.8,Ingress LOL  Event 8,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.7,Ingress LOL  Event 7,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.6,Ingress LOL  Event 6,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.5,Ingress LOL  Event 5,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.4,Ingress LOL  Event 4,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.3,Ingress LOL  Event 3,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.2,Ingress LOL  Event 2,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.1,Ingress LOL  Event 1,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.0,Ingress LOL  Event 0,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+,,,,
+R30.66,Ingress LOL Event Mask,16'h83FF,,
+30.66.15,Ingress LOL mask,RW,0=alerts enabled; 1=alerts masked,Mask Composite LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.14:10,Reserved,R,,
+30.66.9,Ingress LOL  Mask 9,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.8,Ingress LOL  Mask 8,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.7,Ingress LOL  Mask 7,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.6,Ingress LOL  Mask 6,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.5,Ingress LOL  Mask 5,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.4,Ingress LOL  Mask 4,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.3,Ingress LOL  Mask 3,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.2,Ingress LOL  Mask 2,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.1,Ingress LOL  Mask 1,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.0,Ingress LOL  Mask 0,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+,,,,
+R30.67,Ingress Protocol lock status,16'h03FF,,
+30.67.15:10,Reserved,R,,
+30.67.9,Loss of Protocol lock lane 9,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.8,Loss of Protocol lock lane 8,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.7,Loss of Protocol lock lane 7,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.6,Loss of Protocol lock lane 6,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.5,Loss of Protocol lock lane 5,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.4,Loss of Protocol lock lane 4,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.3,Loss of Protocol lock lane 3,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.2,Loss of Protocol lock lane 2,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.1,Loss of Protocol lock lane 1,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.0,Loss of Protocol lock lane 0,R,,Read as one if the protocol  lock SM on this lane is not locked 
+,,,,
+R30.68,Ingress PRBS lock status,16'h03FF,,
+30.68.15:10,Reserved,R,,
+30.68.9,Loss of PRBS lock lane 9,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.8,Loss of PRBS lock lane 8,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.7,Loss of PRBS lock lane 7,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.6,Loss of PRBS lock lane 6,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.5,Loss of PRBS lock lane 5,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.4,Loss of PRBS lock lane 4,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.3,Loss of PRBS lock lane 3,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.2,Loss of PRBS lock lane 2,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.1,Loss of PRBS lock lane 1,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.0,Loss of PRBS lock lane 0,R,,Read as one if the PRBS verifier for this lane is not locked 
+,,,,
+,,,,
+R30.72,Egress LOL Status Register,16'h83FF,,
+30.72.15,Egress LOL ,R,,"Composite LOL : logical OR of bits 9:0 in 10:10 mode, Logical OR of bits 3:0 in 10:4 mode."
+30.72.14:10,Reserved,R,,
+30.72.9,Egress LOL  Status 9,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.8,Egress LOL  Status 8,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.7,Egress LOL  Status 7,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.6,Egress LOL  Status 6,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.5,Egress LOL  Status 5,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.4,Egress LOL  Status 4,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.3,Egress LOL  Status 3,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.2,Egress LOL  Status 2,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.1,Egress LOL  Status 1,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.0,Egress LOL  Status 0,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+,,,,
+R30.73,Egress LOL Event Register,16'h83FF,,
+30.73.15,Egress LOL event,R,,Composite LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.14:10,Reserved,R,,
+30.73.9,Egress LOL  Event 9,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.8,Egress LOL  Event 8,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.7,Egress LOL  Event 7,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.6,Egress LOL  Event 6,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.5,Egress LOL  Event 5,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.4,Egress LOL  Event 4,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.3,Egress LOL  Event 3,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.2,Egress LOL  Event 2,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.1,Egress LOL  Event 1,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.0,Egress LOL  Event 0,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+,,,,
+R30.74,Egress LOL Event Mask,16'h83FF,,
+30.74.15,Egress LOL mask,RW,0=alerts enabled; 1=alerts masked,Mask Composite LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.14:10,Reserved,R,,
+30.74.9,Egress LOL  Mask 9,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.8,Egress LOL  Mask 8,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.7,Egress LOL  Mask 7,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.6,Egress LOL  Mask 6,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.5,Egress LOL  Mask 5,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.4,Egress LOL  Mask 4,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.3,Egress LOL  Mask 3,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.2,Egress LOL  Mask 2,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.1,Egress LOL  Mask 1,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.0,Egress LOL  Mask 0,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+,,,,
+R30.75,Egress Protocol lock status,16'h03FF,,
+30.75.15:10,Reserved,R,,
+30.75.9,Loss of Protocol lock lane 9,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.8,Loss of Protocol lock lane 8,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.7,Loss of Protocol lock lane 7,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.6,Loss of Protocol lock lane 6,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.5,Loss of Protocol lock lane 5,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.4,Loss of Protocol lock lane 4,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.3,Loss of Protocol lock lane 3,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.2,Loss of Protocol lock lane 2,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.1,Loss of Protocol lock lane 1,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.0,Loss of Protocol lock lane 0,R,,Read as one if the protocol  lock SM on this lane is not locked 
+,,,,
+R30.76,Egress PRBS lock status,16'h03FF,,
+30.76.15:10,Reserved,R,,
+30.76.9,Loss of PRBS lock lane 9,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.8,Loss of PRBS lock lane 8,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.7,Loss of PRBS lock lane 7,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.6,Loss of PRBS lock lane 6,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.5,Loss of PRBS lock lane 5,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.4,Loss of PRBS lock lane 4,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.3,Loss of PRBS lock lane 3,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.2,Loss of PRBS lock lane 2,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.1,Loss of PRBS lock lane 1,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.0,Loss of PRBS lock lane 0,R,,Read as one if the PRBS verifier for this lane is not locked 
+,,,,
+,,,,
+,,,,
+R30.80,Ingress FIFO Control &  Status ,16'h03FF,,
+30.80.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all Ingress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.80.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all Ingress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.80.13,Interrupt Enable,RW,0=disable; 1=enable,If set to a one assertion of any of the FIFO error flags in this register will cause an interrupt to be generated.
+30.80.12:10,Reserved,R,,
+30.80.9,Ingress FIFO _error 9,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.8,Ingress FIFO _error 8,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.7,Ingress FIFO _error 7,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.6,Ingress FIFO _error 6,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.5,Ingress FIFO _error 5,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.4,Ingress FIFO _error 4,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.3,Ingress FIFO _error 3,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.2,Ingress FIFO _error 2,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.1,Ingress FIFO _error 1,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.0,Ingress FIFO _error 0,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+,,,,
+R30.81,Ingress FIFO Under-run Status,16'h03FF,,
+30.81.15:10,Reserved,R,,
+30.81.9,Ingress FIFO under-run 9,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.8,Ingress FIFO under-run 8,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.7,Ingress FIFO under-run 7,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.6,Ingress FIFO under-run 6,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.5,Ingress FIFO under-run 5,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.4,Ingress FIFO under-run 4,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.3,Ingress FIFO under-run 3,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.2,Ingress FIFO under-run 2,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.1,Ingress FIFO under-run 1,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.0,Ingress FIFO under-run 0,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.82,Ingress FIFO Over-run Status,16'h03FF,,
+30.82.15:10,Reserved,R,,
+30.82.9,Ingress FIFO over-run 9,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.8,Ingress FIFO over-run 8,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.7,Ingress FIFO over-run 7,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.6,Ingress FIFO over-run 6,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.5,Ingress FIFO over-run 5,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.4,Ingress FIFO over-run 4,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.3,Ingress FIFO over-run 3,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.2,Ingress FIFO over-run 2,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.1,Ingress FIFO over-run 1,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.0,Ingress FIFO over-run 0,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.88,Egress FIFO Control &  Status ,16'h03FF,,
+30.88.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all Egress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.88.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all Egress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.88.13,Interrupt Enable,RW,0=disable; 1=enable,If set to a one assertion of any of the FIFO error flags in this register will cause an interrupt to be generated.
+30.88.12:10,Reserved,R,,
+30.88.9,Egress FIFO _error 9,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.8,Egress FIFO _error 8,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.7,Egress FIFO _error 7,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.6,Egress FIFO _error 6,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.5,Egress FIFO _error 5,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.4,Egress FIFO _error 4,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.3,Egress FIFO _error 3,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.2,Egress FIFO _error 2,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.1,Egress FIFO _error 1,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.0,Egress FIFO _error 0,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+,,,,
+R30.89,Egress FIFO Under-run Status,16'h03FF,,
+30.89.15:10,Reserved,R,,
+30.89.9,Egress FIFO under-run 9,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.8,Egress FIFO under-run 8,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.7,Egress FIFO under-run 7,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.6,Egress FIFO under-run 6,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.5,Egress FIFO under-run 5,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.4,Egress FIFO under-run 4,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.3,Egress FIFO under-run 3,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.2,Egress FIFO under-run 2,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.1,Egress FIFO under-run 1,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.0,Egress FIFO under-run 0,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.90,Egress FIFO Over-run Status,16'h03FF,,
+30.90.15:10,Reserved,R,,
+30.90.9,Egress FIFO over-run 9,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.8,Egress FIFO over-run 8,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.7,Egress FIFO over-run 7,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.6,Egress FIFO over-run 6,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.5,Egress FIFO over-run 5,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.4,Egress FIFO over-run 4,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.3,Egress FIFO over-run 3,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.2,Egress FIFO over-run 2,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.1,Egress FIFO over-run 1,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.0,Egress FIFO over-run 0,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+,,,,
+R30.160,Ingress Lane 0 VL snoop 0,16'h001F,,
+30.160.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.160.14:5,Reserved,R,,
+30.160.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.161,Ingress Lane 0 VL snoop 1,16'h1F1F,,
+30.161.15:13,Reserved,R,,
+30.161.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.161.7:5,Reserved,R,,
+30.161.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.162,Ingress Lane 0 VL snoop 2,16'h1F1F,,
+30.162.15:13,Reserved,R,,
+30.162.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.162.7:5,Reserved,R,,
+30.162.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.163,Ingress Lane 1 VL snoop 0,16'h001F,,
+30.163.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.163.14:5,Reserved,R,,
+30.163.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.164,Ingress Lane 1 VL snoop 1,16'h1F1F,,
+30.164.15:13,Reserved,R,,
+30.164.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.164.7:5,Reserved,R,,
+30.164.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.165,Ingress Lane 1 VL snoop 2,16'h1F1F,,
+30.165.15:13,Reserved,R,,
+30.165.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.165.7:5,Reserved,R,,
+30.165.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.166,Ingress Lane 2 VL snoop 0,16'h001F,,
+30.166.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.166.14:5,Reserved,R,,
+30.166.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.167,Ingress Lane 2 VL snoop 1,16'h1F1F,,
+30.167.15:13,Reserved,R,,
+30.167.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.167.7:5,Reserved,R,,
+30.167.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.168,Ingress Lane 2 VL snoop 2,16'h1F1F,,
+30.168.15:13,Reserved,R,,
+30.168.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.168.7:5,Reserved,R,,
+30.168.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.169,Ingress Lane 3 VL snoop 0,16'h001F,,
+30.169.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.169.14:5,Reserved,R,,
+30.169.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.170,Ingress Lane 3 VL snoop 1,16'h1F1F,,
+30.170.15:13,Reserved,R,,
+30.170.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.170.7:5,Reserved,R,,
+30.170.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.171,Ingress Lane 3 VL snoop 2,16'h1F1F,,
+30.171.15:13,Reserved,R,,
+30.171.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.171.7:5,Reserved,R,,
+30.171.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 

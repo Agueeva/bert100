@@ -1,0 +1,491 @@
+# RegAddr,RegName,DefVal/Mask,ValueDes,Description
+R30.0,Device Control 1 ,16'h0000,,
+30.0.15,Manual Reset select,RW,0 = Hardware Sequencing; 1= Manual sequencing; ,"1= Manual Reset sequencing; 0 = Hardware Reset Sequencing (default). Pin reset RESETN leaves the gearbox device in a fully reset state.  Bringing the device into an operational state requires sequencing of SERDES reset signals.  Two sequencing methods are supported: Manual, and hardware sequenced.  This bit selects which method controls internal reset signals.  When Manual control is selected fields in register 30.44 control internal reset signals, otherwise bits in this register control them."
+30.0.14:10,Reserved,R,,
+30.0.9,Software Reset ,RW,,"This bit controls datapath reset signals, if hardware reset sequencing is selected (30.0.15=0). Asserting this bit resets the datapath of the device  De-asserting this bit causes a sequenced removal of reset from the  datapath using the hardware reset sequencer.  This bit is set to a zero by assertion of the RESETN pin."
+30.0.8,Reset seq done,R,,"1=Tx Datapath Reset Sequencer Inactive.  This bit is de-asserted whilst the Tx hardware reset sequencer is in operation.  This bit is asserted when the hardware reset sequencer finishes operations, or is inactive."
+30.0.7,MDIO init,RW,,"Writing a 1 to this bit locations sets all MDIO registers except register 30.0 (this register) to their default states.  This bit is write only, and is always read as a 0."
+30.0.6,Reserved,R,,
+30.0.5,Hard Reset,RW,0=unreset; 1=reset,"Asserting  this register bit has the same effect as a pin power-on-reset (except it does not reset the MDIO controller or registers). On de-assertion of this bit device operation will follow the normal Power-on-reset sequence dependant on the state of 30.0.10 (the Software reset request bit), and 30.0.15 (manual reset select bit). These bits are not affected by assertion of this bit and will retain their previous state. Note that, as in a normal power-on-reset sequence, the eFuse trim bits will be fetched from the eFuse array on de-assertion of hard reset."
+30.0.4,Low Power,RW,0=normal; 1=low power,Setting this bit places the device into an ultra-low power state. All non-MDIO digital circuitry is reset and all analog circuitry placed into its IDDQ state. Asserting this bit has the same effect as asserting the following MMD30 bits : 30.44.4:2. Setting this bit will forcibly set the Hard Reset bit (30.0.5).
+30.0.3:0,Reserved,R,,
+,,,,
+R30.2,Device Identifier Lo ,16'h0210,,
+30.2.15:0,OUI 3-18,R,,3rd through 18th bits of Inphi OUI
+,,,,
+R30.3,Device Identifier Hi ,16'h7400,,
+30.3.15:10,OUI 19-20,R,,19th through 24th bits of Inphi OUI
+30.3.9:4,Model Number,R,,CDR model number 
+30.3.3:0,Revision Code,R,,CDR revision number 
+,,,,
+R30.5,Devices in Package Lo ,16'h0000,,
+30.5.15:0,Devices Lo,R,,
+,,,,
+R30.6,Devices in Package Hi,16'h4000,,
+30.6.15:0,Devices Hi,R,,Vendor Specific Device 1 present in package
+,,,,
+R30.8, MMD30 Status  ,16'h8000,,
+30.8.15:14,status,R,,"Read as 2'b10, writes ignored : Indicates device responding at this address"
+30.8.13:0,Reserved,R,,
+,,,,
+R30.16,25G Lane 0 Pattern Control,16'h0000,,
+30.16.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.16.14,Reserved,R,,
+30.16.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.16.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.16.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.16.10:8,pat_ver_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.16.7,Reserved,R,,
+30.16.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.16.5,error_insert,W,,"Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit is write only, and is always read as a zero. Error insertion is not gated by pattern generator enable."
+30.16.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.16.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.16.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.17,25G Lane 1 Pattern Control,16'h0000,,
+30.17.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.17.14,Reserved,R,,
+30.17.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.17.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.17.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.17.10:8,pat_ver_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.17.7,Reserved,R,,
+30.17.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.17.5,error_insert,W,,"Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit is write only, and is always read as a zero. Error insertion is not gated by pattern generator enable."
+30.17.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.17.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.17.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.18,25G Lane 2 Pattern Control,16'h0000,,
+30.18.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.18.14,Reserved,R,,
+30.18.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.18.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.18.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.18.10:8,pat_ver_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.18.7,Reserved,R,,
+30.18.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.18.5,error_insert,W,,"Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit is write only, and is always read as a zero. Error insertion is not gated by pattern generator enable."
+30.18.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.18.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.18.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.19,25G Lane 3 Pattern Control,16'h0000,,
+30.19.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.19.14,Reserved,R,,
+30.19.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.19.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.19.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.19.10:8,pat_ver_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.19.7,Reserved,R,,
+30.19.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.19.5,error_insert,W,,"Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit is write only, and is always read as a zero. Error insertion is not gated by pattern generator enable."
+30.19.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.19.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.19.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31 (100); 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+,,,,
+,,,,
+R30.30,Custom Pattern Lo ,16'h0000,,
+30.30.15:0,Pattern 15:0,RW,,Custom transmit Pattern bits 15:0
+,,,,
+R30.31,Custom Pattern Mid,16'h4000,,
+30.31.15:0,Pattern 32:16,RW,,Custom transmit Pattern bits 31:16
+,,,,
+R30.32,Custom Pattern Hi ,16'h4000,,
+30.32.15:8,Reserved,R,,
+30.32.7:0,Pattern 39:32,RW,,Custom transmit Pattern bits 39:32
+,,,,
+,,,,
+R30.33,LOL Status Register,16'hFFF0,,
+30.33.15,Latched LOL  3,RC,,Latched Loss of Lock Lane 3: Latched high 'or' of 30.33.11.  Reading this bit clears bit if set.
+30.33.14,Latched LOL  2,RC,,Latched Loss of Lock Lane 2: Latched high 'or' of 30.33.10.  Reading this bit clears bit if set.
+30.33.13,Latched LOL  1,RC,,Latched Loss of Lock Lane 1: Latched high 'or' of 30.33.9.  Reading this bit clears bit if set.
+30.33.12,Latched LOL  0,RC,,Latched Loss of Lock Lane 0: Latched high 'or' of 30.33.8.  Reading this bit clears bit if set.
+30.33.11,LOL  Status 3,R,,Loss of Lock Lane 3: Logical 'or' of 30.33.7 and 30.33.3. 
+30.33.10,LOL  Status 2,R,,Loss of Lock Lane 2: Logical 'or' of 30.33.6 and 30.33.2. 
+30.33.9,LOL  Status 1,R,,Loss of Lock Lane 1: Logical 'or' of 30.33.5 and 30.33.1. 
+30.33.8,LOL  Status 0,R,,Loss of Lock Lane 0: Logical 'or' of 30.33.4 and 30.33.0. 
+30.33.7,low_trd_3,R,,Low transition density state on 25G lane 3: Set to one after 4 consecutive all zero or all one word; Cleared after 4 consecutive words that are not all zero or all ones
+30.33.6,low_trd_2,R,,Low transition density state on 25G lane 2: Set to one after 4 consecutive all zero or all one words; Cleared after 4 consecutive words that are not all zero or all ones
+30.33.5,low_trd_1,R,,Low transition density state on 25G lane 1: Set to one after 4 consecutive all zero or all one words; Cleared after 4 consecutive words that are not all zero or all ones
+30.33.4,low_trd_0,R,,Low transition density state on 25G lane 0: Set to one after 4 consecutive all zero or all one words; Cleared after 4 consecutive words that are not all zero or all ones
+30.33.3,ppm_oor_3,R,,Read as one if the ppm offset of 25G lane 3 is > approximately ± 500 ppm from the reference clock
+30.33.2,ppm_oor_2,R,,Read as one if the ppm offset of 25G lane 1 is > approximately ± 500 ppm from the reference clock
+30.33.1,ppm_oor_1,R,,Read as one if the ppm offset of 25G lane 1 is > approximately ± 500 ppm from the reference clock
+30.33.0,ppm_oor_0,R,,Read as one if the ppm offset of 25G lane 0 is > approximately ± 500 ppm from the reference clock
+,,,,
+R30.37,FIFO Control &  Status ,16'h0000,,
+30.37.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.37.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.37.13:12,Reserved,R,,
+30.37.11,FIFO_error 3,RC,,"FIFO 3 error flag:  This flag is set to a one if either the Lane 3 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.10,FIFO _error 2,RC,,"FIFO 2 error flag:  This flag is set to a one if either the Lane 2 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.9,FIFO _error 1,RC,,"FIFO 1 error flag:  This flag is set to a one if either the Lane 1 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.8,FIFO _error 0,RC,,"FIFO 0 error flag:  This flag is set to a one if either the Lane 0 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.7,fifo_orun_3,RC,,"FIFO 3 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.6,fifo_orun_2,RC,,"FIFO 2 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.5,fifo_orun_1,RC,,"FIFO 1 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.4,fifo_orun_0,RC,,"FIFO 0 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.3,fifo_urun_3,RC,,"FIFO 3 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.2,fifo_urun_2,RC,,"FIFO 2 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.1,fifo_urun_1,RC,,"FIFO 1 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.0,fifo_urun_0,RC,,"FIFO 0 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+,,,,
+,,,,
+R30.39,Transmit PLL Config 1,16'h4800,,
+30.39.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.39.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.39.12,Reserved,R,,
+30.39.11:9,Charge pump current ,RW, 000=lowest current; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest current,Current value control for charge pump : 000=lowest current; 111=highest current
+30.39.8,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.39.7:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 00000=lowest frequency range (maximum capacitance); 11111=highest frequency range (minimum capacitance);
+30.39.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+R30.41,Receive PLL Config 1,16'h4800,,
+30.41.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.41.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.41.12,Reserved,R,,
+30.41.11:9,Charge pump current ,RW, 000=lowest current; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest current,Current value control for charge pump : 000=lowest current; 111=highest current
+30.41.8,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.41.7:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 00000=lowest frequency range (maximum capacitance); 11111=highest frequency range (minimum capacitance);
+30.41.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+,,,,
+R30.40,Transmit PLL Config 2,16'h5800,,
+30.40.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.40.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.40.10:9,Reserved,R,,
+30.40.8,Lock,R,,PLL lock indication 
+30.40.7:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.40.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.42,Receive PLL Config 2,16'h5800,,
+30.42.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.42.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.42.10:9,Reserved,R,,
+30.42.8,Lock,R,,PLL lock indication 
+30.42.7:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.42.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+,,,,
+,,,,
+R30.44,Manual Reset Control,16'hFC00,,
+30.44.15,28G  Rx PLL reset,RW,0=unreset; 1=reset,1= Reset 28G Rx PLL
+30.44.14,28G Rx PI reset,RW,0=unreset; 1=reset,1= Reset 28G Rx Serdes PI
+30.44.13,28G Rx DM reset,RW,0=unreset; 1=reset,1= Reset 28G Rx Serdes Demux
+30.44.12,28G  Tx PLL reset,RW,0=unreset; 1=reset,1= Reset 28G Tx PLL
+30.44.11,28G Serdes reset,RW,0=unreset; 1=reset,1= Reset 28G Serdes
+30.44.10,Core datapath reset,RW,0=unreset; 1=reset,1= Reset core datapath (including FIFOs)
+30.44.9:4,Reserved,R,,
+30.44.3,pll_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G PLLs
+30.44.2,vr_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Voltage Regulators
+30.44.1,bg_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Bandgaps
+30.44.0,analog_powerdn,RW,0=power-up; 1=power-down,1=Power-down (all other) SERDES analog circuitry & PLL REF_OUT buffer
+,,,,
+R30.48,PRBS Rx Error Count Lane 0,16'h0000,,
+30.48.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+,,,,
+R30.49,PRBS Rx Error Count Lane 1,16'h0000,,
+30.49.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+,,,,
+R30.50,PRBS Rx Error Count Lane 2,16'h0000,,
+30.50.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+,,,,
+R30.51,PRBS Rx Error Count Lane 3,16'h0000,,
+30.51.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+,,,,
+R30.256,25G Tx Lane 0 Main Control,16'h0006,,
+30.256.15:4,Reserved,R,,
+30.256.3,Reserved,RW,,
+30.256.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.512,25G Tx Lane 1 Main Control,16'h0006,,
+30.512.15:4,Reserved,R,,
+30.512.3,Reserved,RW,,
+30.512.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.768,25G Tx Lane 2 Main Control,16'h0006,,
+30.768.15:4,Reserved,R,,
+30.768.3,Reserved,RW,,
+30.768.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.1024,25G Tx Lane 3 Main Control,16'h0006,,
+30.1024.15:4,Reserved,R,,
+30.1024.3,Reserved,RW,,
+30.1024.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+,,,,
+R30.257,25G Tx Lane 0 Eq Control,16'h0000,,
+30.257.15:11,Reserved,R,,
+30.257.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.257.7:2,Reserved,R,,
+30.257.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.513,25G Tx Lane 1 Eq Control,16'h0000,,
+30.513.15:11,Reserved,R,,
+30.513.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.513.7:2,Reserved,R,,
+30.513.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.769,25G Tx Lane 2 Eq Control,16'h0000,,
+30.769.15:11,Reserved,R,,
+30.769.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.769.7:2,Reserved,R,,
+30.769.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.1025,25G Tx Lane 3 Eq Control,16'h0000,,
+30.1025.15:11,Reserved,R,,
+30.1025.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.1025.7:2,Reserved,R,,
+30.1025.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+,,,,
+R30.258,25G Tx Lane 0 Swing,16'h0007,,
+30.258.15:3,Reserved,R,,
+30.258.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.514,25G Tx Lane 1 Swing,16'h0007,,
+30.514.15:3,Reserved,R,,
+30.514.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.770,25G Tx Lane 2 Swing,16'h0007,,
+30.770.15:3,Reserved,R,,
+30.770.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.1026,25G Tx Lane 3 Swing,16'h0007,,
+30.1026.15:3,Reserved,R,,
+30.1026.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.384,25G Rx Lane 0 Main Control,16'h0002,,
+30.384.15:3,Reserved,R,,
+30.384.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+,,,,
+R30.640,25G Rx Lane 1 Main Control,16'h0002,,
+30.640.15:3,Reserved,R,,
+30.640.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+,,,,
+R30.896,25G Rx Lane 2 Main Control,16'h0002,,
+30.896.15:3,Reserved,R,,
+30.896.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+,,,,
+R30.1152,25G Rx Lane 3 Main Control,16'h0002,,
+30.1152.15:3,Reserved,R,,
+30.1152.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+,,,,
+,,,,
+,,,,
+R30.385,25G Rx0 1st Order CDR Cntl,16'h0102,,
+30.385.15:11,Reserved,R,,
+30.385.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.385.7,Reserved,R,,
+30.385.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.
+,,,,
+R30.641,25G Rx1 1st Order CDR Cntl,16'h0102,,
+30.641.15:11,Reserved,R,,
+30.641.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.641.7,Reserved,R,,
+30.641.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.
+,,,,
+R30.897,25G Rx2 1st Order CDR Cntl,16'h0102,,
+30.897.15:11,Reserved,R,,
+30.897.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.897.7,Reserved,R,,
+30.897.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.
+,,,,
+R30.1153,25G Rx3 1st Order CDR Cntl,16'h0102,,
+30.1153.15:11,Reserved,R,,
+30.1153.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.1153.7,Reserved,R,,
+30.1153.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.
+,,,,
+,,,,
+R30.386,25G Rx0 2nd Order CDR Cntl,16'h0200,,
+30.386.15:11,Reserved,R,,
+30.386.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.386.7:1,Reserved,R,,
+30.386.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.642,25G Rx1 2nd Order CDR Cntl,16'h0200,,
+30.642.15:11,Reserved,R,,
+30.642.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.642.7:1,Reserved,R,,
+30.642.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.898,25G Rx2 2nd Order CDR Cntl,16'h0200,,
+30.898.15:11,Reserved,R,,
+30.898.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.898.7:1,Reserved,R,,
+30.898.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.1154,25G Rx3 2nd Order CDR Cntl,16'h0200,,
+30.1154.15:11,Reserved,R,,
+30.1154.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.1154.7:1,Reserved,R,,
+30.1154.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+,,,,
+,,,,
+R30.387,25G Rx Lane 0 Eq Control,16'h0404,,
+30.387.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.387.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.387.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.387.7:3,Reserved,R,,
+30.387.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.387.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.643,25G Rx Lane 1 Eq Control,16'h0404,,
+30.643.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.643.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.643.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.643.7:3,Reserved,R,,
+30.643.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.643.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.899,25G Rx Lane 2 Eq Control,16'h0404,,
+30.899.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.899.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.899.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.899.7:3,Reserved,R,,
+30.899.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.899.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.1155,25G Rx Lane 3 Eq Control,16'h0404,,
+30.1155.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.1155.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.1155.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.1155.7:3,Reserved,R,,
+30.1155.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.1155.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+,,,,
+R30.416,25G Rx Lane 0 PI Control 1,16'h0000,,
+30.416.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.416.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.416.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.416.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.416.7:2,Reserved,R,,
+30.416.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.416.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+,,,,
+R30.672,25G Rx Lane 1 PI Control 1,16'h0000,,
+30.672.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.672.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.672.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.672.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.672.7:2,Reserved,R,,
+30.672.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.672.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+,,,,
+R30.928,25G Rx Lane 2 PI Control 1,16'h0000,,
+30.928.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.928.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.928.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.928.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.928.7:2,Reserved,R,,
+30.928.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.928.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+,,,,
+R30.1184,25G Rx Lane 3 PI Control 1,16'h0000,,
+30.1184.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.1184.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.1184.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.1184.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.1184.7:2,Reserved,R,,
+30.1184.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.1184.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.420,25G Rx Lane 0 Eq Control 2 ,16'h0000,,
+30.420.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.420.1,Reserved,R,,
+30.420.0,Equalizer code override,RW,0=free-run; 1=override;,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.676,25G Rx Lane 1 Eq Control 2 ,16'h0000,,
+30.676.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.676.1,Reserved,R,,
+30.676.0,Equalizer code override,RW,0=free-run; 1=override;,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.932,25G Rx Lane 2 Eq Control 2 ,16'h0000,,
+30.932.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.932.1,Reserved,R,,
+30.932.0,Equalizer code override,RW,0=free-run; 1=override;,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.1188,25G Rx Lane 3 Eq Control 2 ,16'h0000,,
+30.1188.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.1188.1,Reserved,R,,
+30.1188.0,Equalizer code override,RW,0=free-run; 1=override;,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+R30.421,25G Rx Lane 0 Eq Observe 1 ,16'h0000,,
+30.421.15:4,Reserved,R,,
+30.421.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.677,25G Rx Lane 1 Eq Observe 1,16'h0000,,
+30.677.15:4,Reserved,R,,
+30.677.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.933,25G Rx Lane 2 Eq Observe 1 ,16'h0000,,
+30.933.15:4,Reserved,R,,
+30.933.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.1189,25G Rx Lane 3 Eq Observe 1,16'h0000,,
+30.1189.15:4,Reserved,R,,
+30.1189.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.422,25G Rx Lane 0 Eq Setting ,16'h0000,,
+30.422.15:4,Reserved,R,,
+30.422.3:0,Equalizer Setting,RW,0000 =0000; 0001 = 0001; 0010 = 0010; 0011 = 0011; 0100 = 0100;  0101 = 0101;  0110 = 0110;  0111 = 0111; 1000 = 1000; 1001 = 1001; 1010 = 1010; 1011 = 1011; 1100 = 1100;  1101 = 1101;  1110 = 1110;  1111 = 1111;,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.678,25G Rx Lane 1 Eq Setting,16'h0000,,
+30.678.15:4,Reserved,R,,
+30.678.3:0,Equalizer Setting,RW,0000 =0000; 0001 = 0001; 0010 = 0010; 0011 = 0011; 0100 = 0100;  0101 = 0101;  0110 = 0110;  0111 = 0111; 1000 = 1000; 1001 = 1001; 1010 = 1010; 1011 = 1011; 1100 = 1100;  1101 = 1101;  1110 = 1110;  1111 = 1111;,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.934,25G Rx Lane 2 Eq Setting,16'h0000,,
+30.934.15:4,Reserved,R,,
+30.934.3:0,Equalizer Setting,RW,0000 =0000; 0001 = 0001; 0010 = 0010; 0011 = 0011; 0100 = 0100;  0101 = 0101;  0110 = 0110;  0111 = 0111; 1000 = 1000; 1001 = 1001; 1010 = 1010; 1011 = 1011; 1100 = 1100;  1101 = 1101;  1110 = 1110;  1111 = 1111;,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.1190,25G Rx Lane 3 Eq Setting,16'h0000,,
+30.1190.15:4,Reserved,R,,
+30.1190.3:0,Equalizer Setting,RW,0000 =0000; 0001 = 0001; 0010 = 0010; 0011 = 0011; 0100 = 0100;  0101 = 0101;  0110 = 0110;  0111 = 0111; 1000 = 1000; 1001 = 1001; 1010 = 1010; 1011 = 1011; 1100 = 1100;  1101 = 1101;  1110 = 1110;  1111 = 1111;,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.423,25G Rx0 2nd Order CDR Obs,16'h0000,,
+30.423.15:14,Reserved,R,,
+30.423.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+,,,,
+R30.679,25G Rx1 2nd Order CDR Obs,16'h0000,,
+30.679.15:14,Reserved,R,,
+30.679.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+,,,,
+R30.935,25G Rx2 2nd Order CDR Obs,16'h0000,,
+30.935.15:14,Reserved,R,,
+30.935.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+,,,,
+R30.1191,25G Rx3 2nd Order CDR Obs,16'h0000,,
+30.1191.15:14,Reserved,R,,
+30.1191.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+,,,,
+,,,,
+,,,,
+R30.424,25G Rx Lane 0 PI Position 1,16'h0000,,
+30.424.15:10,Reserved,R,,
+30.424.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.424.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+,,,,
+R30.680,25G Rx Lane 1 PI Position 1,16'h0000,,
+30.680.15:10,Reserved,R,,
+30.680.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.680.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+,,,,
+R30.936,25G Rx Lane 2 PI Position 1,16'h0000,,
+30.936.15:10,Reserved,R,,
+30.936.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.936.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+,,,,
+R30.1192,25G Rx Lane 3 PI Position 1,16'h0000,,
+30.1192.15:10,Reserved,R,,
+30.1192.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.1192.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field

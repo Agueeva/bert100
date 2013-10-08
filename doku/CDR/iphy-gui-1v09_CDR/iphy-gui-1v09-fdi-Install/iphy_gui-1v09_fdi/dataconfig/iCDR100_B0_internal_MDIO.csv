@@ -1,0 +1,1108 @@
+! $Header: /projects/wlv/iphy/sos/repository/iphy_A.rep/TEMP/case_1285613542/#alidation#iphy-gui#dataconfig#iCDR100_B0_internal_MDIO.csv,v 1.1 2012-06-20 11:26:14-07 case Exp $,,,
+"! From: iphy/sos/repository/iphy_A.rep/TEMP/rbemra_1274230893/validation#python#iCDR100_internal_MDIO_1v1_flat.csv, v 1.6 2011-07-29 10:44:59-07 rbemra Exp $ ! Revision 1.6  2011-07-29 10:44:59-07  rbemra",,,,
+! $Log: #alidation#iphy-gui#dataconfig#iCDR100_B0_internal_MDIO.csv,v $
+! Revision 1.1  2012-06-20 11:26:14-07  case
+! Inital release -- not checked
+!,,,
+! Revision 1.4  2012-04-12 14:24:40-07  case,,,,
+! Fixed SA offset control register description, defined registers 30.256.2:1 as reserved,,,
+!,,,,
+! Revision 1.3  2012-03-29 09:59:58-07  case,,,,
+! defined CYA bit function correctly this time!,,,,
+!,,,,
+! Revision 1.2  2012-03-27 16:40:20-07  case,,,,
+! defined CYA bit function,,,,
+!,,,,
+! Revision 1.1  2012-03-16 10:06:15-07  case,,,,
+! updated and synchronized,,,,
+!,,,,
+! Revision 1.4  2011-12-01 14:23:17-08  case,,,,
+! Added CYA register space,,,,
+!,,,,
+! Revision 1.3  2011-09-29 13:32:42-07  case,,,,
+! Changed 30.0.7 to reserved, 30.0.12 to MDIO init per Andre,,,
+!,,,,
+! Revision 1.2  2011-08-23 12:09:19-07  rbemra,,,,
+! Corrected 11:8 = 4'b0101 of Rx 25G Misc Trim (per J. Sanders),,,,
+!,,,,
+! Revision 1.1  2011-08-08 10:48:07-07  rbemra,,,,
+! First iCDR100, iPHY100 release version,,,
+!,,,,
+! Revision 1.6  2011-07-29 10:44:59-07  rbemra,,,,
+! Same as rev4, fixed header/SOS_kwds,,,
+!,,,,
+! Revision 1.4  2011-07-29 09:24:11-07  case,,,,
+! Corrected Rx and Tx PLL Voltage regulator descriptions,,,,
+! Revision 1.3  2011-07-28 15:06:11-07  rbemra,,,,
+! Several updates (iPHY team) for iCDR100 first samples,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 2.0  2012-05-15 Andre,,,,
+! B0 Updates,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# RegAddr,RegName,DefVal/Mask,ValueDes,Description
+R30.0,Device Control 1 ,16'h0000,,
+30.0.15,Manual Reset select,RW,0 = Hardware Sequencing; 1= Manual sequencing; ,"1= Manual Reset sequencing; 0 = Hardware Reset Sequencing (default). Pin reset RESETN leaves the gearbox device in a fully reset state.  Bringing the device into an operational state requires sequencing of SERDES reset signals.  Two sequencing methods are supported: Manual, and hardware sequenced.  This bit selects which method controls internal reset signals.  When Manual control is selected fields in register 30.44 control internal reset signals, otherwise bits in this register control them."
+30.0.14,Protocol Select,RW,0 = Ethernet; 1= OTU4; ,Select OTU4 framing protocol for protocol lock State Machine.
+30.0.13,Reserved,R,,
+30.0.12,MDIO init,RW,,Writing a 1 to this bit locations sets all MDIO registers except register 30.0 (this register) to their default states. This bit must be cleared in order to write to any other mdio registers.
+30.0.11:10,Reserved,R,,
+30.0.9,Software Reset ,RW,,"This bit controls datapath reset signals, if hardware reset sequencing is selected (30.0.15=0). Asserting this bit resets the datapath of the device  De-asserting this bit causes a sequenced removal of reset from the  datapath using the hardware reset sequencer.  This bit is set to a zero by assertion of the RESETN pin."
+30.0.8,Reset seq done,R,,"1=Tx Datapath Reset Sequencer Inactive.  This bit is de-asserted whilst the Tx hardware reset sequencer is in operation.  This bit is asserted when the hardware reset sequencer finishes operations, or is inactive."
+30.0.7:6,Reserved,R,,
+30.0.5,Hard Reset,RW,0=unreset; 1=reset,"Asserting  this register bit has the same effect as a pin power-on-reset (except it does not reset the MDIO controller or registers). On de-assertion of this bit device operation will follow the normal Power-on-reset sequence dependant on the state of 30.0.10 (the Software reset request bit), and 30.0.15 (manual reset select bit). These bits are not affected by assertion of this bit and will retain their previous state. Note that, as in a normal power-on-reset sequence, the eFuse trim bits will be fetched from the eFuse array on de-assertion of hard reset."
+30.0.4,Low Power,RW,0=normal; 1=low power,Setting this bit places the device into an ultra-low power state. All non-MDIO digital circuitry is reset and all analog circuitry placed into its IDDQ state. Asserting this bit has the same effect as asserting the following MMD30 bits : 30.44.4:2. Setting this bit will forcibly set the Hard Reset bit (30.0.5).
+30.0.3:0,Reserved,R,,
+R30.2,Device Identifier Lo ,16'h0210,,
+30.2.15:0,OUI 3-18,R,,3rd through 18th bits of Inphi OUI
+R30.3,Device Identifier Hi ,16'h7401,,
+30.3.15:10,OUI 19-20,R,,19th through 24th bits of Inphi OUI
+30.3.9:4,Model Number,R,,CDR model number 
+30.3.3:0,Revision Code,R,,CDR revision number 
+R30.5,Devices in Package Lo ,16'h0000,,
+30.5.15:0,Devices Lo,R,,
+R30.6,Devices in Package Hi,16'h4000,,
+30.6.15:0,Devices Hi,R,,Vendor Specific Device 1 present in package
+R30.8, MMD30 Status  ,16'h8000,,
+30.8.15:14,status,R,,"Read as 2'b10, writes ignored : Indicates device responding at this address"
+30.8.13:0,Reserved,R,,
+R30.16,25G Lane 0 Pattern Control,16'h0040,,
+30.16.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.16.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.16.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.16.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.16.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.16.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.16.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.16.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.16.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.16.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.16.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.16.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.17,25G Lane 1 Pattern Control,16'h0040,,
+30.17.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.17.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.17.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.17.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.17.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.17.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.17.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.17.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.17.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.17.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.17.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.17.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.18,25G Lane 2 Pattern Control,16'h0040,,
+30.18.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.18.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.18.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.18.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.18.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.18.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.18.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.18.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.18.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.18.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.18.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.18.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.19,25G Lane 3 Pattern Control,16'h0040,,
+30.19.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.19.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.19.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.19.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.19.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.19.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.19.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.19.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.19.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.19.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.19.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.19.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.30,Custom Pattern Lo ,16'h0000,,
+30.30.15:0,Pattern 15:0,RW,,Custom transmit Pattern bits 15:0
+R30.31,Custom Pattern Mid,16'h0000,,
+30.31.15:0,Pattern 32:16,RW,,Custom transmit Pattern bits 31:16
+R30.32,Custom Pattern Hi,16'h0000,,
+30.32.15:8,Reserved,R,,
+30.32.7:0,Pattern 39:32,RW,,Custom transmit Pattern bits 39:32
+R30.33,LOL Status Register,16'hFFFF,,
+30.33.15,Latched LOL  3,RC,,Latched Loss of Lock Lane 3: Latched high 'or' of 30.33.11.  Reading this bit clears bit if set.
+30.33.14,Latched LOL  2,RC,,Latched Loss of Lock Lane 2: Latched high 'or' of 30.33.10.  Reading this bit clears bit if set.
+30.33.13,Latched LOL  1,RC,,Latched Loss of Lock Lane 1: Latched high 'or' of 30.33.9.  Reading this bit clears bit if set.
+30.33.12,Latched LOL  0,RC,,Latched Loss of Lock Lane 0: Latched high 'or' of 30.33.8.  Reading this bit clears bit if set.
+30.33.11,LOL  Status 3,R,,Loss of Lock Lane 3: Logical 'or' of 30.33.7 and 30.33.3. 
+30.33.10,LOL  Status 2,R,,Loss of Lock Lane 2: Logical 'or' of 30.33.6 and 30.33.2. 
+30.33.9,LOL  Status 1,R,,Loss of Lock Lane 1: Logical 'or' of 30.33.5 and 30.33.1. 
+30.33.8,LOL  Status 0,R,,Loss of Lock Lane 0: Logical 'or' of 30.33.4 and 30.33.0. 
+30.33.7,no_prot_lock_3,R,,Protocol Lock SM on 25G lane 3 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.6,no_prot_lock_2,R,,Protocol Lock SM on 25G lane 2 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.5,no_prot_lock_1,R,,Protocol Lock SM on 25G lane 1 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.4,no_prot_lock_0,R,,Protocol Lock SM on 25G lane 0 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.3,no_prbs_lock_3,R,,PRBS verifier is not locked on 25G lane 3
+30.33.2,no_prbs_lock_2,R,,PRBS verifier is not locked on 25G lane 2
+30.33.1,no_prbs_lock_1,R,,PRBS verifier is not locked on 25G lane 1
+30.33.0,no_prbs_lock_0,R,,PRBS verifier is not locked on 25G lane 0
+R30.37,FIFO Control &  Status ,16'h0000,,
+30.37.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.37.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.37.13:12,Reserved,R,,
+30.37.11,FIFO_error 3,RC,,"FIFO 3 error flag:  This flag is set to a one if either the Lane 3 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.10,FIFO _error 2,RC,,"FIFO 2 error flag:  This flag is set to a one if either the Lane 2 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.9,FIFO _error 1,RC,,"FIFO 1 error flag:  This flag is set to a one if either the Lane 1 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.8,FIFO _error 0,RC,,"FIFO 0 error flag:  This flag is set to a one if either the Lane 0 FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.7,fifo_orun_3,RC,,"FIFO 3 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.6,fifo_orun_2,RC,,"FIFO 2 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.5,fifo_orun_1,RC,,"FIFO 1 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.4,fifo_orun_0,RC,,"FIFO 0 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.3,fifo_urun_3,RC,,"FIFO 3 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.2,fifo_urun_2,RC,,"FIFO 2 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.1,fifo_urun_1,RC,,"FIFO 1 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.0,fifo_urun_0,RC,,"FIFO 0 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+R30.39,Transmit PLL Config 1,16'h4800,,
+30.39.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.39.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.39.12,Reserved,R,,
+30.39.11:9,Charge pump current ,RW, 000=lowest current; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest current,Current value control for charge pump : 000=lowest current; 111=highest current
+30.39.8,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.39.7:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 00000=lowest frequency range (maximum capacitance); 11111=highest frequency range (minimum capacitance);
+30.39.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+R30.41,Receive PLL Config 1,16'h4800,,
+30.41.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.41.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.41.12,Reserved,R,,
+30.41.11:9,Charge pump current ,RW, 000=lowest current; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest current,Current value control for charge pump : 000=lowest current; 111=highest current
+30.41.8,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.41.7:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 00000=lowest frequency range (maximum capacitance); 11111=highest frequency range (minimum capacitance);
+30.41.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+R30.40,Transmit PLL Config 2,16'h5800,,
+30.40.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.40.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.40.10:9,Reserved,R,,
+30.40.8,Lock,R,,PLL lock indication 
+30.40.7:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.40.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+R30.42,Receive PLL Config 2,16'h5800,,
+30.42.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.42.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.42.10:9,Reserved,R,,
+30.42.8,Lock,R,,PLL lock indication 
+30.42.7:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.42.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+R30.44,Manual Reset Control,16'hFC00,,
+30.44.15,28G  Rx PLL reset,RW,0=unreset; 1=reset,1= Reset 28G Rx PLL
+30.44.14,28G Rx PI reset,RW,0=unreset; 1=reset,1= Reset 28G Rx Serdes PI
+30.44.13,28G Rx DM reset,RW,0=unreset; 1=reset,1= Reset 28G Rx Serdes Demux
+30.44.12,28G  Tx PLL reset,RW,0=unreset; 1=reset,1= Reset 28G Tx PLL
+30.44.11,28G Serdes reset,RW,0=unreset; 1=reset,1= Reset 28G Serdes
+30.44.10,Core datapath reset,RW,0=unreset; 1=reset,1= Reset core datapath (including FIFOs)
+30.44.9:4,Reserved,R,,
+30.44.3,pll_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G PLLs
+30.44.2,vr_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Voltage Regulators
+30.44.1,bg_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Bandgaps
+30.44.0,analog_powerdn,RW,0=power-up; 1=power-down,1=Power-down (all other) SERDES analog circuitry & PLL REF_OUT buffer
+R30.45,Monitor Clock Control,16'h0000,,
+30.45.15:6,Reserved,R,,
+30.45.5,RX monitor clock divide ratio,RW, 0 =Divide by 8; 1=Divide 16;  ,RX monitor clock divide ratio:  0 =Divide by 8; 1=Divide 16;  
+30.45.4,Enable RX monitor clock ,RW,0=disable; 1=enable,Enable RX monitor clock 
+30.45.3:2,Reserved,R,,
+30.45.1,TX monitor clock divide ratio,RW,0 =Divide by 8; 1=Divide 16;  ,TX monitor clock divide ratio:  0 =Divide by 8; 1=Divide 16;  
+30.45.0,Enable TX monitor clock ,RW,0=disable; 1=enable,Enable TX monitor clock 
+R30.48,PRBS Rx Error Count Lane 0,16'h0000,,
+30.48.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R30.49,PRBS Rx Error Count Lane 1,16'h0000,,
+30.49.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R30.50,PRBS Rx Error Count Lane 2,16'h0000,,
+30.50.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R30.51,PRBS Rx Error Count Lane 3,16'h0000,,
+30.51.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R30.64,25G Lane 0 Sample Lo,16'h0000,,
+30.64.15:0,Sample Lo,R,,Sample [15:0]
+R30.68,25G Lane 1 Sample Lo,16'h0000,,
+30.68.15:0,Sample Lo,R,,Sample [15:0]
+R30.72,25G Lane 2 Sample Lo,16'h0000,,
+30.72.15:0,Sample Lo,R,,Sample [15:0]
+R30.76,25G Lane 3 Sample Lo,16'h0000,,
+30.76.15:0,Sample Lo,R,,Sample [15:0]
+R30.65,25G Lane 0 Sample Mid,16'h0000,,
+30.65.15:0,Sample Mid,R,,Sample [31:16]
+R30.69,25G Lane 1 Sample Mid,16'h0000,,
+30.69.15:0,Sample Mid,R,,Sample [31:16]
+R30.73,25G Lane 2 Sample Mid,16'h0000,,
+30.73.15:0,Sample Mid,R,,Sample [31:16]
+R30.77,25G Lane 3 Sample Mid,16'h0000,,
+30.77.15:0,Sample Mid,R,,Sample [31:16]
+R30.66,25G Lane 0 Sample Hi,16'h0000,,
+30.66.15:8,Reserved,R,,
+30.66.7:0,Sample Hi,R,,Sample [39:32]
+R30.70,25G Lane 1 Sample Hi,16'h0000,,
+30.70.15:8,Reserved,R,,
+30.70.7:0,Sample Hi,R,,Sample [39:32]
+R30.74,25G Lane 2 Sample Hi,16'h0000,,
+30.74.15:8,Reserved,R,,
+30.74.7:0,Sample Hi,R,,Sample [39:32]
+R30.78,25G Lane 3 Sample Hi,16'h0000,,
+30.78.15:8,Reserved,R,,
+30.78.7:0,Sample Hi,R,,Sample [39:32]
+R30.256,25G Tx Lane 0 Main Control,16'h0006,,
+30.256.15:3,Reserved,R,,
+30.256.2,Reserved,RW,,
+30.256.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.256.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.512,25G Tx Lane 1 Main Control,16'h0006,,
+30.512.15:3,Reserved,R,,
+30.512.2,Reserved,RW,,
+30.512.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.512.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.768,25G Tx Lane 2 Main Control,16'h0006,,
+30.768.15:3,Reserved,R,,
+30.768.2,Reserved,RW,,
+30.768.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.768.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.1024,25G Tx Lane 3 Main Control,16'h0006,,
+30.1024.15:3,Reserved,R,,
+30.1024.2,Reserved,RW,,
+30.1024.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.1024.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.257,25G Tx Lane 0 Eq Control,16'h0000,,
+30.257.15:11,Reserved,R,,
+30.257.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.257.7:2,Reserved,R,,
+30.257.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.513,25G Tx Lane 1 Eq Control,16'h0000,,
+30.513.15:11,Reserved,R,,
+30.513.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.513.7:2,Reserved,R,,
+30.513.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.769,25G Tx Lane 2 Eq Control,16'h0000,,
+30.769.15:11,Reserved,R,,
+30.769.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.769.7:2,Reserved,R,,
+30.769.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.1025,25G Tx Lane 3 Eq Control,16'h0000,,
+30.1025.15:11,Reserved,R,,
+30.1025.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.1025.7:2,Reserved,R,,
+30.1025.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.258,25G Tx Lane 0 Swing,16'h0007,,
+30.258.15:3,Reserved,R,,
+30.258.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.514,25G Tx Lane 1 Swing,16'h0007,,
+30.514.15:3,Reserved,R,,
+30.514.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.770,25G Tx Lane 2 Swing,16'h0007,,
+30.770.15:3,Reserved,R,,
+30.770.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.1026,25G Tx Lane 3 Swing,16'h0007,,
+30.1026.15:3,Reserved,R,,
+30.1026.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.259,25G Tx Lane 0 Impedance,16'h0007,,
+30.259.15:12,Reserved,R,,
+30.259.11,clock phase 3 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.259.10,clock phase 2 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.259.9,clock phase 1 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.259.8,clock phase 0 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.259.7:5,Reserved,R,,
+30.259.4:1,txa_opz[3:0],RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,Transmitter output impedance : 0000=maximum impedance; 1111=minimum impedance;
+30.259.0,Clock phase adjust value,RW,0=750fs;1=1500fs,Set magnitude of clock phase trimming. When ?0? the clock phases are delayed by approx 750fs. When ?1? the clock phases are delayed by approx 1500fs. 
+R30.515,25G Tx Lane 1 Impedance,16'h0007,,
+30.515.15:12,Reserved,R,,
+30.515.11,clock phase 3 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.515.10,clock phase 2 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.515.9,clock phase 1 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.515.8,clock phase 0 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.515.7:5,Reserved,R,,
+30.515.4:1,txa_opz[3:0],RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,Transmitter output impedance : 0000=maximum impedance; 1111=minimum impedance;
+30.515.0,Clock phase adjust value,RW,0=750fs;1=1500fs,Set magnitude of clock phase trimming. When ?0? the clock phases are delayed by approx 750fs. When ?1? the clock phases are delayed by approx 1500fs. 
+R30.771,25G Tx Lane 2 Impedance,16'h0007,,
+30.771.15:12,Reserved,R,,
+30.771.11,clock phase 3 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.771.10,clock phase 2 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.771.9,clock phase 1 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.771.8,clock phase 0 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.771.7:5,Reserved,R,,
+30.771.4:1,txa_opz[3:0],RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,Transmitter output impedance : 0000=maximum impedance; 1111=minimum impedance;
+30.771.0,Clock phase adjust value,RW,0=750fs;1=1500fs,Set magnitude of clock phase trimming. When ?0? the clock phases are delayed by approx 750fs. When ?1? the clock phases are delayed by approx 1500fs. 
+R30.1027,25G Tx Lane 3 Impedance,16'h0007,,
+30.1027.15:12,Reserved,R,,
+30.1027.11,clock phase 3 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.1027.10,clock phase 2 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.1027.9,clock phase 1 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.1027.8,clock phase 0 trim enable,RW,0=disable; 1=enable,Enable clock phase trimming. When this bit is set the associated clock phase is delayed by an amount set by bit 0 in this register.
+30.1027.7:5,Reserved,R,,
+30.1027.4:1,txa_opz[3:0],RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,Transmitter output impedance : 0000=maximum impedance; 1111=minimum impedance;
+30.1027.0,Clock phase adjust value,RW,0=750fs;1=1500fs,Set magnitude of clock phase trimming. When ?0? the clock phases are delayed by approx 750fs. When ?1? the clock phases are delayed by approx 1500fs. 
+R30.272,25G Tx Lane 0 Amux,16'h0000,,
+30.272.15:14,spfuse_tx[3:2],RW,,
+30.272.13,TXA_vreg2_ldrv_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.272.12,TXA_vreg1_clk[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.272.11:8,spgck_tx_fuse[3:0],RW,,
+30.272.7,Reserved,R,,
+30.272.6:4,PLL Amux select[2:0],RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.272.3,Reserved,R,,
+30.272.20,TXA Amux select[2:0],RW,000=tristate; 001=vreg_vss; 010=vreg_ldrv; 011=vreg_clk; 100=vdd; 101=vddr;110=perf_monitor; 111=vss,
+R30.528,25G Tx Lane 1 Amux,16'h0000,,
+30.528.15:14,spfuse_tx[3:2],RW,,
+30.528.13,TXA_vreg2_ldrv_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.528.12,TXA_vreg1_clk[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.528.11:8,spgck_tx_fuse[3:0],RW,,
+30.528.7,Reserved,R,,
+30.528.6:4,PLL Amux select[2:0],RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.528.3,Reserved,R,,
+30.528.2:0,TXA Amux select[2:0],RW,000=tristate; 001=vreg_vss; 010=vreg_ldrv; 011=vreg_clk; 100=vdd; 101=vddr;110=perf_monitor; 111=vss,
+R30.784,25G Tx Lane 2 Amux,16'h0000,,
+30.784.15:14,spfuse_tx[3:2],RW,,
+30.784.13,TXA_vreg2_ldrv_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.784.13,TXA_vreg1_clk[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.784.11:8,spgck_tx_fuse[3:0],RW,,
+30.784.7,Reserved,R,,
+30.784.6:4,PLL Amux select[2:0],RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.784.3,Reserved,R,,
+30.784.2:0,TXA Amux select[2:0],RW,000=tristate; 001=vreg_vss; 010=vreg_ldrv; 011=vreg_clk; 100=vdd; 101=vddr;110=perf_monitor; 111=vss,
+R30.1040,25G Tx Lane 3 Amux,16'h0000,,
+30.1040.15:14,spfuse_tx[3:2],RW,,
+30.1040.13,TXA_vreg2_ldrv_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.1040.12,TXA_vreg1_clk[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.1040.11:9,spgck_tx_fuse[3:1],RW,,
+30.1040.8,Vreg_Tx_PLL[0],RW,0=+0.00V;1=+0.01V,LSB of Central Vreg control. When set adds 0.01V to regulator output.
+30.1040.7,Reserved,R,,
+30.1040.6:4,PLL Amux select[2:0],RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.1040.3,Reserved,R,,
+30.1040.2:0,TXA Amux select[2:0],RW,000=tristate; 001=vreg_vss; 010=vreg_ldrv; 011=vreg_clk; 100=vdd; 101=vddr;110=perf_monitor; 111=vss,
+R30.273,25G Tx Lane 0 Vreg,16'h0AAA,,
+30.273.15:12,Reserved,R,,
+30.273.11:8,not_used,RW,,
+30.273.7:4,TXA_vreg2_ldrv_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 13 (adds 0.01V) to value set here.
+30.273.3:0,TXA_vreg1_clk[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 12 (adds 0.01V) to value set here.
+R30.529,25G Tx Lane 1 Vreg,16'h0AAA,,
+30.529.15:12,Reserved,R,,
+30.529.11:8,not_used,RW,,
+30.529.7:4,TXA_vreg2_ldrv_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 13 (adds 0.01V) to value set here.
+30.529.3:0,TXA_vreg1_clk[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 12 (adds 0.01V) to value set here.
+R30.785,25G Tx Lane 2 Vreg,16'h0AAA,,
+30.785.15:12,Reserved,R,,
+30.785.11:8,not_used,RW,,
+30.785.7:4,TXA_vreg2_ldrv_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 13 (adds 0.01V) to value set here.
+30.785.3:0,TXA_vreg1_clk[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 12 (adds 0.01V) to value set here.
+R30.1041,25G Tx Lane 3 Vreg,16'h0AAA,,
+30.1041.15:12,Reserved,R,,
+30.1041.11:8,Vreg_Tx_PLL[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of Central Vreg control. LSB is set by 30.1040.8 (adds 0.01V) to value set here.
+30.1041.7:4,TXA_vreg2_ldrv_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 13 (adds 0.01V) to value set here.
+30.1041.3:0,TXA_vreg1_clk[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane Amux control register bit 12 (adds 0.01V) to value set here.
+R30.1042,Global Clocking Fuse trim,16'h0000,,
+30.1042.15:12,RX Poly Dep Fuse trim,RW,,
+30.1042.11:8,RX Poly Ind Fuse trim,RW,,
+30.1042.7:4,TX Poly Dep Fuse trim,RW,,
+30.1042.3:0,TX Poly Ind Fuse trim,RW,,
+R30.288,25G Tx Lane 0 CYA ,16'h0000,,
+30.288.15:8,Reserved,R,,
+30.288.7:2,Reserved,RW,,
+30.288.1:0,Vreg comp mode,RW,00=enable;10=half_strength;11=disable,"Controls the voltage regulator compensation scheme, whereby the voltage regulator for the line driver adapts its output current based on the transition density of the data."
+R30.544,25G Tx Lane 1 CYA ,16'h0000,,
+30.544.15:8,Reserved,R,,
+30.544.7:2,Reserved,RW,,
+30.544.1:0,Vreg comp mode,RW,00=enable;10=half_strength;11=disable,"Controls the voltage regulator compensation scheme, whereby the voltage regulator for the line driver adapts its output current based on the transition density of the data."
+R30.800,25G Tx Lane 2 CYA ,16'h0000,,
+30.800.15:8,Reserved,R,,
+30.800.7:2,Reserved,RW,,
+30.800.1:0,Vreg comp mode,RW,00=enable;10=half_strength;11=disable,"Controls the voltage regulator compensation scheme, whereby the voltage regulator for the line driver adapts its output current based on the transition density of the data."
+R30.1056,25G Tx Lane 3 CYA ,16'h0000,,
+30.1056.15:8,Reserved,R,,
+30.1056.7:2,Reserved,RW,,
+30.1056.1:0,Vreg comp mode,RW,00=enable;10=half_strength;11=disable,"Controls the voltage regulator compensation scheme, whereby the voltage regulator for the line driver adapts its output current based on the transition density of the data."
+R30.384,25G Rx Lane 0 Main Control,16'h0000,,
+30.384.15:3,Reserved,R,,
+30.384.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.640,25G Rx Lane 1 Main Control,16'h0000,,
+30.640.15:3,Reserved,R,,
+30.640.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.896,25G Rx Lane 2 Main Control,16'h0000,,
+30.896.15:3,Reserved,R,,
+30.896.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.1152,25G Rx Lane 3 Main Control,16'h0000,,
+30.1152.15:3,Reserved,R,,
+30.1152.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.385,25G Rx0 1st Order CDR Cntl,16'h0102,,
+30.385.15:11,Reserved,R,,
+30.385.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.385.7,Reserved,R,,
+30.385.6:0,CDR1 Threshold,RW,0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.The minimum threshold is now 16. The original minimum of 8 votes is no longer supported. DO not select.
+R30.641,25G Rx1 1st Order CDR Cntl,16'h0102,,
+30.641.15:11,Reserved,R,,
+30.641.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.641.7,Reserved,R,,
+30.641.6:0,CDR1 Threshold,RW,0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.The minimum threshold is now 16. The original minimum of 8 votes is no longer supported. DO not select.
+R30.897,25G Rx2 1st Order CDR Cntl,16'h0102,,
+30.897.15:11,Reserved,R,,
+30.897.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.897.7,Reserved,R,,
+30.897.6:0,CDR1 Threshold,RW,0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.The minimum threshold is now 16. The original minimum of 8 votes is no longer supported. DO not select.
+R30.1153,25G Rx3 1st Order CDR Cntl,16'h0102,,
+30.1153.15:11,Reserved,R,,
+30.1153.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = '1' at any time.
+30.1153.7,Reserved,R,,
+30.1153.6:0,CDR1 Threshold,RW,0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = '1' at any time.The minimum threshold is now 16. The original minimum of 8 votes is no longer supported. DO not select.
+R30.386,25G Rx0 2nd Order CDR Cntl,16'h0201,,
+30.386.15:11,Reserved,R,,
+30.386.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.386.7:1,Reserved,R,,
+30.386.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+R30.642,25G Rx1 2nd Order CDR Cntl,16'h0201,,
+30.642.15:11,Reserved,R,,
+30.642.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.642.7:1,Reserved,R,,
+30.642.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+R30.898,25G Rx2 2nd Order CDR Cntl,16'h0201,,
+30.898.15:11,Reserved,R,,
+30.898.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.898.7:1,Reserved,R,,
+30.898.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+R30.1154,25G Rx3 2nd Order CDR Cntl,16'h0201,,
+30.1154.15:11,Reserved,R,,
+30.1154.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.1154.7:1,Reserved,R,,
+30.1154.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+R30.387,25G Rx Lane 0 Eq Control,16'h0405,,
+30.387.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.387.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.387.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.387.7:3,Reserved,R,,
+30.387.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.387.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.643,25G Rx Lane 1 Eq Control,16'h0405,,
+30.643.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.643.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.643.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.643.7:3,Reserved,R,,
+30.643.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.643.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.899,25G Rx Lane 2 Eq Control,16'h0405,,
+30.899.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.899.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.899.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.899.7:3,Reserved,R,,
+30.899.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.899.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.1155,25G Rx Lane 3 Eq Control,16'h0405,,
+30.1155.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.1155.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.1155.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.1155.7:3,Reserved,R,,
+30.1155.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.1155.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.388,25G Rx Lane 0 Misc Trim,16'h7577,,
+30.388.15:12,ODT Trim,RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,On Die Termination Trim
+30.388.11,Reserved,R,,
+30.388.10,CM adjust enable,RW,,This field enables Common Mode voltage adjustment 
+30.388.9:8,CM voltage control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermo coded field take place downstream of this register before use."
+30.388.7:4,PolyIndep7 PI BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for interpolator bandgap
+30.388.3:0,Polydep5-Reg BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for regulator bandgap
+R30.644,25G Rx Lane 1 Misc Trim,16'h7577,,
+30.644.15:12,ODT Trim,RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,On Die Termination Trim
+30.644.11,Reserved,R,,
+30.644.10,CM adjust enable,RW,,This field enables Common Mode voltage adjustment 
+30.644.9:8,CM voltage control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermo coded field take place downstream of this register before use."
+30.644.7:4,PolyIndep7 PI BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for interpolator bandgap
+30.644.3:0,Polydep5-Reg BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for regulator bandgap
+R30.900,25G Rx Lane 2 Misc Trim,16'h7577,,
+30.900.15:12,ODT Trim,RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,On Die Termination Trim
+30.900.11,Reserved,R,,
+30.900.10,CM adjust enable,RW,,This field enables Common Mode voltage adjustment 
+30.900.9:8,CM voltage control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermo coded field take place downstream of this register before use."
+30.900.7:4,PolyIndep7 PI BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for interpolator bandgap
+30.900.3:0,Polydep5-Reg BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for regulator bandgap
+R30.1156,25G Rx Lane 3 Misc Trim,16'h7577,,
+30.1156.15:12,ODT Trim,RW,0000=0000;0001=0001;0011=0011;0111=0111;1111=1111,On Die Termination Trim
+30.1156.11,Reserved,R,,
+30.1156.10,CM adjust enable,RW,,This field enables Common Mode voltage adjustment 
+30.1156.9:8,CM voltage control,RW,,"This field represents a binary code of the desired common mode voltage control. Although the bits in this field are binary coded, hardware expansion into an 3 bit thermo coded field take place downstream of this register before use."
+30.1156.7:4,PolyIndep7 PI BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for interpolator bandgap
+30.1156.3:0,Polydep5-Reg BG Trim,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Controls trim for regulator bandgap
+R30.391,25G Rx Lane 0 Eye Scan Ctl 1,16'h0000,,
+30.391.7:3,Eyescan sense amp offset correction[7:0],R,,This value is read only and represents the sense amp offset correction value for the sense amplifier that will be used for eyescan.
+30.391.2:1,Reserved,R,,
+30.391.0,Eyescan enable,RW,0=disable; 1=enable,Set to '1' to enable the eyescan
+R30.647,25G Rx Lane 1 Eye Scan Ctl 1,16'h0000,,
+30.647.7:3,Eyescan sense amp offset correction[7:0],R,,This value is read only and represents the sense amp offset correction value for the sense amplifier that will be used for eyescan.
+30.647.2:1,Reserved,R,,
+30.647.0,Eyescan enable,RW,0=disable; 1=enable,Set to '1' to enable the eyescan
+R30.903,25G Rx Lane 2 Eye Scan Ctl 1,16'h0000,,
+30.903.7:3,Eyescan sense amp offset correction[7:0],R,,This value is read only and represents the sense amp offset correction value for the sense amplifier that will be used for eyescan.
+30.903.2:1,Reserved,R,,
+30.903.0,Eyescan enable,RW,0=disable; 1=enable,Set to '1' to enable the eyescan
+R30.1159,25G Rx Lane 3 Eye Scan Ctl 1,16'h0000,,
+30.1159.7:3,Eyescan sense amp offset correction[7:0],R,,This value is read only and represents the sense amp offset correction value for the sense amplifier that will be used for eyescan.
+30.1159.2:1,Reserved,R,,
+30.1159.0,Eyescan enable,RW,0=disable; 1=enable,Set to '1' to enable the eyescan
+R30.392,25G Rx Lane 0 Eye Scan Ctl 2,16'h0000,,
+30.392.15:8,Eyescan Vertical offset control,RW,,This field indicates the vertical (voltage) eyescan offset.  There are 256 vertical offset steps available. A value of 8'h00 provides the lowest (most negative) offset. A value of 8'hFF provides the highest (most positive) offset.
+30.392.7,Eyescan horizontal offset direction control,RW,0=earlier;1=later,"This 1 bit field is written by the user to specify the offset direction from the ideal CDR determined X dimension (time) sampling position.  When this bit is = 1, the direction of offset is to the right of the eye centre (later in time).  When this bit is = 0, the direction of offset is to the left of the eye centre (earlier in time)."
+30.392.6:0,Eyescan horizontal offset control,RW,,This 7 bit field is written by the user to specify the offset from the ideal CDR determined X dimension (time) sampling position.
+R30.648,25G Rx Lane 1 Eye Scan Ctl 2,16'h0000,,
+30.648.15:8,Eyescan Vertical offset control,RW,,This field indicates the vertical (voltage) eyescan offset.  There are 256 vertical offset steps available. A value of 8'h00 provides the lowest (most negative) offset. A value of 8'hFF provides the highest (most positive) offset.
+30.648.7,Eyescan horizontal offset direction control,RW,0=earlier;1=later,"This 1 bit field is written by the user to specify the offset direction from the ideal CDR determined X dimension (time) sampling position.  When this bit is = 1, the direction of offset is to the right of the eye centre (later in time).  When this bit is = 0, the direction of offset is to the left of the eye centre (earlier in time)."
+30.648.6:0,Eyescan horizontal offset control,RW,,This 7 bit field is written by the user to specify the offset from the ideal CDR determined X dimension (time) sampling position.
+R30.904,25G Rx Lane 2 Eye Scan Ctl 2,16'h0000,,
+30.904.15:8,Eyescan Vertical offset control,RW,,This field indicates the vertical (voltage) eyescan offset.  There are 256 vertical offset steps available. A value of 8'h00 provides the lowest (most negative) offset. A value of 8'hFF provides the highest (most positive) offset.
+30.904.7,Eyescan horizontal offset direction control,RW,0=earlier;1=later,"This 1 bit field is written by the user to specify the offset direction from the ideal CDR determined X dimension (time) sampling position.  When this bit is = 1, the direction of offset is to the right of the eye centre (later in time).  When this bit is = 0, the direction of offset is to the left of the eye centre (earlier in time)."
+30.904.6:0,Eyescan horizontal offset control,RW,,This 7 bit field is written by the user to specify the offset from the ideal CDR determined X dimension (time) sampling position.
+R30.1160,25G Rx Lane 3 Eye Scan Ctl 2,16'h0000,,
+30.1160.15:8,Eyescan Vertical offset control,RW,,This field indicates the vertical (voltage) eyescan offset.  There are 256 vertical offset steps available. A value of 8'h00 provides the lowest (most negative) offset. A value of 8'hFF provides the highest (most positive) offset.
+30.1160.7,Eyescan horizontal offset direction control,RW,0=earlier;1=later,"This 1 bit field is written by the user to specify the offset direction from the ideal CDR determined X dimension (time) sampling position.  When this bit is = 1, the direction of offset is to the right of the eye centre (later in time).  When this bit is = 0, the direction of offset is to the left of the eye centre (earlier in time)."
+30.1160.6:0,Eyescan horizontal offset control,RW,,This 7 bit field is written by the user to specify the offset from the ideal CDR determined X dimension (time) sampling position.
+R30.393,25G Rx Lane 0 Eye Sc Results,16'h0000,,
+30.393.15:0,Eyescan compare results,R,,Number of eyescan mis-compares per 64K bits received for each setting of interpolator & eyescan vertical offset.  This field provides a binary count of the number mis-compares between the eye-scan receiver and the normal data receiver over a period of 64K bits 
+R30.649,25G Rx Lane 1 Eye Sc Results,16'h0000,,
+30.649.15:0,Eyescan compare results,R,,Number of eyescan mis-compares per 64K bits received for each setting of interpolator & eyescan vertical offset.  This field provides a binary count of the number mis-compares between the eye-scan receiver and the normal data receiver over a period of 64K bits 
+R30.905,25G Rx Lane 2 Eye Sc Results,16'h0000,,
+30.905.15:0,Eyescan compare results,R,,Number of eyescan mis-compares per 64K bits received for each setting of interpolator & eyescan vertical offset.  This field provides a binary count of the number mis-compares between the eye-scan receiver and the normal data receiver over a period of 64K bits 
+R30.1161,25G Rx Lane 3 Eye Sc Results,16'h0000,,
+30.1161.15:0,Eyescan compare results,R,,Number of eyescan mis-compares per 64K bits received for each setting of interpolator & eyescan vertical offset.  This field provides a binary count of the number mis-compares between the eye-scan receiver and the normal data receiver over a period of 64K bits 
+R30.394,25G Rx Lane 0 PI Control 0,16'h0008,,
+30.394.15:9,Reserved,R,,
+30.394.8,PI Power down,RW,0=power up; 1=power down,
+30.394.7:4,Reserved,R,,
+30.394.3:0,PI Bias Adjust,RW,,
+R30.650,25G Rx Lane 1 PI Control 0,16'h0008,,
+30.650.15:9,Reserved,R,,
+30.650.8,PI Power down,RW,0=power up; 1=power down,
+30.650.7:4,Reserved,R,,
+30.650.3:0,PI Bias Adjust,RW,,
+R30.906,25G Rx Lane 2 PI Control 0,16'h0008,,
+30.906.15:9,Reserved,R,,
+30.906.8,PI Power down,RW,0=power up; 1=power down,
+30.906.7:4,Reserved,R,,
+30.906.3:0,PI Bias Adjust,RW,,
+R30.1162,25G Rx Lane 3 PI Control 0,16'h0008,,
+30.1162.15:9,Reserved,R,,
+30.1162.8,PI Power down,RW,0=power up; 1=power down,
+30.1162.7:4,Reserved,R,,
+30.1162.3:0,PI Bias Adjust,RW,,
+R30.416,25G Rx Lane 0 PI Control 1,16'h0000,,
+30.416.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.416.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.416.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.416.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.416.7:2,Reserved,R,,
+30.416.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.416.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.672,25G Rx Lane 1 PI Control 1,16'h0000,,
+30.672.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.672.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.672.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.672.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.672.7:2,Reserved,R,,
+30.672.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.672.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.928,25G Rx Lane 2 PI Control 1,16'h0000,,
+30.928.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.928.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.928.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.928.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.928.7:2,Reserved,R,,
+30.928.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.928.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.1184,25G Rx Lane 3 PI Control 1,16'h0000,,
+30.1184.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.1184.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.1184.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.1184.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.1184.7:2,Reserved,R,,
+30.1184.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.1184.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.417,25G Rx Lane 0 PI Control 2,16'h0000,,
+30.417.15:8,PI offset Override #1[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #1 to be overridden"
+30.417.7:0,PI offset Override #0[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #0 to be overridden"
+R30.673,25G Rx Lane 1 PI Control 2,16'h0000,,
+30.673.15:8,PI offset Override #1[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #1 to be overridden"
+30.673.7:0,PI offset Override #0[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #0 to be overridden"
+R30.929,25G Rx Lane 2 PI Control 2,16'h0000,,
+30.929.15:8,PI offset Override #1[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #1 to be overridden"
+30.929.7:0,PI offset Override #0[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #0 to be overridden"
+R30.1185,25G Rx Lane 3 PI Control 2,16'h0000,,
+30.1185.15:8,PI offset Override #1[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #1 to be overridden"
+30.1185.7:0,PI offset Override #0[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #0 to be overridden"
+R30.418,25G Rx Lane 0 PI Control 3,16'h0000,,
+30.418.15:8,PI offset Override #3[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #3 to be overridden"
+30.418.7:0,PI offset Override #2[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #2 to be overridden"
+R30.674,25G Rx Lane 1 PI Control 3,16'h0000,,
+30.674.15:8,PI offset Override #3[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #3 to be overridden"
+30.674.7:0,PI offset Override #2[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #2 to be overridden"
+R30.930,25G Rx Lane 2 PI Control 3,16'h0000,,
+30.930.15:8,PI offset Override #3[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #3 to be overridden"
+30.930.7:0,PI offset Override #2[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #2 to be overridden"
+R30.1186,25G Rx Lane 3 PI Control 3,16'h0000,,
+30.1186.15:8,PI offset Override #3[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table These bits allow the PI code for interpolator #3 to be overridden"
+30.1186.7:0,PI offset Override #2[7:0],RW,,"These 8 bits are used a simple binary coded numerical index into the PI code lookup table, as described in the pi_codes_table. These bits allow the PI code for interpolator #2 to be overridden"
+R30.419,25G Rx Lane 0 Eq thr obs ,16'h0000,,
+30.419.15,Reserved,R,,
+30.419.14:0,EQ Adapted Threshold,R,,The value of the Equalizer adapted threshold can be read back via this register
+R30.675,25G Rx Lane 1 Eq thr obs ,16'h0000,,
+30.675.15,Reserved,R,,
+30.675.14:0,EQ Adapted Threshold,R,,The value of the Equalizer adapted threshold can be read back via this register
+R30.931,25G Rx Lane 2 Eq thr obs,16'h0000,,
+30.931.15,Reserved,R,,
+30.931.14:0,EQ Adapted Threshold,R,,The value of the Equalizer adapted threshold can be read back via this register
+R30.1187,25G Rx Lane 3 Eq thr obs  ,16'h0000,,
+30.1187.15,Reserved,R,,
+30.1187.14:0,EQ Adapted Threshold,R,,The value of the Equalizer adapted threshold can be read back via this register
+R30.420,25G Rx Lane 0 Eq Control 2 ,16'h0000,,
+30.420.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.420.1,Reserved,R,,
+30.420.0,Equalizer code override,RW,,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+R30.676,25G Rx Lane 1 Eq Control 2 ,16'h0000,,
+30.676.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.676.1,Reserved,R,,
+30.676.0,Equalizer code override,RW,,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+R30.932,25G Rx Lane 2 Eq Control 2 ,16'h0000,,
+30.932.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.932.1,Reserved,R,,
+30.932.0,Equalizer code override,RW,,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+R30.1188,25G Rx Lane 3 Eq Control 2 ,16'h0000,,
+30.1188.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.1188.1,Reserved,R,,
+30.1188.0,Equalizer code override,RW,,"Assert this bit = '1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+R30.421,25G Rx Lane 0 Eq Observe 1 ,16'h0007,,
+30.421.15:4,Reserved,R,,
+30.421.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.677,25G Rx Lane 1 Eq Observe 1,16'h0007,,
+30.677.15:4,Reserved,R,,
+30.677.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.933,25G Rx Lane 2 Eq Observe 1 ,16'h0007,,
+30.933.15:4,Reserved,R,,
+30.933.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.1189,25G Rx Lane 3 Eq Observe 1,16'h0007,,
+30.1189.15:4,Reserved,R,,
+30.1189.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.422,25G Rx Lane 0 Eq Setting ,16'h0007,,
+30.422.15:4,Reserved,R,,
+30.422.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.678,25G Rx Lane 1 Eq Setting,16'h0007,,
+30.678.15:4,Reserved,R,,
+30.678.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.934,25G Rx Lane 2 Eq Setting,16'h0007,,
+30.934.15:4,Reserved,R,,
+30.934.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.1190,25G Rx Lane 3 Eq Setting,16'h0007,,
+30.1190.15:4,Reserved,R,,
+30.1190.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.423,25G Rx0 2nd Order CDR Obs,16'h0000,,
+30.423.15:14,Reserved,R,,
+30.423.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.679,25G Rx1 2nd Order CDR Obs,16'h0000,,
+30.679.15:14,Reserved,R,,
+30.679.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.935,25G Rx2 2nd Order CDR Obs,16'h0000,,
+30.935.15:14,Reserved,R,,
+30.935.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.1191,25G Rx3 2nd Order CDR Obs,16'h0000,,
+30.1191.15:14,Reserved,R,,
+30.1191.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.424,25G Rx Lane 0 PI Position 1,16'h0000,,
+30.424.15:14,Reserved,R,,
+30.424.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.424.11:10,Reserved,R,,
+30.424.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.424.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.680,25G Rx Lane 1 PI Position 1,16'h0000,,
+30.680.15:14,Reserved,R,,
+30.680.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.680.11:10,Reserved,R,,
+30.680.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.680.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.936,25G Rx Lane 2 PI Position 1,16'h0000,,
+30.936.15:14,Reserved,R,,
+30.936.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.936.11:10,Reserved,R,,
+30.936.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.936.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.1192,25G Rx Lane 3 PI Position 1,16'h0000,,
+30.1192.15:14,Reserved,R,,
+30.1192.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.1192.11:10,Reserved,R,,
+30.1192.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.1192.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.425,25G Rx0 2nd order debug 1,16'h0000,,
+30.425.15:7,Reserved,R,,
+30.425.6:2,second order state value,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register
+30.425.1,Reserved,R,,
+30.425.0,second order state override,RW,0=normal; 1=override enable,Set this field to 1'b1 to enable overriding of the second order state field
+R30.681,25G Rx1 2nd order debug 1,16'h0000,,
+30.681.15:7,Reserved,R,,
+30.681.6:2,second order state value,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register
+30.681.1,Reserved,R,,
+30.681.0,second order state override,RW,0=normal; 1=override enable,Set this field to 1'b1 to enable overriding of the second order state field
+R30.937,25G Rx2 2nd order debug 1,16'h0000,,
+30.937.15:7,Reserved,R,,
+30.937.6:2,second order state value,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register
+30.937.1,Reserved,R,,
+30.937.0,second order state override,RW,0=normal; 1=override enable,Set this field to 1'b1 to enable overriding of the second order state field
+R30.1193,25G Rx3 2nd order debug 1,16'h0000,,
+30.1193.15:7,Reserved,R,,
+30.1193.6:2,second order state value,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register
+30.1193.1,Reserved,R,,
+30.1193.0,second order state override,RW,0=normal; 1=override enable,Set this field to 1'b1 to enable overriding of the second order state field
+R30.426,25G Rx0 2nd order debug 2,16'h0000,,
+30.426.15:5,Reserved,R,,
+30.426.4:0,second order state read,R,,Use this field to read the value of the second order adapted state
+R30.682,25G Rx1 2nd order debug 2,16'h0000,,
+30.682.15:5,Reserved,R,,
+30.682.4:0,second order state read,R,,Use this field to read the value of the second order adapted state
+R30.938,25G Rx2 2nd order debug 2,16'h0000,,
+30.938.15:5,Reserved,R,,
+30.938.4:0,second order state read,R,,Use this field to read the value of the second order adapted state
+R30.1194,25G Rx3 2nd order debug 2,16'h0000,,
+30.1194.15:5,Reserved,R,,
+30.1194.4:0,second order state read,R,,Use this field to read the value of the second order adapted state
+R30.432,25G Rx0 Sense Amp offset 1,16'h0000,,
+30.432.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.432.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.433,25G Rx0 Sense Amp offset 2,16'h0000,,
+30.433.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.433.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.434,25G Rx0 Sense Amp offset 3,16'h0000,,
+30.434.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.434.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.435,25G Rx0 Sense Amp offset 4,16'h0000,,
+30.435.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.435.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.436,25G Rx0 Sense Amp offset 5,16'h0000,,
+30.436.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.436.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.437,25G Rx0 Sense Amp offset 6,16'h0000,,
+30.437.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.437.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.438,25G Rx0 Sense Amp offset 7,16'h0000,,
+30.438.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.438.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.439,25G Rx0 Sense Amp offset 8,16'h0000,,
+30.439.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.439.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.688,25G Rx1 Sense Amp offset 1,16'h0000,,
+30.688.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.688.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.689,25G Rx1 Sense Amp offset 2,16'h0000,,
+30.689.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.689.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.690,25G Rx1 Sense Amp offset 3,16'h0000,,
+30.690.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.690.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.691,25G Rx1 Sense Amp offset 4,16'h0000,,
+30.691.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.691.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.692,25G Rx1 Sense Amp offset 5,16'h0000,,
+30.692.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.692.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.693,25G Rx1 Sense Amp offset 6,16'h0000,,
+30.693.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.693.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.694,25G Rx1 Sense Amp offset 7,16'h0000,,
+30.694.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.694.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.695,25G Rx1 Sense Amp offset 8,16'h0000,,
+30.695.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.695.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.944,25G Rx2 Sense Amp offset 1,16'h0000,,
+30.944.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.944.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.945,25G Rx2 Sense Amp offset 2,16'h0000,,
+30.945.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.945.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.946,25G Rx2 Sense Amp offset 3,16'h0000,,
+30.946.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.946.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.947,25G Rx2 Sense Amp offset 4,16'h0000,,
+30.947.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.947.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.948,25G Rx2 Sense Amp offset 5,16'h0000,,
+30.948.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.948.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.949,25G Rx2 Sense Amp offset 6,16'h0000,,
+30.949.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.949.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.950,25G Rx2 Sense Amp offset 7,16'h0000,,
+30.950.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.950.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.951,25G Rx2 Sense Amp offset 8,16'h0000,,
+30.951.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.951.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1200,25G Rx3 Sense Amp offset 1,16'h0000,,
+30.1200.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1200.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1201,25G Rx3 Sense Amp offset 2,16'h0000,,
+30.1201.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1201.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1202,25G Rx3 Sense Amp offset 3,16'h0000,,
+30.1202.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1202.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1203,25G Rx3 Sense Amp offset 4,16'h0000,,
+30.1203.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1203.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1204,25G Rx3 Sense Amp offset 5,16'h0000,,
+30.1204.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1204.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1205,25G Rx3 Sense Amp offset 6,16'h0000,,
+30.1205.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1205.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1206,25G Rx3 Sense Amp offset 7,16'h0000,,
+30.1206.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1206.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.1207,25G Rx3 Sense Amp offset 8,16'h0000,,
+30.1207.15:8,Adapted offset,R,,The adapted value of the sense amp offsets can be read back via these bits.
+30.1207.7:0,Offset,RW,,The current value of the sense amp offset value can be written via this register subject to   restrictions.  The value written into this register can be read back also. This is not the adapted value of the sense amp offsets after autozero. It is simply a read back of the value that was written via this register.
+R30.440,25G Rx0 Sense Amp offset Control,16'h0002,,
+30.440.15:2,Reserved,R,,
+30.440.1,SA enable,RW,0=Disable Sense Amp; 1= Enable Sense Amp;,
+30.440.0,SA offset over-ride,RW,,"Assert this bit = '1' to enable overwriting of the sense amp offset values. When this bit is asserted then ALL 8 sense amp offsets will be overridden with the values in their respective RX Sense AMP Offset Control Registers 1-8. Selective sense amp offset overriding is not directly possible since there is no individual overwrite enable per sense amp. However, this can be achieved indirectly by first reading the sense amp offset value and then writing the same value back as the overwite value for that a particular sense amp."
+R30.696,25G Rx1 Sense Amp offset Control,16'h0002,,
+30.696.15:2,Reserved,R,,
+30.696.1,SA enable,RW,0=Disable Sense Amp; 1= Enable Sense Amp;,
+30.696.0,SA offset over-ride,RW,,"Assert this bit = '1' to enable overwriting of the sense amp offset values. When this bit is asserted then ALL 8 sense amp offsets will be overridden with the values in their respective RX Sense AMP Offset Control Registers 1-8. Selective sense amp offset overriding is not directly possible since there is no individual overwrite enable per sense amp. However, this can be achieved indirectly by first reading the sense amp offset value and then writing the same value back as the overwite value for that a particular sense amp."
+R30.952,25G Rx2 Sense Amp offset Control,16'h0002,,
+30.952.15:2,Reserved,R,,
+30.952.1,SA enable,RW,0=Disable Sense Amp; 1= Enable Sense Amp;,
+30.952.0,SA offset over-ride,RW,,"Assert this bit = '1' to enable overwriting of the sense amp offset values. When this bit is asserted then ALL 8 sense amp offsets will be overridden with the values in their respective RX Sense AMP Offset Control Registers 1-8. Selective sense amp offset overriding is not directly possible since there is no individual overwrite enable per sense amp. However, this can be achieved indirectly by first reading the sense amp offset value and then writing the same value back as the overwite value for that a particular sense amp."
+R30.1208,25G Rx3 Sense Amp offset Control,16'h0002,,
+30.1208.15:2,Reserved,R,,
+30.1208.1,SA enable,RW,0=Disable Sense Amp; 1= Enable Sense Amp;,
+30.1208.0,SA offset over-ride,RW,,"Assert this bit = '1' to enable overwriting of the sense amp offset values. When this bit is asserted then ALL 8 sense amp offsets will be overridden with the values in their respective RX Sense AMP Offset Control Registers 1-8. Selective sense amp offset overriding is not directly possible since there is no individual overwrite enable per sense amp. However, this can be achieved indirectly by first reading the sense amp offset value and then writing the same value back as the overwite value for that a particular sense amp."
+R30.441,25G Rx Lane 0 Eq offset,16'h007C,,
+30.441.15:14,Reserved,R,,
+30.441.13:8,Eq offset state,RW,,Actual value of equalizer offset : either from auto-zeroing or by over-ride.
+30.441.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.441.1,Reserved,R,,
+30.441.0,Overwrite Eq offsets,RW,,Assert this bit = '1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+R30.697,25G Rx Lane 1 Eq offset,16'h007C,,
+30.697.15:14,Reserved,R,,
+30.697.13:8,Eq offset state,RW,,Actual value of equalizer offset : either from auto-zeroing or by over-ride.
+30.697.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.697.1,Reserved,R,,
+30.697.0,Overwrite Eq offsets,RW,,Assert this bit = '1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+R30.953,25G Rx Lane 2 Eq offset,16'h007C,,
+30.953.15:14,Reserved,R,,
+30.953.13:8,Eq offset state,RW,,Actual value of equalizer offset : either from auto-zeroing or by over-ride.
+30.953.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.953.1,Reserved,R,,
+30.953.0,Overwrite Eq offsets,RW,,Assert this bit = '1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+R30.1209,25G Rx Lane 3 Eq offset,16'h007C,,
+30.1209.15:14,Reserved,R,,
+30.1209.13:8,Eq offset state,RW,,Actual value of equalizer offset : either from auto-zeroing or by over-ride.
+30.1209.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.1209.1,Reserved,R,,
+30.1209.0,Overwrite Eq offsets,RW,,Assert this bit = '1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+R30.448,25G Rx Lane 0 Amux control,16'h1000,,
+30.448.15:14,Reserved,R,,
+30.448.13:12,Eq offset cor method,RW,,Equalizer offset correction method
+30.448.11:9,Reserved,R,,
+30.448.8,Speed up timers,RW,, Assert this bit = 1 to enable simulation time speed up features
+30.448.7,Reserved,R,,
+30.448.6:4,Rx PLL amux select,RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.448.3:0,Rx amux select,RW,0000=tristate;  0101=vreg_clk; 0110=polydep5; 0111=polyindep7;1000=vreg_eq; 1001=vddr; 1010=ringosc; 1011=vss,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+R30.704,25G Rx Lane 1 Amux control,16'h1000,,
+30.704.15:14,Reserved,R,,
+30.704.13:12,Eq offset cor method,RW,,Equalizer offset correction method
+30.704.11:9,Reserved,R,,
+30.704.8,Speed up timers,RW,, Assert this bit = 1 to enable simulation time speed up features
+30.704.7,Reserved,R,,
+30.704.6:4,Rx PLL amux select,RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.704.3:0,Rx amux select,RW,0000=tristate;  0101=vreg_clk; 0110=polydep5; 0111=polyindep7;1000=vreg_eq; 1001=vddr; 1010=ringosc; 1011=vss,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+R30.960,25G Rx Lane 2 Amux control,16'h1000,,
+30.960.15:14,Reserved,R,,
+30.960.13:12,Eq offset cor method,RW,,Equalizer offset correction method
+30.960.11:9,Reserved,R,,
+30.960.8,Speed up timers,RW,, Assert this bit = 1 to enable simulation time speed up features
+30.960.7,Reserved,R,,
+30.960.6:4,Rx PLL amux select,RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.960.3:0,Rx amux select,RW,0000=tristate;  0101=vreg_clk; 0110=polydep5; 0111=polyindep7;1000=vreg_eq; 1001=vddr; 1010=ringosc; 1011=vss,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+R30.1216,25G Rx Lane 3 Amux control,16'h1000,,
+30.1216.15:14,Reserved,R,,
+30.1216.13:12,Eq offset cor method,RW,,Equalizer offset correction method
+30.1216.11:9,Reserved,R,,
+30.1216.8,Speed up timers,RW,, Assert this bit = 1 to enable simulation time speed up features
+30.1216.7,Reserved,R,,
+30.1216.6:4,Rx PLL amux select,RW,000=tristate; 001=vctl_out; 010=ibg_40u_polyind; 011=ibg_40u_polydep; 100=vreg_pll; 101=vddr;110=vss; 111=vss,
+30.1216.3:0,Rx amux select,RW,0000=tristate;  0101=vreg_clk; 0110=polydep5; 0111=polyindep7;1000=vreg_eq; 1001=vddr; 1010=ringosc; 1011=vss,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+R30.456,25G Rx Lane 0 Vreg control,16'h0777,,
+30.456.15:12,Reserved,R,,
+30.456.11:8,Vreg_Rx_PLL[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of Central Vreg control. LSB is set by Lane spare Rx fuse register bit 0 (adds 0.01V) to value set here.
+30.456.7:4,Vreg2_eq[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane spare Rx fuse register bit 5 (adds 0.01V) to value set here.
+30.456.3:0,Vreg1_clk_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg1 control. LSB is set by Lane spare Rx fuse register bit 4 (adds 0.01V) to value set here.
+R30.712,25G Rx Lane 1 Vreg control,16'h0777,,
+30.712.15:12,Reserved,R,,
+30.712.11:8,not_used,RW,,
+30.712.7:4,Vreg2_eq[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane spare Rx fuse register bit 5 (adds 0.01V) to value set here.
+30.712.3:0,Vreg1_clk_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg1 control. LSB is set by Lane spare Rx fuse register bit 4 (adds 0.01V) to value set here.
+R30.968,25G Rx Lane 2 Vreg control,16'h0777,,
+30.968.15:12,Reserved,R,,
+30.968.11:8,not_used,RW,,
+30.968.7:4,Vreg2_eq[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane spare Rx fuse register bit 5 (adds 0.01V) to value set here.
+30.968.3:0,Vreg1_clk_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg1 control. LSB is set by Lane spare Rx fuse register bit 4 (adds 0.01V) to value set here.
+R30.1224,25G Rx Lane 3 Vreg control,16'h0777,,
+30.1224.15:12,Reserved,R,,
+30.1224.11:8,not_used,RW,,
+30.1224.7:4,Vreg2_eq[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg2 control. LSB is set by Lane spare Rx fuse register bit 5 (adds 0.01V) to value set here.
+30.1224.3:0,Vreg1_clk_osc[4:1],RW,0000=0.82V; 0001=0.84V; 0010=0.86V; 0011=0.88V; 0100=0.90V; 0101=0.92V; 0110=0.94V; 0111=0.96V; 1000=0.98V; 1001=1.00V; 1010=1.02V; 1011=1.04V; 1100=1.06V; 1101=1.08V; 1110=1.10V; 1111=1.12V;,MSBs of  Vreg1 control. LSB is set by Lane spare Rx fuse register bit 4 (adds 0.01V) to value set here.
+R30.464,25G Rx Lane 0 CYA register,16'hFF00,,
+30.464.15:8,Unimplemented CYA Status,R,,Unimplemented
+30.464.7:5,Unimplemented CYA Control,RW,,Unimplemented
+30.464.4,Rx Bandgap Bypass,RW,0=BG;1=R-divider,
+30.464.3:0,Unimplemented CYA Control,RW,,Unimplemented
+R30.720,25G Rx Lane 0 CYA register,16'hFF00,,
+30.720.15:8,Unimplemented CYA Status,R,,Unimplemented
+30.720.7:5,Unimplemented CYA Control,RW,,Unimplemented
+30.720.4,Rx Bandgap Bypass,RW,0=BG;1=R-divider,
+30.720.3:0,Unimplemented CYA Control,RW,,Unimplemented
+R30.976,25G Rx Lane 0 CYA register,16'hFF00,,
+30.976.15:8,Unimplemented CYA Status,R,,Unimplemented
+30.976.7:5,Unimplemented CYA Control,RW,,Unimplemented
+30.976.4,Rx Bandgap Bypass,RW,0=BG;1=R-divider,
+30.976.3:0,Unimplemented CYA Control,RW,,Unimplemented
+R30.1232,25G Rx Lane 0 CYA register,16'hFF00,,
+30.1232.15:8,Unimplemented CYA Status,R,,Unimplemented
+30.1232.7:5,Unimplemented CYA Control,RW,,Unimplemented
+30.1232.4,Rx Bandgap Bypass,RW,0=BG;1=R-divider,
+30.1232.3:0,Unimplemented CYA Control,RW,,Unimplemented
+R30.465,25G Rx Lane 0 Spare Fuse,16'h0000,,
+30.465.15:8,Reserved,R,,
+30.465.7:6,Spare RX Fuse register bits,RW,,
+30.465.5,Vreg2_eq[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.465.4,Vreg1_clk_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.465.3:1,Spare RX GCK fuse registers,RW,,
+30.465.0,Vreg_Rx_PLL[0],RW,0=+0.00V;1=+0.01V,LSB of Central Vreg control. When set adds 0.01V to regulator output.
+R30.721,25G Rx Lane 1 Spare Fuse,16'h0000,,
+30.721.15:8,Reserved,R,,
+30.721.7:6,Spare RX Fuse register bits,RW,,
+30.721.5,Vreg2_eq[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.721.4,Vreg1_clk_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.721.3:0,Spare RX GCK fuse registers,RW,,
+R30.977,25G Rx Lane 2 Spare Fuse,16'h0000,,
+30.977.15:8,Reserved,R,,
+30.977.7:6,Spare RX Fuse register bits,RW,,
+30.977.5,Vreg2_eq[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.977.4,Vreg1_clk_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.977.3:0,Spare RX GCK fuse registers,RW,,
+R30.1233,25G Rx Lane 3 Spare Fuse,16'h0000,,
+30.1233.15:8,Reserved,R,,
+30.1233.7:6,Spare RX Fuse register bits,RW,,
+30.1233.5,Vreg2_eq[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg2 control. When set adds 0.01V to regulator output.
+30.1233.4,Vreg1_clk_osc[0],RW,0=+0.00V;1=+0.01V,LSB of Vreg1 control. When set adds 0.01V to regulator output.
+30.1233.3:0,Spare RX GCK fuse registers,RW,,
+R30.1280,eFuse Control,16'h2000,,
+30.1280.15,program,RW,,"Toggling this bit from a zero to a one state causes the eFuse register bit addressed by 30.1280.9:0 to be programmed to a one value. During programming 'done' (30.1280.13) will be de-asserted. Programming will not occur if the efuse is in its power-down state (30.1281.15=0), or if 'done' (30.1280.13) is not asserted."
+30.1280.14,fetch,RW,,"Toggling this bit from a zero to a one state causes the eFuse contents to be fetched and loaded into registers 30.1408 to 30.1420. Fetching will not occur if the efuse is in its power-down state (30.1281.15=0), or if 'done' (30.1280.13) is not asserted. Registers 30.1409 to 30.1440 will not be fetched if the content of the eFuse byte 0 (30.1408) is zero - ie if the eFuse has not been programmed."
+30.1280.13,done,R,,eFuse actions complete. 0=eFuse program or fetch operations are in progress.
+30.1280.12:11,Reserved,R,,
+30.1280.10:8, bit address,RW,,This field indicates which eFuse bit (of a byte) to set to a one in a program operation.
+30.1280.7,Reserved,R,,
+30.1280.6:0,byte address,RW,,This field indicates which eFuse byte to program in a program operation.
+R30.1281,eFuse Power-up,16'h0000,,
+30.1281.15,Power-up,RW,0=powerdn;1=power up,This bit controls the power state of the eFuse array after reset : 0 (default) = array is powered down; 1 = array is powered up; This bit must be set to a one in order to program or fetch the contents of the eFuse array.
+30.1281.14:00,Reserved,R,,
+R30.1408,eFuse Control Byte,16'h0000,,
+30.1408.15:8,Reserved,R,,"Read as zero, writes ignored"
+30.1408.7:0,eFuse Control Byte,R,,"Contents of first fetched eFuse byte. If this byte is fetched as zero, no other bytes will be fetched (eFuse is unprogrammed)"
+R30.1409,s25t0_trim[7:0],16'h0000,,
+30.1409.15:8,Reserved,R,,
+30.1409.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1410,s25t0_trim[15:8],16'h0000,,
+30.1410.15:8,Reserved,R,,
+30.1410.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1411,s25t0_trim[23:16],16'h0000,,
+30.1411.15:8,Reserved,R,,
+30.1411.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1412,s25r0_trim[7:0],16'h0000,,
+30.1412.15:8,Reserved,R,,
+30.1412.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1413,s25r0_trim[15:8],16'h0000,,
+30.1413.15:8,Reserved,R,,
+30.1413.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1414,s25r0_trim[23:16],16'h0000,,
+30.1414.15:8,Reserved,R,,
+30.1414.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1415,s25r0_trim[31:24],16'h0000,,
+30.1415.15:8,Reserved,R,,
+30.1415.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1416,misc_trim[7:0],16'h0000,,
+30.1416.15:8,Reserved,R,,
+30.1416.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1417,s25t1_trim[7:0],16'h0000,,
+30.1417.15:8,Reserved,R,,
+30.1417.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1418,s25t1_trim[15:8],16'h0000,,
+30.1418.15:8,Reserved,R,,
+30.1418.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1419,s25t1_trim[23:16],16'h0000,,
+30.1419.15:8,Reserved,R,,
+30.1419.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1420,s25r1_trim[7:0],16'h0000,,
+30.1420.15:8,Reserved,R,,
+30.1420.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1421,s25r1_trim[15:8],16'h0000,,
+30.1421.15:8,Reserved,R,,
+30.1421.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1422,s25r1_trim[23:16],16'h0000,,
+30.1422.15:8,Reserved,R,,
+30.1422.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1423,s25r1_trim[31:24],16'h0000,,
+30.1423.15:8,Reserved,R,,
+30.1423.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1424,misc_trim[15:8],16'h0000,,
+30.1424.15:8,Reserved,R,,
+30.1424.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1425,s25t2_trim[7:0],16'h0000,,
+30.1425.15:8,Reserved,R,,
+30.1425.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1426,s25t2_trim[15:8],16'h0000,,
+30.1426.15:8,Reserved,R,,
+30.1426.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1427,s25t2_trim[23:16],16'h0000,,
+30.1427.15:8,Reserved,R,,
+30.1427.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1428,s25r2_trim[7:0],16'h0000,,
+30.1428.15:8,Reserved,R,,
+30.1428.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1429,s25r2_trim[15:8],16'h0000,,
+30.1429.15:8,Reserved,R,,
+30.1429.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1430,s25r2_trim[23:16],16'h0000,,
+30.1430.15:8,Reserved,R,,
+30.1430.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1431,s25r2_trim[31:24],16'h0000,,
+30.1431.15:8,Reserved,R,,
+30.1431.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1432,misc_trim[23:16],16'h0000,,
+30.1432.15:8,Reserved,R,,
+30.1432.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1433,s25t3_trim[7:0],16'h0000,,
+30.1433.15:8,Reserved,R,,
+30.1433.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1434,s25t3_trim[15:8],16'h0000,,
+30.1434.15:8,Reserved,R,,
+30.1434.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1435,s25t3_trim[23:16],16'h0000,,
+30.1435.15:8,Reserved,R,,
+30.1435.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1436,s25r3_trim[7:0],16'h0000,,
+30.1436.15:8,Reserved,R,,
+30.1436.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1437,s25r3_trim[15:8],16'h0000,,
+30.1437.15:8,Reserved,R,,
+30.1437.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1438,s25r3_trim[23:16],16'h0000,,
+30.1438.15:8,Reserved,R,,
+30.1438.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1439,s25r3_trim[31:24],16'h0000,,
+30.1439.15:8,Reserved,R,,
+30.1439.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.
+R30.1440,misc_trim[31:24],16'h0000,,
+30.1440.15:8,Reserved,R,,
+30.1440.7:0,eFuse Byte,R,,If the eFuse control byte is fetched with a non-zero value this byte will be loaded from eFuse. Otherwise it will remain set to its default value.

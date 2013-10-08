@@ -1,0 +1,745 @@
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 0.0  2012-09-17 Andre,,,,
+! GB2 Optical Subset,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+R8.2,PMA Device Identifier Lo ,16'h0210,,
+8.2.15:0,OUI 3-18,R,,3rd through 18th bits of Inphi OUI
+R8.3,PMA Device Identifier Hi ,16'h7420,,
+8.3.15:10,OUI 19-20,R,,19th through 24th bits of Inphi OUI
+8.3.9:4,Model Number,R,,Gearbox model number 
+8.3.3:0,Revision Code,R,,Gearbox revision number 
+,,,,
+R8.1700,PRBS Rx0 Error Counter,16'h0000,,
+8.1700.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1701,PRBS Rx1 Error Counter,16'h0000,,
+8.1701.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1702,PRBS Rx2 Error Counter,16'h0000,,
+8.1702.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1703,PRBS Rx3 Error Counter,16'h0000,,
+8.1703.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1704,PRBS Rx4 Error Counter,16'h0000,,
+8.1704.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1705,PRBS Rx5 Error Counter,16'h0000,,
+8.1705.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1706,PRBS Rx6 Error Counter,16'h0000,,
+8.1706.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1707,PRBS Rx7 Error Counter,16'h0000,,
+8.1707.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1708,PRBS Rx8 Error Counter,16'h0000,,
+8.1708.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1709,PRBS Rx9 Error Counter,16'h0000,,
+8.1709.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+,,,,
+,,,,
+R30.16,Optical Lane 0 Pattern Control,16'h0000,,
+30.16.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.16.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.16.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.16.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.16.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.16.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.16.7,Reserved,R,,
+30.16.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.16.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.16.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.16.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.16.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.17,Optical Lane 1 Pattern Control,16'h0000,,
+30.17.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.17.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.17.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.17.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.17.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.17.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.17.7,Reserved,R,,
+30.17.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.17.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.17.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.17.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.17.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.18,Optical Lane 2 Pattern Control,16'h0000,,
+30.18.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.18.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.18.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.18.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.18.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.18.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.18.7,Reserved,R,,
+30.18.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.18.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.18.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.18.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.18.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.19,Optical Lane 3 Pattern Control,16'h0000,,
+30.19.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.19.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.19.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.19.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.19.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.19.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.19.7,Reserved,R,,
+30.19.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.19.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.19.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.19.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.19.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.20,Optical Lane 4 Pattern Control,16'h0000,,
+30.20.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.20.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.20.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.20.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.20.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.20.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.20.7,Reserved,R,,
+30.20.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.20.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.20.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.20.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.20.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.21,Optical Lane 5 Pattern Control,16'h0000,,
+30.21.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.21.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.21.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.21.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.21.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.21.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.21.7,Reserved,R,,
+30.21.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.21.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.21.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.21.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.21.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.22,Optical Lane 6 Pattern Control,16'h0000,,
+30.22.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.22.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.22.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.22.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.22.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.22.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.22.7,Reserved,R,,
+30.22.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.22.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.22.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.22.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.22.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.23,Optical Lane 7 Pattern Control,16'h0000,,
+30.23.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.23.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.23.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.23.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.23.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.23.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.23.7,Reserved,R,,
+30.23.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.23.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.23.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.23.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.23.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.24,Optical Lane 8 Pattern Control,16'h0000,,
+30.24.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.24.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.24.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.24.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.24.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.24.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.24.7,Reserved,R,,
+30.24.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.24.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.24.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.24.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.24.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+R30.25,Optical Lane 9 Pattern Control,16'h0000,,
+30.25.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.25.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.25.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.25.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.25.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.25.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.25.7,Reserved,R,,
+30.25.6,tx_disable,RW,0=enable; 1=disable,Disable  lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 0 - Disabled
+30.25.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.25.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.25.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.25.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+,,,,
+,,,,
+,,,,
+R30.48,Custom Pattern Lo ,16'h0000,,
+30.48.15:0,Pattern 15:0,RW,,Custom transmit Pattern bits 15:0
+R30.49,Custom Pattern Mid,16'h0000,,
+30.49.15:0,Pattern 32:16,RW,,Custom transmit Pattern bits 31:16
+R30.50,Custom Pattern Hi,16'h0000,,
+30.50.15:8,Reserved,R,,
+30.50.7:0,Pattern 39:32,RW,,Custom transmit Pattern bits 39:32
+,,,,
+R30.58,Ingress FIFO config,16'h0003,,
+30.58.15:14,Reserved,R,,
+30.58.13:12,i10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 local loopback mode 
+30.58.11:10,Reserved,R,,
+30.58.9:8,n10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 normal mode 
+30.58.7:6,Reserved,R,,
+30.58.5:4,Reserved,R,,
+30.58.3:2,Reserved,R,,
+30.58.1:0,n25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 25:10 normal mode 
+,,,,
+R30.59,Egress FIFO config,16'h0031,,
+30.59.15:14,Reserved,R,,
+30.59.13:12,r10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 remote loopback mode 
+30.59.11:10,Reserved,R,,
+30.59.9:8,n10_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:10 normal mode 
+30.59.7:6,Reserved,R,,
+30.59.5:4,r25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 25:25 remote loopback mode 
+30.59.3:2,Reserved,R,,
+30.59.1:0,n25_lat,RW,00 = min latency; 01 =min+1; 10 =min+2; 11 = min+3;,FIFO latency in 10:25 normal mode 
+,,,,
+R30.60,Monitor Clock Select,16'h000F,,
+30.60.15:6,Reserved,R,,
+30.60.15:5,Divide Select,RW,,Monitor clock divide ratio
+30.60.4,Direction select,RW,0=Ingress;1=Egress,Select Optical lane direction to monitor 
+30.60.15:6,Lane select,RW,0000=lane 0; 0001=lane 1; 0010=lane 2; 0011=lane 3; 0100=lane 4; 0101=lane 5; 0110=lane 6; 0111=lane 7; 1000=lane 8; 1001=lane 9; 1111=disabled;,"Select Optical Lane to monitor : 0-9 : Select numbered lane; A-E : Reserved; F :Monitor Clock Disabled (Default). Note only lane 2 can be monitored on Egress. Selecting anything other than lane 2 will not produce a valid clock.
+"
+,,,,
+R30.62,Power down and disable,16'h0000,,
+30.62.15,pll_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G PLLs
+30.62.14,vr_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Voltage Regulators
+30.62.13,bg_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Bandgaps
+30.62.12,analog_powerdn,RW,0=power-up; 1=power-down,1=Power-down (all other) SERDES analog circuitry & PLL REF_OUT buffer
+30.62.11:10,Reserved,R,,
+30.62.9,Lane 9 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.8,Lane 8 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.7,Lane 7 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.6,Lane 6 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.5,Lane 5 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.4,Lane 4 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.3,Lane 3 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.2,Lane 2 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.1,Lane 1 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+30.62.0,Lane 0 Disable,RW,0=power-up; 1=power-down,Power-down 10G Host and Optical Lane in 10:10 modes. Has no effect in 10:25 modes. Only writeable when soft reset bits are asserted.
+,,,,
+R30.63,Manual Reset Control,16'hFFFF,,
+30.63.15,Egress Rx PLL reset,RW,0=unreset; 1=reset,1= Reset Egress Rx Serdes PLL
+30.63.14,Egress Rx PI reset,RW,0=unreset; 1=reset,1= Reset Egress Rx Serdes PI
+30.63.13,Egress Rx DM reset,RW,0=unreset; 1=reset,1= Reset Egress Rx Serdes Demux
+30.63.12,Egress Rx Serdes reset,RW,0=unreset; 1=reset,1= Reset Egress Rx Serdes
+30.63.11,Egress Tx PLL reset,RW,0=unreset; 1=reset,1= Reset Egress Tx Serdes PLL
+30.63.10,Egress Tx PI reset,RW,0=unreset; 1=reset,1= Reset Egress Tx Serdes PI
+30.63.9,Egress Tx Serdes reset,RW,0=unreset; 1=reset,1= Reset Egress Tx Serdes
+30.63.8,Egress datapath reset,RW,0=unreset; 1=reset,1= Reset Egress Tx Datapath (including FIFOs)
+30.63.7,Ingress Rx PLL reset,RW,0=unreset; 1=reset,1= Reset Ingress Rx Serdes PLL
+30.63.6,Ingress Rx PI reset,RW,0=unreset; 1=reset,1= Reset Ingress Rx Serdes PI
+30.63.5,Ingress Rx DM reset,RW,0=unreset; 1=reset,1= Reset Ingress Rx Serdes Demux
+30.63.4,Ingress Rx Serdes reset,RW,0=unreset; 1=reset,1= Reset Ingress Rx Serdes
+30.63.3,Ingress Tx PLL reset,RW,0=unreset; 1=reset,1= Reset Ingress Tx Serdes PLL
+30.63.2,Ingress Tx PI reset,RW,0=unreset; 1=reset,1= Reset Ingress Tx Serdes PI
+30.63.1,Ingress Tx Serdes reset,RW,0=unreset; 1=reset,1= Reset Ingress Tx Serdes
+30.63.0,Ingress datapath reset,RW,0=unreset; 1=reset,1= Reset Ingress Tx Datapath (including FIFOs)
+,,,,
+R30.64,Ingress LOL Status Register,16'h83FF,,
+30.64.15,Ingress LOL ,R,,"Composite LOL : logical OR of bits 9:0 in 10:10 mode, Logical OR of bits 3:0 in 10:4 mode."
+30.64.14:10,Reserved,R,,
+30.64.9,Ingress LOL  Status 9,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.8,Ingress LOL  Status 8,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.7,Ingress LOL  Status 7,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.6,Ingress LOL  Status 6,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.5,Ingress LOL  Status 5,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.4,Ingress LOL  Status 4,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.3,Ingress LOL  Status 3,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.2,Ingress LOL  Status 2,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.1,Ingress LOL  Status 1,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.64.0,Ingress LOL  Status 0,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+,,,,
+R30.65,Ingress LOL Event Register,16'h83FF,,
+30.65.15,Ingress LOL event,R,,Composite LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.14:10,Reserved,R,,
+30.65.9,Ingress LOL  Event 9,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.8,Ingress LOL  Event 8,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.7,Ingress LOL  Event 7,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.6,Ingress LOL  Event 6,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.5,Ingress LOL  Event 5,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.4,Ingress LOL  Event 4,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.3,Ingress LOL  Event 3,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.2,Ingress LOL  Event 2,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.1,Ingress LOL  Event 1,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.65.0,Ingress LOL  Event 0,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+,,,,
+R30.66,Ingress LOL Event Mask,16'h83FF,,
+30.66.15,Ingress LOL mask,RW,0=alerts enabled; 1=alerts masked,Mask Composite LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.14:10,Reserved,R,,
+30.66.9,Ingress LOL  Mask 9,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.8,Ingress LOL  Mask 8,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.7,Ingress LOL  Mask 7,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.6,Ingress LOL  Mask 6,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.5,Ingress LOL  Mask 5,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.4,Ingress LOL  Mask 4,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.3,Ingress LOL  Mask 3,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.2,Ingress LOL  Mask 2,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.1,Ingress LOL  Mask 1,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.66.0,Ingress LOL  Mask 0,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+,,,,
+R30.67,Ingress Protocol lock status,16'h03FF,,
+30.67.15:10,Reserved,R,,
+30.67.9,Loss of Protocol lock lane 9,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.8,Loss of Protocol lock lane 8,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.7,Loss of Protocol lock lane 7,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.6,Loss of Protocol lock lane 6,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.5,Loss of Protocol lock lane 5,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.4,Loss of Protocol lock lane 4,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.3,Loss of Protocol lock lane 3,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.2,Loss of Protocol lock lane 2,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.1,Loss of Protocol lock lane 1,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.67.0,Loss of Protocol lock lane 0,R,,Read as one if the protocol  lock SM on this lane is not locked 
+,,,,
+R30.68,Ingress PRBS lock status,16'h03FF,,
+30.68.15:10,Reserved,R,,
+30.68.9,Loss of PRBS lock lane 9,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.8,Loss of PRBS lock lane 8,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.7,Loss of PRBS lock lane 7,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.6,Loss of PRBS lock lane 6,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.5,Loss of PRBS lock lane 5,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.4,Loss of PRBS lock lane 4,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.3,Loss of PRBS lock lane 3,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.2,Loss of PRBS lock lane 2,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.1,Loss of PRBS lock lane 1,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.68.0,Loss of PRBS lock lane 0,R,,Read as one if the PRBS verifier for this lane is not locked 
+,,,,
+,,,,
+R30.72,Egress LOL Status Register,16'h83FF,,
+30.72.15,Egress LOL ,R,,"Composite LOL : logical OR of bits 9:0 in 10:10 mode, Logical OR of bits 3:0 in 10:4 mode."
+30.72.14:10,Reserved,R,,
+30.72.9,Egress LOL  Status 9,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.8,Egress LOL  Status 8,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.7,Egress LOL  Status 7,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.6,Egress LOL  Status 6,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.5,Egress LOL  Status 5,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.4,Egress LOL  Status 4,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.3,Egress LOL  Status 3,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.2,Egress LOL  Status 2,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.1,Egress LOL  Status 1,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+30.72.0,Egress LOL  Status 0,R,,"Loss of lock for lane : Logical ""and"" of corresponding ""protol loss of lock"" and ""PRBS loss of lock"" flags"
+,,,,
+R30.73,Egress LOL Event Register,16'h83FF,,
+30.73.15,Egress LOL event,R,,Composite LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.14:10,Reserved,R,,
+30.73.9,Egress LOL  Event 9,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.8,Egress LOL  Event 8,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.7,Egress LOL  Event 7,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.6,Egress LOL  Event 6,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.5,Egress LOL  Event 5,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.4,Egress LOL  Event 4,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.3,Egress LOL  Event 3,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.2,Egress LOL  Event 2,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.1,Egress LOL  Event 1,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+30.73.0,Egress LOL  Event 0,R,,Lane LOL event : Set high when corresponding bit in LOL status register changes state
+,,,,
+R30.74,Egress LOL Event Mask,16'h83FF,,
+30.74.15,Egress LOL mask,RW,0=alerts enabled; 1=alerts masked,Mask Composite LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.14:10,Reserved,R,,
+30.74.9,Egress LOL  Mask 9,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.8,Egress LOL  Mask 8,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.7,Egress LOL  Mask 7,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.6,Egress LOL  Mask 6,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.5,Egress LOL  Mask 5,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.4,Egress LOL  Mask 4,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.3,Egress LOL  Mask 3,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.2,Egress LOL  Mask 2,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.1,Egress LOL  Mask 1,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+30.74.0,Egress LOL  Mask 0,RW,0=alerts enabled; 1=alerts masked,Mask lane LOL event : When set high corresponding bit in LOL event register does not cause alerts
+,,,,
+R30.75,Egress Protocol lock status,16'h03FF,,
+30.75.15:10,Reserved,R,,
+30.75.9,Loss of Protocol lock lane 9,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.8,Loss of Protocol lock lane 8,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.7,Loss of Protocol lock lane 7,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.6,Loss of Protocol lock lane 6,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.5,Loss of Protocol lock lane 5,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.4,Loss of Protocol lock lane 4,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.3,Loss of Protocol lock lane 3,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.2,Loss of Protocol lock lane 2,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.1,Loss of Protocol lock lane 1,R,,Read as one if the protocol  lock SM on this lane is not locked 
+30.75.0,Loss of Protocol lock lane 0,R,,Read as one if the protocol  lock SM on this lane is not locked 
+,,,,
+R30.76,Egress PRBS lock status,16'h03FF,,
+30.76.15:10,Reserved,R,,
+30.76.9,Loss of PRBS lock lane 9,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.8,Loss of PRBS lock lane 8,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.7,Loss of PRBS lock lane 7,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.6,Loss of PRBS lock lane 6,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.5,Loss of PRBS lock lane 5,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.4,Loss of PRBS lock lane 4,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.3,Loss of PRBS lock lane 3,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.2,Loss of PRBS lock lane 2,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.1,Loss of PRBS lock lane 1,R,,Read as one if the PRBS verifier for this lane is not locked 
+30.76.0,Loss of PRBS lock lane 0,R,,Read as one if the PRBS verifier for this lane is not locked 
+,,,,
+,,,,
+,,,,
+R30.80,Ingress FIFO Control &  Status ,16'h03FF,,
+30.80.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all Ingress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.80.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all Ingress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.80.13,Interrupt Enable,RW,0=disable; 1=enable,If set to a one assertion of any of the FIFO error flags in this register will cause an interrupt to be generated.
+30.80.12:10,Reserved,R,,
+30.80.9,Ingress FIFO _error 9,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.8,Ingress FIFO _error 8,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.7,Ingress FIFO _error 7,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.6,Ingress FIFO _error 6,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.5,Ingress FIFO _error 5,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.4,Ingress FIFO _error 4,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.3,Ingress FIFO _error 3,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.2,Ingress FIFO _error 2,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.1,Ingress FIFO _error 1,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.80.0,Ingress FIFO _error 0,RC,,"This flag is set to a one if either the Lanes Ingress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+,,,,
+R30.81,Ingress FIFO Under-run Status,16'h03FF,,
+30.81.15:10,Reserved,R,,
+30.81.9,Ingress FIFO under-run 9,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.8,Ingress FIFO under-run 8,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.7,Ingress FIFO under-run 7,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.6,Ingress FIFO under-run 6,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.5,Ingress FIFO under-run 5,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.4,Ingress FIFO under-run 4,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.3,Ingress FIFO under-run 3,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.2,Ingress FIFO under-run 2,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.1,Ingress FIFO under-run 1,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.81.0,Ingress FIFO under-run 0,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.82,Ingress FIFO Over-run Status,16'h03FF,,
+30.82.15:10,Reserved,R,,
+30.82.9,Ingress FIFO over-run 9,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.8,Ingress FIFO over-run 8,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.7,Ingress FIFO over-run 7,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.6,Ingress FIFO over-run 6,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.5,Ingress FIFO over-run 5,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.4,Ingress FIFO over-run 4,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.3,Ingress FIFO over-run 3,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.2,Ingress FIFO over-run 2,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.1,Ingress FIFO over-run 1,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.82.0,Ingress FIFO over-run 0,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.88,Egress FIFO Control &  Status ,16'h03FF,,
+30.88.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all Egress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.88.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all Egress FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.88.13,Interrupt Enable,RW,0=disable; 1=enable,If set to a one assertion of any of the FIFO error flags in this register will cause an interrupt to be generated.
+30.88.12:10,Reserved,R,,
+30.88.9,Egress FIFO _error 9,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.8,Egress FIFO _error 8,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.7,Egress FIFO _error 7,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.6,Egress FIFO _error 6,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.5,Egress FIFO _error 5,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.4,Egress FIFO _error 4,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.3,Egress FIFO _error 3,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.2,Egress FIFO _error 2,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.1,Egress FIFO _error 1,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+30.88.0,Egress FIFO _error 0,RC,,"This flag is set to a one if either the Lanes Egress FIFO over, or under run flag is set. It is cleared by reading the bit . This flag is NOT cleared by a FIFO reset."
+,,,,
+R30.89,Egress FIFO Under-run Status,16'h03FF,,
+30.89.15:10,Reserved,R,,
+30.89.9,Egress FIFO under-run 9,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.8,Egress FIFO under-run 8,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.7,Egress FIFO under-run 7,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.6,Egress FIFO under-run 6,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.5,Egress FIFO under-run 5,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.4,Egress FIFO under-run 4,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.3,Egress FIFO under-run 3,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.2,Egress FIFO under-run 2,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.1,Egress FIFO under-run 1,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.89.0,Egress FIFO under-run 0,RC,,"This flag is set to a one if  a FIFO over-read is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+R30.90,Egress FIFO Over-run Status,16'h03FF,,
+30.90.15:10,Reserved,R,,
+30.90.9,Egress FIFO over-run 9,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.8,Egress FIFO over-run 8,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.7,Egress FIFO over-run 7,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.6,Egress FIFO over-run 6,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.5,Egress FIFO over-run 5,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.4,Egress FIFO over-run 4,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.3,Egress FIFO over-run 3,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.2,Egress FIFO over-run 2,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.1,Egress FIFO over-run 1,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+30.90.0,Egress FIFO over-run 0,RC,,"This flag is set to a one if  a FIFO over-write is detected. It is cleared by reading this bit, or by a FIFO reset,"
+,,,,
+,,,,
+R30.160,Ingress Lane 0 VL snoop 0,16'h001F,,
+30.160.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.160.14:5,Reserved,R,,
+30.160.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.161,Ingress Lane 0 VL snoop 1,16'h1F1F,,
+30.161.15:13,Reserved,R,,
+30.161.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.161.7:5,Reserved,R,,
+30.161.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.162,Ingress Lane 0 VL snoop 2,16'h1F1F,,
+30.162.15:13,Reserved,R,,
+30.162.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.162.7:5,Reserved,R,,
+30.162.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.163,Ingress Lane 1 VL snoop 0,16'h001F,,
+30.163.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.163.14:5,Reserved,R,,
+30.163.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.164,Ingress Lane 1 VL snoop 1,16'h1F1F,,
+30.164.15:13,Reserved,R,,
+30.164.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.164.7:5,Reserved,R,,
+30.164.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.165,Ingress Lane 1 VL snoop 2,16'h1F1F,,
+30.165.15:13,Reserved,R,,
+30.165.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.165.7:5,Reserved,R,,
+30.165.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.166,Ingress Lane 2 VL snoop 0,16'h001F,,
+30.166.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.166.14:5,Reserved,R,,
+30.166.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.167,Ingress Lane 2 VL snoop 1,16'h1F1F,,
+30.167.15:13,Reserved,R,,
+30.167.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.167.7:5,Reserved,R,,
+30.167.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.168,Ingress Lane 2 VL snoop 2,16'h1F1F,,
+30.168.15:13,Reserved,R,,
+30.168.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.168.7:5,Reserved,R,,
+30.168.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+R30.169,Ingress Lane 3 VL snoop 0,16'h001F,,
+30.169.15,VL snoop enable,RW,0=disable; 1=enable,VL snoop enable. Setting this bit to a one will cause the VL snoop SMs on all 25G Ingress lanes to continuously attempt to acquire 802.3ba frame alignment markers to determine VL Ids. When this bit is cleared the snooping SM is disabled and all VL Ids will be set to 5'd31 (11111 - no marker found). 
+30.169.14:5,Reserved,R,,
+30.169.4:0,VL ID slot 0,R,,Snooped Virtual Lane ID for Slot 0 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.170,Ingress Lane 3 VL snoop 1,16'h1F1F,,
+30.170.15:13,Reserved,R,,
+30.170.12:8,VL ID slot 2,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.170.7:5,Reserved,R,,
+30.170.4:0,VL ID slot 1,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+R30.171,Ingress Lane 3 VL snoop 2,16'h1F1F,,
+30.171.15:13,Reserved,R,,
+30.171.12:8,VL ID slot 4,R,,Snooped Virtual Lane ID for Slot 2 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+30.171.7:5,Reserved,R,,
+30.171.4:0,VL ID slot 3,R,,Snooped Virtual Lane ID for Slot 1 : 11111 = No VL marker found; 00000-10011 = VL marker ID number (0-19); 
+,,,,
+,,,,
+#R30.180,Refclk Select,16'h0000,,
+#30.180.15:3,Reserved,R,,
+#30.180.2:0,Sys Refclk Divide ratio,R,000= 1/10 (Ethernet reference of 644.5312MHz) (default); 001= 1/20 (Ethernet reference of 322.2656MHz); 010= 1/40 (Ethernet reference of 161.1328MHz); 100= 1/10.3125 (Ethernet reference of 625MHz); 101= 1/20.625 (Ethernet reference of 312.5MHz); 110= 1/41.25 (Ethernet reference of 156.25MHz);,Configure PLL divide ratio for supplied system reference clock frequency. Note this field is not reset to its default by MDIO_INIT.
+,,,,
+,,,,
+R30.194,Egress Rx PLL Status,16'h0000,,
+30.194.15:10,Reserved,R,,
+30.194.9,Lock,R,,PLL lock indication 
+30.194.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.194.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.197,Egress Tx PLL Status,16'h0000,,
+30.197.15:10,Reserved,R,,
+30.197.9,Lock,R,,PLL lock indication 
+30.197.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.197.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.200,Ingress Rx PLL Status,16'h0000,,
+30.200.15:10,Reserved,R,,
+30.200.9,Lock,R,,PLL lock indication 
+30.200.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.200.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.203,Ingress Tx PLL Status,16'h0000,,
+30.203.15:10,Reserved,R,,
+30.203.9,Lock,R,,PLL lock indication 
+30.203.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.203.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+,,,,
+R30.4096,Optical Tx Lane 0 Main Control,16'h0006,,
+30.4096.15:3,Reserved,R,,
+30.4096.3,Reserved,RW,,
+30.4096.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.4096.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.4352,Optical Tx Lane 1 Main Control,16'h0006,,
+30.4352.15:3,Reserved,R,,
+30.4352.3,Reserved,RW,,
+30.4352.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.4352.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.4608,Optical Tx Lane 2 Main Control,16'h0006,,
+30.4608.15:3,Reserved,R,,
+30.4608.3,Reserved,RW,,
+30.4608.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.4608.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.4864,Optical Tx Lane 3 Main Control,16'h0006,,
+30.4864.15:3,Reserved,R,,
+30.4864.3,Reserved,RW,,
+30.4864.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.4864.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.5120,Optical Tx Lane 4 Main Control,16'h0006,,
+30.5120.15:3,Reserved,R,,
+30.5120.3,Reserved,RW,,
+30.5120.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.5120.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.5376,Optical Tx Lane 5 Main Control,16'h0006,,
+30.5376.15:3,Reserved,R,,
+30.5376.3,Reserved,RW,,
+30.5376.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.5376.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.5632,Optical Tx Lane 6 Main Control,16'h0006,,
+30.5632.15:3,Reserved,R,,
+30.5632.3,Reserved,RW,,
+30.5632.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.5632.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.5888,Optical Tx Lane 7 Main Control,16'h0006,,
+30.5888.15:3,Reserved,R,,
+30.5888.3,Reserved,RW,,
+30.5888.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.5888.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.6144,Optical Tx Lane 8 Main Control,16'h0006,,
+30.6144.15:3,Reserved,R,,
+30.6144.3,Reserved,RW,,
+30.6144.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.6144.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+R30.6400,Optical Tx Lane 9 Main Control,16'h0006,,
+30.6400.15:3,Reserved,R,,
+30.6400.3,Reserved,RW,,
+30.6400.1,Loopback Output enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.6400.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+,,,,
+,,,,
+R30.4097,Optical Tx Lane 0 Eq Control,16'h0000,,
+30.4097.15:11,Reserved,R,,
+30.4097.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.4097.7:5,Reserved,R,,
+30.4097.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.4097.2,Reserved,R,,
+30.4097.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.4353,Optical Tx Lane 1 Eq Control,16'h0000,,
+30.4353.15:11,Reserved,R,,
+30.4353.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.4353.7:5,Reserved,R,,
+30.4353.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.4353.2,Reserved,R,,
+30.4353.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.4609,Optical Tx Lane 2 Eq Control,16'h0000,,
+30.4609.15:11,Reserved,R,,
+30.4609.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.4609.7:5,Reserved,R,,
+30.4609.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.4609.2,Reserved,R,,
+30.4609.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.4865,Optical Tx Lane 3 Eq Control,16'h0000,,
+30.4865.15:11,Reserved,R,,
+30.4865.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.4865.7:5,Reserved,R,,
+30.4865.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.4865.2,Reserved,R,,
+30.4865.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.5121,Optical Tx Lane 4 Eq Control,16'h0000,,
+30.5121.15:11,Reserved,R,,
+30.5121.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.5121.7:5,Reserved,R,,
+30.5121.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.5121.2,Reserved,R,,
+30.5121.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.5377,Optical Tx Lane 5 Eq Control,16'h0000,,
+30.5377.15:11,Reserved,R,,
+30.5377.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.5377.7:5,Reserved,R,,
+30.5377.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.5377.2,Reserved,R,,
+30.5377.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.5633,Optical Tx Lane 6 Eq Control,16'h0000,,
+30.5633.15:11,Reserved,R,,
+30.5633.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.5633.7:5,Reserved,R,,
+30.5633.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.5633.2,Reserved,R,,
+30.5633.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.5889,Optical Tx Lane 7 Eq Control,16'h0000,,
+30.5889.15:11,Reserved,R,,
+30.5889.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.5889.7:5,Reserved,R,,
+30.5889.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.5889.2,Reserved,R,,
+30.5889.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.6145,Optical Tx Lane 8 Eq Control,16'h0000,,
+30.6145.15:11,Reserved,R,,
+30.6145.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.6145.7:5,Reserved,R,,
+30.6145.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.6145.2,Reserved,R,,
+30.6145.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+R30.6401,Optical Tx Lane 9 Eq Control,16'h0000,,
+30.6401.15:11,Reserved,R,,
+30.6401.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.6401.7:5,Reserved,R,,
+30.6401.4:3,txa_slew,RW, 00 = Fastest; 01 = 01; 10 = 10; 11 = slowest;,Tx Slew control. This defines the slew rate on the output (intended for 10G mode only)
+30.6401.2,Reserved,R,,
+30.6401.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+,,,,
+,,,,
+R30.4098,Optical Tx Lane 0 Swing ,16'h0007,,
+30.4098.15:3,Reserved,R,,
+30.4098.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.4354,Optical Tx Lane 1 Swing ,16'h0007,,
+30.4354.15:3,Reserved,R,,
+30.4354.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.4610,Optical Tx Lane 2 Swing ,16'h0007,,
+30.4610.15:3,Reserved,R,,
+30.4610.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.4866,Optical Tx Lane 3 Swing ,16'h0007,,
+30.4866.15:3,Reserved,R,,
+30.4866.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.5122,Optical Tx Lane 4 Swing ,16'h0007,,
+30.5122.15:3,Reserved,R,,
+30.5122.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.5378,Optical Tx Lane 5 Swing ,16'h0007,,
+30.5378.15:3,Reserved,R,,
+30.5378.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.5634,Optical Tx Lane 6 Swing ,16'h0007,,
+30.5634.15:3,Reserved,R,,
+30.5634.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.5890,Optical Tx Lane 7 Swing ,16'h0007,,
+30.5890.15:3,Reserved,R,,
+30.5890.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.6146,Optical Tx Lane 8 Swing ,16'h0007,,
+30.6146.15:3,Reserved,R,,
+30.6146.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+,,,,
+R30.6402,Optical Tx Lane 9 Swing ,16'h0007,,
+30.6402.15:3,Reserved,R,,
+30.6402.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude

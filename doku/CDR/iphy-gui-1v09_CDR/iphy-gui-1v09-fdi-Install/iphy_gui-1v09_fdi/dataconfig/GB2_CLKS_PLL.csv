@@ -1,0 +1,309 @@
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 0.0  2012-09-17 Andre ,,,,
+! GB2 Initial version,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+,,,,
+,,,,
+,,,,
+,,,,
+R30.60,Monitor Clock Select,16'h000F,,
+30.60.15:6,Reserved,R,,
+30.60.5,Divide Select,RW,0=full-rate;1=half-rate,Monitor clock divide ratio
+30.60.4,Direction select,RW,0=Ingress;1=Egress,Select Optical lane direction to monitor 
+30.60.3:0,Lane select,RW,0000=lane 0; 0001=lane 1; 0010=lane 2; 0011=lane 3; 0100=lane 4; 0101=lane 5; 0110=lane 6; 0111=lane 7; 1000=lane 8; 1001=lane 9; 1111=disabled;,"Select Optical Lane to monitor : 0-9 : Select numbered lane; A-E : Reserved; F :Monitor Clock Disabled (Default). Note only lane 2 can be monitored on Egress. Selecting anything other than lane 2 will not produce a valid clock.
+"
+,,,,
+,,,,
+R30.180,Refclk Select,16'h0000,,
+30.180.15:3,Reserved,R,,
+30.180.2:0,Sys Refclk Divide ratio,RW,000= 1/10 (Ethernet reference of 644.5312MHz) (default); 001= 1/20 (Ethernet reference of 322.2656MHz); 010= 1/40 (Ethernet reference of 161.1328MHz); 100= 1/10.3125 (Ethernet reference of 625MHz); 101= 1/20.625 (Ethernet reference of 312.5MHz); 110= 1/41.25 (Ethernet reference of 156.25MHz);,Configure PLL divide ratio for supplied system reference clock frequency. Note this field is not reset to its default by MDIO_INIT.
+,,,,
+R30.181,PLL Sysclk Trim,16'h6262,,
+30.181.15:8,25G Sysclk  trim,RW,,This byte is used to trim the PLL LCO amplitude and charge pump current of PLLs providing 25G clocks from the system reference clock. Note this field is not reset to its default by MDIO_INIT.
+30.181.7:0,10G Sysclk  trim,RW,,This byte is used to trim the PLL LCO amplitude and charge pump current of PLLs providing 10G clocks from the system reference clock. Note this field is not reset to its default by MDIO_INIT.
+,,,,
+R30.182,PLL Wdclk Trim,16'h6262,,
+30.182.15:8,25G Wdclk  trim,RW,,This byte is used to trim the PLL LCO amplitude and charge pump current of PLLs providing 25G clocks from the received (25G)  reference clock. Note this field is not reset to its default by MDIO_INIT.
+30.182.7:0,10G Wdclk  trim,RW,,This byte is used to trim the PLL LCO amplitude and charge pump current of PLLs providing 10G clocks from the received (25G)  reference clock. Note this field is not reset to its default by MDIO_INIT.
+,,,,
+R30.192,Egress Rx PLL Config 1,16'h0000,,
+30.192.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.192.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.192.12:10,Reserved,R,,
+30.192.9,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.192.8:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 000000=lowest frequency range (maximum capacitance); 111111=highest frequency range (minimum capacitance);
+30.192.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+R30.195,Egress Tx PLL Config 1,16'h0000,,
+30.195.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.195.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.195.12:10,Reserved,R,,
+30.195.9,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.195.8:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 000000=lowest frequency range (maximum capacitance); 111111=highest frequency range (minimum capacitance);
+30.195.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+R30.198,Ingress Rx PLL Config 1,16'h0000,,
+30.198.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.198.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.198.12:10,Reserved,R,,
+30.198.9,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.198.8:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 000000=lowest frequency range (maximum capacitance); 111111=highest frequency range (minimum capacitance);
+30.198.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+R30.201,Ingress Tx PLL Config 1,16'h0000,,
+30.201.15,Recalib,RW,0=disable; 1=enable,Force recalibration of PLL without reset. Active on rising edge
+30.201.14:13,Cal step,RW, 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period,Calibration step duration : 00=32 steps of 1/1024 REFCLK period; 01=32 steps of 1/4096 REFCLK period; 10=32 steps of 1/16384 REFCLK period; 11=32 steps of 1/65536 REFCLK period
+30.201.12:10,Reserved,R,,
+30.201.9,Force Cal bus ,RW,0=disable; 1=enable,0=normal operation; 1=over-ride internal calibration bus value with value from bits 11:7
+30.201.8:3,Cal bus force value (Coarse),RW,,Coarse Calibration bus value to force : 000000=lowest frequency range (maximum capacitance); 111111=highest frequency range (minimum capacitance);
+30.201.2:0,Cal bus force value (Fine),RW,,Fine Calibration bus value to force : 000=lowest frequency range (maximum capacitance); 111=highest frequency range (minimum capacitance);
+,,,,
+,,,,
+R30.193,Egress Rx PLL Config 2,16'h9C00,,
+30.193.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.193.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.193.10:6,Charge pump current ,RW,,Current value control for charge pump : 00000=lowest current; 11111=highest current
+30.193.5,Reserved,R ,,
+30.193.4,Rx DFE mode,RW,0=disable; 1=enable,
+30.193.3,Prescaler bypass,RW,0=enable; 1=bypass,
+30.193.2,Fractional mode,RW,0=normal; 1=64/66 ratios,64b66b fractional mode
+30.193.1:0,Divide ratio,RW,00=4x (same as GB1); 01=8x; 10=16x; 11=16x,
+,,,,
+R30.196,Egress Tx PLL Config 2,16'h9C00,,
+30.196.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.196.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.196.10:6,Charge pump current ,RW,,Current value control for charge pump : 00000=lowest current; 11111=highest current
+30.196.5,Reserved,R ,,
+30.196.4,Rx DFE mode,RW,0=disable; 1=enable,
+30.196.3,Prescaler bypass,RW,0=enable; 1=bypass,
+30.196.2,Fractional mode,RW,0=normal; 1=64/66 ratios,64b66b fractional mode
+30.196.1:0,Divide ratio,RW,00=4x (same as GB1); 01=8x; 10=16x; 11=16x,
+,,,,
+R30.199,Ingress Rx PLL Config 2,16'h9C00,,
+30.199.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.199.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.199.10:6,Charge pump current ,RW,,Current value control for charge pump : 00000=lowest current; 11111=highest current
+30.199.5,Reserved,R ,,
+30.199.4,Rx DFE mode,RW,0=disable; 1=enable,
+30.199.3,Prescaler bypass,RW,0=enable; 1=bypass,
+30.199.2,Fractional mode,RW,0=normal; 1=64/66 ratios,64b66b fractional mode
+30.199.1:0,Divide ratio,RW,00=4x (same as GB1); 01=8x; 10=16x; 11=16x,
+,,,,
+R30.202,Ingress Tx PLL Config 2,16'h9C00,,
+30.202.15:14,vctlref,RW, 00= 0.4*VDDA_1_0;  01= 0.45*VDDA_1_0; 10= 0.5*VDDA_1_0; 11= 0.55*VDDA_1_0,VCTL Reference setting: 00: 0.4*VDDA_1_0;  01: 0.45*VDDA_1_0; 01: 0.45*VDDA_1_0; 10: 0.5*VDDA_1_0; 11: 0.55*VDDA_1_0
+30.202.13:11,LCO amplitude ,RW, 000=lowest amplitude; 001=001; 010=010; 011=011; 100=100; 101=101; 110=110; 111=highest amplitude;,Amplitude control for LC Oscillator : 000=lowest amplitude; 111=highest amplitude
+30.202.10:6,Charge pump current ,RW,,Current value control for charge pump : 00000=lowest current; 11111=highest current
+30.202.5,Reserved,R ,,
+30.202.4,Rx DFE mode,RW,0=disable; 1=enable,
+30.202.3,Prescaler bypass,RW,0=enable; 1=bypass,
+30.202.2,Fractional mode,RW,0=normal; 1=64/66 ratios,64b66b fractional mode
+30.202.1:0,Divide ratio,RW,00=4x (same as GB1); 01=8x; 10=16x; 11=16x,
+,,,,
+,,,,
+R30.194,Egress Rx PLL Status,16'h0000,,
+30.194.15:10,Reserved,R,,
+30.194.9,Lock,R,,PLL lock indication 
+30.194.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.194.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.197,Egress Tx PLL Status,16'h0000,,
+30.197.15:10,Reserved,R,,
+30.197.9,Lock,R,,PLL lock indication 
+30.197.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.197.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.200,Ingress Rx PLL Status,16'h0000,,
+30.200.15:10,Reserved,R,,
+30.200.9,Lock,R,,PLL lock indication 
+30.200.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.200.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.203,Ingress Tx PLL Status,16'h0000,,
+30.203.15:10,Reserved,R,,
+30.203.9,Lock,R,,PLL lock indication 
+30.203.8:3,Cal Read (Coarse),R,,Internal Calibration bus read value - Coarse
+30.203.2:0,Cal Read (Fine),R,,Internal Calibration bus read value - Fine
+,,,,
+R30.4256,Optical Rx Lane 0 PI Control 1,16'h0000,,
+30.4256.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4256.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4256.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4256.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4256.7:2,Reserved,R,,
+30.4256.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4256.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.4512,Optical Rx Lane 1 PI Control 1,16'h0000,,
+30.4512.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4512.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4512.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4512.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4512.7:2,Reserved,R,,
+30.4512.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4512.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.4768,Optical Rx Lane 2 PI Control 1,16'h0000,,
+30.4768.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4768.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4768.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4768.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4768.7:2,Reserved,R,,
+30.4768.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4768.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5024,Optical Rx Lane 3 PI Control 1,16'h0000,,
+30.5024.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5024.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5024.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5024.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5024.7:2,Reserved,R,,
+30.5024.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5024.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5280,Optical Rx Lane 4 PI Control 1,16'h0000,,
+30.5280.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5280.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5280.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5280.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5280.7:2,Reserved,R,,
+30.5280.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5280.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5536,Optical Rx Lane 5 PI Control 1,16'h0000,,
+30.5536.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5536.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5536.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5536.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5536.7:2,Reserved,R,,
+30.5536.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5536.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5792,Optical Rx Lane 6 PI Control 1,16'h0000,,
+30.5792.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5792.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5792.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5792.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5792.7:2,Reserved,R,,
+30.5792.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5792.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6048,Optical Rx Lane 7 PI Control 1,16'h0000,,
+30.6048.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6048.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6048.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6048.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6048.7:2,Reserved,R,,
+30.6048.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6048.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6304,Optical Rx Lane 8 PI Control 1,16'h0000,,
+30.6304.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6304.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6304.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6304.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6304.7:2,Reserved,R,,
+30.6304.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6304.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6560,Optical Rx Lane 9 PI Control 1,16'h0000,,
+30.6560.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6560.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6560.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6560.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6560.7:2,Reserved,R,,
+30.6560.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6560.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.8352,Host Rx Lane 0 PI Control 1,16'h0000,,
+30.8352.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.8352.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.8352.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.8352.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.8352.7:2,Reserved,R,,
+30.8352.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.8352.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.8608,Host Rx Lane 1 PI Control 1,16'h0000,,
+30.8608.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.8608.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.8608.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.8608.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.8608.7:2,Reserved,R,,
+30.8608.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.8608.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.8864,Host Rx Lane 2 PI Control 1,16'h0000,,
+30.8864.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.8864.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.8864.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.8864.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.8864.7:2,Reserved,R,,
+30.8864.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.8864.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.9120,Host Rx Lane 3 PI Control 1,16'h0000,,
+30.9120.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.9120.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.9120.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.9120.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.9120.7:2,Reserved,R,,
+30.9120.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.9120.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.9376,Host Rx Lane 4 PI Control 1,16'h0000,,
+30.9376.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.9376.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.9376.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.9376.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.9376.7:2,Reserved,R,,
+30.9376.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.9376.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.9632,Host Rx Lane 5 PI Control 1,16'h0000,,
+30.9632.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.9632.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.9632.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.9632.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.9632.7:2,Reserved,R,,
+30.9632.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.9632.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.9888,Host Rx Lane 6 PI Control 1,16'h0000,,
+30.9888.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.9888.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.9888.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.9888.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.9888.7:2,Reserved,R,,
+30.9888.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.9888.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.10144,Host Rx Lane 7 PI Control 1,16'h0000,,
+30.10144.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.10144.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.10144.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.10144.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.10144.7:2,Reserved,R,,
+30.10144.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.10144.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.10400,Host Rx Lane 8 PI Control 1,16'h0000,,
+30.10400.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.10400.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.10400.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.10400.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.10400.7:2,Reserved,R,,
+30.10400.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.10400.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.10656,Host Rx Lane 9 PI Control 1,16'h0000,,
+30.10656.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.10656.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.10656.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.10656.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.10656.7:2,Reserved,R,,
+30.10656.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.10656.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.

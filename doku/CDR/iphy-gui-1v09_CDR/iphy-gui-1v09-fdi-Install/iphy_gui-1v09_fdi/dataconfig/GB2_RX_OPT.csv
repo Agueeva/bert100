@@ -1,0 +1,1011 @@
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 0.0  2012-09-17 Andre ,,,,
+! GB2 Initial version,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+,,,,
+R30.4225,Optical Rx Lane 0 1st Order CDR Ctl,16'h0402,,
+30.4225.15:11,Reserved,R,,
+30.4225.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.4225.7,Reserved,R,,
+30.4225.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.4481,Optical Rx Lane 1 1st Order CDR Ctl,16'h0402,,
+30.4481.15:11,Reserved,R,,
+30.4481.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.4481.7,Reserved,R,,
+30.4481.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.4737,Optical Rx Lane 2 1st Order CDR Ctl,16'h0402,,
+30.4737.15:11,Reserved,R,,
+30.4737.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.4737.7,Reserved,R,,
+30.4737.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.4993,Optical Rx Lane 3 1st Order CDR Ctl,16'h0402,,
+30.4993.15:11,Reserved,R,,
+30.4993.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.4993.7,Reserved,R,,
+30.4993.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.5249,Optical Rx Lane 4 1st Order CDR Ctl,16'h0402,,
+30.5249.15:11,Reserved,R,,
+30.5249.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.5249.7,Reserved,R,,
+30.5249.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.5505,Optical Rx Lane 5 1st Order CDR Ctl,16'h0402,,
+30.5505.15:11,Reserved,R,,
+30.5505.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.5505.7,Reserved,R,,
+30.5505.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.5761,Optical Rx Lane 6 1st Order CDR Ctl,16'h0402,,
+30.5761.15:11,Reserved,R,,
+30.5761.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.5761.7,Reserved,R,,
+30.5761.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.6017,Optical Rx Lane 7 1st Order CDR Ctl,16'h0402,,
+30.6017.15:11,Reserved,R,,
+30.6017.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.6017.7,Reserved,R,,
+30.6017.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.6273,Optical Rx Lane 8 1st Order CDR Ctl,16'h0402,,
+30.6273.15:11,Reserved,R,,
+30.6273.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.6273.7,Reserved,R,,
+30.6273.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+R30.6529,Optical Rx Lane 9 1st Order CDR Ctl,16'h0402,,
+30.6529.15:11,Reserved,R,,
+30.6529.10:8,PI Resolution,RW,001=32 step; 010=64 step; 100=128 step;,This 3 bit field specifies the resolution for the phase interpolator. It is important to ensure that only 1 bit is set = ‘1' at any time.
+30.6529.7,Reserved,R,,
+30.6529.6:0,CDR1 Threshold,RW,0000001=8 votes; 0000010=16 votes; 0000100=24 votes; 0001000=32 votes; 0010000=40 votes; 0100000=48 votes; 1000000=56 votes; ,This 7 bit field specifies the first order CDR voting threshold. It is not coded. This field defines the number of up/down votes before a corresponding adjustment is requested to the phase interpolator to adjust the input data sampling position. It is important to ensure that only 1 bit is set = ‘1' at any time.
+,,,,
+,,,,
+,,,,
+R30.4226,Optical Rx Lane 0 2nd Order CDR Ctl,16'h0402,,
+30.4226.15:11,Reserved,R,,
+30.4226.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.4226.7:1,Reserved,R,,
+30.4226.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.4482,Optical Rx Lane 1 2nd Order CDR Ctl,16'h0402,,
+30.4482.15:11,Reserved,R,,
+30.4482.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.4482.7:1,Reserved,R,,
+30.4482.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.4738,Optical Rx Lane 2 2nd Order CDR Ctl,16'h0402,,
+30.4738.15:11,Reserved,R,,
+30.4738.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.4738.7:1,Reserved,R,,
+30.4738.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.4994,Optical Rx Lane 3 2nd Order CDR Ctl,16'h0402,,
+30.4994.15:11,Reserved,R,,
+30.4994.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.4994.7:1,Reserved,R,,
+30.4994.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.5250,Optical Rx Lane 4 2nd Order CDR Ctl,16'h0402,,
+30.5250.15:11,Reserved,R,,
+30.5250.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.5250.7:1,Reserved,R,,
+30.5250.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.5506,Optical Rx Lane 5 2nd Order CDR Ctl,16'h0402,,
+30.5506.15:11,Reserved,R,,
+30.5506.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.5506.7:1,Reserved,R,,
+30.5506.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.5762,Optical Rx Lane 6 2nd Order CDR Ctl,16'h0402,,
+30.5762.15:11,Reserved,R,,
+30.5762.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.5762.7:1,Reserved,R,,
+30.5762.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.6018,Optical Rx Lane 7 2nd Order CDR Ctl,16'h0402,,
+30.6018.15:11,Reserved,R,,
+30.6018.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.6018.7:1,Reserved,R,,
+30.6018.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.6274,Optical Rx Lane 8 2nd Order CDR Ctl,16'h0402,,
+30.6274.15:11,Reserved,R,,
+30.6274.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.6274.7:1,Reserved,R,,
+30.6274.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+R30.6530,Optical Rx Lane 9 2nd Order CDR Ctl,16'h0402,,
+30.6530.15:11,Reserved,R,,
+30.6530.10:8,CDR2 config,RW,000=10K UI; 001=20K UI; 010=40K UI; 011=80K UI; 100=160K UI;,"These 3 bits provide a coded select of 5 sets of (measurement interval width, the threshold count for accumulated PI steps before a change is made to the 2nd order CDR state and a threshold of inc/dec counts within the window interval prior to declaring loss of link).  In all cases, the RXD hardware automatically adjusts these numbers for different PI resolution selection."
+30.6530.7:1,Reserved,R,,
+30.6530.0,CDR2 Enable,RW,0=disable; 1=enable,Enable/Disable 2nd order CDR
+,,,,
+,,,,
+,,,,
+,,,,
+R30.4227,Optical Rx Lane 0 Equalizer Control,16'h0405,,
+30.4227.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.4227.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.4227.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.4227.7:3,Reserved,R,,
+30.4227.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.4227.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.4483,Optical Rx Lane 1 Equalizer Control,16'h0405,,
+30.4483.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.4483.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.4483.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.4483.7:3,Reserved,R,,
+30.4483.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.4483.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.4739,Optical Rx Lane 2 Equalizer Control,16'h0405,,
+30.4739.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.4739.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.4739.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.4739.7:3,Reserved,R,,
+30.4739.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.4739.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.4995,Optical Rx Lane 3 Equalizer Control,16'h0405,,
+30.4995.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.4995.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.4995.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.4995.7:3,Reserved,R,,
+30.4995.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.4995.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.5251,Optical Rx Lane 4 Equalizer Control,16'h0405,,
+30.5251.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.5251.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.5251.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.5251.7:3,Reserved,R,,
+30.5251.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.5251.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.5507,Optical Rx Lane 5 Equalizer Control,16'h0405,,
+30.5507.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.5507.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.5507.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.5507.7:3,Reserved,R,,
+30.5507.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.5507.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.5763,Optical Rx Lane 6 Equalizer Control,16'h0405,,
+30.5763.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.5763.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.5763.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.5763.7:3,Reserved,R,,
+30.5763.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.5763.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.6019,Optical Rx Lane 7 Equalizer Control,16'h0405,,
+30.6019.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.6019.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.6019.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.6019.7:3,Reserved,R,,
+30.6019.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.6019.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.6275,Optical Rx Lane 8 Equalizer Control,16'h0405,,
+30.6275.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.6275.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.6275.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.6275.7:3,Reserved,R,,
+30.6275.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.6275.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+R30.6531,Optical Rx Lane 9 Equalizer Control,16'h0405,,
+30.6531.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.6531.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.6531.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.6531.7:3,Reserved,R,,
+30.6531.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.6531.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+,,,,
+,,,,
+,,,,
+R30.4234,Optical Rx Lane 0 PI Control 0,16'h0008,,
+30.4234.15:9,Reserved,R,,
+30.4234.8,PI Power down,RW,,
+30.4234.7:4,Reserved,R,,
+30.4234.3:0,PI Bias adjust,RW,,
+,,,,
+R30.4490,Optical Rx Lane 1 PI Control 0,16'h0008,,
+30.4490.15:9,Reserved,R,,
+30.4490.8,PI Power down,RW,,
+30.4490.7:4,Reserved,R,,
+30.4490.3:0,PI Bias adjust,RW,,
+,,,,
+R30.4746,Optical Rx Lane 2 PI Control 0,16'h0008,,
+30.4746.15:9,Reserved,R,,
+30.4746.8,PI Power down,RW,,
+30.4746.7:4,Reserved,R,,
+30.4746.3:0,PI Bias adjust,RW,,
+,,,,
+R30.5002,Optical Rx Lane 3 PI Control 0,16'h0008,,
+30.5002.15:9,Reserved,R,,
+30.5002.8,PI Power down,RW,,
+30.5002.7:4,Reserved,R,,
+30.5002.3:0,PI Bias adjust,RW,,
+,,,,
+R30.5258,Optical Rx Lane 4 PI Control 0,16'h0008,,
+30.5258.15:9,Reserved,R,,
+30.5258.8,PI Power down,RW,,
+30.5258.7:4,Reserved,R,,
+30.5258.3:0,PI Bias adjust,RW,,
+,,,,
+R30.5514,Optical Rx Lane 5 PI Control 0,16'h0008,,
+30.5514.15:9,Reserved,R,,
+30.5514.8,PI Power down,RW,,
+30.5514.7:4,Reserved,R,,
+30.5514.3:0,PI Bias adjust,RW,,
+,,,,
+R30.5770,Optical Rx Lane 6 PI Control 0,16'h0008,,
+30.5770.15:9,Reserved,R,,
+30.5770.8,PI Power down,RW,,
+30.5770.7:4,Reserved,R,,
+30.5770.3:0,PI Bias adjust,RW,,
+,,,,
+R30.6026,Optical Rx Lane 7 PI Control 0,16'h0008,,
+30.6026.15:9,Reserved,R,,
+30.6026.8,PI Power down,RW,,
+30.6026.7:4,Reserved,R,,
+30.6026.3:0,PI Bias adjust,RW,,
+,,,,
+R30.6282,Optical Rx Lane 8 PI Control 0,16'h0008,,
+30.6282.15:9,Reserved,R,,
+30.6282.8,PI Power down,RW,,
+30.6282.7:4,Reserved,R,,
+30.6282.3:0,PI Bias adjust,RW,,
+,,,,
+R30.6538,Optical Rx Lane 9 PI Control 0,16'h0008,,
+30.6538.15:9,Reserved,R,,
+30.6538.8,PI Power down,RW,,
+30.6538.7:4,Reserved,R,,
+30.6538.3:0,PI Bias adjust,RW,,
+,,,,
+,,,,
+,,,,
+R30.4256,Optical Rx Lane 0 PI Control 1,16'h0000,,
+30.4256.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4256.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4256.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4256.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4256.7:2,Reserved,R,,
+30.4256.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4256.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.4512,Optical Rx Lane 1 PI Control 1,16'h0000,,
+30.4512.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4512.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4512.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4512.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4512.7:2,Reserved,R,,
+30.4512.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4512.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.4768,Optical Rx Lane 2 PI Control 1,16'h0000,,
+30.4768.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.4768.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.4768.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.4768.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.4768.7:2,Reserved,R,,
+30.4768.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.4768.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5024,Optical Rx Lane 3 PI Control 1,16'h0000,,
+30.5024.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5024.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5024.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5024.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5024.7:2,Reserved,R,,
+30.5024.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5024.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5280,Optical Rx Lane 4 PI Control 1,16'h0000,,
+30.5280.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5280.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5280.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5280.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5280.7:2,Reserved,R,,
+30.5280.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5280.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5536,Optical Rx Lane 5 PI Control 1,16'h0000,,
+30.5536.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5536.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5536.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5536.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5536.7:2,Reserved,R,,
+30.5536.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5536.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.5792,Optical Rx Lane 6 PI Control 1,16'h0000,,
+30.5792.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.5792.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.5792.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.5792.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.5792.7:2,Reserved,R,,
+30.5792.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.5792.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6048,Optical Rx Lane 7 PI Control 1,16'h0000,,
+30.6048.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6048.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6048.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6048.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6048.7:2,Reserved,R,,
+30.6048.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6048.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6304,Optical Rx Lane 8 PI Control 1,16'h0000,,
+30.6304.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6304.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6304.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6304.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6304.7:2,Reserved,R,,
+30.6304.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6304.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+R30.6560,Optical Rx Lane 9 PI Control 1,16'h0000,,
+30.6560.15:14,Quadrant 3,RW,,Phase Interpolator 3 quadrant override
+30.6560.13:12,Quadrant 2,RW,,Phase Interpolator 2 quadrant override
+30.6560.11:10,Quadrant 1,RW,,Phase Interpolator 1 quadrant override
+30.6560.9:8,Quadrant 0,RW,,Phase Interpolator 0 quadrant override
+30.6560.7:2,Reserved,R,,
+30.6560.1,PI Lock,RW,,Set this bit = ‘1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream.
+30.6560.0,PI Code Override,RW,,Set this bit = ‘1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit - See MAS.
+,,,,
+,,,,
+,,,,
+R30.4257,Optical Rx Lane 0 PI Control 2,16'h0000,,
+30.4257.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4257.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.4513,Optical Rx Lane 1 PI Control 2,16'h0000,,
+30.4513.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4513.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.4769,Optical Rx Lane 2 PI Control 2,16'h0000,,
+30.4769.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4769.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5025,Optical Rx Lane 3 PI Control 2,16'h0000,,
+30.5025.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5025.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5281,Optical Rx Lane 4 PI Control 2,16'h0000,,
+30.5281.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5281.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5537,Optical Rx Lane 5 PI Control 2,16'h0000,,
+30.5537.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5537.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5793,Optical Rx Lane 6 PI Control 2,16'h0000,,
+30.5793.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5793.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6049,Optical Rx Lane 7 PI Control 2,16'h0000,,
+30.6049.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6049.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6305,Optical Rx Lane 8 PI Control 2,16'h0000,,
+30.6305.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6305.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6561,Optical Rx Lane 9 PI Control 2,16'h0000,,
+30.6561.15:8,PI 1 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6561.7:0,PI 0 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+,,,,
+R30.4258,Optical Rx Lane 0 PI Control 3,16'h0000,,
+30.4258.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4258.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.4514,Optical Rx Lane 1 PI Control 3,16'h0000,,
+30.4514.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4514.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.4770,Optical Rx Lane 2 PI Control 3,16'h0000,,
+30.4770.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.4770.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5026,Optical Rx Lane 3 PI Control 3,16'h0000,,
+30.5026.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5026.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5282,Optical Rx Lane 4 PI Control 3,16'h0000,,
+30.5282.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5282.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5538,Optical Rx Lane 5 PI Control 3,16'h0000,,
+30.5538.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5538.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.5794,Optical Rx Lane 6 PI Control 3,16'h0000,,
+30.5794.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.5794.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6050,Optical Rx Lane 7 PI Control 3,16'h0000,,
+30.6050.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6050.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6306,Optical Rx Lane 8 PI Control 3,16'h0000,,
+30.6306.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6306.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+R30.6562,Optical Rx Lane 9 PI Control 3,16'h0000,,
+30.6562.15:8,PI 3 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+30.6562.7:0,PI 2 offset Override,RW,,The MS 5 bits are used as a simple binary coded overwrite value for the main(thermometer coded) PI code. The LS 3 bits are used as a simple binary coded overwrite value for the fraction(binary coded) PI code. Please refer to coding scheme described in the MAS.
+,,,,
+,,,,
+,,,,
+R30.4259,Optical Rx Lane 0 Eq adapted threshold,16'h0000,,
+30.4259.15,Reserved,R,,
+30.4259.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.4515,Optical Rx Lane 1 Eq adapted threshold,16'h0000,,
+30.4515.15,Reserved,R,,
+30.4515.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.4771,Optical Rx Lane 2 Eq adapted threshold,16'h0000,,
+30.4771.15,Reserved,R,,
+30.4771.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.5027,Optical Rx Lane 3 Eq adapted threshold,16'h0000,,
+30.5027.15,Reserved,R,,
+30.5027.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.5283,Optical Rx Lane 4 Eq adapted threshold,16'h0000,,
+30.5283.15,Reserved,R,,
+30.5283.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.5539,Optical Rx Lane 5 Eq adapted threshold,16'h0000,,
+30.5539.15,Reserved,R,,
+30.5539.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.5795,Optical Rx Lane 6 Eq adapted threshold,16'h0000,,
+30.5795.15,Reserved,R,,
+30.5795.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.6051,Optical Rx Lane 7 Eq adapted threshold,16'h0000,,
+30.6051.15,Reserved,R,,
+30.6051.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.6307,Optical Rx Lane 8 Eq adapted threshold,16'h0000,,
+30.6307.15,Reserved,R,,
+30.6307.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+R30.6563,Optical Rx Lane 9 Eq adapted threshold,16'h0000,,
+30.6563.15,Reserved,R,,
+30.6563.7:0,Eq adapted threshold,R,,The value of the Equaliser adapted threshold can be read back via this register
+,,,,
+,,,,
+,,,,
+R30.4260,Optical Rx Lane 0 Eq control 2,16'h0000,,
+30.4260.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.4260.1,Reserved,R,,
+30.4260.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.4516,Optical Rx Lane 1 Eq control 2,16'h0000,,
+30.4516.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.4516.1,Reserved,R,,
+30.4516.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.4772,Optical Rx Lane 2 Eq control 2,16'h0000,,
+30.4772.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.4772.1,Reserved,R,,
+30.4772.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.5028,Optical Rx Lane 3 Eq control 2,16'h0000,,
+30.5028.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.5028.1,Reserved,R,,
+30.5028.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.5284,Optical Rx Lane 4 Eq control 2,16'h0000,,
+30.5284.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.5284.1,Reserved,R,,
+30.5284.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.5540,Optical Rx Lane 5 Eq control 2,16'h0000,,
+30.5540.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.5540.1,Reserved,R,,
+30.5540.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.5796,Optical Rx Lane 6 Eq control 2,16'h0000,,
+30.5796.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.5796.1,Reserved,R,,
+30.5796.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.6052,Optical Rx Lane 7 Eq control 2,16'h0000,,
+30.6052.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.6052.1,Reserved,R,,
+30.6052.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.6308,Optical Rx Lane 8 Eq control 2,16'h0000,,
+30.6308.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.6308.1,Reserved,R,,
+30.6308.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+R30.6564,Optical Rx Lane 9 Eq control 2,16'h0000,,
+30.6564.15:2,Eq Trip,R,,This field can be read for debug purposes to observe the value of the data pattern count at the time of the most recent equalizer  analysis interval expiry.  
+30.6564.1,Reserved,R,,
+30.6564.0,Equalizer code override,RW,,"Assert this bit = ‘1' to force the contents of bits[3:0] of the RX Equalizer Control Register 1 to control the equalizer code under MDIO control.  There are some restrictions on accessing this bit.  RX Equalizer Control Register 1 can be read at any time.  In order to have the value written to this register overwrite the equalizer code, the bit[0] in this register  must have been asserted in a previous write cycle."
+,,,,
+,,,,
+,,,,
+R30.4261,Optical Rx Lane 0 Eq observe 1,16'h0007,,
+30.4261.15:4,Reserved,R,,
+30.4261.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.4517,Optical Rx Lane 1 Eq observe 1,16'h0007,,
+30.4517.15:4,Reserved,R,,
+30.4517.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.4773,Optical Rx Lane 2 Eq observe 1,16'h0007,,
+30.4773.15:4,Reserved,R,,
+30.4773.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.5029,Optical Rx Lane 3 Eq observe 1,16'h0007,,
+30.5029.15:4,Reserved,R,,
+30.5029.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.5285,Optical Rx Lane 4 Eq observe 1,16'h0007,,
+30.5285.15:4,Reserved,R,,
+30.5285.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.5541,Optical Rx Lane 5 Eq observe 1,16'h0007,,
+30.5541.15:4,Reserved,R,,
+30.5541.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.5797,Optical Rx Lane 6 Eq observe 1,16'h0007,,
+30.5797.15:4,Reserved,R,,
+30.5797.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.6053,Optical Rx Lane 7 Eq observe 1,16'h0007,,
+30.6053.15:4,Reserved,R,,
+30.6053.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.6309,Optical Rx Lane 8 Eq observe 1,16'h0007,,
+30.6309.15:4,Reserved,R,,
+30.6309.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+R30.6565,Optical Rx Lane 9 Eq observe 1,16'h0007,,
+30.6565.15:4,Reserved,R,,
+30.6565.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+,,,,
+,,,,
+,,,,
+R30.4262,Optical Rx Lane 0 Eq setting,16'h0007,,
+30.4262.15:4,Reserved,R,,
+30.4262.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.4518,Optical Rx Lane 1 Eq setting,16'h0007,,
+30.4518.15:4,Reserved,R,,
+30.4518.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.4774,Optical Rx Lane 2 Eq setting,16'h0007,,
+30.4774.15:4,Reserved,R,,
+30.4774.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.5030,Optical Rx Lane 3 Eq setting,16'h0007,,
+30.5030.15:4,Reserved,R,,
+30.5030.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.5286,Optical Rx Lane 4 Eq setting,16'h0007,,
+30.5286.15:4,Reserved,R,,
+30.5286.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.5542,Optical Rx Lane 5 Eq setting,16'h0007,,
+30.5542.15:4,Reserved,R,,
+30.5542.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.5798,Optical Rx Lane 6 Eq setting,16'h0007,,
+30.5798.15:4,Reserved,R,,
+30.5798.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.6054,Optical Rx Lane 7 Eq setting,16'h0007,,
+30.6054.15:4,Reserved,R,,
+30.6054.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.6310,Optical Rx Lane 8 Eq setting,16'h0007,,
+30.6310.15:4,Reserved,R,,
+30.6310.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+R30.6566,Optical Rx Lane 9 Eq setting,16'h0007,,
+30.6566.15:4,Reserved,R,,
+30.6566.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+,,,,
+,,,,
+,,,,
+R30.4263,Optical Rx Lane 0 2nd order CDR Observe,16'h0000,,
+30.4263.15:14,Reserved,R,,
+30.4263.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.4519,Optical Rx Lane 1 2nd order CDR Observe,16'h0000,,
+30.4519.15:14,Reserved,R,,
+30.4519.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.4775,Optical Rx Lane 2 2nd order CDR Observe,16'h0000,,
+30.4775.15:14,Reserved,R,,
+30.4775.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.5031,Optical Rx Lane 3 2nd order CDR Observe,16'h0000,,
+30.5031.15:14,Reserved,R,,
+30.5031.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.5287,Optical Rx Lane 4 2nd order CDR Observe,16'h0000,,
+30.5287.15:14,Reserved,R,,
+30.5287.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.5543,Optical Rx Lane 5 2nd order CDR Observe,16'h0000,,
+30.5543.15:14,Reserved,R,,
+30.5543.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.5799,Optical Rx Lane 6 2nd order CDR Observe,16'h0000,,
+30.5799.15:14,Reserved,R,,
+30.5799.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.6055,Optical Rx Lane 7 2nd order CDR Observe,16'h0000,,
+30.6055.15:14,Reserved,R,,
+30.6055.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.6311,Optical Rx Lane 8 2nd order CDR Observe,16'h0000,,
+30.6311.15:14,Reserved,R,,
+30.6311.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+R30.6567,Optical Rx Lane 9 2nd order CDR Observe,16'h0000,,
+30.6567.15:14,Reserved,R,,
+30.6567.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval. This value can be used to determine the magnitude of uncorrected receive clock ppm offset.
+,,,,
+,,,,
+,,,,
+R30.4264,Optical Rx Lane 0 PI position 1,16'h0000,,
+30.4264.15:14,Reserved,R,,
+30.4264.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.4264.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.4264.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.4264.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.4520,Optical Rx Lane 1 PI position 1,16'h0000,,
+30.4520.15:14,Reserved,R,,
+30.4520.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.4520.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.4520.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.4520.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.4776,Optical Rx Lane 2 PI position 1,16'h0000,,
+30.4776.15:14,Reserved,R,,
+30.4776.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.4776.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.4776.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.4776.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.5032,Optical Rx Lane 3 PI position 1,16'h0000,,
+30.5032.15:14,Reserved,R,,
+30.5032.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.5032.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.5032.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.5032.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.5288,Optical Rx Lane 4 PI position 1,16'h0000,,
+30.5288.15:14,Reserved,R,,
+30.5288.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.5288.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.5288.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.5288.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.5544,Optical Rx Lane 5 PI position 1,16'h0000,,
+30.5544.15:14,Reserved,R,,
+30.5544.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.5544.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.5544.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.5544.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.5800,Optical Rx Lane 6 PI position 1,16'h0000,,
+30.5800.15:14,Reserved,R,,
+30.5800.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.5800.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.5800.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.5800.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.6056,Optical Rx Lane 7 PI position 1,16'h0000,,
+30.6056.15:14,Reserved,R,,
+30.6056.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.6056.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.6056.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.6056.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.6312,Optical Rx Lane 8 PI position 1,16'h0000,,
+30.6312.15:14,Reserved,R,,
+30.6312.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.6312.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.6312.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.6312.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+R30.6568,Optical Rx Lane 9 PI position 1,16'h0000,,
+30.6568.15:14,Reserved,R,,
+30.6568.13:12,PI Selection value,R,00=PI0; 01= PI1; 10=PI2; 11=PI3;,These 2 bits are used to select which PI will present it's position information on bits [9:0] in this register [00] = PI0 will be selected for reading; [01] = PI1 will be selected for reading; [10] = PI2 will be selected for reading; [11] = PI3 will be selected for reading ;
+30.6568.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.6568.7:3,PI Code value,R,,The current value of the interpolator thermometer code can be read back through this field
+30.6568.2:0,PI fractional code value,R,,The current value of the interpolator fractional code can be read back through this field
+,,,,
+,,,,
+,,,,
+R30.4265,Optical Rx Lane 0 2nd Order CDR debug 1,16'h0000,,
+30.4265.15:7,Reserved,R,,
+30.4265.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.4265.1,Reserved,R,,
+30.4265.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.4521,Optical Rx Lane 1 2nd Order CDR debug 1,16'h0000,,
+30.4521.15:7,Reserved,R,,
+30.4521.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.4521.1,Reserved,R,,
+30.4521.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.4777,Optical Rx Lane 2 2nd Order CDR debug 1,16'h0000,,
+30.4777.15:7,Reserved,R,,
+30.4777.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.4777.1,Reserved,R,,
+30.4777.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.5033,Optical Rx Lane 3 2nd Order CDR debug 1,16'h0000,,
+30.5033.15:7,Reserved,R,,
+30.5033.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.5033.1,Reserved,R,,
+30.5033.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.5289,Optical Rx Lane 4 2nd Order CDR debug 1,16'h0000,,
+30.5289.15:7,Reserved,R,,
+30.5289.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.5289.1,Reserved,R,,
+30.5289.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.5545,Optical Rx Lane 5 2nd Order CDR debug 1,16'h0000,,
+30.5545.15:7,Reserved,R,,
+30.5545.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.5545.1,Reserved,R,,
+30.5545.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.5801,Optical Rx Lane 6 2nd Order CDR debug 1,16'h0000,,
+30.5801.15:7,Reserved,R,,
+30.5801.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.5801.1,Reserved,R,,
+30.5801.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.6057,Optical Rx Lane 7 2nd Order CDR debug 1,16'h0000,,
+30.6057.15:7,Reserved,R,,
+30.6057.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.6057.1,Reserved,R,,
+30.6057.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.6313,Optical Rx Lane 8 2nd Order CDR debug 1,16'h0000,,
+30.6313.15:7,Reserved,R,,
+30.6313.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.6313.1,Reserved,R,,
+30.6313.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+R30.6569,Optical Rx Lane 9 2nd Order CDR debug 1,16'h0000,,
+30.6569.15:7,Reserved,R,,
+30.6569.6:2,State override,RW,,Use this field to manually override the value of the second order state code when enabled by bit[0] in this register 
+30.6569.1,Reserved,R,,
+30.6569.0,override enable,RW,0=disable; 1=enable,Set this field to 1'b1 to enable overriding of the second order state field
+,,,,
+,,,,
+,,,,
+R30.4266,Optical Rx Lane 0 2nd Order CDR debug 2,16'h0000,,
+30.4266.15:5,Reserved,R,,
+30.4266.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.4522,Optical Rx Lane 1 2nd Order CDR debug 2,16'h0000,,
+30.4522.15:5,Reserved,R,,
+30.4522.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.4778,Optical Rx Lane 2 2nd Order CDR debug 2,16'h0000,,
+30.4778.15:5,Reserved,R,,
+30.4778.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.5034,Optical Rx Lane 3 2nd Order CDR debug 2,16'h0000,,
+30.5034.15:5,Reserved,R,,
+30.5034.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.5290,Optical Rx Lane 4 2nd Order CDR debug 2,16'h0000,,
+30.5290.15:5,Reserved,R,,
+30.5290.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.5546,Optical Rx Lane 5 2nd Order CDR debug 2,16'h0000,,
+30.5546.15:5,Reserved,R,,
+30.5546.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.5802,Optical Rx Lane 6 2nd Order CDR debug 2,16'h0000,,
+30.5802.15:5,Reserved,R,,
+30.5802.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.6058,Optical Rx Lane 7 2nd Order CDR debug 2,16'h0000,,
+30.6058.15:5,Reserved,R,,
+30.6058.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.6314,Optical Rx Lane 8 2nd Order CDR debug 2,16'h0000,,
+30.6314.15:5,Reserved,R,,
+30.6314.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+R30.6570,Optical Rx Lane 9 2nd Order CDR debug 2,16'h0000,,
+30.6570.15:5,Reserved,R,,
+30.6570.4:0,2nd order CDR state,R,,Use this field to read the value of the second order adapted state. The MSB is a sign bit which represents the direction of second order contributions. 1'b1 =decrements. 1'b0 = increments
+,,,,
+,,,,
+,,,,
+,,,,
+R30.4281,Optical Rx Lane 0 Eq offset control,16'h0000,,
+30.4281.15:14,Reserved,R,,
+30.4281.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4281.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4281.1,Reserved,R,,
+30.4281.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.4537,Optical Rx Lane 1 Eq offset control,16'h0000,,
+30.4537.15:14,Reserved,R,,
+30.4537.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4537.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4537.1,Reserved,R,,
+30.4537.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.4793,Optical Rx Lane 2 Eq offset control,16'h0000,,
+30.4793.15:14,Reserved,R,,
+30.4793.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.4793.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.4793.1,Reserved,R,,
+30.4793.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5049,Optical Rx Lane 3 Eq offset control,16'h0000,,
+30.5049.15:14,Reserved,R,,
+30.5049.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5049.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5049.1,Reserved,R,,
+30.5049.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5305,Optical Rx Lane 4 Eq offset control,16'h0000,,
+30.5305.15:14,Reserved,R,,
+30.5305.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5305.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5305.1,Reserved,R,,
+30.5305.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5561,Optical Rx Lane 5 Eq offset control,16'h0000,,
+30.5561.15:14,Reserved,R,,
+30.5561.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5561.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5561.1,Reserved,R,,
+30.5561.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.5817,Optical Rx Lane 6 Eq offset control,16'h0000,,
+30.5817.15:14,Reserved,R,,
+30.5817.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.5817.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.5817.1,Reserved,R,,
+30.5817.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6073,Optical Rx Lane 7 Eq offset control,16'h0000,,
+30.6073.15:14,Reserved,R,,
+30.6073.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6073.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6073.1,Reserved,R,,
+30.6073.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6329,Optical Rx Lane 8 Eq offset control,16'h0000,,
+30.6329.15:14,Reserved,R,,
+30.6329.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6329.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6329.1,Reserved,R,,
+30.6329.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+R30.6585,Optical Rx Lane 9 Eq offset control,16'h0000,,
+30.6585.15:14,Reserved,R,,
+30.6585.13:8,Eq offset state,R ,,Actual value of equalizer offset : either from autozeroing or by over-ride.
+30.6585.7:2,Eq offset,RW,,Equalizer offset over-ride value to be applied
+30.6585.1,Reserved,R,,
+30.6585.0,Overwrite Eq offsets,RW,,Assert this bit = ‘1' to enable overwriting of the Rx Equalizer offset value. When this bit is asserted then offset will be overridden with the values in the Eq Offset field.
+,,,,
+,,,,
+,,,,
+R30.4288,Optical Rx Lane 0 Amux control,16'h0000,,
+30.4288.15:14,Reserved,R,,
+30.4288.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4288.11:9,Reserved,R,,
+30.4288.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4288.7,Reserved,R,,
+30.4288.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4288.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.4544,Optical Rx Lane 1 Amux control,16'h0000,,
+30.4544.15:14,Reserved,R,,
+30.4544.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4544.11:9,Reserved,R,,
+30.4544.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4544.7,Reserved,R,,
+30.4544.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4544.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.4800,Optical Rx Lane 2 Amux control,16'h0000,,
+30.4800.15:14,Reserved,R,,
+30.4800.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.4800.11:9,Reserved,R,,
+30.4800.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.4800.7,Reserved,R,,
+30.4800.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.4800.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5056,Optical Rx Lane 3 Amux control,16'h0000,,
+30.5056.15:14,Reserved,R,,
+30.5056.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5056.11:9,Reserved,R,,
+30.5056.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5056.7,Reserved,R,,
+30.5056.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5056.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5312,Optical Rx Lane 4 Amux control,16'h0000,,
+30.5312.15:14,Reserved,R,,
+30.5312.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5312.11:9,Reserved,R,,
+30.5312.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5312.7,Reserved,R,,
+30.5312.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5312.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5568,Optical Rx Lane 5 Amux control,16'h0000,,
+30.5568.15:14,Reserved,R,,
+30.5568.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5568.11:9,Reserved,R,,
+30.5568.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5568.7,Reserved,R,,
+30.5568.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5568.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.5824,Optical Rx Lane 6 Amux control,16'h0000,,
+30.5824.15:14,Reserved,R,,
+30.5824.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.5824.11:9,Reserved,R,,
+30.5824.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.5824.7,Reserved,R,,
+30.5824.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.5824.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6080,Optical Rx Lane 7 Amux control,16'h0000,,
+30.6080.15:14,Reserved,R,,
+30.6080.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6080.11:9,Reserved,R,,
+30.6080.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6080.7,Reserved,R,,
+30.6080.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6080.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6336,Optical Rx Lane 8 Amux control,16'h0000,,
+30.6336.15:14,Reserved,R,,
+30.6336.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6336.11:9,Reserved,R,,
+30.6336.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6336.7,Reserved,R,,
+30.6336.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6336.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.
+,,,,
+R30.6592,Optical Rx Lane 9 Amux control,16'h0000,,
+30.6592.15:14,Reserved,R,,
+30.6592.13:12,Equalizer offset correction method,RW,,Equalizer offset correction method
+30.6592.11:9,Reserved,R,,
+30.6592.8,Speed up timers,RW,,Reserved for simulation use. Do not assert on real device
+30.6592.7,Reserved,R,,
+30.6592.6:4,PLL Amux select,RW,,A 3 way binary coded field which will be decoded inside RXD to produce a 1 hot 8 way AMUX observe select.
+30.6592.3:0,Rx Amux select,RW,,A 4 way binary coded field which will be decoded inside RXD to produce a 1 hot 16 way AMUX observe select.

@@ -1,0 +1,777 @@
+! $Header: /projects/wlv/iphy/sos/repository/iphy_A.rep/TEMP/lli_1316463935/#alidation#iphy-gui#dataconfig#iPHY100_B0_internal_MDIO.csv,v 1.4 2012-06-26 16:17:18-07 lli Exp $,,,
+! $Log: #alidation#iphy-gui#dataconfig#iPHY100_B0_internal_MDIO.csv,v $,,,
+! Revision 1.4  2012-06-26 16:17:18-07  lli,,,,
+! CHanged eror checker names from Tx to Rx,,,,
+!,,,,
+! Revision 1.3  2012-06-25 10:29:55-07  lli,,,,
+! Updated to match B0 Chip Behaviour,,,,
+!,,,,
+! Revision 1.2  2012-06-20 13:46:58-07  case,,,,
+! Updated MDIo init and Error Inject to RW from W,,,,
+!,,,,
+! Revision 1.1  2012-06-20 11:26:13-07  case,,,,
+! Inital release -- not checked,,,,
+!,,,,
+! Revision 1.4  2012-04-12 14:24:43-07  case,,,,
+! Fixed SA offset control register description, defined registers 30.256.2:1 as reserved,,,
+!,,,,
+! Revision 1.3  2012-03-29 09:59:54-07  case,,,,
+! defined CYA bit function correctly this time,,,,
+!,,,,
+! Revision 1.2  2012-03-27 16:40:19-07  case,,,,
+! defined CYA bit functio,,,,
+!,,,,
+! Revision 1.1  2012-03-16 10:06:14-07  case,,,,
+! updated and synchronized,,,,
+!,,,,
+! Revision 1.7  2011-12-01 14:23:13-08  case,,,,
+! Added CYA register space,,,,
+!,,,,
+! Revision 1.6  2011-11-23 09:00:28-08  rward,,,,
+! expanded trim bits,,,,
+!,,,,
+! Revision 1.3  2011-08-23 12:09:16-07  rbemra,,,,
+! Corrected 11:8 = 4'b0101 of Rx 25G Misc Trim (per J. Sanders),,,,
+!,,,,
+! Revision 1.2  2011-08-18 09:16:48-07  rbemra,,,,
+! Corrected 30.1540.0 <- 30.1540.1,,,,
+!,,,,
+! Revision 1.1  2011-08-08 10:48:07-07  rbemra,,,,
+! First iCDR100, iPHY100 release version,,,
+!,,,,
+! Revision 1.4  2011-08-01 15:52:23-07  rbemra,,,,
+"! Removed extra R30.529 register; this csv ""Saved As"" from xlsx master of same base name",,,,
+!,,,,
+! Revision 1.3  2011-07-29 18:52:16-07  rbemra,,,,
+! Corrections by iPHY team from CDR100 tests upto screening,,,,
+!,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+!,,,,
+! Revision 2.0  2012-05-15 Andre,,,,
+! B0 Updates,,,,
+!,,,,
+! ----------------------------------------------------------------------------------------------,,,,
+# Addr,Name,Def/mask,SubDes,Des
+R8.0,PMA Control 1 ,16'h204C,,
+8.0.15,Reset,RW,0=normal; 1=reset;,"Asserting this register bit has the same effect as a pin power-on-reset (except it does not reset the MDIO controller or registers).  On de-assertion of this bit device operation will follow the normal power-on-reset sequence dependant on the state of 8.0.15 (MMD8 reset bit), 30.0.11 & 30.0.9 (the Rx and Tx datapath reset request bits), and 30.0.15 (manual reset select bit).  These bits are not affected by assertion of this bit and will retain their previous state.  Note that, as in a normal power-on-reset sequence, the eFuse trim bits will be fetched from the eFuse array on de-assertion of reset"
+8.0.14,Reserved,R,,
+8.0.13,Speed selection (LSB),R,,"Read as one, writes ignored: 8.06::8.013 == 2'b11  indicate that bits 5:2 control speed select"
+8.0.12,Reserved,R,,
+8.0.11,Low Power,RW,," Setting this bit places the device into an ultra-low power state.  All non-MDIO digital circuitry is reset and all analog circuitry placed into its IDDQ state. Asserting this bit has the same effect as asserting the following MMD30 bits: 8.0.15, 30.44.4:2, 30.1537.15,  30.1537.9:0, 30.1538.9:0, and de-asserting 30.1281.15.  Setting this bit will forcibly set the Reset bit (8.0.15).  To exit the low power state this bit should be cleared, followed by the Reset bit (8.0.15) using separate MDIO writes to provide adequate delay.  See Note 1 (above) on the operation of the reset bit (8.0.15)."
+8.0.10:7,Reserved,R,,
+8.0.6,Speed selection (MSB),R,,"Read as one, writes ignored: 8.06::8.013 == 2'b11 indicate that bits 5:2 control speed select"
+8.0.5:2,Speed selection,R,,"Read as 4'b0011, writes ignored: This indicates 100 Gbps is the only valid selection"
+8.0.1,PMA remote loopback,RW,0=disable; 1=enable,Enable PMA remote loopback mode. Remote Loopback mode sends 28G serial data received on a lane back out on the same lane using the Tx datapath. Transmitted data is a bit serial copy of received data.  
+8.0.0,PMA local loopback,RW,0=disable; 1=enable,Enable PMA local loopback mode. Local Loopback mode loops back 28G serial transmit data to the 28G serial receiver.
+R8.1,PMA Status 1 ,16'h0002,,
+8.1.15:8,Reserved,R,,
+8.1.7,Fault,R,,
+8.1.6:3,Reserved,R,,1=Fault condition detected; 0= Fault condition not detected;
+8.1.2,Receive link status,R,,1= PMA/PMD receive link up; 0= PMA/PMD receive  link down;
+8.1.1,Low Power,R,,1= PMA/PMD supports low power mode; 0= PMA/PMD does not support low power mode;
+8.1.0,Reserved,R,,
+R8.2,PMA Device Identifier Lo ,16'h0210,,
+8.2.15:0,OUI 3-18,R,,3rd through 18th bits of Inphi OUI
+R8.3,PMA Device Identifier Hi ,16'h7411,,
+8.3.15:10,OUI 19-20,R,,19th through 24th bits of Inphi OUI
+8.3.9:4,Model Number,R,,Gearbox model number 
+8.3.3:0,Revision Code,R,,Gearbox revision number 
+R8.4,PMA Speed Ability,16'h0200,,
+8.4.15:10,Reserved,R,,
+8.4.9,100G capable,R,,"Read as one, writes ignored:  PMA/PMD is capable of operating at 100 Gbps"
+8.4.8:0,Reserved,R,,
+R8.5,PMA Devices in Package Lo ,16'h0100,,
+8.5.15:0,Devices Lo,R,,Separated PMA (1) present in package
+R8.6,PMA Devices in Package Hi,16'h4000,,
+8.6.15:0,Devices Hi,R,,Vendor Specific Device 1 present in package
+R8.7,PMA Control 2,16'h002A,,
+8.7.15:6,Reserved,R,,
+8.7.5:1,PMD/PMA type selection 5:1,R,,"Read as 5'b10101, writes ignored : "
+8.7.0,PMD/PMA type selection 0,RW,0= 100GBASE-LR4 PMA/PMD type; 1= 100GBASE-ER4 PMA/PMD type;,
+R8.8, PMA Status  2,16'hB201,,
+8.8.15:14,Device present,R,,"Read as 2'b10, writes ignored: Indicates device responding at this address"
+8.8.13,Transmit fault ability,R,,"Read as one, writes ignored: Indicates that the PMA/PMD has the ability to detect a fault condition on the transmit path"
+8.8.12,Receive fault ability,R,,"Read as one, writes ignored: Indicates that the PMA/PMD has the ability to detect a fault condition on the receive path"
+8.8.11,Transmit fault ,R,,0= No fault condition on transmit path; 1= Fault condition on transmit path;
+8.8.10,Receive fault ,R,,0= No fault condition on receive path; 1= Fault condition on receive path;
+8.8.9,Extended abilities,R,,"Read as one, writes ignored: Indicates that the PMA/PMD has extended abilities listed in register 1.11"
+8.8.8,PMD transmit disable ability,R,,"Read as zero, writes ignored: Indicates that the PMD does not have the ability to disable the transmit path"
+8.8.7:1,Reserved,R,,
+8.8.0,PMA local loopback ability,R,,"Read as one, writes ignored: Indicates that the PMA has the ability to perform a local loopback function."
+R8.11, PMA Extended Ability,16'h0400,,
+8.11.15:11,Reserved,R,,
+8.11.10,40G/100G extended abilities,R,,"Read as one, writes ignored: 1 = PMA/PMD has 40G/100G extended abilities listed in register 1.13"
+8.11.9:0,Reserved,R,,
+R8.13, 40/100G PMA Extended Ability,16'h8C00,,
+8.13.15,PMA remote loopback ability,R,,"Read as one, writes ignored: 1 = PMA has the ability to perform a remote loopback function"
+8.13.14:12,Reserved,R,,
+8.13.11,100GBASE-ER4 ability,R,,"Read as one, writes ignored: 1 = PMA/PMD is able to perform 100GBASE-ER4"
+8.13.10,100GBASE-LR4 ability,R,,"Read as one, writes ignored: 1 = PMA/PMD is able to perform 100GBASE-LR4"
+8.13.9:0,Reserved,R,,
+R8.1600,PRBS Tx Error Counter Lane 0,16'h0000,,
+8.1600.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1601,PRBS Tx Error Counter Lane 1,16'h0000,,
+8.1601.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1602,PRBS Tx Error Counter Lane 2,16'h0000,,
+8.1602.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1603,PRBS Tx Error Counter Lane 3,16'h0000,,
+8.1603.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1604,PRBS Tx Error Counter Lane 4,16'h0000,,
+8.1604.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1605,PRBS Tx Error Counter Lane 5,16'h0000,,
+8.1605.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1606,PRBS Tx Error Counter Lane 6,16'h0000,,
+8.1606.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1607,PRBS Tx Error Counter Lane 7,16'h0000,,
+8.1607.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1608,PRBS Tx Error Counter Lane 8,16'h0000,,
+8.1608.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1609,PRBS Tx Error Counter Lane 9,16'h0000,,
+8.1609.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1700,PRBS Rx Error Counter Lane 0,16'h0000,,
+8.1700.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1701,PRBS Rx Error Counter Lane 1,16'h0000,,
+8.1701.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1702,PRBS Rx Error Counter Lane 2,16'h0000,,
+8.1702.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R8.1703,PRBS Rx Error Counter Lane 3,16'h0000,,
+8.1703.15:0,Error Count,RC,,"Number of PRBS errors detected on Lane. Saturates at 16'hFFFF, does not roll-over to zero. Clear on Read."
+R30.0,Device Control 1 ,16'h0A00,,
+30.0.15,Manual Reset select,RW,0 = Hardware Sequencing; 1= Manual sequencing; ,"1= Manual Reset sequencing; 0 = Hardware Reset Sequencing (default). Pin reset RESETN leaves the gearbox device in a fully reset state.  Bringing the device into an operational state requires sequencing of SERDES reset signals.  Two sequencing methods are supported: Manual, and hardware sequenced.  This bit selects which method controls internal reset signals.  When Manual control is selected fields in register 30.44 control internal reset signals, otherwise bits in this register control them."
+30.0.14,Protocol Select,RW,0 = Ethernet; 1= OTU4; ,Select OTU4 framing protocol for protocol lock State Machine.
+30.0.13:12,Reserved,R,,
+30.0.11,Rx Datapath Reset ,RW,,"This bit controls Rx datapath reset signals, if hardware reset sequencing is selected (30.0.15=0). Asserting this bit resets the Rx datapath of the gearbox.  De-asserting this bit causes a sequenced removal of reset from the Rx datapath using the hardware reset sequencer. This bit is set to a one by assertion of the RESETN pin."
+30.0.10,Rx Reset seq done,R,,"1=Rx Datapath Reset Sequencer Inactive.  This bit is de-asserted whilst the Rx hardware reset sequencer is in operation.  This bit is asserted when the hardware reset sequencer finishes operations, or is inactive."
+30.0.9,Tx Datapath Reset ,RW,,"This bit controls Tx datapath reset signals, if hardware reset sequencing is selected (30.0.15=0). Asserting this bit resets the Tx datapath of the gearbox.  De-asserting this bit causes a sequenced removal of reset from the Tx datapath using the hardware reset sequencer.  This bit is set to a one by assertion of the RESETN pin."
+30.0.8,Tx Reset seq done,R,,"1=Tx Datapath Reset Sequencer Inactive.  This bit is de-asserted whilst the Tx hardware reset sequencer is in operation.  This bit is asserted when the hardware reset sequencer finishes operations, or is inactive."
+30.0.7,MDIO init,RW,,Writing a 1 to this bit locations sets all MDIO registers except register 30.0 (this register) to their default states. This bit must be cleared in order to write to any other mdio registers.
+30.0.6:4,Reserved,R,,
+30.0.3,LOL_alert_en,RW,0=disable; 1=enable,1=Enable LOL alert on pin RFU2 if 30.0.1=0. If LOL alert is enabled pin RFU2 will be asserted when any of the latched LOL bits (30.33.15:1) are asserted. If LOL & FIFO alerts are both enabled pin RFU2 will be the logical OR of LOL or FIFO error bits.
+30.0.2,FIFO_alert_en,RW,0=disable; 1=enable,"1=Enable FIFO alert on pin RFU2 if 30.0.1=0. If FIFO alert is enabled pin RFU2 will be asserted when any of the Rx or Tx FIFO error flags (30.37.11:8, 30.38.11:8) are  asserted. If LOL & FIFO alerts are both enabled pin RFU2 will be the logical OR of LOL or FIFO error bits."
+30.0.1,clk10_out_en,RW,0=disable; 1=enable,"1=Enable divided 10G receive word clock out on pin RFU2. 0=10G receive clock divider is disabled, and zero is driven out on pin RFU2. Default is zero. Asserting this bit disables LOL_alert_en & FIFO alert_en"
+30.0.0,Diagnostic override,RW,0=disable; 1=enable,1= Device diagnostic registers 30.16:29 over-ride PMA/MMD8 register controls. 0= Device is controlled by PMA/MMD8 registers. Default is zero.
+R30.2,Device Identifier Lo ,16'h0210,,
+30.2.15:0,OUI 3-18,R,,3rd through 18th bits of Inphi OUI
+R30.3,Device Identifier Hi ,16'h7411,,
+30.3.15:10,OUI 19-20,R,,19th through 24th bits of Inphi OUI
+30.3.9:4,Model Number,R,,Gearbox model number 
+30.3.3:0,Revision Code,R,,Gearbox revision number 
+R30.5,Devices in Package Lo ,16'h0100,,
+30.5.15:0,Devices Lo,R,,Separated PMA (1) present in package
+R30.6,Devices in Package Hi,16'h4000,,
+30.6.15:0,Devices Hi,R,,Vendor Specific Device 1 present in package
+R30.8, MMD30 Status  ,16'h8000,,
+30.8.15:14,status,R,,"Read as 2'b10, writes ignored : Indicates device responding at this address"
+30.8.13:0,Reserved,R,,
+R30.16,25G Lane 0 Pattern Control,16'h0000,,
+30.16.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.16.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.16.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.16.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.16.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.16.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.16.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.16.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.16.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.16.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.16.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.16.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.17,25G Lane 1 Pattern Control,16'h0000,,
+30.17.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.17.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.17.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.17.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.17.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.17.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.17.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.17.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.17.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.17.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.17.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.17.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.18,25G Lane 2 Pattern Control,16'h0000,,
+30.18.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.18.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.18.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.18.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.18.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.18.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.18.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.18.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.18.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.18.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.18.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.18.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.19,25G Lane 3 Pattern Control,16'h0000,,
+30.19.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.19.14,prbs_autovr,RW,0=disable; 1=enable,Automatic  PRBS verifier select : 1=verifier will scan through all verifier patterntypes until it finds one that locks. 0=only slected pattern type will be checked. 
+30.19.13,Loopback_en,RW,0=disable; 1=enable,SERDES per lane local loopback : 1=loopback data from SERDES Tx to SERDES Rx for selected lane; 0=normal SERDES operation
+30.19.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.19.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.19.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Receiver pattern verifier type : if prbs_autovr=0 this field selects pattern type; if  prbs_autovr=1 this field displays the pattern type locked to;
+30.19.7,odb_en,RW,0=disable; 1=enable,Optical Duo-Binary Precoder enable : 1=Precode transmit data for ODB; 0=normal transmit;
+30.19.6,tx_disable,RW,0=enable; 1=disable,Disable 25G lane SERDES transmitter: 1= Disabled; 0 = Enabled; Note default value of this bit is 1 - Disabled
+30.19.5,error_insert,RW,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.19.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.19.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.19.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.20,10G Lane 0 Pattern Control,16'h0000,,
+30.20.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.20.14:13,Reserved,R,,
+30.20.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.20.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.20.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.20.7:6,Reserved,R,,
+30.20.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.20.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.20.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.20.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.21,10G Lane 1 Pattern Control,16'h0000,,
+30.21.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.21.14:13,Reserved,R,,
+30.21.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.21.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.21.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.21.7:6,Reserved,R,,
+30.21.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.21.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.21.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.21.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.22,10G Lane 2 Pattern Control,16'h0000,,
+30.22.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.22.14:13,Reserved,R,,
+30.22.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.22.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.22.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.22.7:6,Reserved,R,,
+30.22.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.22.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.22.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.22.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.23,10G Lane 3 Pattern Control,16'h0000,,
+30.23.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.23.14:13,Reserved,R,,
+30.23.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.23.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.23.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.23.7:6,Reserved,R,,
+30.23.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.23.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.23.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.23.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.24,10G Lane 4 Pattern Control,16'h0000,,
+30.24.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.24.14:13,Reserved,R,,
+30.24.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.24.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.24.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.24.7:6,Reserved,R,,
+30.24.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.24.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.24.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.24.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.25,10G Lane 5 Pattern Control,16'h0000,,
+30.25.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.25.14:13,Reserved,R,,
+30.25.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.25.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.25.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.25.7:6,Reserved,R,,
+30.25.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.25.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.25.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.25.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.26,10G Lane 6 Pattern Control,16'h0000,,
+30.26.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.26.14:13,Reserved,R,,
+30.26.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.26.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.26.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.26.7:6,Reserved,R,,
+30.26.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.26.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.26.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.26.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.27,10G Lane 7 Pattern Control,16'h0000,,
+30.27.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.27.14:13,Reserved,R,,
+30.27.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.27.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.27.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.27.7:6,Reserved,R,,
+30.27.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.27.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.27.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.27.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.28,10G Lane 8 Pattern Control,16'h0000,,
+30.28.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.28.14:13,Reserved,R,,
+30.28.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.28.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.28.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.28.7:6,Reserved,R,,
+30.28.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.28.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.28.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.28.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.29,10G Lane 9 Pattern Control,16'h0000,,
+30.29.15,prbs_lock,R,,State of PRBS verifier state machine: 1=Verifier is locked;  0=Verifier is not pattern locked; Note SM must be locked in order to count pattern errors
+30.29.14:13,Reserved,R,,
+30.29.12,pat_ver_en,RW,0=disable; 1=enable,Enable Receiver Pattern verification
+30.29.11,prbs_ver_inv,RW,0=true; 1=inverse,Invert Receiver PRBS pattern
+30.29.10:8,pat_ver_sel,RW, 000 = PRBS31; 001 = PRBS9; 010 = reserved; 011 = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select Receiver pattern verifier type : 000 = PRBS31; 001 = PRBS9; 01X = reserved; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+30.29.7:6,Reserved,R,,
+30.29.5,error_insert,W,,Writing a one to this bit causes the contents of the custom pattern generation register to be XOR'ed with the transmit data for the lane for one cycle only. This bit must be cleared and set again in order to insert another error. Error insertion is not gated by pattern generator enable.
+30.29.4,pat_gen_en,RW,0=disable; 1=enable,Enable Transmitter Pattern generation
+30.29.3,prbs_gen_inv,RW,0=true; 1=inverse,Invert Transmitter PRBS pattern
+30.29.2:0,pat_gen_sel,RW,000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7,Select transmit pattern generation type:  000 = PRBS31; 001 = PRBS9; 010 = 8:8 Square wave pattern; 011 = Pattern generation register bits [31:0]; 100 = PRBS31; 101 = PRBS23; 110 = PRBS15; 111 = PRBS7
+R30.30,Custom Pattern Lo ,16'h0000,,
+30.30.15:0,Pattern 15:0,RW,,Custom transmit Pattern bits 15:0
+R30.31,Custom Pattern Mid,16'h0000,,
+30.31.15:0,Pattern 32:16,RW,,Custom transmit Pattern bits 31:16
+R30.32,Custom Pattern Hi,16'h0000,,
+30.32.15:8,Reserved,R,,
+30.32.7:0,Pattern 39:32,RW,,Custom transmit Pattern bits 39:32
+R30.33,LOL Status Register,16'hFFFF,,
+30.33.15,Latched LOL  3,RC,,Latched Loss of Lock Lane 3: Latched high 'or' of 30.33.11.  Reading this bit clears bit if set.
+30.33.14,Latched LOL  2,RC,,Latched Loss of Lock Lane 2: Latched high 'or' of 30.33.10.  Reading this bit clears bit if set.
+30.33.13,Latched LOL  1,RC,,Latched Loss of Lock Lane 1: Latched high 'or' of 30.33.9.  Reading this bit clears bit if set.
+30.33.12,Latched LOL  0,RC,,Latched Loss of Lock Lane 0: Latched high 'or' of 30.33.8.  Reading this bit clears bit if set.
+30.33.11,LOL  Status 3,R,,Loss of Lock Lane 3: Logical 'or' of 30.33.7 and 30.33.3. 
+30.33.10,LOL  Status 2,R,,Loss of Lock Lane 2: Logical 'or' of 30.33.6 and 30.33.2. 
+30.33.9,LOL  Status 1,R,,Loss of Lock Lane 1: Logical 'or' of 30.33.5 and 30.33.1. 
+30.33.8,LOL  Status 0,R,,Loss of Lock Lane 0: Logical 'or' of 30.33.4 and 30.33.0. 
+30.33.7,no_prot_lock_3,R,,Protocol Lock SM on 25G lane 3 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.6,no_prot_lock_2,R,,Protocol Lock SM on 25G lane 2 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.5,no_prot_lock_1,R,,Protocol Lock SM on 25G lane 1 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.4,no_prot_lock_0,R,,Protocol Lock SM on 25G lane 0 is not locked. The protocol type is determined by 30.0.14 (0=802.3ba;1=OTU4) : Locked after 64 consecutive valid protocol block headers; Un-locked  after 16 bad in a 64 header window;
+30.33.3,no_prbs_lock_3,R,,PRBS verifier is not locked on 25G lane 3
+30.33.2,no_prbs_lock_2,R,,PRBS verifier is not locked on 25G lane 2
+30.33.1,no_prbs_lock_1,R,,PRBS verifier is not locked on 25G lane 1
+30.33.0,no_prbs_lock_0,R,,PRBS verifier is not locked on 25G lane 0
+R30.37,RX FIFO Control &  Status ,16'h0000,,
+30.37.15,FIFO Reset,RW,0=disable; 1=enable,"If set to a one will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive per lane 'FIFO_error' flags. Clearing the bit will un-reset the receive FIFOs."
+30.37.14,Auto Reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all receive FIFO's to be reset.  This will cause the receive over and under run flags to be cleared, but not the receive 'FIFO_error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.37.13:12,Reserved,R,,
+30.37.11,Rx FIFO_error 3,RC,,"Rx FIFO 3 error flag:  This flag is set to a one if either the Lane 3 Rx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.10,Rx FIFO _error 2,RC,,"Rx FIFO 2 error flag:  This flag is set to a one if either the Lane 2 Rx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.9,Rx FIFO _error 1,RC,,"Rx FIFO 1 error flag:  This flag is set to a one if either the Lane 1 Rx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.8,Rx FIFO _error 0,RC,,"Rx FIFO 0 error flag:  This flag is set to a one if either the Lane 0 Rx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset."
+30.37.7,Rx fifo_orun_3,RC,,"Rx FIFO 3 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.6,Rx fifo_orun_2,RC,,"Rx FIFO 2 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.5,Rx fifo_orun_1,RC,,"Rx FIFO 1 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.4,Rx fifo_orun_0,RC,,"Rx FIFO 0 over-run flag:  Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.37.3,Rx fifo_urun_3,RC,,"Rx FIFO 3 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.2,Rx fifo_urun_2,RC,,"Rx FIFO 2 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.1,Rx fifo_urun_1,RC,,"Rx FIFO 1 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+30.37.0,Rx fifo_urun_0,RC,,"Rx FIFO 0 under-run flag:  Set to one if a FIFO over-read is detected. Cleared by reading this bit11, or by a FIFO reset."
+R30.38,TX FIFO Control &  Status ,16'h4F00,,
+30.38.15,tx_fifo_reset,RW,0=disable; 1=enable,"If set to a one will cause all transmit FIFO's to be reset.  This will cause the transmit over and under run flags to be cleared, but not the per lane 'Tx FIFO _error' flags. Clearing the bit will un-reset the transmit FIFOs."
+30.38.14,auto_reset,RW,0=disable; 1=enable,"If set to a one assertion of any of the over or under-run flags will cause all transmit FIFO's to be reset.  This will cause the transmit over and under run flags to be cleared, but not the transmit 'Tx FIFO _error' flags (these flags can therefore be used to detect an auto-reset has occurred)."
+30.38.13:12,Reserved,R,,
+30.38.11,Tx FIFO_error 3,RC,,"Tx FIFO 3 error flag: This flag is set to a one if either the Lane 3 Tx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset ."
+30.38.10,Tx FIFO _error 2,RC,,"Tx FIFO 2 error flag: This flag is set to a one if either the Lane 2 Tx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset ."
+30.38.9,Tx FIFO _error 1,RC,,"Tx FIFO 1 error flag: This flag is set to a one if either the Lane 1 Tx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset ."
+30.38.8,Tx FIFO _error 0,RC,,"Tx FIFO 0 error flag: This flag is set to a one if either the Lane 0 Tx FIFO over, or under run flag is set.  It is cleared by reading the bit. This flag is NOT cleared by a FIFO reset ."
+30.38.7,Tx fifo_orun_3,RC,,"Tx FIFO 3 over-run flag: Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.6,Tx fifo_orun_2,RC,,"Tx FIFO 2 over-run flag: Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.5,Tx fifo_orun_1,RC,,"Tx FIFO 1 over-run flag: Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.4,Tx fifo_orun_0,RC,,"Tx FIFO 0 over-run flag: Set to one if a FIFO over-write is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.3,Tx fifo_urun_3,RC,,"Tx FIFO 3 under-run flag: Set to one if a FIFO over-read is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.2,Tx fifo_urun_2,RC,,"Tx FIFO 2 under-run flag: Set to one if a FIFO over-read is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.1,Tx fifo_urun_1,RC,,"Tx FIFO 1 under-run flag: Set to one if a FIFO over-read is detected. Cleared by reading this bit, or by a FIFO reset."
+30.38.0,Tx fifo_urun_0,RC,,"Tx FIFO 0 under-run flag: Set to one if a FIFO over-read is detected. Cleared by reading this bit, or by a FIFO reset."
+R30.44,Manual Reset Control,16'hFE00,,
+30.44.15,28G PLL reset,RW,0=unreset; 1=reset,1= Reset 28G Rx & Tx PLLs
+30.44.14,28G Rx PI reset,RW,0=unreset; 1=reset,1= Reset 28G Rx SERDES PI
+30.44.13,28G Rx DM reset,RW,0=unreset; 1=reset,1= Reset 28G Rx SERDES Demux
+30.44.12,28G Rx SERDES reset,RW,0=unreset; 1=reset,1= Reset 28G  Rx SERDES
+30.44.11,Rx Core datapath reset,RW,0=unreset; 1=reset,1= Reset 28G Rx core datapath (including FIFOs)
+30.44.10,28G Tx SERDES reset,RW,0=unreset; 1=reset,1= Reset 28G Tx SERDES
+30.44.9,Tx Core datapath reset,RW,0=unreset; 1=reset,1= Reset 28G  Tx core datapath (including FIFOs)
+30.44.8:4,Reserved,R,,
+30.44.3,pll_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G PLLs
+30.44.2,vr_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Voltage Regulators
+30.44.1,bg_powerdn,RW,0=power-up; 1=power-down,1=Power-down 25G SERDES Bandgaps
+30.44.0,analog_powerdn,RW,0=power-up; 1=power-down,1=Power-down (all other) SERDES analog circuitry & PLL REF_OUT buffer
+R30.45,Monitor Clock Control,16'h0000,,
+30.45.15:6,Reserved,R,,
+30.45.5,RX monitor clock divide ratio,RW, 0 =Divide by 8; 1=Divide 16;  ,RX monitor clock divide ratio:  0 =Divide by 8; 1=Divide 16;  
+30.45.4,Enable RX monitor clock ,RW,0=disable; 1=enable,Enable RX monitor clock 
+30.45.3:2,Reserved,R,,
+30.45.1,TX monitor clock divide ratio,RW,0 =Divide by 8; 1=Divide 16;  ,TX monitor clock divide ratio:  0 =Divide by 8; 1=Divide 16;  
+30.45.0,Enable TX monitor clock ,RW,0=disable; 1=enable,Enable TX monitor clock 
+R30.256,25G Tx Lane 0 Main Control,16'h0006,,
+30.256.15:3,Reserved,R,,
+30.256.2,Reserved,RW,,
+30.256.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.256.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.512,25G Tx Lane 1 Main Control,16'h0006,,
+30.512.15:3,Reserved,R,,
+30.512.2,Reserved,RW,,
+30.512.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.512.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.768,25G Tx Lane 2 Main Control,16'h0006,,
+30.768.15:3,Reserved,R,,
+30.768.2,Reserved,RW,,
+30.768.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.768.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.1024,25G Tx Lane 3 Main Control,16'h0006,,
+30.1024.15:3,Reserved,R,,
+30.1024.2,Reserved,RW,,
+30.1024.1,Loopback Output Enable,RW,0=disable; 1=enable,Enable the main TXP/N output during internal loopback. The main TXP/N output can be disabled during loopback by setting this bit low. This bit has no effect unless in loopback mode.
+30.1024.0,Swap TXP/N,RW,0=disable; 1=enable,Assert this bit to enable inversion of the data presented at TXP/N.  This can be helpful to accommodate board route swapping for actual TXP/N via MDIO SW control
+R30.257,25G Tx Lane 0 Eq Control,16'h0000,,
+30.257.15:11,Reserved,R,,
+30.257.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.257.7:2,Reserved,R,,
+30.257.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.513,25G Tx Lane 1 Eq Control,16'h0000,,
+30.513.15:11,Reserved,R,,
+30.513.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.513.7:2,Reserved,R,,
+30.513.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.769,25G Tx Lane 2 Eq Control,16'h0000,,
+30.769.15:11,Reserved,R,,
+30.769.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.769.7:2,Reserved,R,,
+30.769.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.1025,25G Tx Lane 3 Eq Control,16'h0000,,
+30.1025.15:11,Reserved,R,,
+30.1025.10:8,txa_eqpst,RW,000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;,Transmit FIR post-cursor coefficient : 000 = 0.00; 001 = 0.05; 010 = 0.10; 011 = 0.15; 100 = 0.20; 101 = 0.25; 110 = 0.30; 111 = 0.35;
+30.1025.7:2,Reserved,R,,
+30.1025.1:0,txa_eqpre,RW, 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;,Transmit FIR pre-cursor coefficient : 00 = 0.00; 01 = 0.05; 10 = 0.10; 11 = 0.15;
+R30.258,25G Tx Lane 0 Swing,16'h0007,,
+30.258.15:3,Reserved,R,,
+30.258.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.514,25G Tx Lane 1 Swing,16'h0007,,
+30.514.15:3,Reserved,R,,
+30.514.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.770,25G Tx Lane 2 Swing,16'h0007,,
+30.770.15:3,Reserved,R,,
+30.770.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.1026,25G Tx Lane 3 Swing,16'h0007,,
+30.1026.15:3,Reserved,R,,
+30.1026.2:0,txa_swing,RW,000 = 0%; 001 = 25%; 010 = 50%; 011 = 75%; 100 = 100%;  101 = 100%;  110 = 100%;  111 = 100%;,Transmit Swing control : 000 = 0% Amplitude; 001 = 25% Amplitude; 010 = 50% Amplitude; 011 = 75% Amplitude; 1xx = 100% Amplitude
+R30.384,25G Rx Lane 0 Main Control,16'h0000,,
+30.384.15:3,Reserved,R,,
+30.384.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.384.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.640,25G Rx Lane 1 Main Control,16'h0000,,
+30.640.15:3,Reserved,R,,
+30.640.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.640.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.896,25G Rx Lane 2 Main Control,16'h0000,,
+30.896.15:3,Reserved,R,,
+30.896.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.896.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.1152,25G Rx Lane 3 Main Control,16'h0000,,
+30.1152.15:3,Reserved,R,,
+30.1152.2,Autozero Complete,R,,"Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.1,Force Autozero Start,RW,0=disable; 1=enable,"Assert this bit to begin the automatic internal sense amp offset autozero function.  Specifically, it is the '0' -> '1' transition of this bit that will initiate the autozero process.  It will be necessary to  write back to '0' and then to '1' again in a separate write event to re-initiate the autozero process.  Upon beginning the autozero process, the 'Autozero Complete' readable status bit will be de-asserted.  It will reflect the current state of the autozero process  when any subsequent read access to address 00h is performed."
+30.1152.0,Swap RXP/N,RW,0=disable; 1=enable,"Assert this bit to enable inversion of the data presented at RXP/N.  This can be helpful to accommodate board route swapping for actual RXP/N via MDIO SW control.  This swapping manifests itself as a inversion of data and so, in practice this inversion is provided inside the digital section of the receiver. "
+R30.387,25G Rx Lane 0 Eq Control,16'h0405,,
+30.387.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.387.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.387.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.387.7:3,Reserved,R,,
+30.387.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.387.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.643,25G Rx Lane 1 Eq Control,16'h0405,,
+30.643.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.643.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.643.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.643.7:3,Reserved,R,,
+30.643.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.643.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.899,25G Rx Lane 2 Eq Control,16'h0405,,
+30.899.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.899.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.899.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.899.7:3,Reserved,R,,
+30.899.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.899.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.1155,25G Rx Lane 3 Eq Control,16'h0405,,
+30.1155.15:12,Voting Offset,RW,,This field selects a voting offset used in the receive equalization algorithm.  The default value of zero selects no voting offset.  The offset value used is scaled by the selected voting window (period).
+30.1155.11:10,Threshold ,RW,,This field selects the threshold used in the receive equalization algorithm.  The threshold value used is scaled by the selected voting window (period).
+30.1155.9:8,Voting Window,RW,00 = 80K UI; 01 = 160K UI;  10 = 320K UI; 11 = 640K UI;,This field selects the time window (period) used by the receive equalization algorithm.
+30.1155.7:3,Reserved,R,,
+30.1155.2:1,RxEq Adaptive Threshold Mode,RW,00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation ; 10 = One-shot mode-A adaptation; 11 = One-shot mode-B adaptation;,"This field selects the threshold adaption mode: 00 = Threshold adaptation disabled; 01 = Continuous threshold adaptation - Threshold adaptation is always active; 10 = One-shot mode-A adaptation - Once stable state is reached, threshold value is increased by 2*value in Table 60, and threshold adaptation is disabled; 11 = One-shot mode-B adaptation - as Mode-A, but increase by 4*value"
+30.1155.0,Eq adapt enable,RW,0=disable; 1=enable,"Set to '1' to enable the equalizer adaptation. Set to '0' to turn off equalizer adaptation. The user can freely write this bit to '0' or '1' to freeze/lock the currently adapted state of the equalizer or to (re)enable the adaptive behavior, respectively"
+R30.416,25G Rx Lane 0 PI Control 1,16'h0000,,
+30.416.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.416.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.416.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.416.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.416.7:2,Reserved,R,,
+30.416.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.416.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.672,25G Rx Lane 1 PI Control 1,16'h0000,,
+30.672.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.672.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.672.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.672.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.672.7:2,Reserved,R,,
+30.672.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.672.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.928,25G Rx Lane 2 PI Control 1,16'h0000,,
+30.928.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.928.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.928.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.928.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.928.7:2,Reserved,R,,
+30.928.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.928.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.1184,25G Rx Lane 3 PI Control 1,16'h0000,,
+30.1184.15:14,PI 3 quadrant ,RW,,Phase Interpolator 3 quadrant override
+30.1184.13:12,PI 2 quadrant,RW,,Phase Interpolator 2 quadrant override
+30.1184.11:10,PI 1 quadrant,RW,,Phase Interpolator 1 quadrant override
+30.1184.9:8,PI 0 quadrant,RW,,Phase Interpolator 0 quadrant override
+30.1184.7:2,Reserved,R,,
+30.1184.1,PI Lock,RW,0=unlock; 1=lock;,Set this bit = '1' to lock the interpolator. This will stop the CDR algorithm and hence the interpolator adjusting to the incoming data stream. 
+30.1184.0,PI Code Override,RW,,Set this bit = '1' to force the contents of PI quadrant and PI offset to control the interpolator code under MDIO control. There are some restrictions on accessing this bit.
+R30.421,25G Rx Lane 0 Eq Observe 1 ,16'h0007,,
+30.421.15:4,Reserved,R,,
+30.421.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.677,25G Rx Lane 1 Eq Observe 1,16'h0007,,
+30.677.15:4,Reserved,R,,
+30.677.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.933,25G Rx Lane 2 Eq Observe 1 ,16'h0007,,
+30.933.15:4,Reserved,R,,
+30.933.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.1189,25G Rx Lane 3 Eq Observe 1,16'h0007,,
+30.1189.15:4,Reserved,R,,
+30.1189.3:0,Equalizer state,R,,"This value indicates the active receive linear equalizer setting.  When adaptation is disabled it will match the value in register r25.4, when enabled it will indicate the value to which it is adapted."
+R30.422,25G Rx Lane 0 Eq Setting ,16'h0007,,
+30.422.15:4,Reserved,R,,
+30.422.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.678,25G Rx Lane 1 Eq Setting,16'h0007,,
+30.678.15:4,Reserved,R,,
+30.678.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.934,25G Rx Lane 2 Eq Setting,16'h0007,,
+30.934.15:4,Reserved,R,,
+30.934.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.1190,25G Rx Lane 3 Eq Setting,16'h0007,,
+30.1190.15:4,Reserved,R,,
+30.1190.3:0,Equalizer Setting,RW,,This value selects the receive linear equalizer setting when equalizer adaptation is disabled.
+R30.423,25G Rx0 2nd Order CDR Obs,16'h0000,,
+30.423.15:14,Reserved,R,,
+30.423.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.679,25G Rx1 2nd Order CDR Obs,16'h0000,,
+30.679.15:14,Reserved,R,,
+30.679.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.935,25G Rx2 2nd Order CDR Obs,16'h0000,,
+30.935.15:14,Reserved,R,,
+30.935.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.1191,25G Rx3 2nd Order CDR Obs,16'h0000,,
+30.1191.15:14,Reserved,R,,
+30.1191.13:0,CDR2 Trip,R,,This field indicates the number of 1st order incr/decr pulses accumulated within the most recent second order CDR voting interval.  This value can be used to determine the magnitude of uncorrected receive clock ppm offset. A value of 14'h2000 indicates Zero accumulation. A value >14'h2000 indicates net positive accumulation (positive ppm). A value <14'h2000 indicates net negative accumulation (positive ppm). Note that there will normally be some small jitter induced variation of increments vs. decrements - so small accumulated values may not indicate an accurate ppm offset.  In such cases error should be reduced by averaging over multiple register reads.
+R30.424,25G Rx Lane 0 PI Position 1,16'h0000,,
+30.424.15:14,Reserved,R,,
+30.424.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.424.11:10,Reserved,R,,
+30.424.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.424.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.680,25G Rx Lane 1 PI Position 1,16'h0000,,
+30.680.15:14,Reserved,R,,
+30.680.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.680.11:10,Reserved,R,,
+30.680.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.680.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.936,25G Rx Lane 2 PI Position 1,16'h0000,,
+30.936.15:14,Reserved,R,,
+30.936.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.936.11:10,Reserved,R,,
+30.936.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.936.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.1192,25G Rx Lane 3 PI Position 1,16'h0000,,
+30.1192.15:14,Reserved,R,,
+30.1192.13:12,PI Select,RW,00=PI_0;01=PI_1;10=PI_2;11=PI_3;,These 2 bits are used to select which PI will present it?s position information on bits [9:0] in this register.
+30.1192.11:10,Reserved,R,,
+30.1192.9:8,PI Quadrant value,R,,The current value of the interpolator quadrant can be read back through this field
+30.1192.7:0,PI Code value,R,,The current value of the (coarse) interpolator code can be read back through this field
+R30.1536,CAUI Reset Control,16'hE3FF,,
+30.1536.15,IRST_PCS_POR_B_A,RW, 0=powerdn; 1=power up,Power on reset: Used to reset all 10G SERDES internal registers.  Active low.
+30.1536.14,Reserved,R,,
+30.1536.13,IRST_PCS_HARD_SYNTH_B_A,RW, 0=reset; 1=unreset,Synthesizer soft reset: reset Tx clock synthesizer.  Active low.
+30.1536.12:10,Reserved,R,,
+30.1536.9,IRST_PCS_HARD_TXRX_B_A_L9,RW, 0=reset; 1=unreset,CAUI Lane 9 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.8,IRST_PCS_HARD_TXRX_B_A_L8,RW, 0=reset; 1=unreset,CAUI Lane 8 Soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.7,IRST_PCS_HARD_TXRX_B_A_L7,RW, 0=reset; 1=unreset,CAUI Lane 7 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.6,IRST_PCS_HARD_TXRX_B_A_L6,RW, 0=reset; 1=unreset,CAUI Lane 6 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.5,IRST_PCS_HARD_TXRX_B_A_L5,RW, 0=reset; 1=unreset,CAUI Lane 5 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.4,IRST_PCS_HARD_TXRX_B_A_L4,RW, 0=reset; 1=unreset,CAUI Lane 4 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.3,IRST_PCS_HARD_TXRX_B_A_L3,RW, 0=reset; 1=unreset,CAUI Lane 3 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.2,IRST_PCS_HARD_TXRX_B_A_L2,RW, 0=reset; 1=unreset,CAUI Lane 2 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.1,IRST_PCS_HARD_TXRX_B_A_L1,RW, 0=reset; 1=unreset,CAUI Lane 1 soft reset: reset lane receiver and transmitter.  Active low.
+30.1536.0,IRST_PCS_HARD_TXRX_B_A_L0,RW, 0=reset; 1=unreset,CAUI Lane 0 soft reset: reset lane receiver and transmitter.  Active low.
+R30.1537,CAUI Output Power up,16'h03FF,,
+30.1537.15,IPD_PCS_IDDQ_SYNTH_B_A,RW, 0=powerdn; 1=power up,Power on reset: Used to reset all 10G SERDES internal registers.  Active low.
+30.1537.14:10,Reserved,R,,
+30.1537.9,IPD_PCS_IDDQ _TX_B_A_L9,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 9 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ);  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.8,IPD_PCS_IDDQ _TX _B_A_L8,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 8 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.7,IPD_PCS_IDDQ _TX _B_A_L7,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 7 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.6,IPD_PCS_IDDQ _TX _B_A_L6,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 6 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.5,IPD_PCS_IDDQ _TX _B_A_L5,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 5 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.4,IPD_PCS_IDDQ _TX _B_A_L4,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 4 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.3,IPD_PCS_IDDQ _TX _B_A_L3,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 3 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.2,IPD_PCS_IDDQ _TX _B_A_L2,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 2 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.1,IPD_PCS_IDDQ _TX _B_A_L1,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 1 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1537.0,IPD_PCS_IDDQ _TX _B_A_L0,RW, 0=circuits disabled; 1=circuits enabled,CAUI Output Lane 0 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+R30.1538,CAUI Input Power up,16'h03FF,,
+30.1538.15:10,Reserved,R,,
+30.1538.9,IPD_PCS_IDDQ _RX_B_A_L9,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 9 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ);  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.8,IPD_PCS_IDDQ _ RX _B_A_L8,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 8 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.7,IPD_PCS_IDDQ _ RX _B_A_L7,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 7 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.6,IPD_PCS_IDDQ _ RX _B_A_L6,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 6 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.5,IPD_PCS_IDDQ _ RX _B_A_L5,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 5 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.4,IPD_PCS_IDDQ _ RX _B_A_L4,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 4 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.3,IPD_PCS_IDDQ _ RX _B_A_L3,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 3 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.2,IPD_PCS_IDDQ _ RX _B_A_L2,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 2 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.1,IPD_PCS_IDDQ _ RX _B_A_L1,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 1 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+30.1538.0,IPD_PCS_IDDQ _ RX _B_A_L0,RW, 0=circuits disabled; 1=circuits enabled,CAUI Input Lane 0 Power Down/IDDQ control: 1=All analog circuits enabled; 0=all analog circuits disabled (IDDQ).  This bit  only operates if Manual reset control bit 30.0.15 is set.
+R30.1540,CAUI Loopback control,16'h0000,,
+30.1540.15:7,Reserved,R,,
+30.1540.6,ICTL_PCS_SYNTHCKBYPASSEN_NT,RW,0=disable;1=enable,Clock Bypass enable 
+30.1540.5,ICTL_PCS_LB_EN_NT,RW,0=disable;1=enable,Loopback control enable 
+30.1540.4,ICTL_PCS_LB_CDRCLK2TXEN_NT,RW,0=disable;1=enable,Transmit bit clock select 
+30.1540.3,ICTL_PCS_LB_Rx lane 2TXUNTIMEDEN_NT,RW,0=disable;1=enable,Serial receive to transmit loopback : If enabled the output of the transmit serializer is looped back into the receiver 
+30.1540.2,ICTL_PCS_LB_TX2RXBUFTIMEDEN_NT,RW,0=disable;1=enable,Serial transmit to receive buffered loopback : If enabled the output of the transmit serializer is looped back into the receiver 
+30.1540.1,ICTL_PCS_LB_TX2RXIOTIMEDEN_NT,RW,0=disable;1=enable,Serial IO loopback from the 10G Serdes serial transmit lane I/O pins to the receive lane I/O pins : If enabled the output of the transmit I/O driver is looped back into the receiver I/O pins
+30.1540.0,ICTL_PCS_LB_PARRx lane 2TXTIMEDEN_NT,RW,0=disable;1=enable,Parallel loopback from the  10G Serdes Receive word ports and the  transmit word ports : If enabled the parallel word output of the receiver serializer is looped back into the transmitter
+R30.1541,CAUI Equalization control,16'h0000,,
+30.1541.15,ictl_pcs_rxeq_start_l_a,RW,0=disable;1=enable,Enables adaptive receive equalization (all lanes) : 0 = Disables adaptive receive equalization;  1 = Enables adaptive receive equalization;
+30.1541.14:10,Reserved,R,,
+30.1541.9,octl_pcs_rxeq_done_l9_a,R,,RX Adaptive Equalization Status Lane 9:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.8,octl_pcs_rxeq_done_l8_a,R,,RX Adaptive Equalization Status Lane 8:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.7,octl_pcs_rxeq_done_l7_a,R,,RX Adaptive Equalization Status Lane 7:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.6,octl_pcs_rxeq_done_l6_a,R,,RX Adaptive Equalization Status Lane 6:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.5,octl_pcs_rxeq_done_l5_a,R,,RX Adaptive Equalization Status Lane 5:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.4,octl_pcs_rxeq_done_l4_a,R,,RX Adaptive Equalization Status Lane 4:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.3,octl_pcs_rxeq_done_l3_a,R,,RX Adaptive Equalization Status Lane 3:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.2,octl_pcs_rxeq_done_l2_a,R,,RX Adaptive Equalization Status Lane 2:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.1,octl_pcs_rxeq_done_l1_a,R,,RX Adaptive Equalization Status Lane 1:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+30.1541.0,octl_pcs_rxeq_done_l0_a,R,,RX Adaptive Equalization Status Lane 0:  0=adaptive equalization results are not valid for sampling; 1=adaptive equalization is complete and results are valid for sampling;
+R30.1542,CAUI Output Pair Swap,16'h0000,,
+30.1542.15:10,Reserved,R,,
+30.1542.9,CAUI Output lane 9 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 9 data
+30.1542.8,CAUI Output lane 8 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 8 data
+30.1542.7,CAUI Output lane 7 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 7 data
+30.1542.6,CAUI Output lane 6 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 6 data
+30.1542.5,CAUI Output lane 5 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 5 data
+30.1542.4,CAUI Output lane 4 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 4 data
+30.1542.3,CAUI Output lane 3 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 3 data
+30.1542.2,CAUI Output lane 2 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 2 data
+30.1542.1,CAUI Output lane 1 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 1 data
+30.1542.0,CAUI Output lane 0 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Output Lane 0 data
+R30.1543,CAUI Input Pair Swap,16'h0000,,
+30.1543.15:10,Reserved,R,,
+30.1543.9,CAUI Input lane 9 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 9 data
+30.1543.8,CAUI Input lane 8 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 8 data
+30.1543.7,CAUI Input lane 7 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 7 data
+30.1543.6,CAUI Input lane 6 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 6 data
+30.1543.5,CAUI Input lane 5 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 5 data
+30.1543.4,CAUI Input lane 4 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 4 data
+30.1543.3,CAUI Input lane 3 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 3 data
+30.1543.2,CAUI Input lane 2 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 2 data
+30.1543.1,CAUI Input lane 1 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 1 data
+30.1543.0,CAUI Input lane 0 pair swap,RW, 0=disabled; 1=swap,Invert CAUI Input Lane 0 data
+R30.1544,CAUI Output Ready Status ,16'h0000,,
+30.1544.15:13,OCTL_PCS_SYNTHREADY_A,R,,CAUI clock synthesizer is ready (per macro)
+30.1544.12:10,Reserved,R,,
+30.1544.9,OCTL_PCS_TXREADY_L9_A,R,,CAUI Output Lane 9 is ready
+30.1544.8,OCTL_PCS_TXREADY_L8_A,R,,CAUI Output Lane 8 is ready
+30.1544.7,OCTL_PCS_TXREADY_L7_A,R,,CAUI Output Lane 7 is ready
+30.1544.6,OCTL_PCS_TXREADY_L6_A,R,,CAUI Output Lane 6 is ready
+30.1544.5,OCTL_PCS_TXREADY_L5_A,R,,CAUI Output Lane 5 is ready
+30.1544.4,OCTL_PCS_TXREADY_L4_A,R,,CAUI Output Lane 4 is ready
+30.1544.3,OCTL_PCS_TXREADY_L3_A,R,,CAUI Output Lane 3 is ready
+30.1544.2,OCTL_PCS_TXREADY_L2_A,R,,CAUI Output Lane 2 is ready
+30.1544.1,OCTL_PCS_TXREADY_L1_A,R,,CAUI Output Lane 1 is ready
+30.1544.0,OCTL_PCS_TXREADY_L0_A,R,,CAUI Output Lane 0 is ready
+R30.1545,CAUI Input Ready Status ,16'h0000,,
+30.1545.9,OCTL_PCS_RXREADY_L9_A,R,,CAUI Input Lane 9 is ready
+30.1545.8,OCTL_PCS_RXREADY_L8_A,R,,CAUI Input Lane 8 is ready
+30.1545.7,OCTL_PCS_RXREADY_L7_A,R,,CAUI Input Lane 7 is ready
+30.1545.6,OCTL_PCS_RXREADY_L6_A,R,,CAUI Input Lane 6 is ready
+30.1545.5,OCTL_PCS_RXREADY_L5_A,R,,CAUI Input Lane 5 is ready
+30.1545.4,OCTL_PCS_RXREADY_L4_A,R,,CAUI Input Lane 4 is ready
+30.1545.3,OCTL_PCS_RXREADY_L3_A,R,,CAUI Input Lane 3 is ready
+30.1545.2,OCTL_PCS_RXREADY_L2_A,R,,CAUI Input Lane 2 is ready
+30.1545.1,OCTL_PCS_RXREADY_L1_A,R,,CAUI Input Lane 1 is ready
+30.1545.0,OCTL_PCS_RXREADY_L0_A,R,,CAUI Input Lane 0 is ready
+R30.1546,CAUI Input CDR Lock Status ,16'h0000,,
+30.1546.9,OCTL_PCS_RXCDRLOCK2DATA_L9_A,R,,CAUI Input Lane 9 CDR is locked to data
+30.1546.8,OCTL_PCS_RXCDRLOCK2DATA_L8_A,R,,CAUI Input Lane 8 CDR is locked to data
+30.1546.7,OCTL_PCS_RXCDRLOCK2DATA_L7_A,R,,CAUI Input Lane 7 CDR is locked to data
+30.1546.6,OCTL_PCS_RXCDRLOCK2DATA_L6_A,R,,CAUI Input Lane 6 CDR is locked to data
+30.1546.5,OCTL_PCS_RXCDRLOCK2DATA_L5_A,R,,CAUI Input Lane 5 CDR is locked to data
+30.1546.4,OCTL_PCS_RXCDRLOCK2DATA_L4_A,R,,CAUI Input Lane 4 CDR is locked to data
+30.1546.3,OCTL_PCS_RXCDRLOCK2DATA_L3_A,R,,CAUI Input Lane 3 CDR is locked to data
+30.1546.2,OCTL_PCS_RXCDRLOCK2DATA_L2_A,R,,CAUI Input Lane 2 CDR is locked to data
+30.1546.1,OCTL_PCS_RXCDRLOCK2DATA_L1_A,R,,CAUI Input Lane 1 CDR is locked to data
+30.1546.0,OCTL_PCS_RXCDRLOCK2DATA _L0_A,R,,CAUI Input Lane 0 CDR is locked to data
+R30.1552,CAUI Output Lane 0 De-Emphasis,16'h3318,,
+30.1552.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1552.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1552.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1552.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1552.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1553,CAUI Output Lane 1 De-Emphasis,16'h3318,,
+30.1553.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1553.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1553.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1553.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1553.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1554,CAUI Output Lane 2 De-Emphasis,16'h3318,,
+30.1554.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1554.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1554.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1554.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1554.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1555,CAUI Output Lane 3 De-Emphasis,16'h3318,,
+30.1555.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1555.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1555.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1555.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1555.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1556,CAUI Output Lane 4 De-Emphasis,16'h3318,,
+30.1556.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1556.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1556.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1556.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1556.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1557,CAUI Output Lane 5 De-Emphasis,16'h3318,,
+30.1557.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1557.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1557.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1557.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1557.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1558,CAUI Output Lane 6 De-Emphasis,16'h3318,,
+30.1558.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1558.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1558.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1558.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1558.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1559,CAUI Output Lane 7 De-Emphasis,16'h3318,,
+30.1559.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1559.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1559.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1559.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1559.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1560,CAUI Output Lane 8 De-Emphasis,16'h3318,,
+30.1560.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1560.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1560.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1560.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1560.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
+R30.1561,CAUI Output Lane 9 De-Emphasis,16'h3318,,
+30.1561.15:12,pst_ctl,RW,0000=0000;0001=0001;0010=0010;0011=0011;0100=0100;0101=0101;0110=0110;0111=0111;1000=1000;1001=1001;1010=1010;1011=1011;1100=1100;1101=1101;1110=1110;1111=1111,Post-cursor coefficient: C+1 = pst_ctl/27. The maximum valid value for this field is 9.
+30.1561.11,half_sw,RW,0=full swing; 1=half swing;,Transmitter Amplitude half-swing setting
+30.1561.10:6,cur_ctl,RW,00000=00000;00001=00001;00010=00010;00011=00011;00100=00100;00101=00101;00110=00110;00111=00111;01000=01000;01001=01001;01010=01010;01011=01011;01100=01100;01101=01101;01110=01110;01111=01111;10000=10000;10001=10001;10010=10010;10011=10011;10100=10100;10101=10101;10110=10110;10111=10111;11000=11000;11001=11001;11010=11010;11011=11011;11100=11100;11101=11101;11110=11110;11111=11111,Cursor coefficient: C0 = cur_ctl/27. The maximum valid value for this field is 13.
+30.1561.5:3,tx_amp,RW,000=000;001=1070mVdiff-pkpk; 010=1140mVdiff-pkpk ; 011=1200mVdiff-pkpk; 100=1260mVdiff-pkpk; 101=1310mVdiff-pkpk; 110=1350mVdiff-pkpk; 111=1400mVdiff-pkpk ,Transmitter Amplitude main setting
+30.1561.2:0,pre_ctl,RW,000=000;001=001;010=010;011=011;100=100;101=101;110=110;111=111,Precursor coefficient: C-1 = pre_ctl/27. The maximum valid value for this field is 6.
