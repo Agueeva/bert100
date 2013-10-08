@@ -9,6 +9,7 @@
 #include "interpreter.h"
 #include "hex.h"
 #include "console.h"
+#include "pvar.h"
 
 #define PATTRIG1_DIROUT BSET(2,PORT5.PDR.BYTE)
 #define PATTRIG2_DIROUT BSET(4,PORT5.PDR.BYTE)
@@ -76,6 +77,7 @@ PatTrig_Shift(uint8_t modId,bool right)
 		PATTRIGSHIFTL(1);
 	}
 }
+
 /**
  ***************************************************************************
  * static int8_t cmd_ptrig(Interp * interp, uint8_t argc, char *argv[])
@@ -116,9 +118,33 @@ cmd_ptrig(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(ptrigCmd, "ptrig", cmd_ptrig, "ptrig ?<patternNr>|left|right?   # select a pattern or shift");
 
+static bool
+PVPattern_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	PatTrigger *pt;
+	pt = &gPatTrigger[0];
+        bufP[uitoa16(pt->currPattern, bufP)] = 0;
+        return true;
+}
+
+static bool
+PVPattern_Set(void *cbData, uint32_t adId, const char *strP)
+{
+        uint16_t pat;
+        pat  = astrtoi16(strP);
+	if(pat <= 5) {
+		PatTrig_SelPat(0,pat);
+        	return true;
+	} else {
+		return false;
+	}	
+}
+
 void
 PatTrig_Init(const char *name)
 {
+	PatTrigger *pt;
+	pt = &gPatTrigger[0];
 	PATTRIG1_DIROUT;
 	PATTRIG2_DIROUT;
 	PATTRIG3_DIROUT;
@@ -127,4 +153,5 @@ PatTrig_Init(const char *name)
 	PATTRIGPWR_DIROUT;
 	PatTrig_SelPat(0,patTrigOff);
 	Interp_RegisterCmd(&ptrigCmd);
+	PVar_New(PVPattern_Get,PVPattern_Set,pt,0,"%s.pattern",name);
 }
