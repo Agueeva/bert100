@@ -64,5 +64,5 @@ void
 Version_Init(void)
 {
 	Interp_RegisterCmd(&versionCmd);
-	PVar_New(PVVersionSW_Get,NULL,NULL,0,"version.fw");
+	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
 }

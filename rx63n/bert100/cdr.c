@@ -1364,7 +1364,11 @@ CDR_Init(const char *name)
 	Cdr_SoftReset(0);
 	Cdr_Recalibrate(0);
 	Cdr_InitCdr(0);
-
+#ifdef CDR1
+	Cdr_SoftReset(1);
+	Cdr_Recalibrate(1);
+	Cdr_InitCdr(1);
+#endif
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
