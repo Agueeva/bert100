@@ -66,7 +66,7 @@ FanCo_GetRpm(FanCo *fc,int fanNr)
 		if(i2c_result != I2C_RESULT_OK) {
 			tacho = 0;
 		}
-		fc->fanRpm[fanNr] = rpm = (((uint32_t)tacho << 1) >> 1) * 60;
+		fc->fanRpm[fanNr] = rpm = (((uint32_t)tacho) >> 1) * 60;
 		fc->timeStamp[fanNr] = now;
 	} else {
 		rpm = fc->fanRpm[fanNr];
