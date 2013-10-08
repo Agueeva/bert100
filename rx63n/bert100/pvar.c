@@ -161,12 +161,20 @@ const char *exampleText1[] = {
 	"\"Kasper\"" , 
 	"\"hat\"", 
 	"\"Geburtstag\"",
+	"\"seid\"",
+	"\"ihr\"",
+	"\"alle\"",
+	"\"da ?\"",
 };
 
 const char *exampleText2[] = {
 	"\"Alle\"" , 
 	"\"meine\"", 
 	"\"Entchen\"",
+	"\"schwimmen\"",
+	"\"auf\"",
+	"\"dem\"",
+	"\"See\"",
 };
 
 const char **exampleText = exampleText1;
