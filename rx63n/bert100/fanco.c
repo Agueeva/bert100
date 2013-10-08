@@ -87,14 +87,23 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(fanCmd, "fan", cmd_fan, "fan # Get all FAN speeds");
 
+/**
+ **********************************************************************
+ * Initialize the FAN controller.
+ **********************************************************************
+ */
 void
 FanCo_Init(void)
 {
 	FanCo *fc = &gFanCo[0];
 	uint8_t value = 1;
+	uint8_t i2c_result;
 	uint16_t fanNr;
 	fc->i2cAddr = 0x3e;
-	I2C_Write8(fc->i2cAddr,MAX6651_COUNT,&value,1);
+	i2c_result = I2C_Write8(fc->i2cAddr,MAX6651_COUNT,&value,1);
+	if(i2c_result != I2C_RESULT_OK) {
+		Con_Printf("Can not access FAN controller\n");
+	}
 	Interp_RegisterCmd(&fanCmd);
 	for(fanNr = 0 ; fanNr < NR_FANS; fanNr++)
 	{
