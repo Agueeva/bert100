@@ -1,6 +1,6 @@
 /**
   *****************************************************************
-  * Fan Controller
+  * Fan Controller interface
   *****************************************************************
   */
 #include "types.h"
@@ -44,17 +44,28 @@ typedef struct FanCo {
 
 static FanCo gFanCo[1];
 
+/**
+  *************************************************************************
+  * \fn static uint32_t FanCo_GetRpm(FanCo *fc,int fanNr)
+  * Get the RPM from the Fan Controller. Use the I2C Bus only if the
+  * result is older than 550ms because meassurement time is 500ms.
+  *************************************************************************
+  */
 static uint32_t 
 FanCo_GetRpm(FanCo *fc,int fanNr)
 {
         uint8_t tacho;
+	uint8_t i2c_result;
 	TimeMs_t now = TimeMs_Get();
         uint32_t rpm;
 	if(fanNr >= NR_FANS) {
 		return 0;
 	}
 	if((now - fc->timeStamp[fanNr]) > 550) {
-		I2C_Read8(fc->i2cAddr,0xc + (fanNr << 1),&tacho, 1);
+		i2c_result = I2C_Read8(fc->i2cAddr,0xc + (fanNr << 1),&tacho, 1);
+		if(i2c_result != I2C_RESULT_OK) {
+			tacho = 0;
+		}
 		fc->fanRpm[fanNr] = rpm = (((uint32_t)tacho << 1) >> 1) * 60;
 		fc->timeStamp[fanNr] = now;
 	} else {
@@ -63,6 +74,11 @@ FanCo_GetRpm(FanCo *fc,int fanNr)
 	return rpm;
 }
 
+/**
+  *********************************************************************
+  * State variable interface for the Fan speed
+  *********************************************************************
+  */
 static bool
 PVRpm_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -74,6 +90,12 @@ PVRpm_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+/**
+  ************************************************************************
+  * \fn static int8_t cmd_fan(Interp * interp, uint8_t argc, char *argv[])
+  * Command shell interface for the speeds of all Fan's
+  ************************************************************************
+  */
 static int8_t
 cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 {
