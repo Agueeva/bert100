@@ -559,7 +559,7 @@ PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 }
 
 void
-AD537x_Init(const char *name)
+AD537x_ModInit(const char *name)
 {
 	int ch;
 	RESET_HIGH;

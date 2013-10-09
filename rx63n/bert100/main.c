@@ -132,7 +132,7 @@ main(void)
 	Sha1Lib_Init();
 	WDTA_Init();
 #ifndef BOARD_SAKURA 
-	AD537x_Init("dac0");
+	AD537x_ModInit("dac0");
 #endif
 	MDIO_Init();
 	Synth_Init("synth0",0x10aa);

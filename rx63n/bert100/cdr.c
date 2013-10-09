@@ -1330,9 +1330,9 @@ Excep_CMT1_CMI1(void)
 	CDR *cdr = &gCDR[0];
 	ENABLE_IRQ();
 	MDIO_Address(0, DEVTYPE, CDR_LANE0_ERROR_COUNTER);
-	for(i = 0;i < 4; i++) {
+	for(i = 0; i < 4; i++) {
 		uint16_t errCnt;
-		errCnt = MDIO_ReadInc(0, DEVTYPE);
+		errCnt = MDIO_ReadInc(cdr->phyAddr, DEVTYPE);
 		cdr->berCntr[i] += errCnt;
 	}
 }
@@ -1349,7 +1349,7 @@ CDR_Init(const char *name)
 {
 	uint32_t i,lane;
 	CDR *cdr = &gCDR[0];
-	cdr->phyAddr = 0;
+	cdr->phyAddr = 1;
 	CDR_RESET_DIR = 1;
 	CDR_RESET_DR = 1; 
 	Interp_RegisterCmd(&cdrCmd);
@@ -1366,14 +1366,20 @@ CDR_Init(const char *name)
 	for(lane = 0; lane < 4; lane++) {
 		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"err_cntr64");
 	}
-	Cdr_SoftReset(0);
-	Cdr_Recalibrate(0);
-	Cdr_InitCdr(0);
-#ifdef CDR1
-	Cdr_SoftReset(1);
-	Cdr_Recalibrate(1);
-	Cdr_InitCdr(1);
-#endif
+
+	Cdr_SoftReset(cdr->phyAddr);
+	Cdr_Recalibrate(cdr->phyAddr);
+	Cdr_InitCdr(cdr->phyAddr);
+
+	/* Initialize the Second CDR */
+	cdr = &gCDR[1];
+	cdr->phyAddr = 0;
+
+	Cdr_SoftReset(cdr->phyAddr);
+	Cdr_Recalibrate(cdr->phyAddr);
+	Cdr_InitCdr(cdr->phyAddr);
+	Cdr_Write(cdr->phyAddr, 1184, 0X0000);
+
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
