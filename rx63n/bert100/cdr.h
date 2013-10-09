@@ -118,8 +118,8 @@
 #define CDR_PI_POS1_PICODE(lane)            (0x01a80007 + ((lane) << 24))
 #define CDR_SEC_ORDER_STATE(lane)           (0x01aa0004 + ((lane) << 24))
 
-#define CDR_ID_TX	(1)
-#define CDR_ID_RX	(0)
+#define CDR_ID_TX	(0)
+#define CDR_ID_RX	(1)
 
 void CDR_Init(const char *name);
 uint64_t CDR_GetErrCnt(uint8_t cdrID, uint8_t lane);

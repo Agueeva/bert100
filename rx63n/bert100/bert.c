@@ -20,6 +20,16 @@
 #define BEFIFO_SIZE	(4)
 #define BEFIFO_WP(fifo) ((fifo)->fifoWp % BEFIFO_SIZE)
 
+/**
+ * Some registers are rawly forwarded to one or two CDR's
+ */
+typedef struct CdrForward {
+	char *name;
+	uint32_t cdrRegId;
+	uint8_t bfCdrSelectW;	/* Bitfield forwarding to one or both CDR's */ 
+	uint8_t bfCdrSelectR;	/* Bitfield for selecting the CDR to read from */ 
+} CdrForward;
+
 typedef struct BeFifo {
 	uint64_t errCnt[BEFIFO_SIZE];
 	uint32_t tStamp[BEFIFO_SIZE];
