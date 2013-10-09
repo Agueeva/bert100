@@ -549,12 +549,21 @@ SDCard_ReadData(SDCard * sdc, uint8_t * buf, uint16_t count)
 	uint8_t data;
 	uint32_t loopcnt = 0;
 	startTimeMs = TimeMs_Get();
-	do {
+	for(loopcnt = 0; loopcnt < 2000; loopcnt++) {
 		Spi_Xmit(SPI_BUS, &data, 1, SPI_FLAG_READ);
-		EV_Yield();
 		actionTimeMs = TimeMs_Get() - startTimeMs;
-		loopcnt++;
-	} while ((data == 0xff) && ((actionTimeMs < sdc->parReadTimeoutMs) || (loopcnt < 2000)));
+		if(data != 0xff) {
+			if(data == 0xfe) {
+				break;
+			} else if(loopcnt != 0) {
+				break;
+			}
+		}	
+		if(actionTimeMs > sdc->parReadTimeoutMs) {
+			break;
+		}
+		EV_Yield();
+	}
 	if (actionTimeMs > sdc->statMaxReadTime) {
 		sdc->statMaxReadTime = actionTimeMs;
 	}
@@ -948,7 +957,7 @@ SDCard_ReadMultBlock(SDCard * sdc, uint8_t * buf, uint32_t sector)
 			    sdc->next_multsect_block = sector;
 		    }
 		    SDCard_Deselect(sdc);
-		    SDCard_IdleClk(sdc, 2);
+		    SDCard_IdleClk(sdc, 1);
 
 	    case STATE_MULTSECT_READ:
 		    sdc->statMultSectR++;
@@ -957,7 +966,7 @@ SDCard_ReadMultBlock(SDCard * sdc, uint8_t * buf, uint32_t sector)
 		    break;
 	}
 	SDCard_Deselect(sdc);
-	SDCard_IdleClk(sdc, 2);
+	SDCard_IdleClk(sdc, 1);
 	if (cnt == 512) {
 		sdc->next_multsect_block++;
 	}
