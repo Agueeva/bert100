@@ -1,0 +1,136 @@
+<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/valid.js" ></script>	
+<div class="headline">System</div>
+
+<div name="wrap_System">
+<FORM  ID="Form_PG">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+<TR ALIGN="left" VALIGN="middle">
+        <TH>Software/Hardware</TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH></TR>
+
+<TR ALIGN="left">
+<TH>Version:</TH>
+<TD><input class="textfildsys" type="text" name="version.fw" id="version.fw" size="15" maxlength="15" readonly></TD>
+<TD>
+</TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+<TR ALIGN="left" VALIGN="middle">
+        <TH></TH>
+	<TH>Cooling 1</TH>
+	<TH>Cooling 2</TH>
+	<TH>Cooling 3</TH>
+	<TH>Cooling 4</TH></TR>
+<TR ALIGN="left" VALIGN="middle">
+<TH>FAN:</TH>
+<TD><input class="textfildsys" type="text" name="fanco.fan0.rpm" id="fanco.fan0.rpm" value="0" size=15 readonly </TD>
+<TD><input class="textfildsys" type="text" name="fanco.fan1.rpm" id="fanco.fan1.rpm" value="0" size=15 readonly </TD>
+<TD><input class="textfildsys" type="text" name="fanco.fan2.rpm" id="fanco.fan2.rpm" value="0" size=15 readonly </TD>
+<TD><input class="textfildsys" type="text" name="fanco.fan3.rpm" id="fanco.fan3.rpm" value="0" size=15 readonly </TD></TR>
+
+
+<TR ALIGN="left">
+<TH>Temperature:</TH>
+<TD><input class="textfildsys" type="text" name="temp0" id="temp0" value="0" size=3 readonly </TD>
+<TD><input class="textfildsys" type="text" name="temp1" id="temp1" value="0" size=3 readonly </TD>
+<TD><input class="textfildsys" type="text" name="temp2" id="temp2" value="0" size=3 readonly </TD>
+<TD><input class="textfildsys" type="text" name="temp3" id="temp3" value="0" size=3 readonly </TD></TR>
+
+
+<TR ALIGN="left" VALIGN="middle">
+        <TH>Network Settings</TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH></TR>
+
+<TR ALIGN="left">
+<TH>IP address:</TH>
+<TD><input class="textfildsys" type="text" name="IP" size="15" maxlength="15" onChange="javascript: CheckIP(this)"></TD>
+<TD>
+</TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+
+<TR ALIGN="left">
+<TH>Netmask:</TH>
+<TD><input class="textfildsys" type="text" name="Netmask" size="15" maxlength="15" onChange="javascript: CheckNetmask(this)"></TD>
+<TD>
+</TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+
+<TR ALIGN="left">
+<TH>Gateway:</TH>
+<TD><input class="textfildsys" type="text" name="Gateway" size="15" maxlength="15" onChange="javascript: CheckGateway(this)"></TD>
+<TD>
+</TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+
+<TR ALIGN="left" VALIGN="middle">
+        <TH></TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH>
+	<TH></TH></TR>
+<!--
+<tr><td width="30%">IP address</td><td >
+<input type="text" name="IP" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">Netmask</td><td width="70%"> <input type="text" name="Netmask" size="15" maxlength="15"></td></tr>
+<tr><td width="30%">Gateway</td><td width="70%"> <input type="text" name="Gateway" size="15" maxlength="15"></td></tr>
+-->
+</TABLE>
+</FORM>
+</div>
+<script type="text/javascript">
+	<!--
+var iperrmsg = " is not a valid IP address."
+function CheckIP(form)
+{
+if( !verifyIP(form.value) )
+{
+alert(form.value + iperrmsg);
+form.focus();
+
+}}
+
+function CheckNetmask(form)
+{
+if( form.value.length > 0 )
+{
+if( !verifyNetmask(form.value) )
+{
+alert(form.value + iperrmsg);
+form.focus();
+
+}
+}
+
+}
+function CheckGateway(form)
+{
+if( form.value.length > 0 )
+{
+if( !verifyNetmask(form.value) )
+{
+alert(form.value + iperrmsg);
+form.focus();
+
+}
+}
+}
+-->
+	</script>

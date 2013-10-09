@@ -4,10 +4,10 @@
   var myQueueCount=0;
   var n=0;
   var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
-  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1","emlAmp1.vg2",
-                         "emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2","cdr0.l0.txa_swing","cdr0.l1.txa_swing",
-                         "cdr0.l2.txa_swing","cdr0.l3.txa_swing","cdr0.l0.Swap_TXP_N","cdr0.l1.Swap_TXP_N",
-                         "cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
+  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
+			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
+			 "cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing",
+			 "cdr0.l0.Swap_TXP_N","cdr0.l1.Swap_TXP_N","cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX1= new Array("txa_swing","Swap_TXP_N");
   var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
@@ -19,9 +19,10 @@
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
                           "cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat");
+  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm","version.fw"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
      bl_Communication=true;
      all_pat=false;
@@ -171,7 +172,7 @@ $(document).ready(function()
 {
         	n=3;
           laodpage("html/main.html","#frame");
-         SocketNew();
+	  SocketNew();
 	//Click.
 	$( "#homeBut" ).click(function() {
 
@@ -227,6 +228,12 @@ $(document).ready(function()
 		laodpage("html/error.html","#frame");
 		return false;
 	});
+	$( "#SystemBut" ).click(function() {
+		myElement=myVarSystem;
+                n=2;
+		laodpage("html/system.html","#frame");
+		return false;
+	});
 
            createTreeMenu("treemenu");
      });
@@ -246,6 +253,8 @@ if(!bl_Communication) SocketNew();
   var my_var;
   var j,i,k;
   k=0;
+  myQueue=[];
+ // alert(myQueue.length);
   switch(n)
     {
       case 1:
@@ -257,13 +266,18 @@ if(!bl_Communication) SocketNew();
 	}}
         myQueueBool=true;
         myQueueCount=1;
-        socket.send(JSON.stringify({get: myQueue[0]}));
+	if (myQueue.length>0) {
+	socket.send(JSON.stringify({get: myQueue[0]}));  
+	}
+        
 	break;
       case 2:
         myQueue=myElement;
         myQueueBool=true;
         myQueueCount=1;
-        socket.send(JSON.stringify({get: myQueue[0]}));
+        if (myQueue.length>0) {
+	socket.send(JSON.stringify({get: myQueue[0]})); 
+	}
 	break;
       default:
         break;
