@@ -610,7 +610,6 @@ Tcp_RetransTimer(void *eventData)
 		if (!tcb->retransPending) {
 			Con_Printf("Bug: Retransmit but no pkt enqueued\n");
 		}
-
 		/* Better would be to reset to SND_UNA only */
 		tcb->SND_NXT = tcb->currDataSeqNr;
 		Tcp_SendData(tcb, tcb->currFlags, tcb->currDataP, tcb->currDataLen);

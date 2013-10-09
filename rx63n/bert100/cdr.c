@@ -85,7 +85,7 @@ typedef struct CDR {
 	uint8_t phyAddr;
 } CDR;
 
-static CDR gCDR[1];
+static CDR gCDR[2];
 
 typedef struct CdrRegister {
 	const char *name;
@@ -1147,6 +1147,11 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	return status;
 }
 
+/**
+ ****************************************************************
+ * Use the Hardware reset line to reset all CDR's
+ ****************************************************************
+ */ 
 static void
 Cdr_HwReset(void) 
 {
@@ -1158,7 +1163,7 @@ Cdr_HwReset(void)
 uint16_t
 Cdr_ReadEqObserve(uint8_t cdr,uint8_t lane)
 {
-	uint8_t phyAddr = gCDR[0].phyAddr;
+	uint8_t phyAddr = gCDR[cdr & 1].phyAddr;
 	return Cdr_Read(phyAddr, CDR_RX_EQ_OBSERVE1(lane));
 }
 /**
