@@ -1355,7 +1355,7 @@ Excep_CMT1_CMI1(void)
 	unsigned int i;
 	CDR *cdr = &gCDR[0];
 	ENABLE_IRQ();
-	MDIO_Address(0, DEVTYPE, CDR_LANE0_ERROR_COUNTER);
+	MDIO_Address(cdr->phyAddr, DEVTYPE, CDR_LANE0_ERROR_COUNTER);
 	for(i = 0; i < 4; i++) {
 		uint16_t errCnt;
 		errCnt = MDIO_ReadInc(cdr->phyAddr, DEVTYPE);
@@ -1396,15 +1396,15 @@ CDR_Init(const char *name)
 	Cdr_SoftReset(cdr->phyAddr);
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);
+	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
 
-	/* Initialize the Second CDR */
+	/* Initialize the Second CDR is the Transmitter */
 	cdr = &gCDR[1];
 	cdr->phyAddr = 0;
 
 	Cdr_SoftReset(cdr->phyAddr);
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);
-	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
 
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
