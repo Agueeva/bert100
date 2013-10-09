@@ -703,6 +703,16 @@ PVNetmask_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 static bool
+PVGateway_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	EthIf *eth = cbData; 
+	SNPrintf(bufP,maxlen,"\"%u.%u.%u.%u\"",
+		eth->defaultGW[0],eth->defaultGW[1],
+		eth->defaultGW[2],eth->defaultGW[3]);
+	return true;
+}
+
+static bool
 PVMacAddr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	EthIf *eth = cbData; 
@@ -770,4 +780,5 @@ Ethernet_Init(EthDriver *drv)
 	PVar_New(PVIP_Get,NULL,eth,0 ,"system.ip");
 	PVar_New(PVNetmask_Get,NULL,eth,0 ,"system.netmask");
 	PVar_New(PVMacAddr_Get,NULL,eth,0 ,"system.mac");
+	PVar_New(PVGateway_Get,NULL,eth,0 ,"system.gateway");
 }
