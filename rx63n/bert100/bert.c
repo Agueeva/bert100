@@ -68,7 +68,7 @@ UpdateLedsTimerProc(void *eventData)
 	Bert *bert = eventData;
 	Timer_Start(&bert->updateLedsTimer,250);
 	for(ch = 0; ch < NR_CHANNELS; ch++) {
-		uint16_t idx = Cdr_ReadEqObserve(0,ch) & 15;
+		uint16_t idx = CDR_ReadEqObserve(0,ch) & 15;
 		ledOut = (ledOut >> 4) | (uint32_t)EqStateToLed[idx] << 12;
 	}
 	ShiftReg_Out(ledOut);
@@ -81,7 +81,7 @@ GetErrCntTimerProc(void *eventData)
 	unsigned int wp;
 	Timer_Start(&fifo->getErrCntTimer,250);
 	wp = BEFIFO_WP(fifo);
-	fifo->errCnt[wp] = Cdr_GetErrCnt(0, fifo->channel);
+	fifo->errCnt[wp] = CDR_GetErrCnt(0, fifo->channel);
 	fifo->tStamp[wp] = TimeMs_Get();
 	fifo->fifoWp++;
 }

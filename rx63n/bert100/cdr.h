@@ -1,4 +1,3 @@
-
 #define CDR_L0_PRBS_LOCK                    (0x001000ff)
 #define CDR_L0_PRBS_AUTOVR                  (0x001000ee)
 #define CDR_L0_LOOPBACK_EN                  (0x001000dd)
@@ -107,18 +106,24 @@
 #define CDR_L1_ERR_CNTR                     (0x0031000f)
 #define CDR_L2_ERR_CNTR                     (0x0032000f)
 #define CDR_L3_ERR_CNTR                     (0x0033000f)
-#define CDR_SWAP_TXP_N(lane)                (0x01000000 + ((lane) << 8))
-#define CDR_LOOPBACKOE(lane)                (0x01000011 + ((lane) << 8))
-#define CDR_TXA_EQPST(lane)                 (0x0101008a + ((lane) << 8))
-#define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 8))
-#define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 8))
-#define CDR_EQ_STATE(lane)                  (0x01a50003 + ((lane) << 8))
-#define CDR_CDR2_TRIP(lane)                 (0x01a7000d + ((lane) << 8))
-#define CDR_PI_POS1_PISEL(lane)             (0x01a800cd + ((lane) << 8))
-#define CDR_PI_POS1_PIQUADR(lane)           (0x01a80089 + ((lane) << 8))
-#define CDR_PI_POS1_PICODE(lane)            (0x01a80007 + ((lane) << 8))
-#define CDR_SEC_ORDER_STATE(lane)           (0x01aa0004 + ((lane) << 8))
+#define CDR_SWAP_TXP_N(lane)                (0x01000000 + ((lane) << 24))
+#define CDR_LOOPBACKOE(lane)                (0x01000011 + ((lane) << 24))
+#define CDR_TXA_EQPST(lane)                 (0x0101008a + ((lane) << 24))
+#define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 24))
+#define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 24))
+#define CDR_EQ_STATE(lane)                  (0x01a50003 + ((lane) << 24))
+#define CDR_CDR2_TRIP(lane)                 (0x01a7000d + ((lane) << 24))
+#define CDR_PI_POS1_PISEL(lane)             (0x01a800cd + ((lane) << 24))
+#define CDR_PI_POS1_PIQUADR(lane)           (0x01a80089 + ((lane) << 24))
+#define CDR_PI_POS1_PICODE(lane)            (0x01a80007 + ((lane) << 24))
+#define CDR_SEC_ORDER_STATE(lane)           (0x01aa0004 + ((lane) << 24))
+
+#define CDR_ID_TX	(1)
+#define CDR_ID_RX	(0)
 
 void CDR_Init(const char *name);
-uint64_t Cdr_GetErrCnt(uint8_t cdrID, uint8_t lane);
-uint16_t Cdr_ReadEqObserve(uint8_t cdrId,uint8_t lane);
+uint64_t CDR_GetErrCnt(uint8_t cdrID, uint8_t lane);
+uint16_t CDR_ReadEqObserve(uint8_t cdrId,uint8_t lane);
+
+uint16_t CDR_Read(uint8_t cdrId,uint32_t regCode);
+void CDR_Write(uint8_t cdrId,uint32_t regCode,uint16_t value);
