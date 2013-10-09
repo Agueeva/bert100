@@ -36,6 +36,7 @@ typedef struct BeFifo {
 	uint8_t channel;
 	uint8_t fifoWp;
 	Timer getErrCntTimer;
+	TimeMs_t berMeasTime;
 } BeFifo;
 
 typedef struct Bert {
@@ -89,7 +90,7 @@ GetErrCntTimerProc(void *eventData)
 {
 	BeFifo *fifo = eventData;
 	unsigned int wp;
-	Timer_Start(&fifo->getErrCntTimer,250);
+	Timer_Start(&fifo->getErrCntTimer,fifo->berMeasTime >> 2);
 	wp = BEFIFO_WP(fifo);
 	fifo->errCnt[wp] = CDR_GetErrCnt(0, fifo->channel);
 	fifo->tStamp[wp] = TimeMs_Get();
@@ -142,6 +143,16 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 	Bert *bert = &gBert;
 	unsigned int ch;
 	uint64_t freq = 40 * (uint64_t)Synth_GetFreq(0);
+	if(argc > 1) {
+		for(ch = 0; ch < NR_CHANNELS; ch++) {
+			BeFifo *fifo = &bert->beFifo[ch];
+			fifo->berMeasTime = astrtoi32(argv[1]);
+			if(fifo->berMeasTime < 200) {
+				fifo->berMeasTime = 200;
+			}
+		}
+		return 0;
+	}
 	for(ch = 0; ch < NR_CHANNELS; ch++) 
 	{
 		float rate,ratio;
@@ -190,6 +201,7 @@ Bert_Init(void)
 		fifo = &bert->beFifo[ch];	
 		fifo->channel = ch;
 		fifo->fifoWp = 0;
+		fifo->berMeasTime = 10000;
 		Timer_Init(&fifo->getErrCntTimer,GetErrCntTimerProc,fifo);
 		Timer_Start(&fifo->getErrCntTimer,250);
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beratio");
