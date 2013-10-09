@@ -16,6 +16,7 @@
 #include "hex.h"
 #include "tcp.h"
 #include "iram.h"
+#include "pvar.h"
 
 typedef struct IpStack {
 	bool inArp;	
@@ -685,6 +686,31 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(ipCmd,"ip",cmd_ip,"ip ?<address>? ?/<netmask bits>? ?<gateway>?# show/change IP Address/Mask Gateway");
+static bool
+PVIP_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	EthIf *eth = cbData; 
+	SNPrintf(bufP,maxlen,"\"%u.%u.%u.%u\"",eth->if_ip[0],eth->if_ip[1],eth->if_ip[2],eth->if_ip[3]);
+	return true;
+}
+
+static bool
+PVNetmask_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	EthIf *eth = cbData; 
+	SNPrintf(bufP,maxlen,"\"%u.%u.%u.%u\"",eth->if_netmask[0],eth->if_netmask[1],eth->if_netmask[2],eth->if_netmask[3]);
+	return true;
+}
+
+static bool
+PVMacAddr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	EthIf *eth = cbData; 
+	SNPrintf(bufP,maxlen,"\"%02x:%02x:%02x:%02x:%02x:%02x\"",eth->if_mac[0],eth->if_mac[1],
+				eth->if_mac[2],eth->if_mac[3],eth->if_mac[4],eth->if_mac[5]);
+	return true;
+}
+
 
 /**
  *****************************************************************
@@ -741,4 +767,7 @@ Ethernet_Init(EthDriver *drv)
 	Interp_RegisterCmd(&arpCmd);
 	Interp_RegisterCmd(&ipCmd);
 	Interp_RegisterCmd(&ipstatusCmd);
+	PVar_New(PVIP_Get,NULL,eth,0 ,"system.ip");
+	PVar_New(PVNetmask_Get,NULL,eth,0 ,"system.netmask");
+	PVar_New(PVMacAddr_Get,NULL,eth,0 ,"system.mac");
 }
