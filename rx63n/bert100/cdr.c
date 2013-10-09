@@ -849,13 +849,13 @@ static const CdrRegister gCdrLaneRegister[] =
 
 /**
  ************************************************************************
- * \fn void Cdr_Write(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
+ * \fn void Cdr_WriteReg(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
  * Write to the CDR by setting up the Address with the MDIO Address cmd.
  * and then writing a 16bit word.
  ************************************************************************
  */
-void
-Cdr_Write(uint8_t phyAddr, uint16_t regAddr, uint16_t value)
+static void
+Cdr_WriteReg(uint8_t phyAddr, uint16_t regAddr, uint16_t value)
 {
 	Flags_t flags;
         SAVE_FLAGS_SET_IPL(flags, CDR_IPL);
@@ -866,13 +866,13 @@ Cdr_Write(uint8_t phyAddr, uint16_t regAddr, uint16_t value)
 
 /**
  ************************************************************************
- * \fn void Cdr_Read(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
+ * \fn void Cdr_ReadReg(uint8_t phyAddr,uint16_t regAddr,uint16_t value)
  * Write to the CDR by setting up the Address with the MDIO Address cmd.
  * and then writing a 16bit word.
  ************************************************************************
  */
-uint16_t
-Cdr_Read(uint8_t phyAddr, uint16_t regAddr)
+static uint16_t
+Cdr_ReadReg(uint8_t phyAddr, uint16_t regAddr)
 {
 	Flags_t flags;
 	uint16_t regVal;
@@ -903,68 +903,68 @@ Cdr_ReadIrq(uint8_t phyAddr, uint16_t regAddr)
 static void
 Cdr_InitCdr(uint16_t phy_addr)
 {
-	Cdr_Write(phy_addr, 0, 0X0100);
-	//Cdr_Write(phy_addr, 2, 0X0210);
-	//Cdr_Write(phy_addr, 3, 0X7401);
-	Cdr_Write(phy_addr, 5, 0X0000);
-	Cdr_Write(phy_addr, 6, 0X4000);
-	Cdr_Write(phy_addr, 8, 0X8000);
-	Cdr_Write(phy_addr, 16, 0X1414);
-	Cdr_Write(phy_addr, 17, 0X1414);
-	Cdr_Write(phy_addr, 18, 0X1414);
-	Cdr_Write(phy_addr, 19, 0X1414);
-	Cdr_Write(phy_addr, 30, 0X0000);
-	Cdr_Write(phy_addr, 31, 0X0000);
-	Cdr_Write(phy_addr, 32, 0X0000);
-	Cdr_Write(phy_addr, 33, 0XFFFF);
-	Cdr_Write(phy_addr, 37, 0X4700);
-	Cdr_Write(phy_addr, 38, 0X0000);
-	Cdr_Write(phy_addr, 44, 0XFC00);
-	Cdr_Write(phy_addr, 45, 0X0000);
-	Cdr_Write(phy_addr, 48, 0X0000);
-	Cdr_Write(phy_addr, 49, 0X0000);
-	Cdr_Write(phy_addr, 50, 0X0000);
-	Cdr_Write(phy_addr, 51, 0X0000);
-	Cdr_Write(phy_addr, 256, 0X0006);
-	Cdr_Write(phy_addr, 512, 0X0006);
-	Cdr_Write(phy_addr, 768, 0X0006);
-	Cdr_Write(phy_addr, 1024, 0X0006);
-	Cdr_Write(phy_addr, 257, 0X0000);
-	Cdr_Write(phy_addr, 513, 0X0000);
-	Cdr_Write(phy_addr, 769, 0X0000);
-	Cdr_Write(phy_addr, 1025, 0X0000);
-	Cdr_Write(phy_addr, 258, 0X0002);
-	Cdr_Write(phy_addr, 514, 0X0002);
-	Cdr_Write(phy_addr, 770, 0X0002);
-	Cdr_Write(phy_addr, 1026, 0X0002);
-	Cdr_Write(phy_addr, 384, 0X0004);
-	Cdr_Write(phy_addr, 640, 0X0004);
-	Cdr_Write(phy_addr, 896, 0X0004);
-	Cdr_Write(phy_addr, 1152, 0X0004);
-	Cdr_Write(phy_addr, 387, 0X8405);
-	Cdr_Write(phy_addr, 643, 0X8405);
-	Cdr_Write(phy_addr, 899, 0X8405);
-	Cdr_Write(phy_addr, 1155, 0X8405);
-	Cdr_Write(phy_addr, 416, 0X0000);
-	Cdr_Write(phy_addr, 672, 0X0000);
-	Cdr_Write(phy_addr, 928, 0X0000);
-	Cdr_Write(phy_addr, 1184, 0X0002);
-	Cdr_Write(phy_addr, 421, 0X000E);
-	Cdr_Write(phy_addr, 677, 0X000E);
-	Cdr_Write(phy_addr, 933, 0X000E);
-	Cdr_Write(phy_addr, 1189, 0X000E);
-	Cdr_Write(phy_addr, 422, 0X0000);
-	Cdr_Write(phy_addr, 678, 0X0000);
-	Cdr_Write(phy_addr, 934, 0X0000);
-	Cdr_Write(phy_addr, 1190, 0X0000);
-	Cdr_Write(phy_addr, 423, 0X2043);
-	Cdr_Write(phy_addr, 679, 0X2029);
-	Cdr_Write(phy_addr, 935, 0X1FFA);
-	Cdr_Write(phy_addr, 1191, 0X2000);
-	Cdr_Write(phy_addr, 424, 0X025B);
-	Cdr_Write(phy_addr, 680, 0X022B);
-	Cdr_Write(phy_addr, 936, 0X0359);
-	Cdr_Write(phy_addr, 1192, 0X03E2);
+	Cdr_WriteReg(phy_addr, 0, 0X0100);
+	//Cdr_WriteReg(phy_addr, 2, 0X0210);
+	//Cdr_WriteReg(phy_addr, 3, 0X7401);
+	Cdr_WriteReg(phy_addr, 5, 0X0000);
+	Cdr_WriteReg(phy_addr, 6, 0X4000);
+	Cdr_WriteReg(phy_addr, 8, 0X8000);
+	Cdr_WriteReg(phy_addr, 16, 0X1414);
+	Cdr_WriteReg(phy_addr, 17, 0X1414);
+	Cdr_WriteReg(phy_addr, 18, 0X1414);
+	Cdr_WriteReg(phy_addr, 19, 0X1414);
+	Cdr_WriteReg(phy_addr, 30, 0X0000);
+	Cdr_WriteReg(phy_addr, 31, 0X0000);
+	Cdr_WriteReg(phy_addr, 32, 0X0000);
+	Cdr_WriteReg(phy_addr, 33, 0XFFFF);
+	Cdr_WriteReg(phy_addr, 37, 0X4700);
+	Cdr_WriteReg(phy_addr, 38, 0X0000);
+	Cdr_WriteReg(phy_addr, 44, 0XFC00);
+	Cdr_WriteReg(phy_addr, 45, 0X0000);
+	Cdr_WriteReg(phy_addr, 48, 0X0000);
+	Cdr_WriteReg(phy_addr, 49, 0X0000);
+	Cdr_WriteReg(phy_addr, 50, 0X0000);
+	Cdr_WriteReg(phy_addr, 51, 0X0000);
+	Cdr_WriteReg(phy_addr, 256, 0X0006);
+	Cdr_WriteReg(phy_addr, 512, 0X0006);
+	Cdr_WriteReg(phy_addr, 768, 0X0006);
+	Cdr_WriteReg(phy_addr, 1024, 0X0006);
+	Cdr_WriteReg(phy_addr, 257, 0X0000);
+	Cdr_WriteReg(phy_addr, 513, 0X0000);
+	Cdr_WriteReg(phy_addr, 769, 0X0000);
+	Cdr_WriteReg(phy_addr, 1025, 0X0000);
+	Cdr_WriteReg(phy_addr, 258, 0X0002);
+	Cdr_WriteReg(phy_addr, 514, 0X0002);
+	Cdr_WriteReg(phy_addr, 770, 0X0002);
+	Cdr_WriteReg(phy_addr, 1026, 0X0002);
+	Cdr_WriteReg(phy_addr, 384, 0X0004);
+	Cdr_WriteReg(phy_addr, 640, 0X0004);
+	Cdr_WriteReg(phy_addr, 896, 0X0004);
+	Cdr_WriteReg(phy_addr, 1152, 0X0004);
+	Cdr_WriteReg(phy_addr, 387, 0X8405);
+	Cdr_WriteReg(phy_addr, 643, 0X8405);
+	Cdr_WriteReg(phy_addr, 899, 0X8405);
+	Cdr_WriteReg(phy_addr, 1155, 0X8405);
+	Cdr_WriteReg(phy_addr, 416, 0X0000);
+	Cdr_WriteReg(phy_addr, 672, 0X0000);
+	Cdr_WriteReg(phy_addr, 928, 0X0000);
+	Cdr_WriteReg(phy_addr, 1184, 0X0002);
+	Cdr_WriteReg(phy_addr, 421, 0X000E);
+	Cdr_WriteReg(phy_addr, 677, 0X000E);
+	Cdr_WriteReg(phy_addr, 933, 0X000E);
+	Cdr_WriteReg(phy_addr, 1189, 0X000E);
+	Cdr_WriteReg(phy_addr, 422, 0X0000);
+	Cdr_WriteReg(phy_addr, 678, 0X0000);
+	Cdr_WriteReg(phy_addr, 934, 0X0000);
+	Cdr_WriteReg(phy_addr, 1190, 0X0000);
+	Cdr_WriteReg(phy_addr, 423, 0X2043);
+	Cdr_WriteReg(phy_addr, 679, 0X2029);
+	Cdr_WriteReg(phy_addr, 935, 0X1FFA);
+	Cdr_WriteReg(phy_addr, 1191, 0X2000);
+	Cdr_WriteReg(phy_addr, 424, 0X025B);
+	Cdr_WriteReg(phy_addr, 680, 0X022B);
+	Cdr_WriteReg(phy_addr, 936, 0X0359);
+	Cdr_WriteReg(phy_addr, 1192, 0X03E2);
 }
 
 /**
@@ -1017,15 +1017,15 @@ iShuffle(uint16_t * uOutp, uint16_t uInp, uint8_t uStartBit, uint8_t uNumBit, ui
 ************************************************************************
 */
 
-void
+static void
 Cdr_WritePart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uStartBit, uint16_t uNumber)
 {
 	uint16_t uNumBit;
 	uint16_t uVal;
 	uNumBit = uLastBit - uStartBit + 1;
-	uVal = Cdr_Read(phy_addr, uRegister);
+	uVal = Cdr_ReadReg(phy_addr, uRegister);
 	iShuffle(&uVal, uVal, uStartBit, uNumBit, uNumber);
-	Cdr_Write(phy_addr, uRegister, uVal);
+	Cdr_WriteReg(phy_addr, uRegister, uVal);
 }
 
 /**
@@ -1035,17 +1035,43 @@ Cdr_WritePart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t u
 ************************************************************************
 */
 
-uint16_t
+static uint16_t
 Cdr_ReadPart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uStartBit)
 {
 	uint16_t uNumBit;
 	uint16_t uVal;
 	uNumBit = uLastBit - uStartBit + 1;
-	uVal = Cdr_Read(phy_addr, uRegister);
+	uVal = Cdr_ReadReg(phy_addr, uRegister);
 	uVal = iShuffleRead(uVal, uStartBit, uNumBit);
 	return uVal;
 }
 
+/**
+ *********************************************************************
+ *  Function visible to outsize has a capital "CDR" in the name
+ *********************************************************************
+ */
+uint16_t
+CDR_Read(uint8_t cdrId,uint32_t regCode) 
+{
+	uint32_t phyAddr = gCDR[cdrId & 1].phyAddr;
+	uint32_t uRegister, uLastBit, uFirstBit;
+	uRegister = regCode >> 16;
+	uFirstBit = (regCode >> 4) & 0xf;
+	uLastBit =  regCode & 0xf;
+	return Cdr_ReadPart(phyAddr, uRegister, uLastBit, uFirstBit);
+}
+
+void
+CDR_Write(uint8_t cdrId,uint32_t regCode,uint16_t value) 
+{
+	uint32_t phyAddr = gCDR[cdrId & 1].phyAddr;
+	uint32_t uRegister, uLastBit, uFirstBit;
+	uRegister = regCode >> 16;
+	uFirstBit = (regCode >> 4) & 0xf;
+	uLastBit =  regCode & 0xf;
+	Cdr_WritePart(phyAddr,uRegister,uLastBit, uFirstBit, value);
+}
 /**
  ************************************************************
  * \fn static void Cdr_SoftReset(uint16_t phy_addr) 
@@ -1054,7 +1080,7 @@ Cdr_ReadPart(uint16_t phy_addr, uint16_t uRegister, uint8_t uLastBit, uint8_t uS
 static void 
 Cdr_SoftReset(uint16_t phy_addr) 
 {
-	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+	Cdr_WriteReg(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
 }
 
 /**
@@ -1084,15 +1110,15 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 		return 0;	
 	}
 #if 0
-	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+	Cdr_WriteReg(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
 #endif
-	Cdr_Write(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
+	Cdr_WriteReg(phy_addr, CDR_VS_DEVICE_CONTROL, 0x200);	//Datapath soft reset (bit 9)
 	for(lane = 0; lane < 4; lane++) {
 		/* Set 128 steps for PI resolution inside reset */
 		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
 	}
 	/* Deassert datapath soft reset */
-	Cdr_Write(phy_addr, 0, 0);
+	Cdr_WriteReg(phy_addr, 0, 0);
 
 	// CDR recal of TxPLL while PI3 is locked
 	Cdr_WritePart(phy_addr, 1184, 1, 1, 1);	// Lockint Rx3 PI
@@ -1161,10 +1187,10 @@ Cdr_HwReset(void)
 }
 
 uint16_t
-Cdr_ReadEqObserve(uint8_t cdr,uint8_t lane)
+CDR_ReadEqObserve(uint8_t cdr,uint8_t lane)
 {
 	uint8_t phyAddr = gCDR[cdr & 1].phyAddr;
-	return Cdr_Read(phyAddr, CDR_RX_EQ_OBSERVE1(lane));
+	return Cdr_ReadReg(phyAddr, CDR_RX_EQ_OBSERVE1(lane));
 }
 /**
  ************************************************************************
@@ -1196,14 +1222,14 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	} else if (argc == 3) {
 		phyAddr = astrtoi16(argv[1]);
 		regAddr = astrtoi16(argv[2]);
-		val = Cdr_Read(phyAddr, regAddr);
+		val = Cdr_ReadReg(phyAddr, regAddr);
 		Con_Printf("%u.%u: 0x%x\n", phyAddr, regAddr, val);
 		return 0;
 	} else if (argc == 4) {
 		phyAddr = astrtoi16(argv[1]);
 		regAddr = astrtoi16(argv[2]);
 		val = astrtoi16(argv[3]);
-		Cdr_Write(phyAddr, regAddr, val);
+		Cdr_WriteReg(phyAddr, regAddr, val);
 	} else {
 		return -EC_BADARG;
 	}
@@ -1286,7 +1312,7 @@ PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 }
 
 uint64_t 
-Cdr_GetErrCnt(uint8_t cdrID, uint8_t lane)
+CDR_GetErrCnt(uint8_t cdrID, uint8_t lane)
 {
 	CDR *cdr;
 	if((cdrID != 0) || (lane >= 4)) {
