@@ -1404,7 +1404,7 @@ CDR_Init(const char *name)
 	Cdr_SoftReset(cdr->phyAddr);
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);
-	Cdr_Write(cdr->phyAddr, 1184, 0X0000);
+	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
 
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
