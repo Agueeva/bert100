@@ -69,7 +69,7 @@ typedef struct EthIf {
 	uint8_t if_ip[4]; /* for arp */
 	uint8_t if_netmask[4];
 	uint8_t defaultGW[4];
-	ArpCE arpCache[4];
+	ArpCE arpCache[6];
 } EthIf;
 
 typedef struct EthHdr {
