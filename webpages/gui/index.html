@@ -16,13 +16,13 @@
 		<div id="menu">
 		<!--<img id="menubg" src="html/img/menu_bg.jpg"  alt="header" >-->
 		<ul id="treemenu" class="menu">
-			<li><a href='javascript:void(0);' id="homeBut">Home</a></li>
+			<!--<li><a href='javascript:void(0);' id="homeBut">Home</a></li>-->
+			<li><a href='javascript:void(0);' id="SystemBut" >System</a></li>
 			<li><a href='javascript:void(0);'>Settings</a>
 				<ul>
 				<li><a href='javascript:void(0);' id="PatternBut" >Pattern</a></li>
 				<li><a href='javascript:void(0);' id="TXBut" >TX Data Port OUT</a></li>
 				<li><a href='javascript:void(0);' id="RateTrBut" >Data Rate & Trigger</a></li>
-				<li><a href='javascript:void(0);' id="SystemBut" >System</a></li>
 				<li><a href='javascript:void(0);' id="Variables" >Variables</a></li>
 				<li><a href='javascript:void(0);' id="VariablesDAC0" >Variables DAC0</a></li>
 				<li><a href='javascript:void(0);' id="VariablesADC12" >Variables ADC12</a></li>
@@ -30,11 +30,12 @@
 			
 			</li>
 			<li><a href='javascript:void(0);' id="MeasureBut">Measurement</a></li>
-		</ul>		
+		</ul>
+		<input type="hidden" size="20"  name="test.var1" id="test.var1" value="">
 		</div>
 
 		<div id="content">
-			<div id="bert"><font size="5" >BER: </font><input type="text" size="20" style="font-size:16pt;" name="test.var1" id="test.var1" value=""></div>
+			<!--<div id="bert"><font size="5" >BER: </font><input type="hiden" size="20" style="font-size:16pt;" name="test.var1" id="test.var1" value=""></div> -->
 			<div id="content_wrapper"> 
 				<img id="c_bert_bg" src="html/img/c_bert_bg.png"  alt="logo" >
 				<iframe id="frame" src=""></iframe>

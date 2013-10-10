@@ -18,11 +18,13 @@
                           "cdr0.l0.prbs_lock","cdr0.l1.prbs_lock","cdr0.l2.prbs_lock","cdr0.l3.prbs_lock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
-                          "cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat");
-  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm","system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
+                          "cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat",
+                           "bert0.l0.beratio","bert0.l1.beratio","bert0.l2.beratio","bert0.l3.beratio");
+  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
+                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
     
      bl_Communication=true;
@@ -54,8 +56,66 @@
       }
       switch(item)
 {
-case "test.var1":
-  document.getElementById(item).value=value;
+     case "test.var1":
+       document.getElementById('test.var1').value=value;
+       return;
+     
+  case "cdr0.l0.lol_stat":
+     if (value==0) {
+      $("#frame").contents().find("#Loss0").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Loss0").attr('class','redfield');
+     }
+ 
+  break;
+ case "cdr0.l1.lol_stat":
+  if (value==0) {
+      $("#frame").contents().find("#Loss1").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Loss1").attr('class','redfield');
+     }
+  break;
+case "cdr0.l2.lol_stat":
+  if (value==0) {
+      $("#frame").contents().find("#Loss2").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Loss2").attr('class','redfield');
+     }
+  break;
+case "cdr0.l3.lol_stat":
+   if (value==0) {
+      $("#frame").contents().find("#Loss3").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Loss3").attr('class','redfield');
+     }
+  break;
+case "cdr0.l0.latched_lol":
+  if (value==0) {
+      $("#frame").contents().find("#Mem0").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Mem0").attr('class','orangfield');
+     }
+  break;
+case "cdr0.l1.latched_lol":
+ if (value==0) {
+      $("#frame").contents().find("#Mem1").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Mem1").attr('class','orangfield');
+     }
+  break;
+case "cdr0.l2.latched_lol":
+  if (value==0) {
+      $("#frame").contents().find("#Mem2").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Mem2").attr('class','orangfield');
+     }
+  break;
+case "cdr0.l3.latched_lol":
+ if (value==0) {
+      $("#frame").contents().find("#Mem3").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Mem3").attr('class','orangfield');
+     }
   break;
 case "synth0.freq":
   if (value>644531240 && value<644531275) {
@@ -65,28 +125,27 @@ case "synth0.freq":
     value=698812335;
   }
   // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
-  //break;
+  break; 
 default:
-     var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
+     
+break;
+}  
+  var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
         if(typeof var_id == "undefined") {
          var_id=$("#frame").contents().find("#var_val").val(value);
          }
          else{
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
          }
-         if (myQueueBool) {
-          
-          
+         if (myQueueBool) {  
           window_onload_variable();
-         }
-break;
-}  
-        
+         }      
      }
   function keepAlive() {
           socket.send(JSON.stringify({get: "test.var1"}));
      }
      }
+ 
 //---------------------Laod page---------------------
 var requestToRelaod = false;
 var newUrl = "";
@@ -171,7 +230,9 @@ function createTreeMenu(id) {
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
 {
-        	n=3;
+                
+        	//myElement=myVarSystem;
+                n=3;
           laodpage("html/main.html","#frame");
 	  SocketNew();
 	//Click.
@@ -255,7 +316,6 @@ if(!bl_Communication) SocketNew();
   var j,i,k;
   k=0;
   myQueue=[];
- // alert(myQueue.length);
   switch(n)
     {
       case 1:

@@ -26,7 +26,7 @@
 	position: relative;
 	height: 32px;
 	width: 50px;
-	background-color: #ce0202;
+	background-color: #00ff40;
         font-size: 16px;
 	font-weight:bold;
 	color: #FFFFFF;
@@ -35,7 +35,16 @@
 	position: relative;
 	height: 32px;
 	width: 50px;
-	background-color: #0cac00;
+	background-color: #ff0000;
+        font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+}
+.orangfield{
+	position: relative;
+	height: 32px;
+	width: 50px;
+	background-color: #ff8000;
         font-size: 16px;
 	font-weight:bold;
 	color: #FFFFFF;
