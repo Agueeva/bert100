@@ -1109,8 +1109,9 @@ cmd_tcp(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t i;
 	for (i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb = &tcpConnection[i];
-		Con_Printf("TCB %u, inUse %u, busy %u, hasLockLine %u, tryLockLine %u\n", 
-			i, tcb->inUse, tcb->busy,tcb->hasLockLine,tcb->tryLockLine);
+		Con_Printf("TCB %u, inUse %u, busy %u, hasLock %u, tryLock %u, ip %u.%u.%u.%u\n", 
+			i, tcb->inUse, tcb->busy,tcb->hasLockLine,tcb->tryLockLine,
+			tcb->ipAddr[0],tcb->ipAddr[1],tcb->ipAddr[2],tcb->ipAddr[3]);
 	}
 	return 0;
 }
