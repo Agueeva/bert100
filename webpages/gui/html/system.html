@@ -12,9 +12,10 @@
 	<TH></TH>
 	<TH></TH></TR>
 
+
 <TR ALIGN="left">
-<TH>Version:</TH>
-<TD><input class="textfildsys" type="text" name="version.fw" id="version.fw" size="15" maxlength="15" readonly></TD>
+<TH>Firmware:</TH>
+<TD><input class="textfildsys" type="text" name="system.firmware" id="system.firmware" size="15" maxlength="15" readonly></TD>
 <TD>
 </TD>
 <TD>
@@ -52,7 +53,7 @@
 
 <TR ALIGN="left">
 <TH>IP address:</TH>
-<TD><input class="textfildsys" type="text" name="IP" size="15" maxlength="15" onChange="javascript: CheckIP(this)"></TD>
+<TD><input class="textfildsys" type="text" name="system.ip" id="system.ip" size="15" maxlength="15" readonly onChange="javascript: CheckIP(this)"></TD>
 <TD>
 </TD>
 <TD>
@@ -62,7 +63,7 @@
 
 <TR ALIGN="left">
 <TH>Netmask:</TH>
-<TD><input class="textfildsys" type="text" name="Netmask" size="15" maxlength="15" onChange="javascript: CheckNetmask(this)"></TD>
+<TD><input class="textfildsys" type="text" name="Netmask" id="system.netmask" size="15" maxlength="15" readonly onChange="javascript: CheckNetmask(this)"></TD>
 <TD>
 </TD>
 <TD>
@@ -72,7 +73,17 @@
 
 <TR ALIGN="left">
 <TH>Gateway:</TH>
-<TD><input class="textfildsys" type="text" name="Gateway" size="15" maxlength="15" onChange="javascript: CheckGateway(this)"></TD>
+<TD><input class="textfildsys" type="text" name="system.gateway" id="system.gateway" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
+<TD>
+</TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+
+<TR ALIGN="left">
+<TH>MAC Adresse:</TH>
+<TD><input class="textfildsys" type="text" name="system.mac" id="system.mac" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
 <TD>
 </TD>
 <TD>
