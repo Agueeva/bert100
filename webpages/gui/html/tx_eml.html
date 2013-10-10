@@ -13,7 +13,7 @@
 <TABLE  class="blue-select" ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
 	<!--Row 1-->
 <TR ALIGN="left" VALIGN="middle">
-        <TH>All channels<br>same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript:  window.parent.all_tx=this.checked; window.parent.myElement=window.parent.myVarTX0; window.parent.myCheckAll(this,'emlAmp','Amp',1); window.parent.myElement=window.parent.myVarTX1; window.parent.myCheckAll(this,'cdr0.l','.l',0); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" VALUE ="checkbox"></TH>
+        <TH>All channels<br>same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript:  window.parent.all_tx=this.checked; window.parent.myElement=window.parent.myVarTX0; window.parent.myCheckAll(this,'emlAmp','Amp',1); window.parent.myElement=window.parent.myVarTX1; window.parent.myCheckAll(this,'cdr0.l','.l',0); window.parent.myElement=window.parent.myVarTX2; window.parent.myCheckAll(this,'bert0.L','.L',0);window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" VALUE ="checkbox"></TH>
 	<TH>Channel 1</TH>
 	<TH>Channel 2</TH>
 	<TH>Channel 3</TH>
@@ -181,7 +181,7 @@
 	<TH>Swap P_N</TH>
 	
 	<TD>
-	<SELECT  NAME="cdr0.l0.Swap_TXP_N" ID="cdr0.l0.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,2,'.l',0); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" >
+	<SELECT  NAME="bert0.L0.swapTxPN" ID="bert0.L0.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" >
 		<OPTION VALUE="0">No</OPTION>
 		<OPTION VALUE ="1">Yes</OPTION>
 	</SELECT>
@@ -189,21 +189,21 @@
 	
 	
 	<TD>
-	<SELECT  NAME="cdr0.l1.Swap_TXP_N" ID="cdr0.l1.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+	<SELECT  NAME="bert0.L1.swapTxPN" ID="bert0.L1.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
 	<OPTION VALUE="0">No</OPTION>
 	<OPTION VALUE ="1">Yes</OPTION>
 	</SELECT>
 	</TD>
 	
 	<TD>
-	<SELECT  NAME="cdr0.l2.Swap_TXP_N" ID="cdr0.l2.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+	<SELECT  NAME="bert0.L2.swapTxPN" ID="bert0.L2.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
 		<OPTION VALUE="0">No</OPTION>
 		<OPTION VALUE ="1">Yes</OPTION>
 	</SELECT>
 	</TD>
 	
 	<TD>
-	<SELECT NAME="cdr0.l3.Swap_TXP_N" ID="cdr0.l3.Swap_TXP_N"  onChange="javascript: window.parent.SaveVar(this,1,'.l',0);" >
+	<SELECT NAME="bert0.L3.swapTxPN" ID="bert0.L3.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
 		<OPTION VALUE="0">No</OPTION>
 		<OPTION VALUE ="1">Yes</OPTION>
 	</SELECT>

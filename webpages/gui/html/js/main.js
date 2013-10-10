@@ -3,28 +3,35 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
-  var myVarPattern= new Array("pat_gen_sel","prbs_gen_inv","prbs_autovr","pat_ver_sel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+  var myVarPattern= new Array("bert0.L0.prbsPatGenSel","bert0.L1.prbsPatGenSel","bert0.L2.prbsPatGenSel","bert0.L3.prbsPatGenSel",
+                              "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
+                              "cdr0.l0.prbs_autovr","cdr0.l1.prbs_autovr","cdr0.l2.prbs_autovr","cdr0.l3.prbs_autovr",
+                              "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+  var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel"); 
+  var myVarPattern1= new Array("prbs_autovr"); 
+  
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
 			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
 			 "cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing",
-			 "cdr0.l0.Swap_TXP_N","cdr0.l1.Swap_TXP_N","cdr0.l2.Swap_TXP_N","cdr0.l3.Swap_TXP_N");
+			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
   var myVarTX0= new Array("vg1","vg2");
-  var myVarTX1= new Array("txa_swing","Swap_TXP_N");
+  var myVarTX1= new Array("txa_swing");
+  var myVarTX2= new Array("swapTxPN");
   var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
   var myVarErr= new Array("synth0.freq",
                           "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
-                          "cdr0.l0.eq_state","cdr0.l1.eq_state","cdr0.l2.eq_state","cdr0.l3.eq_state",
+                          "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "cdr0.l0.latched_lol","cdr0.l1.latched_lol","cdr0.l2.latched_lol","cdr0.l3.latched_lol",
-                          "cdr0.l0.prbs_lock","cdr0.l1.prbs_lock","cdr0.l2.prbs_lock","cdr0.l3.prbs_lock",
+                          "bert0.L0.prbsLock","bert0.L1.prbsLock","bert0.L2.prbsLock","bert0.L3.prbsLock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
-                          "cdr0.l0.lol_stat","cdr0.l1.lol_stat","cdr0.l2.lol_stat","cdr0.l3.lol_stat",
-                           "bert0.l0.beratio","bert0.l1.beratio","bert0.l2.beratio","bert0.l3.beratio");
+                          "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
+                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio");
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
      //alert(urlWS);
     
      bl_Communication=true;
@@ -60,7 +67,7 @@
        document.getElementById('test.var1').value=value;
        return;
      
-  case "cdr0.l0.lol_stat":
+  case "bert0.L0.LolStat":
      if (value==0) {
       $("#frame").contents().find("#Loss0").attr('class','greenfield');
      }else{
@@ -68,21 +75,21 @@
      }
  
   break;
- case "cdr0.l1.lol_stat":
+ case "bert0.L1.LolStat":
   if (value==0) {
       $("#frame").contents().find("#Loss1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss1").attr('class','redfield');
      }
   break;
-case "cdr0.l2.lol_stat":
+case "bert0.L2.LolStat":
   if (value==0) {
       $("#frame").contents().find("#Loss2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss2").attr('class','redfield');
      }
   break;
-case "cdr0.l3.lol_stat":
+case "bert0.L3.LolStat":
    if (value==0) {
       $("#frame").contents().find("#Loss3").attr('class','greenfield');
      }else{
@@ -246,9 +253,9 @@ $(document).ready(function()
 	//Click
 	$( "#PatternBut" ).click(function() {
 		myElement=myVarPattern;
-		n=1;
+		n=2;
                 all=all_pat;
-                page_pref="cdr0.l";
+                page_pref="bert0.L";
                 page_k=0;
 		laodpage("html/pattern.html","#frame");
 		return false;
@@ -411,7 +418,7 @@ function myDisableAuto()
     for (i = 0; i < 4; i++){
      item='cdr0.l'+i+'.prbs_autovr';
      if ($("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val()==1) {
-          item='cdr0.l'+i+'.pat_ver_sel'; 
+          item='bert0.L'+i+'.patVerSel'; 
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
      }
     }
