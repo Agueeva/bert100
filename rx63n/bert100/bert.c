@@ -369,9 +369,31 @@ static const CdrForward gForwardRegs[] =
 #define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 24))
 #define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 24))
 #endif
-#if 0
-#define CDR_EQ_STATE(lane)                  (0x01a50003 + ((lane) << 24))
-#endif
+	{
+		.name = "L0.EqState",
+		.cdrRegId = CDR_EQ_STATE(0), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+
+		.name = "L1.EqState",
+		.cdrRegId = CDR_EQ_STATE(1), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L2.EqState",
+		.cdrRegId = CDR_EQ_STATE(2), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L3.EqState",
+		.cdrRegId = CDR_EQ_STATE(3), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
 #if 0
 #define CDR_CDR2_TRIP(lane)                 (0x01a7000d + ((lane) << 24))
 #define CDR_PI_POS1_PISEL(lane)             (0x01a800cd + ((lane) << 24))
@@ -596,8 +618,8 @@ Bert_Init(void)
 		fifo->berMeasTime = 10000;
 		Timer_Init(&fifo->getErrCntTimer,GetErrCntTimerProc,fifo);
 		Timer_Start(&fifo->getErrCntTimer,250);
-		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beRatio");
-		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beRate");
+		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRatio");
+		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRate");
 	}
        for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
