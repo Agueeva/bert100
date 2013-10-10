@@ -89,7 +89,7 @@ PVar_New(PVar_GetCallback *gcb, PVar_SetCallback *scb,void *cbData,uint32_t adId
 		varname = printfBuf;
 	}
         if(pvar) {
-		Con_Printf("Variable already exists");
+		Con_Printf("Variable \"%s\" already exists\n",printfBuf);
                 return pvar;
         }
 	Mutex_Lock(&pvt->lock);

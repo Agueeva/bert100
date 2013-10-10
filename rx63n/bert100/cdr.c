@@ -1238,7 +1238,7 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(cdrCmd, "cdr", cmd_cdr, "cdr <cdrAddr> <regAddr> ?<value>?   # read write to/from cdr");
 
-bool
+static bool
 PVReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	const CdrRegister *reg;
@@ -1254,7 +1254,7 @@ PVReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
-bool
+static bool
 PVReg_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	const CdrRegister *reg;
@@ -1275,7 +1275,7 @@ PVReg_Set(void *cbData, uint32_t adId, const char *strP)
  * Access to a register in the 256 Byte RX/TX lane private spaces.
  *******************************************************************************
  */
-bool
+static bool
 PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	const CdrRegister *reg;
@@ -1293,7 +1293,7 @@ PVLaneReg_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
-bool
+static bool
 PVLaneReg_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	const CdrRegister *reg;
