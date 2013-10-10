@@ -67,6 +67,17 @@ static const uint8_t EqStateToLed[16] = {
 };
 
 /*
+ *********************************************************************
+ * Define the variables which are forwarded to the  
+ *********************************************************************
+ */
+CdrForward forwardVars[] = 
+{
+	{
+	},		
+};
+
+/*
  ****************************************************
  * Update the leds
  ****************************************************
@@ -189,6 +200,37 @@ PVBerate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+static bool
+PVBerMs_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	BeFifo *fifo = &bert->beFifo[0]; /* Currently all 4 fifos have the same meassurement time */
+	bufP[uitoa32(fifo->berMeasTime,bufP)] = 0;
+	return true;
+}
+
+static bool
+PVBerMs_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	TimeMs_t ms = astrtoi32(strP);
+	unsigned int ch;
+	Bert *bert = cbData;
+	for(ch = 0; ch < NR_CHANNELS; ch++) {
+		BeFifo *fifo = &bert->beFifo[ch];
+		/* Don't let the user wait to long for the change */
+		if(fifo->berMeasTime == ms) {
+			continue;
+		}
+		if(fifo->berMeasTime > 2000) {
+			fifo->berMeasTime = ms;
+			Timer_Mod(&fifo->getErrCntTimer,fifo->berMeasTime >> 2);
+		} else {
+			fifo->berMeasTime = ms;
+		}
+	}
+	return true;
+}
+
 void
 Bert_Init(void) 
 {
@@ -207,6 +249,7 @@ Bert_Init(void)
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"beratio");
 		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.l%lu.%s",name,ch,"berate");
 	}
+	PVar_New(PVBerMs_Get,PVBerMs_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
