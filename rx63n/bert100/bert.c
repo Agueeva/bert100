@@ -321,6 +321,14 @@ static const CdrForward gForwardRegs[] =
 #define CDR_TXPLL_CAL_READ_FINE             (0x00280002)
 #define CDR_TXPLL_CAL_READ_COARSE           (0x00280037)
 #define CDR_TXPLL_LOCK                      (0x00280088)
+#endif
+	{
+		.name = "txPllLock",
+		.cdrRegId = CDR_TXPLL_LOCK, 
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+#if 0
 #define CDR_TXPLL_LCO_AMPL                  (0x002800bd)
 #define CDR_TXPLL_VCTLREF                   (0x002800ef)
 #define CDR_RXPLL_CAL_BUS_FORCE_FINE        (0x00290002)
@@ -332,6 +340,14 @@ static const CdrForward gForwardRegs[] =
 #define CDR_RXPLL_CAL_READ_FINE             (0x002a0002)
 #define CDR_RXPLL_CAL_READ_COARSE           (0x002a0037)
 #define CDR_RXPLL_LOCK                      (0x002a0088)
+#endif
+	{
+		.name = "rxPllLock",
+		.cdrRegId = CDR_RXPLL_LOCK, 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+#if 0
 #define CDR_RXPLL_LCO_AMPL                  (0x002a00bd)
 #define CDR_RXPLL_VCTLREF                   (0x002a00ef)
 #define CDR_L0_FIFO_ERROR                   (0x00250088)
