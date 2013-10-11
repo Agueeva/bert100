@@ -1059,6 +1059,7 @@ CDR_Read(uint8_t cdrId,uint32_t regCode)
 	uRegister = regCode >> 16;
 	uFirstBit = (regCode >> 4) & 0xf;
 	uLastBit =  regCode & 0xf;
+	//Con_Printf("CDR %lu reg %lu, from %u to %u \n",phyAddr,uRegister,uFirstBit,uLastBit);
 	return Cdr_ReadPart(phyAddr, uRegister, uLastBit, uFirstBit);
 }
 

@@ -382,6 +382,30 @@ static const CdrForward gForwardRegs[] =
 #define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 24))
 #define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 24))
 #endif
+	{ 
+		.name = "L0.txaSwing",
+		.cdrRegId = CDR_TXA_SWING(0),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L1.txaSwing",
+		.cdrRegId = CDR_TXA_SWING(1),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L2.txaSwing",
+		.cdrRegId = CDR_TXA_SWING(2),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L3.txaSwing",
+		.cdrRegId = CDR_TXA_SWING(3),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
 	{
 		.name = "L0.EqState",
 		.cdrRegId = CDR_EQ_STATE(0), 
