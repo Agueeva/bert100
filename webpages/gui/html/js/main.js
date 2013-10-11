@@ -21,17 +21,18 @@
   var myVarErr= new Array("synth0.freq",
                           "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
-                          "cdr0.l0.latched_lol","cdr0.l1.latched_lol","cdr0.l2.latched_lol","cdr0.l3.latched_lol",
+                          "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
                           "bert0.L0.prbsLock","bert0.L1.prbsLock","bert0.L2.prbsLock","bert0.L3.prbsLock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
-                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio");
+                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
+                           "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate","bert0.berMeasWin_ms");
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
     
      bl_Communication=true;
@@ -96,28 +97,28 @@ case "bert0.L3.LolStat":
       $("#frame").contents().find("#Loss3").attr('class','redfield');
      }
   break;
-case "cdr0.l0.latched_lol":
+case "bert0.L0.latchedLol":
   if (value==0) {
       $("#frame").contents().find("#Mem0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem0").attr('class','orangfield');
      }
   break;
-case "cdr0.l1.latched_lol":
+case "bert0.L1.latchedLol":
  if (value==0) {
       $("#frame").contents().find("#Mem1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem1").attr('class','orangfield');
      }
   break;
-case "cdr0.l2.latched_lol":
+case "bert0.L2.latchedLol":
   if (value==0) {
       $("#frame").contents().find("#Mem2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem2").attr('class','orangfield');
      }
   break;
-case "cdr0.l3.latched_lol":
+case "bert0.L3.latchedLol":
  if (value==0) {
       $("#frame").contents().find("#Mem3").attr('class','greenfield');
      }else{
