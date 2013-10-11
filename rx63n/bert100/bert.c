@@ -43,6 +43,7 @@ typedef struct Bert {
 	BeFifo beFifo[NR_CHANNELS];
 	Timer updateLedsTimer;
 	uint32_t dataRate; 
+	uint8_t pvLatchedLol[NR_CHANNELS];
 } Bert;
 
 static Bert gBert;
@@ -293,10 +294,6 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	},
 #if 0
-#define CDR_L0_LATCHED_LOL                  (0x002100cc)
-#define CDR_L1_LATCHED_LOL                  (0x002100dd)
-#define CDR_L2_LATCHED_LOL                  (0x002100ee)
-#define CDR_L3_LATCHED_LOL                  (0x002100ff)
 #define CDR_L0_FIFO_URUN                    (0x00250000)
 #define CDR_L1_FIFO_URUN                    (0x00250011)
 #define CDR_L2_FIFO_URUN                    (0x00250022)
@@ -574,6 +571,62 @@ PVBerMs_Set(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+/*
+ ****************************************************************************
+ * Forwarded variables.
+ ****************************************************************************
+ */
+static bool
+PVLatchedLol_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+        Bert *bert = cbData;
+	uint8_t lane = adId;
+	uint32_t regId = 0;
+	switch(lane) {
+		case 0:
+			regId =	CDR_L0_LATCHED_LOL;
+			break;
+		case 1:
+			regId = CDR_L1_LATCHED_LOL; 
+			break;
+		case 2:
+			regId = CDR_L2_LATCHED_LOL;
+			break;
+		case 3:
+			regId = CDR_L3_LATCHED_LOL;
+			break;
+	}
+	bert->pvLatchedLol[lane] |= CDR_Read(CDR_ID_RX,regId);
+        bufP[uitoa16(bert->pvLatchedLol[lane],bufP)] = 0;
+        return true;
+}
+
+static bool
+PVLatchedLol_Set(void *cbData, uint32_t adId, const char *strP)
+{
+        Bert *bert = cbData;
+	uint8_t lane = adId;
+	uint32_t regId = 0;
+	uint32_t value = astrtoi16(strP);
+	switch(lane) {
+		case 0:
+			regId =	CDR_L0_LATCHED_LOL;
+			break;
+		case 1:
+			regId = CDR_L1_LATCHED_LOL; 
+			break;
+		case 2:
+			regId = CDR_L2_LATCHED_LOL;
+			break;
+		case 3:
+			regId = CDR_L3_LATCHED_LOL;
+			break;
+	}
+	CDR_Read(CDR_ID_RX,regId); // throw away the result, Clear on read
+	bert->pvLatchedLol[lane] = !!value; 
+	return true;
+}
+
 static bool
 PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -636,6 +689,7 @@ Bert_Init(void)
 		Timer_Start(&fifo->getErrCntTimer,250);
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRatio");
 		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRate");
+		PVar_New(PVLatchedLol_Get,PVLatchedLol_Set,bert,ch ,"%s.L%lu.%s",name,ch,"latchedLol");
 	}
        for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
