@@ -11,7 +11,7 @@
 <TR ALIGN="left" VALIGN="middle">
 	<TH>Data Rate</TH>
 	<TD>
-	<SELECT NAME="synth0.freq" ID="synth0.freq" onChange="javascript: window.parent.SaveVar(this,1)">
+	<SELECT NAME="synth0.freq" ID="synth0.freq" onChange="javascript: window.parent.SaveVar(this,1,'.f',0)">
 		<OPTION VALUE="644531250">25.78125 Gbit/s</OPTION>
 		<OPTION VALUE ="698812335">27.9524934 Gbit/s</OPTION>
 	</SELECT>
@@ -20,13 +20,13 @@
 
 <TR ALIGN="left" VALIGN="middle"><TH>Trigger Output</TH>
 	<TD>
-	<SELECT NAME="ptrig0.pattern" ID="ptrig0.pattern" >
+	<SELECT NAME="ptrig0.pattern" ID="ptrig0.pattern" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 	<OPTION VALUE="0"> Clock (Rate/40)</OPTION>
 	<OPTION VALUE="1">PRBS 2E7-1</OPTION>
 	<OPTION VALUE="2">PRBS 2E9-1</OPTION>
 	<OPTION VALUE="3">PRBS 2E15-1</OPTION>
-	<OPTION VALUE="2">PRBS 2E23-1</OPTION>
-	<OPTION VALUE="3">PRBS 2E31-1</OPTION>
+	<OPTION VALUE="4">PRBS 2E23-1</OPTION>
+	<OPTION VALUE="5">PRBS 2E31-1</OPTION>
 	</SELECT>
 	</TD>
 	
