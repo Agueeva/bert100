@@ -50,7 +50,7 @@ version.o: $(SRCFILES) $(ASMFILES)
 	$(CC) $(CFLAGS) -c $(VPATH)/version.c -o $@
 
 
-FWNAME := CBEe$(shell date +"%d%m%y").fw
+FWNAME := CBEe$(shell date +"%y%m%d").fw
 
 all: depend bert100.mot bert100.fw $(FWNAME)
 

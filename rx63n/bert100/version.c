@@ -34,14 +34,14 @@ static char g_Version[16];
 const char *
 Version_GetStr(void)
 {
-	SNPrintf(g_Version,sizeof(g_Version) - 1,"\"%s%02x%02x%02x\"",SWNAME,YEAR2,MONTH,DAY);
+	SNPrintf(g_Version,sizeof(g_Version) - 1,"%s%02x%02x%02x",SWNAME,YEAR2,MONTH,DAY);
 	return g_Version;
 }
 
 static bool 
 PVVersionSW_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
-	strncpy(bufP,Version_GetStr(),maxlen);
+	SNPrintf(bufP,maxlen,"\"%s%02x%02x%02x\"",SWNAME,YEAR2,MONTH,DAY);
 	return true;
 }
 

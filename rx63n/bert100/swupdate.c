@@ -210,10 +210,14 @@ CheckWriteSignature(const char *filename, bool checkOnly)
         return true;
 }
 
-
 uint8_t 
 SWUpdate_Execute(const char *filepath)
 {
+	const char *swVersion = Version_GetStr();
+	if(strstr(filepath,swVersion) != NULL) {
+                Con_Printf("Software Version is found in filename, No update\n");
+		return SWUP_EC_UPTODATE;
+	}
         if (CheckWriteSignature(filepath, true) == false) {
                 Con_Printf("No vailid checksum found in %s\n", filepath);
                 return SWUP_EC_CRC;
