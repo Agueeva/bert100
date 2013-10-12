@@ -27,15 +27,14 @@
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
-                          "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
                           "bert0.rxPllLock","bert0.txPllLock");
+  // "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
-     //alert(urlWS);  .toExponential()cdr0.l0.err_cntr64  bert0.L0.beRatio
-    
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+     
      bl_Communication=true;
      all_pat=false;
      all_tx=false;
@@ -193,7 +192,7 @@
      
       break;
      
-case "synth0.freq":
+     case "synth0.freq":
   if (value>644531240 && value<644531275) {
     value=644531250;
   }
@@ -440,13 +439,15 @@ function myCheckAll(box,prefB,pref,k)
       all=true;
       for (j = 0; j < myElement.length; j++){
 	item =prefB+k+"."+myElement[j];
+        
 	var iframe = document.getElementById('frame');
 	var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
 	my_var = frameDoc.getElementById(item);
+        //alert(my_var.id);
 	SaveVar(my_var, 2,pref,k);
 	for (i = 1; i <= 3; i++){
 	  item=prefB + (i+k) + "." + myElement[j];
-	  $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
       }}
       }
       else {
@@ -509,6 +510,7 @@ function SaveVar(myVar, typeVar,pref,k){
 	case 2:  //all vorhandeln	
 	    if(all) {
                for (i = 0; i <= 3; i++) {
+                    //alert(myID+"="+formval);
                     socket.send(JSON.stringify({set: myID,val: formval}));
                     myID=myID.replace(pref+(i+k), pref+(i+1+k));
                     }
