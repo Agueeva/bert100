@@ -153,6 +153,22 @@ set_frequency(SiXO *xo,uint32_t freq)
 
 /**
  *****************************************************************
+ * \fn bool Synth_SetFreq(uint8_t xoId,uint32_t freq) 
+ * The interface to the outside for setting/getting the frequency.
+ *****************************************************************
+ */
+bool 
+Synth_SetFreq(uint8_t xoId,uint32_t freq) 
+{
+	SiXO *xo = &gSiXO[0];	
+	if(xoId != 0) {
+		return false;
+	}	
+	return set_frequency(xo,freq);
+}
+
+/**
+ *****************************************************************
  * Readback the Frequency from I2C-Bus. Should only be used
  * on startup.
  *****************************************************************

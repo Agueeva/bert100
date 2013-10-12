@@ -10,7 +10,7 @@
 #include "console.h"
 
 #define ALIGNMENT (4)
-#define IRAM_MANAGED_SIZE	(32768 + 8192)
+#define IRAM_MANAGED_SIZE	(32768 + 16384)
 typedef struct IRamManager {
 	uint8_t iram[IRAM_MANAGED_SIZE];
 	uint32_t firstFreeIdx;

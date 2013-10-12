@@ -127,3 +127,5 @@ uint16_t CDR_ReadEqObserve(uint8_t cdrId,uint8_t lane);
 
 uint16_t CDR_Read(uint8_t cdrId,uint32_t regCode);
 void CDR_Write(uint8_t cdrId,uint32_t regCode,uint16_t value);
+uint8_t CDR_Recalibrate(uint8_t cdrId);
+

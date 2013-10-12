@@ -45,11 +45,13 @@ typedef struct BeFifo {
 	uint32_t accBerStartTStampMs;
 	uint32_t accBerStopTStampMs;
 	bool	 accRunning;
+	bool	 accMeasValid;
 } BeFifo;
 
 typedef struct Bert {
 	BeFifo beFifo[NR_CHANNELS];
 	Timer updateLedsTimer;
+	Timer cdrRecalTimer;
 	uint32_t dataRate; 
 	uint8_t pvLatchedLol[NR_CHANNELS];
 } Bert;
@@ -521,6 +523,29 @@ GetErrCntTimerProc(void *eventData)
 	fifo->fifoWp++;
 }
 
+static void 
+LatchedLol_Update(Bert *bert,unsigned int lane)
+{
+	uint32_t regId = 0;
+	switch(lane) {
+		case 0:
+			regId =	CDR_L0_LATCHED_LOL;
+			break;
+		case 1:
+			regId = CDR_L1_LATCHED_LOL; 
+			break;
+		case 2:
+			regId = CDR_L2_LATCHED_LOL;
+			break;
+		case 3:
+			regId = CDR_L3_LATCHED_LOL;
+			break;
+		default:
+			return;
+	}
+	bert->pvLatchedLol[lane] |= CDR_Read(CDR_ID_RX,regId);
+	return;
+}
 /**
  **********************************************************************
  * \fn static float Bert_GetCurrBerate(Bert *bert,unsigned int lane)
@@ -685,14 +710,36 @@ PVAccBerMeasStart_Set(void *cbData, uint32_t adId, const char *strP)
 		fifo->accBerStopTStampMs = TimeMs_Get();
 		runTimeMs = fifo->accBerStopTStampMs - fifo->accBerStartTStampMs; 
 		fifo->accFlownBits += freq / 100 * runTimeMs / 10; 
+		LatchedLol_Update (bert,lane);
+		if(bert->pvLatchedLol[lane]) {
+			fifo->accMeasValid = false;
+		}
 	} else {
 		fifo->accFlownBits = 0; 
 		fifo->accBerStartCntr = CDR_GetErrCnt(CDR_ID_RX, fifo->channel);
 		fifo->accBerStartTStampMs = TimeMs_Get();
 		/* currently accessing the global LOL, not good but a quick hack */
+		LatchedLol_Update (bert,lane);
 		bert->pvLatchedLol[lane] = 0; 
+		fifo->accMeasValid = true;
 	}
 	fifo->accRunning = newval;	
+	return true;
+}
+
+static bool
+PVAccMeasValid_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	unsigned int lane = adId;
+	BeFifo *fifo = &bert->beFifo[lane];	
+	if(fifo->accRunning) {
+		LatchedLol_Update (bert,lane);
+		if(bert->pvLatchedLol[lane]) {
+			fifo->accMeasValid = false;
+		}
+	}
+	bufP[uitoa16(fifo->accMeasValid,bufP)] = 0;
 	return true;
 }
 
@@ -765,7 +812,7 @@ PVBerMeasWin_Set(void *cbData, uint32_t adId, const char *strP)
  ****************************************************************************
  * Los of lock is latched here because it is Clear on read  in the CDR.
  * But we require it with "Clear on write zero" semantics for gui or multiple
- * GUIsUIs.
+ * GUIs.
  ****************************************************************************
  */
 static bool
@@ -773,22 +820,7 @@ PVLatchedLol_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
         Bert *bert = cbData;
 	uint8_t lane = adId;
-	uint32_t regId = 0;
-	switch(lane) {
-		case 0:
-			regId =	CDR_L0_LATCHED_LOL;
-			break;
-		case 1:
-			regId = CDR_L1_LATCHED_LOL; 
-			break;
-		case 2:
-			regId = CDR_L2_LATCHED_LOL;
-			break;
-		case 3:
-			regId = CDR_L3_LATCHED_LOL;
-			break;
-	}
-	bert->pvLatchedLol[lane] |= CDR_Read(CDR_ID_RX,regId);
+	LatchedLol_Update (bert,lane);
         bufP[uitoa16(bert->pvLatchedLol[lane],bufP)] = 0;
         return true;
 }
@@ -822,6 +854,46 @@ PVLatchedLol_Set(void *cbData, uint32_t adId, const char *strP)
 #endif
 }
 
+static bool
+PVAbsErrCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+        uint32_t lane = adId;
+        uint64_t value = CDR_GetErrCnt(CDR_ID_RX, lane);
+        bufP[uitoa64(value,bufP)] = 0;
+        return true;
+}
+
+static void 
+Bert_RecalCdrProc(void *eventData)
+{
+	CDR_Recalibrate(CDR_ID_TX);
+	CDR_Recalibrate(CDR_ID_RX);
+}
+
+static bool
+PVBitrate_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	Bert *bert = cbData;
+	uint64_t bitrate;
+	uint32_t synthFreq;
+	bitrate = astrtoi64(strP);
+	synthFreq = bitrate / 40;
+	Synth_SetFreq(SYNTH_0,synthFreq);
+	Timer_Start(&bert->cdrRecalTimer,200);
+	return true;
+}
+
+static bool
+PVBitrate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint64_t bitrate;
+	uint32_t synthFreq;
+	synthFreq = Synth_GetFreq(SYNTH_0);	
+	bitrate = 40 * (uint64_t)synthFreq;	
+	bufP[uitoa64(bitrate,bufP)] = 0;
+	return true;
+}
+
 /**
  ***********************************************************************************************
  * \fn static bool PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
@@ -851,6 +923,8 @@ PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
         bufP[uitoa16(value,bufP)] = 0;
         return true;
 }
+
+
 
 /**
  ***********************************************************************************************
@@ -893,21 +967,29 @@ Bert_Init(void)
 		fifo->channel = ch;
 		fifo->fifoWp = 0;
 		fifo->berMeasTime = 10000;
+		fifo->accMeasValid = false;
 		Timer_Init(&fifo->getErrCntTimer,GetErrCntTimerProc,fifo);
 		Timer_Start(&fifo->getErrCntTimer,250);
-		PVar_New(PVCurrBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRatio");
-		PVar_New(PVCurrBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRate");
+		PVar_New(PVAbsErrCntr_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"absErrCntr");
+
+		PVar_New(PVCurrBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"currBeRatio");
+		PVar_New(PVCurrBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"currBeRate");
 		PVar_New(PVLatchedLol_Get,PVLatchedLol_Set,bert,ch ,"%s.L%lu.%s",name,ch,"latchedLol");
+
 		PVar_New(PVAccBerMeasStart_Get,PVAccBerMeasStart_Set,bert,ch ,"%s.L%lu.%s",name,ch,"accBerMeasStart");
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accBeRatio");
+		PVar_New(PVRelErrCntr_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accErrCntr");
+		PVar_New(PVAccMeasValid_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accMeasValid");
 	}
-       for(i = 0; i < array_size(gForwardRegs); i++) {
+	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
 
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
+	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
+	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
 }

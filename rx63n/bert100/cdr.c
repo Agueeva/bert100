@@ -1099,9 +1099,7 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	uint8_t status = 1;
 	uint8_t lane;
 	uVal = Cdr_ReadPart(phy_addr, CDR_VS_DEVICE_IDENTIFIER3, 15, 4);
-	if (uVal == 0x740) {
-		Con_Printf("CDR device detected\n");
-	} else {
+	if (uVal != 0x740) {
 		Con_Printf("No CDR device detected at addr %u\n",phy_addr);
 		return -1;
 	}
@@ -1172,6 +1170,18 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 		Con_Printf("Error: CDR is not ready\n");
 	}
 	return status;
+}
+
+/**
+ ****************************************************************
+ * Interface to the outside  for Recalibrating the CDR
+ ****************************************************************
+ */
+uint8_t
+CDR_Recalibrate(uint8_t cdrId)
+{
+	CDR *cdr = &gCDR[cdrId & 1];
+	return Cdr_Recalibrate(cdr->phyAddr);
 }
 
 /**
