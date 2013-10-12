@@ -276,6 +276,7 @@ TCB_Free(Tcb * tcb)
 	tcb->dataSrc = NULL;
 	tcb->closeProc = NULL;
 	tcb->eventData = NULL;
+	tcb->ipAddr[0] = tcb->ipAddr[1] = tcb->ipAddr[2] = tcb->ipAddr[3] = 0;
 	Timer_Cancel(&tcb->watchdogTimer);
 	Timer_Cancel(&tcb->retransTimer);
 	tcb->retransCanceled = true;
