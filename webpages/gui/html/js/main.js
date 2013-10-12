@@ -12,29 +12,29 @@
   
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
 			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
-			 "cdr0.l0.txa_swing","cdr0.l1.txa_swing","cdr0.l2.txa_swing","cdr0.l3.txa_swing",
+			 "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
   var myVarTX0= new Array("vg1","vg2");
-  var myVarTX1= new Array("txa_swing");
-  var myVarTX2= new Array("swapTxPN");
+  var myVarTX1= new Array();
+  var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
   var myVarErr= new Array("synth0.freq",
-                          "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
+                          "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
                           "bert0.L0.prbsLock","bert0.L1.prbsLock","bert0.L2.prbsLock","bert0.L3.prbsLock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
-                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
-                           "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate","bert0.berMeasWin_ms");
+                          "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
+                          "bert0.rxPllLock","bert0.txPllLock");
+  // "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
-     //alert(urlWS);
-    
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+     
      bl_Communication=true;
      all_pat=false;
      all_tx=false;
@@ -62,77 +62,144 @@
       if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
       }
+      if (item.substr(8, 10)=="err_cntr64" || item.substr(9, 7)=="beRatio") {
+          value=value.toExponential();
+          var my_str=value.toString();
+          if (my_str.match('e')) {
+      
+          var my_arr=my_str.split("e");
+          var erst=Math.round(Number(my_arr[0]) * 100) / 100;
+          my_str=erst.toString();
+          my_str=my_str.concat("E");
+          value=my_str.concat(my_arr[1]);
+          }
+          
+      }
+      
+      
       switch(item)
 {
      case "test.var1":
        document.getElementById('test.var1').value=value;
        return;
      
-  case "bert0.L0.LolStat":
+     case "bert0.L0.LolStat":
      if (value==0) {
       $("#frame").contents().find("#Loss0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss0").attr('class','redfield');
      }
  
-  break;
- case "bert0.L1.LolStat":
-  if (value==0) {
+     break;
+     case "bert0.L1.LolStat":
+     if (value==0) {
       $("#frame").contents().find("#Loss1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss1").attr('class','redfield');
      }
-  break;
-case "bert0.L2.LolStat":
-  if (value==0) {
+      break;
+     case "bert0.L2.LolStat":
+     if (value==0) {
       $("#frame").contents().find("#Loss2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss2").attr('class','redfield');
      }
-  break;
-case "bert0.L3.LolStat":
-   if (value==0) {
+      break;
+     case "bert0.L3.LolStat":
+      if (value==0) {
       $("#frame").contents().find("#Loss3").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss3").attr('class','redfield');
      }
-  break;
-case "bert0.L0.latchedLol":
-  if (value==0) {
+     break;
+     case "bert0.L0.latchedLol":
+     if (value==0) {
       $("#frame").contents().find("#Mem0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem0").attr('class','orangfield');
      }
-  break;
-case "bert0.L1.latchedLol":
- if (value==0) {
+     break;
+     case "bert0.L1.latchedLol":
+     if (value==0) {
       $("#frame").contents().find("#Mem1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem1").attr('class','orangfield');
      }
-  break;
-case "bert0.L2.latchedLol":
-  if (value==0) {
+     break;
+     case "bert0.L2.latchedLol":
+      if (value==0) {
       $("#frame").contents().find("#Mem2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem2").attr('class','orangfield');
      }
-  break;
-case "bert0.L3.latchedLol":
- if (value==0) {
+     break;
+     case "bert0.L3.latchedLol":
+      if (value==0) {
       $("#frame").contents().find("#Mem3").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem3").attr('class','orangfield');
      }
-  break;
-case "synth0.freq":
+     break;
+
+      case "bert0.L0.prbsLock":
+     if (value==0) {
+      $("#frame").contents().find("#Lock0").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock0").attr('class','redfield');
+     }
+     break;
+     case "bert0.L1.prbsLock":
+     if (value==1) {
+      $("#frame").contents().find("#Lock1").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock1").attr('class','redfield');
+     }
+     break;
+     case "bert0.L2.prbsLock":
+      if (value==1) {
+      $("#frame").contents().find("#Lock2").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock2").attr('class','redfield');
+     }
+     break;
+     case "bert0.L3.prbsLock":
+      if (value==1) {
+      $("#frame").contents().find("#Lock3").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock3").attr('class','redfield');
+     }
+     break;
+
+     case "bert0.txPllLock":
+     if (value==0) {
+      $("#frame").contents().find("#TX").attr('class','redfield');
+     }else{
+      $("#frame").contents().find("#TX").attr('class','greenfield');
+     }
+ 
+     break;
+     case "bert0.rxPllLock":
+     if (value==0) {
+      $("#frame").contents().find("#RX").attr('class','redfield');
+     }else{
+      $("#frame").contents().find("#RX").attr('class','greenfield');
+     }
+      break;
+     
+     case "bert0.berMeasWin_ms":
+    
+      $("#frame").contents().find("#msec").val(value/1000);
+     
+      break;
+     
+     case "synth0.freq":
   if (value>644531240 && value<644531275) {
     value=644531250;
   }
    if (value>698812325 && value<698812345) {
     value=698812335;
   }
-  // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+  // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);  
   break; 
 default:
      
@@ -372,13 +439,15 @@ function myCheckAll(box,prefB,pref,k)
       all=true;
       for (j = 0; j < myElement.length; j++){
 	item =prefB+k+"."+myElement[j];
+        
 	var iframe = document.getElementById('frame');
 	var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
 	my_var = frameDoc.getElementById(item);
+        //alert(my_var.id);
 	SaveVar(my_var, 2,pref,k);
 	for (i = 1; i <= 3; i++){
 	  item=prefB + (i+k) + "." + myElement[j];
-	  $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
+           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
       }}
       }
       else {
@@ -441,6 +510,7 @@ function SaveVar(myVar, typeVar,pref,k){
 	case 2:  //all vorhandeln	
 	    if(all) {
                for (i = 0; i <= 3; i++) {
+                    //alert(myID+"="+formval);
                     socket.send(JSON.stringify({set: myID,val: formval}));
                     myID=myID.replace(pref+(i+k), pref+(i+1+k));
                     }

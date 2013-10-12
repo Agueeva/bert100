@@ -90,7 +90,7 @@ if (window.parent.all_tx) {
 	my_all.checked=true;
 	window.parent.myElement=window.parent.myVarTX0;
 	window.parent.myDisableAll(my_all,'emlAmp','Amp',1);
-	window.parent.myElement=window.parent.myVarTX1;
-	window.parent.myDisableAll(my_all,'cdr0.l','.l',0);
+	window.parent.myElement=window.parent.myVarTX2;
+	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX;
 }
