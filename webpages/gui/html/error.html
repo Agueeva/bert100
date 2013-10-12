@@ -1,5 +1,8 @@
-<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 
+</head>
+<body onload="javascript: clickStart();">
 <div class="headline">BER Measurement</div>
 
 <div name="wrap_BER_Measurement">
@@ -19,7 +22,7 @@
 <TR ALIGN="left" VALIGN="middle">
 <TH>Pattern:</TH>
 
-<TD> <SELECT NAME="pat_gen_sel0" ID="cdr0.l0.pat_gen_sel"  disabled>
+<TD> <SELECT NAME="pat_gen_sel0" ID="bert0.L0.patVerSel"  disabled>
 <OPTION VALUE="7">2E7-1</OPTION>
 <OPTION VALUE ="1">2E9-1</OPTION>
 <OPTION VALUE ="6">2E15-1</OPTION>
@@ -28,7 +31,7 @@
 <OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 </SELECT></TD>
 
-<TD><SELECT NAME="pat_gen_sel1" ID="cdr0.l1.pat_gen_sel"  disabled>
+<TD><SELECT NAME="pat_gen_sel1" ID="bert0.L1.patVerSel"  disabled>
 <OPTION VALUE="7">2E7-1</OPTION>
 <OPTION VALUE ="1">2E9-1</OPTION>
 <OPTION VALUE ="6">2E15-1</OPTION>
@@ -37,7 +40,7 @@
 <OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 </SELECT></TD>
 
-<TD><SELECT NAME="pat_gen_sel2" ID="cdr0.l2.pat_gen_sel"  disabled>
+<TD><SELECT NAME="pat_gen_sel2" ID="bert0.L2.patVerSel"  disabled>
 <OPTION VALUE="7">2E7-1</OPTION>
 <OPTION VALUE ="1">2E9-1</OPTION>
 <OPTION VALUE ="6">2E15-1</OPTION>
@@ -46,7 +49,7 @@
 <OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 </SELECT></TD>
 
-<TD><SELECT NAME="pat_gen_sel3" ID="cdr0.l3.pat_gen_sel"  disabled>
+<TD><SELECT NAME="pat_gen_sel3" ID="bert0.L3.patVerSel"  disabled>
 <OPTION VALUE="7">2E7-1</OPTION>
 <OPTION VALUE ="1">2E9-1</OPTION>
 <OPTION VALUE ="6">2E15-1</OPTION>
@@ -68,6 +71,18 @@
 </TD></TR>
 <TR ALIGN="left">
 <TH>current BER:</TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l0.beratio" ID="bert0.L0."  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l1.beratio" ID="bert0.L1."  Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l2.beratio" ID="bert0.L2." Value="" readonly>
+</TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l3.beratio" ID="bert0.L3."  Value="" readonly>
+</TD></TR>
+
+<TR ALIGN="left">
+<TH>Actual BER<br>Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="bert0.berMeasWin_ms"  Value="" onChange="javascript: sendMeasWin_ms(this);"></TH>
+
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l0.beratio" ID="bert0.L0.beRatio"  Value="" readonly>
 </TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l1.beratio" ID="bert0.L1.beRatio"  Value="" readonly>
@@ -75,18 +90,6 @@
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l2.beratio" ID="bert0.L2.beRatio" Value="" readonly>
 </TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l3.beratio" ID="bert0.L3.beRatio"  Value="" readonly>
-</TD></TR>
-
-<TR ALIGN="left">
-<TH>Actual BER Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="bert0.berMeasWin_ms"  Value="" onChange="javascript: window.parent.SaveVar(this,1,'.l',0);"></TH>
-
-<TD><INPUT class="textfild2" TYPE="Text" NAME="gating0" ID="gating0"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="gating1" ID="gating1"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="gating2" ID="gating2" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="gating3" ID="gating3"  Value="" readonly>
 </TD></TR>
 
 <TR ALIGN="left">
@@ -129,7 +132,7 @@
 </SELECT><INPUT class="textfild3" TYPE="Text" Size=11 NAME="bert0.L3.beRate" ID="bert0.L3.beRate"  Value="" readonly></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>Sync - Mem:</TH>
+<TH>Sync|Sync-Mem:</TH>
 <TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss0" boug Value="" readonly>
 <INPUT class="textfild" TYPE="Text" size=5 NAME="prbs_autovr3" ID="Mem0"  Value=""></TD>
 <TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss1" boug Value="" readonly>
@@ -139,6 +142,24 @@
 <TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Loss3" boug Value="" readonly>
 <INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Mem3"  Value=""></TD>
 </TR>
+
+<TR ALIGN="left" VALIGN="middle">
+<TH>Pattern lock:</TH>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Lock0" boug Value="" readonly></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Lock1" boug Value="" readonly></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Lock2" boug Value="" readonly></TD>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="Lock3" boug Value="" readonly></TD>
+</TR>
+ 
+<TR ALIGN="left" VALIGN="middle">
+<TH>TX|RX Pll lock:</TH>
+<TD><INPUT class="textfild" TYPE="Text"  size=5 NAME="prbs_autovr3" ID="TX" boug Value="" readonly></TD>
+<TD><INPUT class="textfild" TYPE="Text" size=5 NAME="prbs_autovr3" ID="RX"  Value=""></TD>
+<TD></TD>
+<TD></TD>
+</TR>
+
+
 <TR ALIGN="left" VALIGN="middle">
 <TH>Input EQ State:</TH>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l0.eq_state" ID="bert0.L0.EqState"  Value="" readonly></TD>
@@ -175,17 +196,27 @@
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l2.no_prbs_lck" ID="cdr0.l2.no_prbs_lck"  Value="" readonly></TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l3.no_prbs_lck" ID="cdr0.l3.no_prbs_lck"  Value="" readonly></TD>
 </TR>
+
+<TR ALIGN="left" VALIGN="middle">
+<TH>tx|rxPllLock:</TH>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l0.prbs_lock" ID="bert0.txPllLock"  Value="" readonly></TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l1.prbs_lock" ID="bert0.rxPllLock"  Value="" readonly></TD>
+<TD></TD>
+<TD></TD>
+</TR>
+
+
 <!-- /Test Time elapsed-->
 
 <TR ALIGN="left" VALIGN="middle">
 <TH>Measurement</TH>
-<TD><button class="buttonGreen" type="button" onclick="javascript: clickStart()">Start</button></TD>
-<TD><button class="buttonRed" type="button" onclick="javascript: clickStop()">Stop</button></TD>
+<TD><button class="buttonGreen" type="button" onclick="javascript: ">Start</button></TD>
+<TD><button class="buttonRed" type="button" onclick="javascript: ">Stop</button></TD>
 <TD></TD>
 <TD></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>Time, msek:</TH>
+<TH>Time elapsed:</TH>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="msek"  Value="500" ></TD>
 <TD></TD>
 <TD></TD>
@@ -194,17 +225,18 @@
 </TABLE>
 </FORM>
 </div>
+</body>
 <script type="text/javascript">
 	<!--
 var my_Inter, my_sek;	
 function clickStart(){
-	
-	if(typeof my_Inter !== "undefined") my_Inter=clearInterval();
-	if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
-	my_sek=500;	
-	}
-	else {my_sek=parseInt(document.getElementById("msek").value);}
-	
+	my_sek=500;
+	//if(typeof my_Inter !== "undefined") my_Inter=clearInterval();
+	//if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
+	//my_sek=500;	
+	//}
+	//else {my_sek=parseInt(document.getElementById("msek").value);}
+	 if (my_Inter) my_Inter=clearInterval(my_Inter);
          my_Inter=setInterval(window.parent.window_onload,my_sek);	
 	}
 	
@@ -212,5 +244,11 @@ function clickStop(){
 		my_Inter=clearInterval(my_Inter);
 		}
 		
+function sendMeasWin_ms(my_Sec){
+	
+	 window.parent.SaveVar(this,1,'.l',0);	
+		
+		}		
+//clickStart();		
 -->
 	</script>

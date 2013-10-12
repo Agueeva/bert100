@@ -19,15 +19,16 @@
   var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
   var myVarErr= new Array("synth0.freq",
-                          "cdr0.l0.pat_gen_sel","cdr0.l1.pat_gen_sel","cdr0.l2.pat_gen_sel","cdr0.l3.pat_gen_sel",
+                          "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
                           "bert0.L0.prbsLock","bert0.L1.prbsLock","bert0.L2.prbsLock","bert0.L3.prbsLock",
                           "cdr0.l0.no_prbs_lck","cdr0.l1.no_prbs_lck","cdr0.l2.no_prbs_lck","cdr0.l3.no_prbs_lck",
                           "cdr0.l0.err_cntr64","cdr0.l1.err_cntr64","cdr0.l2.err_cntr64","cdr0.l3.err_cntr64",
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
-                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
-                           "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate","bert0.berMeasWin_ms");
+                          "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
+                          "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
+                          "bert0.berMeasWin_ms","bert0.rxPllLock","bert0.txPllLock");
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
@@ -68,63 +69,110 @@
        document.getElementById('test.var1').value=value;
        return;
      
-  case "bert0.L0.LolStat":
+     case "bert0.L0.LolStat":
      if (value==0) {
       $("#frame").contents().find("#Loss0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss0").attr('class','redfield');
      }
  
-  break;
- case "bert0.L1.LolStat":
-  if (value==0) {
+     break;
+     case "bert0.L1.LolStat":
+     if (value==0) {
       $("#frame").contents().find("#Loss1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss1").attr('class','redfield');
      }
-  break;
-case "bert0.L2.LolStat":
-  if (value==0) {
+      break;
+     case "bert0.L2.LolStat":
+     if (value==0) {
       $("#frame").contents().find("#Loss2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss2").attr('class','redfield');
      }
-  break;
-case "bert0.L3.LolStat":
-   if (value==0) {
+      break;
+     case "bert0.L3.LolStat":
+      if (value==0) {
       $("#frame").contents().find("#Loss3").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Loss3").attr('class','redfield');
      }
-  break;
-case "bert0.L0.latchedLol":
-  if (value==0) {
+     break;
+     case "bert0.L0.latchedLol":
+     if (value==0) {
       $("#frame").contents().find("#Mem0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem0").attr('class','orangfield');
      }
-  break;
-case "bert0.L1.latchedLol":
- if (value==0) {
+     break;
+     case "bert0.L1.latchedLol":
+     if (value==0) {
       $("#frame").contents().find("#Mem1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem1").attr('class','orangfield');
      }
-  break;
-case "bert0.L2.latchedLol":
-  if (value==0) {
+     break;
+     case "bert0.L2.latchedLol":
+      if (value==0) {
       $("#frame").contents().find("#Mem2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem2").attr('class','orangfield');
      }
-  break;
-case "bert0.L3.latchedLol":
- if (value==0) {
+     break;
+     case "bert0.L3.latchedLol":
+      if (value==0) {
       $("#frame").contents().find("#Mem3").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Mem3").attr('class','orangfield');
      }
-  break;
+     break;
+
+      case "bert0.L0.prbsLock":
+     if (value==0) {
+      $("#frame").contents().find("#Lock0").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock0").attr('class','redfield');
+     }
+     break;
+     case "bert0.L1.prbsLock":
+     if (value==0) {
+      $("#frame").contents().find("#Lock1").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock1").attr('class','redfield');
+     }
+     break;
+     case "bert0.L2.prbsLock":
+      if (value==0) {
+      $("#frame").contents().find("#Lock2").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock2").attr('class','redfield');
+     }
+     break;
+     case "bert0.L3.prbsLock":
+      if (value==0) {
+      $("#frame").contents().find("#Lock3").attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock3").attr('class','redfield');
+     }
+     break;
+
+     case "bert0.txPllLock":
+     if (value==0) {
+      $("#frame").contents().find("#TX").attr('class','redfield');
+     }else{
+      $("#frame").contents().find("#TX").attr('class','greenfield');
+     }
+ 
+     break;
+     case "bert0.rxPllLock":
+     if (value==0) {
+      $("#frame").contents().find("#RX").attr('class','redfield');
+     }else{
+      $("#frame").contents().find("#RX").attr('class','greenfield');
+     }
+      break;
+     
+     
 case "synth0.freq":
   if (value>644531240 && value<644531275) {
     value=644531250;
