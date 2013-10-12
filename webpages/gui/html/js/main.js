@@ -33,7 +33,7 @@
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS='ws://tneuner.homeip.net:8080/messages'; // 'ws://' + document.domain + ':' + document.location.port + '/messages'; //
      //alert(urlWS);
     
      bl_Communication=true;
@@ -174,7 +174,7 @@
      
      case "bert0.berMeasWin_ms":
     
-      $("#frame").contents().find("#msec").val(Number(value)/1000);
+      $("#frame").contents().find("#msec").val(value/1000);
      
       break;
      

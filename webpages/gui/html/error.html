@@ -235,11 +235,14 @@ function clickStart(){
 	//if(typeof my_Inter !== "undefined") my_Inter=clearInterval();
 	//if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
 	//my_sek=500;	
-	//}
+	//}   my_str.replace(/[.]/g,"\\.")
 	//else {my_sek=parseInt(document.getElementById("msek").value);}  "bert0.berMeasWin_ms",
+	 window.parent.socket.send(JSON.stringify({get: 'bert0.berMeasWin_ms'})); 
 	 if (my_Inter) my_Inter=clearInterval(my_Inter);
          my_Inter=setInterval(window.parent.window_onload,my_sek);
-	 window.parent.socket.send(JSON.stringify({get: 'bert0.berMeasWin_ms'})); 
+	 var my_str='bert0.berMeasWin_ms';
+	 
+	 
 	}
 	
 function clickStop(){
