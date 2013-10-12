@@ -33,7 +33,7 @@
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      //alert(urlWS);
     
      bl_Communication=true;
@@ -128,28 +128,28 @@
      break;
 
       case "bert0.L0.prbsLock":
-     if (value==0) {
+     if (value==1) {
       $("#frame").contents().find("#Lock0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock0").attr('class','redfield');
      }
      break;
      case "bert0.L1.prbsLock":
-     if (value==0) {
+     if (value==1) {
       $("#frame").contents().find("#Lock1").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock1").attr('class','redfield');
      }
      break;
      case "bert0.L2.prbsLock":
-      if (value==0) {
+      if (value==1) {
       $("#frame").contents().find("#Lock2").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock2").attr('class','redfield');
      }
      break;
      case "bert0.L3.prbsLock":
-      if (value==0) {
+      if (value==1) {
       $("#frame").contents().find("#Lock3").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock3").attr('class','redfield');
