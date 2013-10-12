@@ -28,7 +28,7 @@
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
                           "bert0.L0.beRatio","bert0.L1.beRatio","bert0.L2.beRatio","bert0.L3.beRatio",
                           "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
-                          "bert0.berMeasWin_ms","bert0.rxPllLock","bert0.txPllLock");
+                          "bert0.rxPllLock","bert0.txPllLock");
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
@@ -128,7 +128,7 @@
      break;
 
       case "bert0.L0.prbsLock":
-     if (value==1) {
+     if (value==0) {
       $("#frame").contents().find("#Lock0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock0").attr('class','redfield');
@@ -172,6 +172,11 @@
      }
       break;
      
+     case "bert0.berMeasWin_ms":
+    
+      $("#frame").contents().find("#msec").val(Number(value)/1000);
+     
+      break;
      
 case "synth0.freq":
   if (value>644531240 && value<644531275) {
@@ -180,7 +185,7 @@ case "synth0.freq":
    if (value>698812325 && value<698812345) {
     value=698812335;
   }
-  // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);
+  // $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);  
   break; 
 default:
      

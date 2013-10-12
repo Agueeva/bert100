@@ -81,7 +81,8 @@
 </TD></TR>
 
 <TR ALIGN="left">
-<TH>Actual BER<br>Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="bert0.berMeasWin_ms"  Value="" onChange="javascript: sendMeasWin_ms(this);"></TH>
+<TH>Actual BER<br>Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> msec
+<INPUT  TYPE="Hidden" NAME="bert0.berMeasWin_ms" ID="bert0.berMeasWin_ms"  Value="" ></TH>
 
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l0.beratio" ID="bert0.L0.beRatio"  Value="" readonly>
 </TD>
@@ -183,7 +184,7 @@
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l3.latched_lol" ID="bert0.L3.latchedLol"  Value="" readonly></TD>
 </TR>
 <TR ALIGN="left" VALIGN="middle">
-<TH>prbs_lock:</TH>
+<TH>bert0.L0.prbsLock:</TH>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l0.prbs_lock" ID="bert0.L0.prbsLock"  Value="" readonly></TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l1.prbs_lock" ID="bert0.L1.prbsLock"  Value="" readonly></TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l2.prbs_lock" ID="bert0.L2.prbsLock"  Value="" readonly></TD>
@@ -235,9 +236,10 @@ function clickStart(){
 	//if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
 	//my_sek=500;	
 	//}
-	//else {my_sek=parseInt(document.getElementById("msek").value);}
+	//else {my_sek=parseInt(document.getElementById("msek").value);}  "bert0.berMeasWin_ms",
 	 if (my_Inter) my_Inter=clearInterval(my_Inter);
-         my_Inter=setInterval(window.parent.window_onload,my_sek);	
+         my_Inter=setInterval(window.parent.window_onload,my_sek);
+	 window.parent.socket.send(JSON.stringify({get: 'bert0.berMeasWin_ms'})); 
 	}
 	
 function clickStop(){
@@ -245,9 +247,14 @@ function clickStop(){
 		}
 		
 function sendMeasWin_ms(my_Sec){
-	
-	 window.parent.SaveVar(this,1,'.l',0);	
-		
+	if (isNaN(my_Sec.value)) {
+	alert("Field value must be an integer in milliseconds!");
+	my_Sec.value=0;
+	}else {
+	var item=document.getElementById('bert0.berMeasWin_ms');
+	item.value=my_Sec.value*1000;
+	 window.parent.SaveVar(item,1,'.l',0);	
+	}	
 		}		
 //clickStart();		
 -->
