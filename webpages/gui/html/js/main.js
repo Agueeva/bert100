@@ -33,8 +33,8 @@
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
-     //alert(urlWS);
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+     //alert(urlWS);  .toExponential()cdr0.l0.err_cntr64  bert0.L0.beRatio
     
      bl_Communication=true;
      all_pat=false;
@@ -63,6 +63,21 @@
       if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
       }
+      if (item.substr(8, 10)=="err_cntr64" || item.substr(9, 7)=="beRatio") {
+          value=value.toExponential();
+          var my_str=value.toString();
+          if (my_str.match('e')) {
+      
+          var my_arr=my_str.split("e");
+          var erst=Math.round(Number(my_arr[0]) * 100) / 100;
+          my_str=erst.toString();
+          my_str=my_str.concat("E");
+          value=my_str.concat(my_arr[1]);
+          }
+          
+      }
+      
+      
       switch(item)
 {
      case "test.var1":

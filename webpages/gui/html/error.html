@@ -69,19 +69,9 @@
 </TD>
 <TD><INPUT class="textfild2" TYPE="Text" NAME="cdr0.l3.err_cntr64" ID="cdr0.l3.err_cntr64" Value="" readonly>
 </TD></TR>
-<TR ALIGN="left">
-<TH>current BER:</TH>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l0.beratio" ID="bert0.L0."  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l1.beratio" ID="bert0.L1."  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l2.beratio" ID="bert0.L2." Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l3.beratio" ID="bert0.L3."  Value="" readonly>
-</TD></TR>
 
 <TR ALIGN="left">
-<TH>Actual BER<br>Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
+<TH>Current BER<br>Gating: <INPUT class="textfild" TYPE="Text" NAME="bert0.berMeasWin_ms" ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
 <INPUT  TYPE="Hidden" NAME="bert0.berMeasWin_ms" ID="bert0.berMeasWin_ms"  Value="" ></TH>
 
 <TD><INPUT class="textfild2" TYPE="Text" NAME="bert0.l0.beratio" ID="bert0.L0.beRatio"  Value="" readonly>
@@ -250,14 +240,18 @@ function clickStop(){
 		}
 		
 function sendMeasWin_ms(my_Sec){
+	my_Sec.style="background-color: #c0c0c0;";
 	if (isNaN(my_Sec.value)) {
+		my_Sec.style="background-color: #ff0000;";
 	alert("Field value must be an integer in milliseconds!");
 	my_Sec.value=0;
 	}else {
 	var item=document.getElementById('bert0.berMeasWin_ms');
 	item.value=my_Sec.value*1000;
 	 window.parent.SaveVar(item,1,'.l',0);	
-	}	
+	}
+	 setTimeout(function(){my_Sec.style="background-color: #ffffff;";}, 1000);
+	
 		}		
 //clickStart();		
 -->
