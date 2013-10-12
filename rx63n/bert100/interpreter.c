@@ -197,6 +197,7 @@ Interp_RegisterCmd(Cmd * cmd)
 	cmd->next = cmdHead;
 	cmdHead = cmd;
 }
+
 static void
 Interp_ExecuteScript(void *eventData)
 {
@@ -238,6 +239,5 @@ Interp_Init(Interp_OutProc * OutStr, Interp_PrintVA * PrintVA_P)
 	interp->PrintVA_P = PrintVA_P;
 	Interp_RegisterCmd(&helpcmd);
 	EV_Init(&interp->nextLineEvent, Interp_ExecuteScript, interp);
-//      Interp_Printf_P(interp,"Hallo der Interpreter ist da %d\n",4711);
 	return interp;
 }

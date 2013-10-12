@@ -1086,7 +1086,7 @@ Cdr_SoftReset(uint16_t phy_addr)
 
 /**
 ************************************************************************
-* \fn void Cdr_Startup(uint16_t phy_addr=1)
+* \fn void Cdr_Recalibrate(uint16_t phy_addr=1)
 * from Python startup_cdr.py
 ************************************************************************
 */
@@ -1392,8 +1392,8 @@ CDR_Init(const char *name)
 	}
 	for(lane = 0; lane < 4; lane++) {
 		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"err_cntr64");
+		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"bert0.L%lu.%s",lane,"errCntr");
 	}
-
 	Cdr_SoftReset(cdr->phyAddr);
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);

@@ -33,10 +33,18 @@ typedef struct CdrForward {
 typedef struct BeFifo {
 	uint64_t errCnt[BEFIFO_SIZE];
 	uint32_t tStamp[BEFIFO_SIZE];
-	uint8_t channel;
-	uint8_t fifoWp;
 	Timer getErrCntTimer;
 	TimeMs_t berMeasTime;
+	uint8_t channel;
+	uint8_t fifoWp;
+	uint16_t alignDummy;
+	/** Accumulated BER section */
+	uint64_t accBerStartCntr;
+	uint64_t accBerStopCntr;
+	uint64_t accFlownBits;		/* should be summed up during complete meassurement */
+	uint32_t accBerStartTStampMs;
+	uint32_t accBerStopTStampMs;
+	bool	 accRunning;
 } BeFifo;
 
 typedef struct Bert {
@@ -66,9 +74,6 @@ static const uint8_t EqStateToLed[16] = {
 	0xf,
 	0xf,
 };
-
-
-
 
 /*
  *********************************************************************
@@ -376,11 +381,56 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_TX),
 		.bfCdrSelectR = (1 << CDR_ID_TX),
 	},
+	{
+		.name = "L0.txaEqpst",
+		.cdrRegId = CDR_TXA_EQPST(0),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L1.txaEqpst",
+		.cdrRegId = CDR_TXA_EQPST(1),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L2.txaEqpst",
+		.cdrRegId = CDR_TXA_EQPST(2),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L3.txaEqpst",
+		.cdrRegId = CDR_TXA_EQPST(3),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L0.txaEqpre",
+		.cdrRegId = CDR_TXA_EQPRE(0),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L1.txaEqpre",
+		.cdrRegId = CDR_TXA_EQPRE(1),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L2.txaEqpre",
+		.cdrRegId = CDR_TXA_EQPRE(2),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{
+		.name = "L3.txaEqpre",
+		.cdrRegId = CDR_TXA_EQPRE(3),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
 #if 0
 #define CDR_LOOPBACKOE(lane)                (0x01000011 + ((lane) << 24))
-#define CDR_TXA_EQPST(lane)                 (0x0101008a + ((lane) << 24))
-#define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 24))
-#define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 24))
 #endif
 	{ 
 		.name = "L0.txaSwing",
@@ -438,7 +488,6 @@ static const CdrForward gForwardRegs[] =
 #define CDR_PI_POS1_PICODE(lane)            (0x01a80007 + ((lane) << 24))
 #define CDR_SEC_ORDER_STATE(lane)           (0x01aa0004 + ((lane) << 24))
 #endif
-
 };
 
 /*
@@ -467,19 +516,19 @@ GetErrCntTimerProc(void *eventData)
 	unsigned int wp;
 	Timer_Start(&fifo->getErrCntTimer,fifo->berMeasTime >> 2);
 	wp = BEFIFO_WP(fifo);
-	fifo->errCnt[wp] = CDR_GetErrCnt(0, fifo->channel);
+	fifo->errCnt[wp] = CDR_GetErrCnt(CDR_ID_RX, fifo->channel);
 	fifo->tStamp[wp] = TimeMs_Get();
 	fifo->fifoWp++;
 }
 
 /**
  **********************************************************************
- * \fn static float Bert_GetBerate(Bert *bert,unsigned int lane)
+ * \fn static float Bert_GetCurrBerate(Bert *bert,unsigned int lane)
  * Get the Current Bit error rate.
  **********************************************************************
  */
 static float 
-Bert_GetBerate(Bert *bert,unsigned int lane)
+Bert_GetCurrBerate(Bert *bert,unsigned int lane)
 {
 	BeFifo *fifo;
 	unsigned int rp;
@@ -531,7 +580,7 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 	for(ch = 0; ch < NR_CHANNELS; ch++) 
 	{
 		float rate,ratio;
-		rate = Bert_GetBerate(bert,ch);
+		rate = Bert_GetCurrBerate(bert,ch);
 		ratio = rate / freq; 
 		Con_Printf("Lane %u: rate %f/s, ratio %e\n",ch,rate,ratio);
 	}
@@ -540,32 +589,149 @@ cmd_ber(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(berCmd, "ber", cmd_ber, "ber # Get all Bit error ratios");
 
+/**
+ *************************************************************************************************
+ * \fn static bool PVRelErrCntr_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ * Get the relative error counter (difference to start of meassurement)
+ *************************************************************************************************
+ */
+static bool
+PVRelErrCntr_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint64_t startCntr;
+	uint64_t endCntr;
+	uint64_t errCntr;
+	unsigned int lane = adId;
+	Bert *bert = cbData;
+	BeFifo *fifo = &bert->beFifo[lane];	
+	if(fifo->accRunning) {
+		endCntr = CDR_GetErrCnt(CDR_ID_RX, fifo->channel); 
+	} else {
+		endCntr = fifo->accBerStopCntr;
+	}	
+	startCntr = fifo->accBerStartCntr;
+	errCntr = endCntr - startCntr;
+	bufP[uitoa64(errCntr,bufP)] = 0;
+	return true;
+}
+
 static bool
 PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	BeFifo *fifo;
+	unsigned int lane = adId;
+	float ratio;
+	uint64_t freq;
+	uint64_t endCntr,startCntr,errCntr,bitCntr;
+	uint32_t tStampEnd,tStampStart;
+	uint32_t tDiff;
+	fifo = &bert->beFifo[lane];	
+	startCntr = fifo->accBerStartCntr;
+	tStampStart = fifo->accBerStartTStampMs;
+	if(fifo->accRunning) {
+		endCntr = CDR_GetErrCnt(CDR_ID_RX, fifo->channel); 
+		tStampEnd = TimeMs_Get();
+		tDiff = tStampEnd - tStampStart;
+		/* accFlownBits is currently not kept up to date */
+		freq = 40 * (uint64_t)Synth_GetFreq(0);
+		bitCntr = freq * tDiff / 1000;
+	} else {
+		endCntr = fifo->accBerStopCntr;
+		tStampEnd = fifo->accBerStopTStampMs;
+		tDiff = tStampEnd - tStampStart;
+		bitCntr = fifo->accFlownBits; 
+	}	
+	errCntr = endCntr - startCntr;
+	if(tDiff) {
+		ratio  = (float)(errCntr) / bitCntr;
+	} else {
+		ratio = 1;
+	}
+	bufP[f32toExp(ratio, bufP,  maxlen)] = 0;
+	return true;
+}
+
+/**
+ ************************************************************************************************
+ * \fn static bool PVBerAccStart_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ ************************************************************************************************
+ */
+static bool
+PVAccBerMeasStart_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	BeFifo *fifo = &bert->beFifo[adId];	
+	bufP[uitoa16(fifo->accRunning, bufP)] = 0;
+	return true;
+}
+
+static bool
+PVAccBerMeasStart_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	bool newval = !!astrtoi16(strP);
+	bool running;
+	unsigned int lane = adId;
+	Bert *bert = cbData;
+	BeFifo *fifo = &bert->beFifo[lane];	
+	running = fifo->accRunning;
+	if(running == newval) {
+		return true;
+	}
+	if(newval == false) {
+		uint64_t freq = 40 * (uint64_t)Synth_GetFreq(0);
+		uint64_t runTimeMs;
+		fifo->accBerStopCntr = CDR_GetErrCnt(CDR_ID_RX, fifo->channel);
+		fifo->accBerStopTStampMs = TimeMs_Get();
+		runTimeMs = fifo->accBerStopTStampMs - fifo->accBerStartTStampMs; 
+		fifo->accFlownBits += freq / 100 * runTimeMs / 10; 
+	} else {
+		fifo->accFlownBits = 0; 
+		fifo->accBerStartCntr = CDR_GetErrCnt(CDR_ID_RX, fifo->channel);
+		fifo->accBerStartTStampMs = TimeMs_Get();
+		/* currently accessing the global LOL, not good but a quick hack */
+		bert->pvLatchedLol[lane] = 0; 
+	}
+	fifo->accRunning = newval;	
+	return true;
+}
+
+/**
+ ****************************************************************************
+ * Current BER meassurement
+ ****************************************************************************
+ */
+static bool
+PVCurrBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	Bert *bert = cbData;
 	//BeFifo *fifo = &bert->beFifo[adId];	
 	float rate,ratio;
 	uint64_t freq = 40 * (uint64_t)Synth_GetFreq(0);
-	rate = Bert_GetBerate(bert,adId);
+	rate = Bert_GetCurrBerate(bert,adId);
 	ratio = rate / freq; 
 	bufP[f32toExp(ratio, bufP,  maxlen)] = 0;
 	return true;
 }
 
 static bool
-PVBerate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVCurrBerate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	Bert *bert = cbData;
 	unsigned int lane = adId;
 	float rate;
-	rate = Bert_GetBerate(bert,lane);
+	rate = Bert_GetCurrBerate(bert,lane);
 	bufP[f32toa(rate, bufP,  maxlen)] = 0;
 	return true;
 }
 
+/**
+ ************************************************************************************************
+ * Meassurement window for current Bit error rate
+ ************************************************************************************************
+ */
 static bool
-PVBerMs_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVBerMeasWin_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	Bert *bert = cbData;
 	BeFifo *fifo = &bert->beFifo[0]; /* Currently all 4 fifos have the same meassurement time */
@@ -574,7 +740,7 @@ PVBerMs_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 static bool
-PVBerMs_Set(void *cbData, uint32_t adId, const char *strP)
+PVBerMeasWin_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	TimeMs_t ms = astrtoi32(strP);
 	unsigned int ch;
@@ -597,7 +763,9 @@ PVBerMs_Set(void *cbData, uint32_t adId, const char *strP)
 
 /*
  ****************************************************************************
- * Forwarded variables.
+ * Los of lock is latched here because it is Clear on read  in the CDR.
+ * But we require it with "Clear on write zero" semantics for gui or multiple
+ * GUIsUIs.
  ****************************************************************************
  */
 static bool
@@ -628,6 +796,8 @@ PVLatchedLol_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 static bool
 PVLatchedLol_Set(void *cbData, uint32_t adId, const char *strP)
 {
+	return false;
+#if 0
         Bert *bert = cbData;
 	uint8_t lane = adId;
 	uint32_t regId = 0;
@@ -649,13 +819,21 @@ PVLatchedLol_Set(void *cbData, uint32_t adId, const char *strP)
 	CDR_Read(CDR_ID_RX,regId); // throw away the result, Clear on read
 	bert->pvLatchedLol[lane] = !!value; 
 	return true;
+#endif
 }
 
+/**
+ ***********************************************************************************************
+ * \fn static bool PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ * Reading some variables are directly forwarded to one of the CDR's. Here the reading
+ * of these variables is done. A variable can be only read from one of the two CDR's. Reading
+ * them from both makes no sense.
+ ***********************************************************************************************
+ */
 static bool
 PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
         const CdrForward *fwd;
-        //Bert *bert = cbData;
         uint16_t value;
         if(adId >= array_size(gForwardRegs)) {
                 Con_Printf("Bert %s Unexpected ID %lu\n",__func__,adId);
@@ -674,6 +852,13 @@ PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
         return true;
 }
 
+/**
+ ***********************************************************************************************
+ * \fn static bool PVForward_Set(void *cbData, uint32_t adId, const char *strP)
+ *
+ * Write to some variables is directly forwarded to one or both CDR's. 
+ ***********************************************************************************************
+ */
 static bool
 PVForward_Set(void *cbData, uint32_t adId, const char *strP)
 {
@@ -694,7 +879,6 @@ PVForward_Set(void *cbData, uint32_t adId, const char *strP)
         return true;
 }
 
-
 void
 Bert_Init(void) 
 {
@@ -711,16 +895,18 @@ Bert_Init(void)
 		fifo->berMeasTime = 10000;
 		Timer_Init(&fifo->getErrCntTimer,GetErrCntTimerProc,fifo);
 		Timer_Start(&fifo->getErrCntTimer,250);
-		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRatio");
-		PVar_New(PVBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRate");
+		PVar_New(PVCurrBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRatio");
+		PVar_New(PVCurrBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"beRate");
 		PVar_New(PVLatchedLol_Get,PVLatchedLol_Set,bert,ch ,"%s.L%lu.%s",name,ch,"latchedLol");
+		PVar_New(PVAccBerMeasStart_Get,PVAccBerMeasStart_Set,bert,ch ,"%s.L%lu.%s",name,ch,"accBerMeasStart");
+		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accBeRatio");
 	}
        for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
 
-	PVar_New(PVBerMs_Get,PVBerMs_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
+	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
