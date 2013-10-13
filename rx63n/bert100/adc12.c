@@ -95,7 +95,8 @@ INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit 
 static int8_t
 cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 {
-	uint16_t adval;
+	uint32_t adval;
+	float temperature;
     	S12AD.ADANS0.WORD = 0;
     	S12AD.ADANS1.WORD = 0;
 	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
@@ -104,7 +105,8 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 	/* Wait for the conversion to end */
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
-	Con_Printf("adval %u\n",adval);
+	temperature = (((adval * 3300) / 4096 - 1260) / 4.1) + 25;
+	Con_Printf("adval %u, temp %f\n",adval,temperature);
 	return 0;	
 }
 
