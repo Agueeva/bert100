@@ -92,6 +92,24 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit A/D converter");
 
+static int8_t
+cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint16_t adval;
+    	S12AD.ADANS0.WORD = 0;
+    	S12AD.ADANS1.WORD = 0;
+	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
+	/* Start a conversion */
+	S12AD.ADCSR.BIT.ADST = 1;
+	/* Wait for the conversion to end */
+    	while(1 == S12AD.ADCSR.BIT.ADST);
+	adval = S12AD.ADTSDR;
+	Con_Printf("adval %u\n",adval);
+	return 0;	
+}
+
+INTERP_CMD(temperatureCmd, "temperature", cmd_temperature, "temperature  # Read temperature");
+
 void
 ADC12_Init(void) 
 {
@@ -109,5 +127,10 @@ ADC12_Init(void)
 		ch->channelNr = i;
 		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%u",i);
 	}
+	/* enable the Temperature Sensor */
+	MSTP_TEMPS = 0;
+	TEMPS.TSCR.BIT.TSEN = 1;
+	TEMPS.TSCR.BIT.TSOE = 1;
 	Interp_RegisterCmd(&adc12Cmd);
+	Interp_RegisterCmd(&temperatureCmd);
 }
