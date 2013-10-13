@@ -2,7 +2,7 @@
 <LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="js/pattern.js" ></script>
 	</head>
-<body>
+<body onload="javascript: all_load();">
 <div class="headline">Pattern</div>
 
 <div name="wrap_Pattern">
@@ -69,22 +69,22 @@
 </SELECT></TD></TR>
 <TR ALIGN="left">
 <TH>Auto Sync  ED:</TH>
-<TD><SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onChange="javascript: Check_Auto(0); window.parent.SaveVar(this,2,'.l',0); window.parent.window_onload();">
+<TD><SELECT NAME="prbs_autovr0" ID="cdr0.l0.prbs_autovr"  onChange="javascript: Check_Auto(0);">
 <OPTION VALUE="0">no</OPTION>
 <OPTION VALUE ="1">yes</OPTION>
 </SELECT>
 </TD>
-<TD><SELECT NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  onChange="javascript: Check_Auto(1); window.parent.SaveVar(this,1,'.l',0)">
+<TD><SELECT NAME="prbs_autovr1" ID="cdr0.l1.prbs_autovr"  onChange="javascript:  Check_Auto(1);">
 <OPTION VALUE="0">no</OPTION>
 <OPTION VALUE ="1">yes</OPTION>
 </SELECT>
 </TD>
-<TD><SELECT NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  onChange="javascript: Check_Auto(2); window.parent.SaveVar(this,1,'.l',0)">
+<TD><SELECT NAME="prbs_autovr2" ID="cdr0.l2.prbs_autovr"  onChange="javascript: Check_Auto(2); ">
 <OPTION VALUE="0">no</OPTION>
 <OPTION VALUE ="1">yes</OPTION>
 </SELECT>
 </TD>
-<TD><SELECT NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  onChange="javascript: Check_Auto(3); window.parent.SaveVar(this,1,'.l',0)">
+<TD><SELECT NAME="prbs_autovr3" ID="cdr0.l3.prbs_autovr"  onChange="javascript: Check_Auto(3);">
 <OPTION VALUE="0">no</OPTION>
 <OPTION VALUE ="1">yes</OPTION>
 </SELECT>

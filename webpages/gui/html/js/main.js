@@ -3,12 +3,13 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
+  var my_sek=200;
+  var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
   var myVarPattern= new Array("bert0.L0.prbsPatGenSel","bert0.L1.prbsPatGenSel","bert0.L2.prbsPatGenSel","bert0.L3.prbsPatGenSel",
                               "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
-                              "cdr0.l0.prbs_autovr","cdr0.l1.prbs_autovr","cdr0.l2.prbs_autovr","cdr0.l3.prbs_autovr",
                               "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
   var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel"); 
-  var myVarPattern1= new Array("prbs_autovr"); 
+ // var myVarPattern1= new Array("prbs_autovr"); 
   
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
 			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
@@ -33,7 +34,7 @@
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //  'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -61,6 +62,10 @@
 	var value =arr['val'];
       if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
+      }
+      
+      if (item.substr(9, 9)=="patVerSel") {
+     //     alert("OM:"+item + "=" + value);
       }
       if (item.substr(8, 10)=="err_cntr64" || item.substr(9, 7)=="beRatio") {
           value=value.toExponential();
@@ -504,13 +509,13 @@ function SaveVar(myVar, typeVar,pref,k){
           
      switch(typeVar){
 	case 1:  //einfach
-	    //alert(myID+"="+formval);
+	    // alert("SV1:" +myID+"="+formval);
 	    socket.send(JSON.stringify({set: myID,val: formval}));
 	    break;
 	case 2:  //all vorhandeln	
 	    if(all) {
                for (i = 0; i <= 3; i++) {
-                    //alert(myID+"="+formval);
+                //   alert("SV:" +myID+"="+formval);
                     socket.send(JSON.stringify({set: myID,val: formval}));
                     myID=myID.replace(pref+(i+k), pref+(i+1+k));
                     }

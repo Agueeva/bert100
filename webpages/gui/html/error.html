@@ -212,7 +212,7 @@
 </TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>Time elapsed:</TH>
-<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="msek"  Value="500" ></TD>
+<TD><INPUT class="textfild2" TYPE="Text" NAME="prbs_autovr3" ID="msek"  Value="" ></TD>
 <TD></TD>
 <TD></TD>
 </TR>
@@ -223,22 +223,23 @@
 </body>
 <script type="text/javascript">
 	<!--
-var my_Inter, my_sek;	
+var my_Inter, my_sek;
+my_sek= window.parent.my_sek;
 function clickStart(){
-	my_sek=500;
+	my_sek=300;
 	//if(typeof my_Inter !== "undefined") my_Inter=clearInterval();
 	//if (parseInt(document.getElementById("msek").value)==0 || document.getElementById("msek").value=="") {
 	//my_sek=500;	
 	//}   my_str.replace(/[.]/g,"\\.")
 	//else {my_sek=parseInt(document.getElementById("msek").value);}  "bert0.berMeasWin_ms",
 	 window.parent.socket.send(JSON.stringify({get: 'bert0.berMeasWin_ms'})); 
-	 if (my_Inter) my_Inter=clearInterval(my_Inter);
-         my_Inter=setInterval(window.parent.window_onload,my_sek);
-	 var my_str='bert0.berMeasWin_ms';
-	 
-	 
+         setTimeout(StartInterval, 500);
 	}
-	
+function StartInterval(){
+		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
+                 my_Inter=setInterval(window.parent.window_onload,my_sek);
+		}
+		
 function clickStop(){
 		my_Inter=clearInterval(my_Inter);
 		}
@@ -247,7 +248,7 @@ function sendMeasWin_ms(my_Sec){
 	my_Sec.style="background-color: #c0c0c0;";
 	if (isNaN(my_Sec.value)) {
 		my_Sec.style="background-color: #ff0000;";
-	alert("Field value must be an integer in milliseconds!");
+	alert("Field value must be an integer in seconds!");
 	my_Sec.value=0;
 	}else {
 	var item=document.getElementById('bert0.berMeasWin_ms');

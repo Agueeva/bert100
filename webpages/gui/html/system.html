@@ -103,6 +103,15 @@
 	<TH></TH>
 	<TH></TH>
 	<TH></TH></TR>
+
+<TR ALIGN="left">
+<TH>Time refresh, msec:</TH>
+<TD><input class="textfildsys" type="text" name="timeRefr" id="timeRefr" size="15" maxlength="15"  onChange="javascript: window.parent.my_sek=Number(this.value);"></TD>
+<TD>
+</TD>
+<TD>
+</TD></TR>
+
 <!--
 <tr><td width="30%">IP address</td><td >
 <input type="text" name="IP" size="15" maxlength="15"></td></tr>
@@ -114,6 +123,7 @@
 </div>
 <script type="text/javascript">
 	<!--
+document.getElementById('timeRefr').value=window.parent.my_sek;	
 var iperrmsg = " is not a valid IP address."
 function CheckIP(form)
 {
