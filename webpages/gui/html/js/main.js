@@ -33,7 +33,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
  
-  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -69,10 +69,11 @@
           value=Math.round(value * 100) / 100;
           }
       
-      if (item.substr(9, 9)=="patVerSel") {
-     //     alert("OM:"+item + "=" + value); bert0.L0.accBeRatio
+      if (item.substr(9, 7)=="EqState") {      
+          $("#frame").contents().find(("#"+item+"_st").replace(/[.]/g,"\\.")).width((100-value*7)+"%");
+          //alert( $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).width());
           }
-      if (item.substr(9, 7)=="errCntr" || item.substr(9, 11)=="currBeRatio" || item.substr(9, 10)=="accErrCntr" || item.substr(9, 10)=="accBeRatio") {
+      if (item.substr(9, 11)=="currBeRatio" ||  item.substr(9, 10)=="accBeRatio") {
           value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
@@ -83,7 +84,17 @@
           value=my_str.concat(my_arr[1]);
           }          
           }
-      
+      if (item.substr(9, 7)=="errCntr" ||  item.substr(9, 10)=="accErrCntr" ) {
+          value=value.toExponential();
+          var my_str=value.toString();
+          if (my_str.match('e')) {
+          var my_arr=my_str.split("e");
+          var erst=Number(my_arr[0]);
+          my_str=erst.toString();
+          my_str=my_str.concat("E");
+          value=my_str.concat(my_arr[1]);
+          }          
+          }
       
       switch(item)
      {
@@ -208,7 +219,7 @@
      break;
      
      case "bert0.bitrate":
-     if (value>25781249920 && value<25781250080) {
+     if (value>25781249900 && value<25781250080) {
          value=25781250000;}
      if (value>27952493300 && value<27952493482) {
          value=27952493392;}

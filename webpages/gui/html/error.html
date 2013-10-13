@@ -7,100 +7,108 @@
 
 <div name="wrap_BER_Measurement">
 <FORM  ID="Form_PG">
+	
 <TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
 
-<TR ALIGN="left" VALIGN="middle">
-        <TH></TH>
-	<TH>Channel 1</TH>
-	<TH>Channel 2</TH>
-	<TH>Channel 3</TH>
-	<TH>Channel 4</TH></TR>
-<TR ALIGN="left" VALIGN="middle">
-<TH>Pattern:</TH>
+	<TR ALIGN="left" VALIGN="middle">
+		<TH></TH>
+		<TH>Channel 1</TH>
+		<TH>Channel 2</TH>
+		<TH>Channel 3</TH>
+		<TH>Channel 4</TH>
+	</TR>
+	
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Pattern:</TH>
 
-<TD> <SELECT  ID="bert0.L0.patVerSel"  disabled>
-<OPTION VALUE="7">2E7-1</OPTION>
-<OPTION VALUE ="1">2E9-1</OPTION>
-<OPTION VALUE ="6">2E15-1</OPTION>
-<OPTION VALUE ="5">2E23-1</OPTION>
-<OPTION VALUE ="4">2E31-1</OPTION>
-<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
-</SELECT></TD>
+		<TD> <SELECT  ID="bert0.L0.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+		</SELECT></TD>
 
-<TD><SELECT  ID="bert0.L1.patVerSel"  disabled>
-<OPTION VALUE="7">2E7-1</OPTION>
-<OPTION VALUE ="1">2E9-1</OPTION>
-<OPTION VALUE ="6">2E15-1</OPTION>
-<OPTION VALUE ="5">2E23-1</OPTION>
-<OPTION VALUE ="4">2E31-1</OPTION>
-<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
-</SELECT></TD>
+		<TD><SELECT  ID="bert0.L1.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+		</SELECT></TD>
 
-<TD><SELECT  ID="bert0.L2.patVerSel"  disabled>
-<OPTION VALUE="7">2E7-1</OPTION>
-<OPTION VALUE ="1">2E9-1</OPTION>
-<OPTION VALUE ="6">2E15-1</OPTION>
-<OPTION VALUE ="5">2E23-1</OPTION>
-<OPTION VALUE ="4">2E31-1</OPTION>
-<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
-</SELECT></TD>
+		<TD><SELECT  ID="bert0.L2.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+		</SELECT></TD>
 
-<TD><SELECT  ID="bert0.L3.patVerSel"  disabled>
-<OPTION VALUE="7">2E7-1</OPTION>
-<OPTION VALUE ="1">2E9-1</OPTION>
-<OPTION VALUE ="6">2E15-1</OPTION>
-<OPTION VALUE ="5">2E23-1</OPTION>
-<OPTION VALUE ="4">2E31-1</OPTION>
-<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
-</SELECT></TD>
-</TR>
-<TR ALIGN="left">
-<TH>Errors:</TH>
+		<TD><SELECT  ID="bert0.L3.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
+		</SELECT></TD>
+	</TR>
+	
+	<TR ALIGN="left">
+		<TH>Errors:</TH>
 
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
-</TD></TR>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.errCntr" Value="" readonly>
+		</TD>
+	</TR>
 
-<TR ALIGN="left">
-<TH>Current BER<br>Gating: <INPUT class="textfild" TYPE="Text"  ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
-<INPUT  TYPE="Hidden"  ID="bert0.berMeasWin_ms"  Value="" ></TH>
+	<TR ALIGN="left">
+		<TH>Current BER<br>Gating: <INPUT class="textfild" TYPE="Text"  ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
+		<INPUT  TYPE="Hidden"  ID="bert0.berMeasWin_ms"  Value="" ></TH>
+	
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.currBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.currBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.currBeRatio" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.currBeRatio"  Value="" readonly>
+		</TD>
+	</TR>
 
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.currBeRatio"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.currBeRatio"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.currBeRatio" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.currBeRatio"  Value="" readonly>
-</TD></TR>
+	<TR ALIGN="left">
+		<TH>Accumulated Errors:</TH>
+		
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accErrCntr"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accErrCntr" Value="" readonly>
+		</TD>
+	</TR>
 
-<TR ALIGN="left">
-<TH>Accumulated Errors:</TH>
-
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accErrCntr"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accErrCntr" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accErrCntr" Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accErrCntr" Value="" readonly>
-</TD></TR>
-
-<TR ALIGN="left">
-<TH> Accumulated BER:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accBeRatio"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accBeRatio"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accBeRatio"  Value="" readonly>
-</TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accBeRatio"  Value="" readonly>
-</TD></TR>
+	<TR ALIGN="left">
+		<TH> Accumulated BER:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accBeRatio"  Value="" readonly>
+		</TD>
+	</TR>
 
 
 <!--<TR ALIGN="left" VALIGN="middle">
@@ -134,112 +142,114 @@
 		<OPTION VALUE ="1000">1000</OPTION>
 </SELECT><INPUT class="textfild3" TYPE="Text" Size=11  ID="bert0.L3.beRate"  Value="" readonly></TD>
 </TR> -->
-<TR ALIGN="left" VALIGN="middle">
-<TH>Sync|Sync-Mem:</TH>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
-<INPUT class="textfild" TYPE="Text" size=5  ID="Mem0"  Value=""></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss1"  Value="" readonly>
-<INPUT class="textfild" TYPE="Text" size=5  ID="Mem1"  Value=""></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss2"  Value="" readonly>
-<INPUT class="textfild" TYPE="Text" size=5  ID="Mem2"  Value=""></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss3" boug Value="" readonly>
-<INPUT class="textfild" TYPE="Text"  size=5  ID="Mem3"  Value=""></TD>
-</TR>
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Sync|Sync-Mem:</TH>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
+		<INPUT class="textfild" TYPE="Text" size=5  ID="Mem0"  Value=""></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss1"  Value="" readonly>
+		<INPUT class="textfild" TYPE="Text" size=5  ID="Mem1"  Value=""></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss2"  Value="" readonly>
+		<INPUT class="textfild" TYPE="Text" size=5  ID="Mem2"  Value=""></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss3" boug Value="" readonly>
+		<INPUT class="textfild" TYPE="Text"  size=5  ID="Mem3"  Value=""></TD>
+	</TR>
 
-<TR ALIGN="left" VALIGN="middle">
-<TH>Pattern Sync:</TH>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock0"  Value="" readonly></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock1"  Value="" readonly></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock2"  Value="" readonly></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock3"  Value="" readonly></TD>
-</TR>
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Pattern Sync:</TH>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock0"  Value="" readonly></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock1"  Value="" readonly></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock2"  Value="" readonly></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock3"  Value="" readonly></TD>
+	</TR>
  
 
+	<!--Prozent-->
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Input EQ State:</TH>
+		
+		<TD class="prozentBg"> <div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L0.EqState_st"></div><INPUT class="eqstatetextfield" TYPE="Text" ID="bert0.L0.EqState"  Value="" readonly>
+		</div></TD>
+		
+		<TD class="prozentBg"><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L1.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L1.EqState"  Value="" readonly>
+		</div></TD>
+		
+		<TD class="prozentBg"><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L2.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L2.EqState"  Value="" readonly>
+		</div></TD>
+		
+		<TD class="prozentBg"><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L3.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L3.EqState"  Value="" readonly>
+		</div></TD>
 
-<TR ALIGN="left" VALIGN="middle">
-<TH>Input EQ State:</TH>
-<TD><INPUT class="eqstatefield" TYPE="Text"  ID="bert0.L0.EqState"  Value="" readonly></TD>
-<TD><INPUT class="eqstatefield" TYPE="Text"  ID="bert0.L1.EqState"  Value="" readonly></TD>
-<TD><INPUT class="eqstatefield" TYPE="Text"  ID="bert0.L2.EqState"  Value="" readonly></TD>
-<TD><INPUT class="eqstatefield" TYPE="Text"  ID="bert0.L3.EqState"  Value="" readonly></TD>
-</TR>
-<!--Test  -->
-<TR ALIGN="left" VALIGN="middle">
-<TH>lol_stat:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.LolStat"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.LolStat"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.LolStat"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.LolStat"  Value="" readonly></TD>
-</TR>
-<TR ALIGN="left" VALIGN="middle">
-<TH>latched_lol:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.latchedLol"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.latchedLol"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.latchedLol"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.latchedLol"  Value="" readonly></TD>
-</TR>
-<TR ALIGN="left" VALIGN="middle">
-<TH>bert0.L0.prbsLock:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.prbsLock"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.prbsLock"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.prbsLock"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.prbsLock"  Value="" readonly></TD>
-</TR>
-
-
-
-
-<!-- /Test Time elapsed-->
-<TR ALIGN="left" VALIGN="middle">
-        <TH>Measurement</TH>
-	<TH></TH>
-	<TH></TH>
-	<TH></TH>
-	<TH></TH></TR>
-<TR ALIGN="left" VALIGN="middle">
-<TR ALIGN="left" VALIGN="middle">
-<TH></TH>
-<TD></TD>
-<TD></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-<TR ALIGN="left" VALIGN="middle">
-<TH>Time elapsed:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="msek"  Value="" ></TD>
-<TD><button class="buttonGreen" type="button" onclick="javascript: clickStart();">Start</button></TD>
-<TD><button class="buttonRed" type="button" onclick="javascript: clickStop();">Stop</button></TD>
-</TR>
-
-<TR ALIGN="left" VALIGN="middle">
-<TH>TX-PLL lock  |  RX-PLL lock:</TH>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
-<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-
-<TR ALIGN="left" VALIGN="middle">
-<TH>tx|rxPllLock:</TH>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.txPllLock"  Value="" readonly></TD>
-<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.rxPllLock"  Value="" readonly></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-
-<TR ALIGN="left" VALIGN="middle">
-<TH>Data Rate:</TH>
-<TH><SELECT class="whiteText" NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
-		<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
-		<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
-</SELECT></TH>
-<TD></TD>
-<TD></TD>
-<TD></TD>
-</TR>
-
-</SELECT>
+	</TR>
+	
+	<!--Test  -->
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>lol_stat:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.LolStat"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.LolStat"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.LolStat"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.LolStat"  Value="" readonly></TD>
+	</TR>
+	
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>latched_lol:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.latchedLol"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.latchedLol"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.latchedLol"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.latchedLol"  Value="" readonly></TD>
+	</TR>
+	
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>bert0.L0.prbsLock:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.prbsLock"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.prbsLock"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.prbsLock"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.prbsLock"  Value="" readonly></TD>
+	</TR>
 </TABLE>
+
+	
+<div class="headline">Measurement</div>
+
+	
+<!-- Second Table-->
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="75%">
+	<!-- /Test Time elapsed-->
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Time elapsed:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="msek"  Value="" ></TD>
+		<TD><button class="buttonGreen" type="button" ID="ButStart" onclick="javascript: clickStart();">Start</button></TD>
+		<TD><button class="buttonRed" type="button" ID="ButStop" onclick="javascript: clickStop();">Stop</button></TD>
+	</TR>
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>TX-PLL lock  |  RX-PLL lock:</TH>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
+		<TD></TD>
+	</TR>
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>tx|rxPllLock:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.txPllLock"  Value="" readonly></TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.rxPllLock"  Value="" readonly></TD>
+		<TD></TD>
+	</TR>
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Data Rate:</TH>
+		<TH><SELECT class="whiteText" NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
+			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
+			<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
+		</SELECT></TH>
+		<TD></TD>
+		<TD></TD>
+	</TR>
+</TABLE>
+
 </FORM>
 </div>
 </body>
@@ -256,7 +266,9 @@ function StartInterval(){
                  my_Inter=setInterval(window.parent.window_onload,my_sek);
 		}
 function clickStart(){
-		//my_Inter=clearInterval(my_Inter);
+		//my_Inter=clearInterval(my_Inter);  .css('background-color', 'red');#92182b
+		window.parent.$("#frame").contents().find("#ButStart").css('background-color', '#21491b');
+		window.parent.$("#frame").contents().find("#ButStop").css('background-color', '#ce0202');
 		window.parent.socket.send(JSON.stringify({set: "bert0.L0.accBerMeasStart",val: 1}));
 		window.parent.socket.send(JSON.stringify({set: "bert0.L1.accBerMeasStart",val: 1}));
 		window.parent.socket.send(JSON.stringify({set: "bert0.L2.accBerMeasStart",val: 1}));
@@ -264,6 +276,8 @@ function clickStart(){
 		}		
 function clickStop(){
 		//my_Inter=clearInterval(my_Inter);
+		window.parent.$("#frame").contents().find("#ButStart").css('background-color', '#0cac00');
+		window.parent.$("#frame").contents().find("#ButStop").css('background-color', '#92182b');
 		window.parent.socket.send(JSON.stringify({set: "bert0.L0.accBerMeasStart",val: 0}));
 		window.parent.socket.send(JSON.stringify({set: "bert0.L1.accBerMeasStart",val: 0}));
 		window.parent.socket.send(JSON.stringify({set: "bert0.L2.accBerMeasStart",val: 0}));
