@@ -677,6 +677,26 @@ PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+static bool
+PVAccTime_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	BeFifo *fifo;
+	unsigned int lane = adId;
+	uint32_t tStampEnd,tStampStart;
+	uint32_t tDiff;
+	fifo = &bert->beFifo[lane];	
+	tStampStart = fifo->accBerStartTStampMs;
+	if(fifo->accRunning) {
+		tStampEnd = TimeMs_Get();
+	} else {
+		tStampEnd = fifo->accBerStopTStampMs;
+	}	
+	tDiff = tStampEnd - tStampStart;
+	bufP[f32toa(tDiff / 1000., bufP,  maxlen)] = 0;
+	return true;
+}
+
 /**
  ************************************************************************************************
  * \fn static bool PVBerAccStart_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
@@ -976,6 +996,7 @@ Bert_Init(void)
 		PVar_New(PVCurrBerate_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"currBeRate");
 		PVar_New(PVLatchedLol_Get,PVLatchedLol_Set,bert,ch ,"%s.L%lu.%s",name,ch,"latchedLol");
 
+		PVar_New(PVAccTime_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accTime");
 		PVar_New(PVAccBerMeasStart_Get,PVAccBerMeasStart_Set,bert,ch ,"%s.L%lu.%s",name,ch,"accBerMeasStart");
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accBeRatio");
 		PVar_New(PVRelErrCntr_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accErrCntr");
@@ -985,7 +1006,6 @@ Bert_Init(void)
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
-
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
