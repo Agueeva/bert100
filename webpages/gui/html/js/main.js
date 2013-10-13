@@ -17,8 +17,8 @@
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX2= new Array("swapTxPN","txaSwing");
-  var myVarDrTr= new Array("synth0.freq","ptrig0.pattern");
-  var myVarErr= new Array("synth0.freq",
+  var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
+  var myVarErr= new Array("bert0.bitrate",
                           "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
@@ -27,12 +27,13 @@
                           "bert0.L0.LolStat","bert0.L1.LolStat","bert0.L2.LolStat","bert0.L3.LolStat",
                           "bert0.L0.currBeRatio","bert0.L1.currBeRatio","bert0.L2.currBeRatio","bert0.L3.currBeRatio",
                           "bert0.rxPllLock","bert0.txPllLock",
-                          "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio");
-  // "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate",
+                          "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
+                          "bert0.L0.errCntr","bert0.L1.errCntr","bert0.L2.errCntr","bert0.L3.errCntr");
+  // "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate", "bert0.L0.accErrCntr" "bert0.L0.currBeRatio"
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //  'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -69,9 +70,9 @@
           }
       
       if (item.substr(9, 9)=="patVerSel") {
-     //     alert("OM:"+item + "=" + value);
+     //     alert("OM:"+item + "=" + value); bert0.L0.accBeRatio
           }
-      if (item.substr(8, 10)=="err_cntr64" || item.substr(9, 7)=="beRatio") {
+      if (item.substr(9, 7)=="errCntr" || item.substr(9, 11)=="currBeRatio" || item.substr(9, 10)=="accErrCntr" || item.substr(9, 10)=="accBeRatio") {
           value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
@@ -155,7 +156,7 @@
      break;
 
      case "bert0.L0.prbsLock":
-     if (value==0) {
+     if (value==1) {
       $("#frame").contents().find("#Lock0").attr('class','greenfield');
      }else{
       $("#frame").contents().find("#Lock0").attr('class','redfield');
@@ -206,13 +207,13 @@
       $("#frame").contents().find("#msec").val(value/1000);     
      break;
      
-     case "synth0.freq":
-     if (value>644531240 && value<644531275) {
-         value=644531250;}
-     if (value>698812325 && value<698812345) {
-         value=698812335;}
+     case "bert0.bitrate":
+     if (value>25781249920 && value<25781250080) {
+         value=25781250000;}
+     if (value>27952493300 && value<27952493482) {
+         value=27952493392;}
      break; 
-     
+     // 27952493320
      default:
      break;
      }
