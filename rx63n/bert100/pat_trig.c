@@ -131,6 +131,13 @@ static bool
 PVPattern_Set(void *cbData, uint32_t adId, const char *strP)
 {
         uint16_t pat;
+	if(strstr(strP,"left")) {
+		PatTrig_Shift(0,false);
+		return true;
+	} else if(strstr(strP,"right")) {
+		PatTrig_Shift(0,true);
+		return true;
+	}
         pat  = astrtoi16(strP);
 	if(pat <= 5) {
 		PatTrig_SelPat(0,pat);
