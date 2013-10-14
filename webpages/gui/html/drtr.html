@@ -4,7 +4,7 @@
 
 <div name="wrap_data_rate">
 <FORM onsubmit="return false" ID="Form_PG">
-<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
 
 <TR ALIGN="left" VALIGN="middle">
 	<TH>Data Rate</TH>
@@ -30,7 +30,22 @@
 	
 	</TR>
 
+<TR ALIGN="left" VALIGN="middle"><TH>Pattern Trigger</TH>
+		<TD ALIGN="center" ><button class="button_arrow_big doubleLeft" type="button" title="Shift left"  onclick="javascript: clickLeft();"></button>
+		<button class="button_arrow_big doubleRight" type="button" title="Shift right"  onclick="javascript: clickRight();"></button></TD>
+	</TR>	
 </TABLE>
+
 </FORM>
 </div>
+<script type="text/javascript">
+	<!--
 
+function clickLeft(){	
+	 window.parent. socket.send(JSON.stringify({set: 'ptrig0.pattern',val: 'left'}));
+	}
+function clickRight(){	
+	 window.parent. socket.send(JSON.stringify({set: 'ptrig0.pattern',val: 'right'}));
+	}	
+	-->
+	</script>

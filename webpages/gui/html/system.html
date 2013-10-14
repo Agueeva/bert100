@@ -4,11 +4,9 @@
 
 <div name="wrap_System">
 <FORM  ID="Form_PG">
-<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
 <TR ALIGN="left" VALIGN="middle">
         <TH>Software/Hardware</TH>
-	<TH></TH>
-	<TH></TH>
 	<TH></TH>
 	</TR>
 
@@ -16,28 +14,25 @@
 <TH>C-BERT:
 </TH>
 <TD>EML-version</TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 <TR ALIGN="left">
 <TH>HW rev.:
 </TH>
 <TD>01</TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 
 <TR ALIGN="left">
 <TH>Firmware:</TH>
 <TD><input class="textfildsys" type="text" name="system.firmware" id="system.firmware" size="15" maxlength="15" readonly></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
+
+</TABLE>
+
+<div class="headline">Cooling</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="75%">
 <TR ALIGN="left" VALIGN="middle">
         <TH></TH>
 	<TH>Cooling 1</TH>
@@ -59,58 +54,36 @@
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
 
+</TABLE>
 
-<TR ALIGN="left" VALIGN="middle">
-        <TH>Network Settings</TH>
-	<TH></TH>
-	<TH></TH>
-	<TH></TH></TR>
+<div class="headline">Network Settings</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
 
 <TR ALIGN="left">
 <TH>IP address:</TH>
 <TD><input class="textfildsys" type="text" name="system.ip" id="system.ip" size="15" maxlength="15" readonly onChange="javascript: CheckIP(this)"></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 <TR ALIGN="left">
 <TH>Netmask:</TH>
 <TD><input class="textfildsys" type="text" name="Netmask" id="system.netmask" size="15" maxlength="15" readonly onChange="javascript: CheckNetmask(this)"></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 <TR ALIGN="left">
 <TH>Gateway:</TH>
 <TD><input class="textfildsys" type="text" name="system.gateway" id="system.gateway" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 <TR ALIGN="left">
 <TH>MAC Adresse:</TH>
 <TD><input class="textfildsys" type="text" name="system.mac" id="system.mac" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
-
-<TR ALIGN="left" VALIGN="middle">
-        <TH></TH>
-	<TH></TH>
-	<TH></TH>
-	<TH></TH></TR>
+</TR>
 
 <TR ALIGN="left">
 <TH>Time refresh, msec:</TH>
 <TD><input class="textfildsys" type="text" name="timeRefr" id="timeRefr" size="15" maxlength="15"  onChange="javascript: window.parent.my_sek=Number(this.value);"></TD>
-<TD>
-</TD>
-<TD>
-</TD></TR>
+</TR>
 
 <!--
 <tr><td width="30%">IP address</td><td >

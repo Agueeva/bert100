@@ -134,7 +134,7 @@ tr:nth-of-type(even) {
 
 /*Select*/
 select {
-	width: 100%;
+	width: 180px;
 	height: 32px;
 	padding: 5px;
 	font-size: 16px;
@@ -222,7 +222,6 @@ select {
 /*Normal Button*/
 .buttonNorm{
 	height: 32px;
-
 	background-repeat:no-repeat;
 	background-color: #00aeeb;
 	
@@ -273,6 +272,29 @@ select {
 .dplus{
 	background: url(../img/arrowDoubleUp.png);
 }
+
+.button_arrow_big{
+	height: 32px;
+	width: 32px;
+
+	background-repeat:no-repeat;
+	background-color: #00aeeb;
+	
+	border-width: 0;
+	border-radius: 3px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.button_arrow_big:hover {
+	background-color: #00bdff;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+.button_arrow_big:active {
+	background-color: #009ad0;
+	box-shadow:inset 0 0 4px #016b90; 
+}
+
 
 .button_arrow{
 	height: 16px;

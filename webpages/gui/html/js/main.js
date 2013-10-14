@@ -28,8 +28,8 @@
                           "bert0.L0.currBeRatio","bert0.L1.currBeRatio","bert0.L2.currBeRatio","bert0.L3.currBeRatio",
                           "bert0.rxPllLock","bert0.txPllLock",
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
-                          "bert0.L0.errCntr","bert0.L1.errCntr","bert0.L2.errCntr","bert0.L3.errCntr");
-  // "bert0.L0.beRate","bert0.L1.beRate","bert0.L2.beRate","bert0.L3.beRate", "bert0.L0.accErrCntr" "bert0.L0.currBeRatio"
+                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr"); 
+  
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
  
@@ -43,7 +43,7 @@
 
    function SocketNew()
 {
-     if (typeof(socket)!="undefined") delete socket;
+     if (typeof(socket) != "undefined") {delete socket;}
      socket = new WebSocket(urlWS);
 
  socket = new WebSocket(urlWS);
@@ -51,27 +51,26 @@
              //alert("Verbindung open");
              bl_Communication=true;
 	     my_Interval=setInterval(keepAlive,3000);
-
-     }
+}
      socket.onclose = function()
      {
 		alert('Verbindung unterbrochen');
 		bl_Communication=false;
                 my_Interval=clearInterval(my_Interval);
-     }
+}
      socket.onmessage = function(evt)
      {
+
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-      if (item.substr(0, 6)=="emlAmp") {
+    if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
           }
       
       if (item.substr(9, 7)=="EqState") {      
           $("#frame").contents().find(("#"+item+"_st").replace(/[.]/g,"\\.")).width((100-value*7)+"%");
-          //alert( $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).width());
           }
       if (item.substr(9, 11)=="currBeRatio" ||  item.substr(9, 10)=="accBeRatio") {
           value=value.toExponential();
@@ -84,8 +83,9 @@
           value=my_str.concat(my_arr[1]);
           }          
           }
-      if (item.substr(9, 7)=="errCntr" ||  item.substr(9, 10)=="accErrCntr" ) {
-          value=value.toExponential();
+         // bert0.L0.absErrCntr
+      if (item.substr(9, 10)=="absErrCntr" ||  item.substr(9, 10)=="accErrCntr" ) {
+         value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
           var my_arr=my_str.split("e");
@@ -93,9 +93,9 @@
           my_str=erst.toString();
           my_str=my_str.concat("E");
           value=my_str.concat(my_arr[1]);
-          }          
+          }         
           }
-      
+
       switch(item)
      {
      case "test.var1":
@@ -201,7 +201,7 @@
      case "bert0.txPllLock":
      if (value==0) {
       $("#frame").contents().find("#TX").attr('class','redfield');
-     }else{
+     } else {
       $("#frame").contents().find("#TX").attr('class','greenfield');
      }
       break;
@@ -209,7 +209,7 @@
      case "bert0.rxPllLock":
      if (value==0) {
       $("#frame").contents().find("#RX").attr('class','redfield');
-     }else{
+     } else {
       $("#frame").contents().find("#RX").attr('class','greenfield');
      }
      break;
@@ -228,7 +228,7 @@
      default:
      break;
      }
-     
+    
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
           if(typeof var_id == "undefined") {
                var_id=$("#frame").contents().find("#var_val").val(value);}
@@ -236,12 +236,14 @@
                $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
           if (myQueueBool) {  
                window_onload_variable();}      
-     }
+}
+   
 
      function keepAlive() {
-          socket.send(JSON.stringify({get: "test.var1"}));}
+          socket.send(JSON.stringify({get: "test.var1"}));
+} 
 }
-
+   
 /* Socket-Functions End */ 
 //---------------------Laod page---------------------
 var requestToRelaod = false;
@@ -408,7 +410,8 @@ function ReadVar(variable){
 
 function window_onload()
 {
-if(!bl_Communication) SocketNew();
+     
+   if(!bl_Communication) SocketNew();
   var my_var;
   var j,i,k;
   k=0;
