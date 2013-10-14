@@ -1082,6 +1082,7 @@ static void
 Cdr_SoftReset(uint16_t phy_addr) 
 {
 	Cdr_WriteReg(phy_addr, CDR_VS_DEVICE_CONTROL, 0x1020);	//Hard reset (bit 5) and MDIO init (bit 12)
+	SleepMs(2);
 }
 
 /**
@@ -1117,7 +1118,8 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 		Cdr_WritePart(phy_addr, CDR_RX_1ST_ORDER_CONTROL(lane), 10, 8, 4);
 	}
 	/* Deassert datapath soft reset */
-	Cdr_WriteReg(phy_addr, 0, 0);
+	Cdr_WriteReg(phy_addr, CDR_VS_DEVICE_CONTROL, 0);
+	SleepMs(1);
 
 	// CDR recal of TxPLL while PI3 is locked
 	Cdr_WritePart(phy_addr, 1184, 1, 1, 1);	// Lockint Rx3 PI
@@ -1148,17 +1150,17 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 	uVal = Cdr_ReadPart(phy_addr, CDR_RXPLL_CONFIG2, 8, 8);
 	if (uVal == 0) {
 		status = 0;
-		Con_Printf("*** Rx PLL not locked, is REFCLK present ?\n");
+		Con_Printf("*** Rx PLL of PHY %u not locked, is REFCLK present ?\n",phy_addr);
 	}
 	uVal = Cdr_ReadPart(phy_addr, CDR_TXPLL_CONFIG2, 8, 8);
 	if (uVal == 0) {
 		status = 0;
-		Con_Printf("*** Tx PLL not locked, is REFCLK present and Rx3 PI locked ?\n");
+		Con_Printf("*** Tx PLL of PHY %u not locked, is REFCLK present and Rx3 PI locked ?\n",phy_addr);
 	}
 	uVal = Cdr_ReadPart(phy_addr, CDR_VS_DEVICE_CONTROL, 8, 8); /* Read reset seq complete bit */
 	if (uVal == 0) {
 		status = 0;
-		Con_Printf("*** Part did not complete GB Tx or CDR reset sequence\n");
+		Con_Printf("*** Part PHY %u did not complete GB Tx or CDR reset sequence\n",phy_addr);
 	}
 //print "Enabling calibrated EQ offsets"
 //for lane in range(4):
@@ -1180,8 +1182,13 @@ Cdr_Recalibrate(uint16_t phy_addr)	// Olga
 uint8_t
 CDR_Recalibrate(uint8_t cdrId)
 {
+	bool result;
 	CDR *cdr = &gCDR[cdrId & 1];
-	return Cdr_Recalibrate(cdr->phyAddr);
+	result = Cdr_Recalibrate(cdr->phyAddr);
+	if(cdrId == CDR_ID_RX) {
+		Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
+	}
+	return result;
 }
 
 /**
@@ -1219,6 +1226,9 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 		uint8_t cdr = astrtoi16(argv[1]);
 		Con_Printf("Calling Olgas CDR_Recal for CDR %u\n", cdr);
 		Cdr_Recalibrate(cdr);
+		if(cdr == 1) {
+			Cdr_WriteReg(cdr, 1184, 0X0000);
+		}
 		return 0;
 	} else if ((argc == 3) && (strcmp(argv[2], "init") == 0)) {
 		uint8_t cdr = astrtoi16(argv[1]);
@@ -1228,7 +1238,7 @@ cmd_cdr(Interp * interp, uint8_t argc, char *argv[])
 	} else if ((argc == 3) && (strcmp(argv[2],"reset") == 0)) {
 		phyAddr = astrtoi16(argv[1]);
 		Cdr_SoftReset(phyAddr);
-	} else if ((argc == 3) && (strcmp(argv[2],"hardreset") == 0)) {
+	} else if ((argc == 2) && (strcmp(argv[1],"hardreset") == 0)) {
 		Cdr_HwReset();
 	} else if (argc == 3) {
 		phyAddr = astrtoi16(argv[1]);
@@ -1385,10 +1395,29 @@ void
 CDR_Init(const char *name)
 {
 	uint32_t i,lane;
-	CDR *cdr = &gCDR[0];
-	cdr->phyAddr = 1;
+	CDR *cdr;
+
 	CDR_RESET_DIR = 1;
 	CDR_RESET_DR = 1; 
+	Cdr_HwReset();
+
+	/* Initialize the Second CDR is the Transmitter */
+	cdr = &gCDR[1];
+	cdr->phyAddr = 0;
+
+	Cdr_SoftReset(cdr->phyAddr);
+	Cdr_Recalibrate(cdr->phyAddr);
+	Cdr_InitCdr(cdr->phyAddr);
+
+	/* Initialize the RX CDR */
+	cdr = &gCDR[0];
+	cdr->phyAddr = 1;
+
+	Cdr_SoftReset(cdr->phyAddr);
+	Cdr_Recalibrate(cdr->phyAddr);
+	Cdr_InitCdr(cdr->phyAddr);
+	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
+
 	Interp_RegisterCmd(&cdrCmd);
 	for(i = 0; i < array_size(gCdrRegister); i++) {
 		const CdrRegister *reg = &gCdrRegister[i];
@@ -1404,18 +1433,6 @@ CDR_Init(const char *name)
 		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"err_cntr64");
 		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"bert0.L%lu.%s",lane,"errCntr");
 	}
-	Cdr_SoftReset(cdr->phyAddr);
-	Cdr_Recalibrate(cdr->phyAddr);
-	Cdr_InitCdr(cdr->phyAddr);
-	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
-
-	/* Initialize the Second CDR is the Transmitter */
-	cdr = &gCDR[1];
-	cdr->phyAddr = 0;
-
-	Cdr_SoftReset(cdr->phyAddr);
-	Cdr_Recalibrate(cdr->phyAddr);
-	Cdr_InitCdr(cdr->phyAddr);
 
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;

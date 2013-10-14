@@ -135,9 +135,9 @@ main(void)
 	AD537x_ModInit("dac0");
 #endif
 	MDIO_Init();
+	PatTrig_Init("ptrig0");
 	Synth_Init("synth0",0x10aa);
 	CDR_Init("cdr0");
-	PatTrig_Init("ptrig0");
 	Timer_Start(&blinkTimer,500);
 	Skb_Init();
 	Tcp_Init();
