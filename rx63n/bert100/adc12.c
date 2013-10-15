@@ -113,7 +113,7 @@ INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit 
 static int8_t
 cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 {
-	uint32_t adval;
+	int32_t adval;
 	float temperature;
     	S12AD.ADANS0.WORD = 0;
     	S12AD.ADANS1.WORD = 0;
@@ -124,7 +124,7 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
 	temperature = (((adval * 3300) / 4096 - 1260) / 4.1) + 25 - 13;
-	Con_Printf("adval %u, temp %f\n",adval,temperature);
+	Con_Printf("adval %lu, temp %f\n",adval,temperature);
 	return 0;	
 }
 
