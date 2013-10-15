@@ -483,13 +483,102 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_RX),
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	},
-#if 0
-#define CDR_CDR2_TRIP(lane)                 (0x01a7000d + ((lane) << 24))
-#define CDR_PI_POS1_PISEL(lane)             (0x01a800cd + ((lane) << 24))
-#define CDR_PI_POS1_PIQUADR(lane)           (0x01a80089 + ((lane) << 24))
-#define CDR_PI_POS1_PICODE(lane)            (0x01a80007 + ((lane) << 24))
-#define CDR_SEC_ORDER_STATE(lane)           (0x01aa0004 + ((lane) << 24))
-#endif
+	{
+		.name = "L0.PiPos1Piquard",
+		.cdrRegId = CDR_PI_POS1_PIQUADR(0), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L1.PiPos1Piquard",
+		.cdrRegId = CDR_PI_POS1_PIQUADR(1), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L2.PiPos1Piquard",
+		.cdrRegId = CDR_PI_POS1_PIQUADR(2), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L3.PiPos1Piquard",
+		.cdrRegId = CDR_PI_POS1_PIQUADR(3), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L0.PiPos1Picode",
+		.cdrRegId = CDR_PI_POS1_PICODE(0), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L1.PiPos1Picode",
+		.cdrRegId = CDR_PI_POS1_PICODE(1), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L2.PiPos1Picode",
+		.cdrRegId = CDR_PI_POS1_PICODE(2), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L3.PiPos1Picode",
+		.cdrRegId = CDR_PI_POS1_PICODE(3), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L0.SecOrderState",
+		.cdrRegId = CDR_SEC_ORDER_STATE(0), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L1.SecOrderState",
+		.cdrRegId = CDR_SEC_ORDER_STATE(1), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L2.SecOrderState",
+		.cdrRegId = CDR_SEC_ORDER_STATE(2), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L3.SecOrderState",
+		.cdrRegId = CDR_SEC_ORDER_STATE(3), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L0.CdrTrip",
+		.cdrRegId = CDR_CDR2_TRIP(0), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L1.CdrTrip",
+		.cdrRegId = CDR_CDR2_TRIP(1), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L2.CdrTrip",
+		.cdrRegId = CDR_CDR2_TRIP(2), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
+	{
+		.name = "L3.CdrTrip",
+		.cdrRegId = CDR_CDR2_TRIP(3), 
+		.bfCdrSelectW = (1 << CDR_ID_RX),
+		.bfCdrSelectR = (1 << CDR_ID_RX),
+	},
 };
 
 /*
