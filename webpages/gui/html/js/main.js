@@ -28,10 +28,10 @@
                           "bert0.L0.currBeRatio","bert0.L1.currBeRatio","bert0.L2.currBeRatio","bert0.L3.currBeRatio",
                           "bert0.rxPllLock","bert0.txPllLock",
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
-                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr"); 
+                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr","bert0.L1.accTime"); 
   
-  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
-                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway"); 
+  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
+                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
   var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      
@@ -85,7 +85,8 @@
           }
          // bert0.L0.absErrCntr
       if (item.substr(9, 10)=="absErrCntr" ||  item.substr(9, 10)=="accErrCntr" ) {
-         value=value.toExponential();
+          //alert(item + "=" + value);
+          value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
           var my_arr=my_str.split("e");
@@ -101,6 +102,35 @@
      case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
+     
+     // "bert0.L0.accTime
+      case "bert0.L0.accTime":
+          //alert(value);
+     if (value!=0) {
+       /*   var wert=Number(value);
+          var    my_Tag = Math.floor(wert/86400);
+          var d = new Date(wert*1000);
+         
+     value = '%02d:%02d:%02d:%02d'.sprintf(my_Tag,d.getHours(), d.getMinutes(), d.getSeconds());
+     alert(value);*/
+          var wert=Number(value);
+      var    my_Tag = Math.floor(wert/86400);
+      wert=wert-my_Tag*86400;
+      var    my_Stunde= Math.floor(wert/3600);
+      wert=wert-my_Stunde*3600;
+      var    my_Minuten=Math.floor(wert/60);
+      var    my_Sek=Math.floor(wert-my_Minuten*60);
+      value= my_Tag+ ":" + my_Stunde + ":" + my_Minuten + ":" + my_Sek;
+      //alert(value);
+          } 
+     break;
+     
+     
+     case "system.temp":
+     if (value!=0) {
+      value=Math.round(Number(value) * 10)/ 10;
+          } 
+     break;
      
      case "bert0.L0.LolStat":
      if (value==0) {
@@ -511,7 +541,7 @@ function myDisableAuto()
 {
   
     for (i = 0; i < 4; i++){
-     item='cdr0.l'+i+'.prbs_autovr';
+     item='l'+i+'.prbs_autovr';
      if ($("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val()==1) {
           item='bert0.L'+i+'.patVerSel'; 
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);

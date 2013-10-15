@@ -83,7 +83,8 @@ var my_item=document.getElementById('emlAmp'+i+'.vg2');
 }
 
 }
-
+function Check_all() {
+    
 var my_all=document.getElementById('all');
 
 if (window.parent.all_tx) {
@@ -93,4 +94,5 @@ if (window.parent.all_tx) {
 	window.parent.myElement=window.parent.myVarTX2;
 	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX;
+}
 }

@@ -134,7 +134,7 @@ tr:nth-of-type(even) {
 
 /*Select*/
 select {
-	width: 180px;
+	width: 200px;
 	height: 32px;
 	padding: 5px;
 	font-size: 16px;
