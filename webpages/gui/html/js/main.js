@@ -28,7 +28,11 @@
                           "bert0.L0.currBeRatio","bert0.L1.currBeRatio","bert0.L2.currBeRatio","bert0.L3.currBeRatio",
                           "bert0.rxPllLock","bert0.txPllLock",
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
-                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr","bert0.L0.accTime"); 
+                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr","bert0.L0.accTime",
+                          "bert0.L0.PiPos1Piquadr","bert0.L1.PiPos1Piquadr","bert0.L2.PiPos1Piquadr","bert0.L3.PiPos1Piquadr",
+                          "bert0.L0.PiPos1Picode","bert0.L1.PiPos1Picode","bert0.L2.PiPos1Picode","bert0.L3.PiPos1Picode",
+                          "bert0.L0.SecOrderState","bert0.L1.SecOrderState","bert0.L2.SecOrderState","bert0.L3.SecOrderState",
+                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip" ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
@@ -259,7 +263,8 @@
      }
     
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
-          if(typeof var_id == "undefined") {
+     var variab=$("#frame").contents().find("#var_val").val(value);
+          if(typeof var_id == "undefined" && typeof variab != "undefined") {
                var_id=$("#frame").contents().find("#var_val").val(value);}
           else{
                $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
