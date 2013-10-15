@@ -33,7 +33,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -121,7 +121,6 @@
       var    my_Minuten=Math.floor(wert/60);
       var    my_Sek=Math.floor(wert-my_Minuten*60);
       value= my_Tag+ ":" + my_Stunde + ":" + my_Minuten + ":" + my_Sek;
-      alert(value);
           } 
      break;
      
