@@ -933,10 +933,10 @@ Cdr_InitCdr(uint16_t phy_addr)
 	Cdr_WriteReg(phy_addr, 513, 0X0000);
 	Cdr_WriteReg(phy_addr, 769, 0X0000);
 	Cdr_WriteReg(phy_addr, 1025, 0X0000);
-	Cdr_WriteReg(phy_addr, 258, 0X0002);
-	Cdr_WriteReg(phy_addr, 514, 0X0002);
-	Cdr_WriteReg(phy_addr, 770, 0X0002);
-	Cdr_WriteReg(phy_addr, 1026, 0X0002);
+	Cdr_WriteReg(phy_addr, 258, 0X0000);
+	Cdr_WriteReg(phy_addr, 514, 0X0000);
+	Cdr_WriteReg(phy_addr, 770, 0X0000);
+	Cdr_WriteReg(phy_addr, 1026, 0X0000);
 	Cdr_WriteReg(phy_addr, 384, 0X0004);
 	Cdr_WriteReg(phy_addr, 640, 0X0004);
 	Cdr_WriteReg(phy_addr, 896, 0X0004);
