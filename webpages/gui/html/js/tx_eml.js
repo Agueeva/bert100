@@ -46,10 +46,10 @@ function ClickUpCr(i,ud,sr,k){
 var my_item=document.getElementById('emlAmp'+i+'.vg2');
 switch(ud){
     case 1:
-        if((Number(my_item.value)+sr*0.01) < 1) {
+        if((Number(my_item.value)+sr*0.01) < 1.5) {
             my_item.value=Math.round((Number(my_item.value)+(sr*0.01)) * 100) / 100;
         }else {
-            my_item.value=1; }
+            my_item.value=1.5; }
     break;
     case 2:
         if((my_item.value-sr*0.01) > 0) {

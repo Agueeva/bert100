@@ -170,7 +170,7 @@
      if (value==0) {
       $("#frame").contents().find("#Mem0").attr('class','greenfield');
      }else{
-      $("#frame").contents().find("#Mem0").attr('class','orangfield');
+      $("#frame").contents().find("#Mem0").attr('class','redfield');
      }
      break;
 
@@ -178,7 +178,7 @@
      if (value==0) {
       $("#frame").contents().find("#Mem1").attr('class','greenfield');
      }else{
-      $("#frame").contents().find("#Mem1").attr('class','orangfield');
+      $("#frame").contents().find("#Mem1").attr('class','redfield');
      }
      break;
 
@@ -186,7 +186,7 @@
       if (value==0) {
       $("#frame").contents().find("#Mem2").attr('class','greenfield');
      }else{
-      $("#frame").contents().find("#Mem2").attr('class','orangfield');
+      $("#frame").contents().find("#Mem2").attr('class','redfield');
      }
      break;
 
@@ -194,7 +194,7 @@
       if (value==0) {
       $("#frame").contents().find("#Mem3").attr('class','greenfield');
      }else{
-      $("#frame").contents().find("#Mem3").attr('class','orangfield');
+      $("#frame").contents().find("#Mem3").attr('class','redfield');
      }
      break;
 
@@ -363,13 +363,15 @@ function createTreeMenu(id) {
 $(document).ready(function()
 {
                 
-        	//myElement=myVarSystem;
-                n=3;
-          laodpage("html/main.html","#frame");
+        	 myElement=myVarSystem;
+                n=2;
+		laodpage("html/system.html","#frame");
+              // n=3;
+          //laodpage("html/main.html","#frame");
 	  SocketNew();
 	//Click.
 	$( "#homeBut" ).click(function() {
-
+                
 		laodpage("html/main.html","#frame");
 		return false;
 	});
