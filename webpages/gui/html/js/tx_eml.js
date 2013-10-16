@@ -3,10 +3,10 @@ function ClickUp(i,ud,sr,k){
     var my_item=document.getElementById('emlAmp'+i+'.vg1');
     switch(ud){
         case 1:
-            if((Number(my_item.value)+sr*0.01) < 2.6) {
+            if((Number(my_item.value)+sr*0.01) < 2.8) {
                my_item.value=Math.round((Number(my_item.value)+(sr*0.01))* 100) / 100;
             }else {
-               my_item.value=2.6;
+               my_item.value=2.8;
             }
         break;
         case 2:
@@ -35,7 +35,7 @@ function TestVal(i){
 	}else {
 		
 		if(my_item.value < 1.8) { my_item.value=1.8;}
-		if(my_item.value > 2.6) { my_item.value=2.6;}
+		if(my_item.value > 2.8) { my_item.value=2.8;}
                 
 	}
 }
@@ -69,17 +69,14 @@ if (k==2) {
 }
 
 function TestValCr(i){
-// value=Math.round(value * 100) / 100;
 var my_item=document.getElementById('emlAmp'+i+'.vg2');
  	var item = "emlAmp"+i+".vg1";
-	//alert($("#"+item.replace(/[.]/g,'\\.')));
 	if (isNaN(my_item.value)) {
-		//$("#"+item.replace(/[.]/g,'\\.')).addClass("textfild_error");
 		
 	}else {
 		
 		if(my_item.value < 0) { my_item.value=0;}
-		if(my_item.value > 1) { my_item.value=1;}
+		if(my_item.value > 1.5) { my_item.value=1.5;}
 }
 
 }
