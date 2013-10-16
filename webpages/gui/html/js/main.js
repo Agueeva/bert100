@@ -37,7 +37,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS='ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -50,7 +50,6 @@
      if (typeof(socket) != "undefined") {delete socket;}
      socket = new WebSocket(urlWS);
 
- socket = new WebSocket(urlWS);
  socket.onopen = function() {
              //alert("Verbindung open");
              bl_Communication=true;
@@ -263,7 +262,7 @@
      }
     
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
-     var variab=$("#frame").contents().find("#var_val").val(value);
+     var variab=$("#frame").contents().find("#var_val").attr('id');
           if(typeof var_id == "undefined" && typeof variab != "undefined") {
                var_id=$("#frame").contents().find("#var_val").val(value);}
           else{
