@@ -28,26 +28,32 @@
 	<TD>
 	<div class="control">
 		<div class="control_elements">
-			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(1,1,1,2)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,2)"></button>
-		</div>	
-		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,2)"/></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,2)"></button>
+			
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(1,1,1,2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,2)"></button>
+			
+		</div>	
+		
 		<input class="textfild" type="text" name="emlAmp1.vg1" id="emlAmp1.vg1" value="0" size=3 readonly onChange="javascript: TestVal(1); window.parent.SaveVar(this,2,'Amp',1); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();">
 	</div>
 	</TD>
 	<TD>
 	<div class="control">
 		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1)"></button>
+			
+		</div>
+		<div class="control_elements">
 			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1)"></button>
 			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1)"></button>
+			
 		</div>	
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1)"></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1)"></button>	
-		</div>
+		
 		<input class="textfild" type="text" name="emlAmp2.vg1" id="emlAmp2.vg1" value="0" size=3 readonly onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>
 	</TD>
@@ -55,13 +61,16 @@
 	<TD>
 	<div class="control">
 		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1)"></button>
-		</div>	
-		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1)"></button>
+			
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1)"></button>
+			
+		</div>	
+		
 		<input class="textfild" type="text" name="emlAmp3.vg1" id="emlAmp3.vg1" value="0" size=3 readonly onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>
 	</TD>
@@ -69,13 +78,16 @@
 	<TD>
 	<div class="control">
 		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(4,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(4,2,1,1)"></button>
-		</div>	
-		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(4,1,10,1)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(4,2,10,1)"></button>
+			
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(4,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(4,2,1,1)"></button>
+			
+		</div>	
+		
 		<input class="textfild" type="text" name="emlAmp4.vg1" id="emlAmp4.vg1" value="0" size=3 readonly onChange="javascript: TestVal(4); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>
 	</TD>
@@ -86,14 +98,15 @@
 	<TH>Crossing</TH>
 	<TD>
 	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(1,1,1,2)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(1,2,1,2)"></button>
-		</div>	
+		
 		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUpCr(1,1,10,2)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUpCr(1,2,10,2)"></button>
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(1,1,1,2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(1,2,1,2)"></button>
+		</div>	
 		<input class="textfild" type="text" name="emlAmp1.vg2" id="emlAmp1.vg2" value="0" size=3 readonly onChange="javascript: TestValCr(1); window.parent.SaveVar(this,2,'Amp',1); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();">
 	</div>
 	</TD>
@@ -101,13 +114,14 @@
 	
 	<TD>
 	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(2,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(2,2,1,1)"></button>
-		</div>	
+			
 		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUpCr(2,1,10,1)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUpCr(2,2,10,1)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(2,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(2,2,1,1)"></button>
 		</div>
 		<input class="textfild" type="text" name="emlAmp2.vg2" id="emlAmp2.vg2" value="0" size=3 readonly onChange="javascript: TestValCr(2); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>
@@ -116,14 +130,15 @@
 	
 	<TD>
 	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(3,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(3,2,1,1)"></button>
-		</div>	
+		
 		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUpCr(3,1,10,1)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUpCr(3,2,10,1)"></button>
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(3,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(3,2,1,1)"></button>
+		</div>	
 		<input class="textfild" type="text" name="emlAmp3.vg2" id="emlAmp3.vg2" value="0" size=3 readonly onChange="javascript: TestValCr(3); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>
 	
@@ -131,14 +146,15 @@
 	
 	<TD>	
 	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(4,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(4,2,1,1)"></button>
-		</div>	
+		
 		<div class="control_elements">
 			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUpCr(4,1,10,1)"></button>
 			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUpCr(4,2,10,1)"></button>
 		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpCr(4,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpCr(4,2,1,1)"></button>
+		</div>	
 		<input class="textfild"  type="text" name="emlAmp4.vg2" id="emlAmp4.vg2" value="0" size=3 readonly onChange="javascript: TestValCr(4); window.parent.SaveVar(this,1,'Amp',1)">
 	</div>			
 	</TD>
