@@ -61,13 +61,13 @@
 	<TR ALIGN="left">
 		<TH>Errors:</TH>
 
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.absErrCntr"  Value="" readonly>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L0.absErrCntr"  Value="" readonly>
 		</TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.absErrCntr" Value="" readonly>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L1.absErrCntr" Value="" readonly>
 		</TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.absErrCntr" Value="" readonly>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L2.absErrCntr" Value="" readonly>
 		</TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.absErrCntr" Value="" readonly>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L3.absErrCntr" Value="" readonly>
 		</TD>
 	</TR>
 
@@ -85,6 +85,11 @@
 		</TD>
 	</TR>
 
+	<TR ALIGN="left">
+		<TD class="seperator" colspan=5></TD>
+		
+	</TR>
+	
 	<TR ALIGN="left">
 		<TH>Accumulated Errors:</TH>
 		
@@ -109,41 +114,23 @@
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accBeRatio"  Value="" readonly>
 		</TD>
 	</TR>
+<TR ALIGN="left">
+		<TD class="seperator" colspan=5></TD>
+		
+	</TR>
 
-
-<!--<TR ALIGN="left" VALIGN="middle">
-<TH>Rate per:</TH>
-<TD>
-	<SELECT class="selectkl"  ID="rp0" onChange="javascript: ">
-		<OPTION VALUE="0">&nbsp;&nbsp;</OPTION>
-		<OPTION VALUE="10">10</OPTION>
-		<OPTION VALUE ="100">100</OPTION>
-		<OPTION VALUE ="1000">1000</OPTION>
-</SELECT><INPUT class="textfild3" TYPE="Text" Size=11  ID="bert0.L0.beRate"  Value="" readonly></TD>
-<TD>
-	<SELECT class="selectkl"  ID="rp1" onChange="javascript: ">
-		<OPTION VALUE="0">&nbsp;&nbsp;</OPTION>
-		<OPTION VALUE="10">10</OPTION>
-		<OPTION VALUE ="100">100</OPTION>
-		<OPTION VALUE ="1000">1000</OPTION>
-</SELECT><INPUT class="textfild3" TYPE="Text" Size=11  ID="bert0.L1.beRate"  Value="" readonly></TD>
-<TD>
-	<SELECT class="selectkl"  ID="rp2" onChange="javascript: ">
-		<OPTION VALUE="0">&nbsp;&nbsp;</OPTION>
-		<OPTION VALUE="10">10</OPTION>
-		<OPTION VALUE ="100">100</OPTION>
-		<OPTION VALUE ="1000">1000</OPTION>
-</SELECT><INPUT class="textfild3" TYPE="Text" Size=11  ID="bert0.L2.beRate"  Value="" readonly></TD>
-<TD>
-	<SELECT class="selectkl"  ID="rp3" onChange="javascript: ">
-		<OPTION VALUE="0">&nbsp;&nbsp;</OPTION>
-		<OPTION VALUE="10">10</OPTION>
-		<OPTION VALUE ="100">100</OPTION>
-		<OPTION VALUE ="1000">1000</OPTION>
-</SELECT><INPUT class="textfild3" TYPE="Text" Size=11  ID="bert0.L3.beRate"  Value="" readonly></TD>
-</TR> -->
+	<!-- /Test Time elapsed-->
 	<TR ALIGN="left" VALIGN="middle">
-		<TH>Sync|Sync-Mem:</TH>
+		<TH>Time elapsed, "d:h:m:s":</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accTime"  Value="" ></TD>
+		<TD><button class="buttonGreen" type="button" ID="ButStart" onclick="javascript: clickStart();">Start</button></TD>
+		<TD><button class="buttonRed" type="button" ID="ButStop" onclick="javascript: clickStop();">Stop</button></TD>
+	<TD></TD>
+	</TR>
+<TR ALIGN="left" VALIGN="middle">
+		<TH colspan=5 ><b class="headline2">Status</b></TH></TR>
+		<TR ALIGN="left">
+		<TH>Sync | Sync-Mem:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
 		<INPUT class="textfild" TYPE="Text" size=5  ID="Mem0"  Value=""></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss1"  Value="" readonly>
@@ -154,38 +141,52 @@
 		<INPUT class="textfild" TYPE="Text"  size=5  ID="Mem3"  Value=""></TD>
 	</TR>
 
-	<TR ALIGN="left" VALIGN="middle">
+	<TR ALIGN="left" >
 		<TH>Pattern Sync:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock0"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock1"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock2"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock3"  Value="" readonly></TD>
 	</TR>
- 
-
-	<!--Prozent-->
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>Input EQ State:</TH>
-		
+ 	<!--Prozent-->
+	<TR ALIGN="left" >
+		<TH>Input EQ State:</TH>		
 		<TD class="prozentBg"> <div class="wrapprozent">
 			<div class="eqstatefield" ID="bert0.L0.EqState_st"></div><INPUT class="eqstatetextfield" TYPE="Text" ID="bert0.L0.EqState"  Value="" readonly>
 		</div></TD>
-		
 		<TD class="prozentBg"><div class="wrapprozent">
 			<div class="eqstatefield" ID="bert0.L1.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L1.EqState"  Value="" readonly>
 		</div></TD>
-		
 		<TD class="prozentBg"><div class="wrapprozent">
 			<div class="eqstatefield" ID="bert0.L2.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L2.EqState"  Value="" readonly>
 		</div></TD>
-		
 		<TD class="prozentBg"><div class="wrapprozent">
 			<div class="eqstatefield" ID="bert0.L3.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L3.EqState"  Value="" readonly>
 		</div></TD>
-
 	</TR>
-	
-	<!--Test  -->
+	<TR ALIGN="left" >
+		<TH>TX-PLL lock | X-PLL lock:</TH>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
+		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
+		<TD></TD>
+		<TD></TD>
+	</TR>
+
+<TR ALIGN="left">
+		<TD class="seperator" colspan=5></TD>
+		
+	</TR>
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Data Rate:</TH>
+		<TD><SELECT  NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
+			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
+			<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
+		</SELECT></TD>
+		<TD></TD>
+		<TD></TD>
+		<TD></TD>
+	</TR>
+<!--Test  -->
 	<TR ALIGN="left" VALIGN="middle">
 		<TH>PiPos1Piquard:</TH>
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.PiPos1Piquadr"  Value="" readonly></TD>
@@ -217,42 +218,8 @@
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.CdrTrip"  Value="" readonly></TD>
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.CdrTrip"  Value="" readonly></TD>
 	</TR>
+	
 </TABLE>
-
-	
-<div class="headline">Measurement</div>
-
-	
-<!-- Second Table-->
-<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="75%">
-	<!-- /Test Time elapsed-->
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>Time elapsed, "d:h:m:s":</TH>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accTime"  Value="" ></TD>
-		<TD><button class="buttonGreen" type="button" ID="ButStart" onclick="javascript: clickStart();">Start</button></TD>
-		<TD><button class="buttonRed" type="button" ID="ButStop" onclick="javascript: clickStop();">Stop</button></TD>
-	</TR>
-
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>TX-PLL lock  |  RX-PLL lock:</TH>
-		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
-		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
-		<TD></TD>
-	</TR>
-
-	
-
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>Data Rate:</TH>
-		<TD><SELECT  NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
-			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
-			<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
-		</SELECT></TD>
-		<TD></TD>
-		<TD></TD>
-	</TR>
-</TABLE>
-
 </FORM>
 </div>
 </body>
