@@ -2,8 +2,16 @@
 	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 
 </head>
-<body onload="javascript: ErrStart();">
-<div class="headline">BER Measurement</div>
+<body  onload="javascript: ErrStart();">
+<div class="headline">BER Measurement
+	<div class="datarate">
+		Data Rate:
+		<SELECT  NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
+			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
+			<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
+		</SELECT>
+	</div>	
+</div>
 
 <div name="wrap_BER_Measurement">
 <FORM  ID="Form_PG">
@@ -27,7 +35,6 @@
 			<OPTION VALUE ="6">2E15-1</OPTION>
 			<OPTION VALUE ="5">2E23-1</OPTION>
 			<OPTION VALUE ="4">2E31-1</OPTION>
-			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 		</SELECT></TD>
 
 		<TD><SELECT  ID="bert0.L1.patVerSel"  disabled>
@@ -36,7 +43,6 @@
 			<OPTION VALUE ="6">2E15-1</OPTION>
 			<OPTION VALUE ="5">2E23-1</OPTION>
 			<OPTION VALUE ="4">2E31-1</OPTION>
-			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 		</SELECT></TD>
 
 		<TD><SELECT  ID="bert0.L2.patVerSel"  disabled>
@@ -45,7 +51,6 @@
 			<OPTION VALUE ="6">2E15-1</OPTION>
 			<OPTION VALUE ="5">2E23-1</OPTION>
 			<OPTION VALUE ="4">2E31-1</OPTION>
-			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 		</SELECT></TD>
 
 		<TD><SELECT  ID="bert0.L3.patVerSel"  disabled>
@@ -54,7 +59,6 @@
 			<OPTION VALUE ="6">2E15-1</OPTION>
 			<OPTION VALUE ="5">2E23-1</OPTION>
 			<OPTION VALUE ="4">2E31-1</OPTION>
-			<OPTION VALUE ="2">8:8 Square wave pattern</OPTION>
 		</SELECT></TD>
 	</TR>
 	
@@ -72,7 +76,7 @@
 	</TR>
 
 	<TR ALIGN="left">
-		<TH>Current BER<br>Gating: <INPUT class="textfild" TYPE="Text"  ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
+		<TH>Current BER<br>Gating: <INPUT class="textfild_small" TYPE="Text"  ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
 		<INPUT  TYPE="Hidden"  ID="bert0.berMeasWin_ms"  Value="" ></TH>
 	
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.currBeRatio"  Value="" readonly>
@@ -85,8 +89,8 @@
 		</TD>
 	</TR>
 
-	<TR ALIGN="left">
-		<TD class="seperator" colspan=5></TD>
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank_big" colspan=5></TD>
 		
 	</TR>
 	
@@ -114,8 +118,8 @@
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accBeRatio"  Value="" readonly>
 		</TD>
 	</TR>
-<TR ALIGN="left">
-		<TD class="seperator" colspan=5></TD>
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank" colspan=5></TD>
 		
 	</TR>
 
@@ -127,8 +131,13 @@
 		<TD><button class="buttonRed" type="button" ID="ButStop" onclick="javascript: clickStop();">Stop</button></TD>
 	<TD></TD>
 	</TR>
-<TR ALIGN="left" VALIGN="middle">
-		<TH colspan=5 ><b class="headline2">Status</b></TH></TR>
+	
+	</TABLE>
+
+	<div class="headline">Status</div>
+	
+	<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+	<TR ALIGN="left" VALIGN="middle">
 		<TR ALIGN="left">
 		<TH>Sync | Sync-Mem:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
@@ -172,11 +181,11 @@
 		<TD></TD>
 	</TR>
 
-<TR ALIGN="left">
-		<TD class="seperator" colspan=5></TD>
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank_big" colspan=5></TD>
 		
 	</TR>
-	<TR ALIGN="left" VALIGN="middle">
+<!--	<TR ALIGN="left" VALIGN="middle">
 		<TH>Data Rate:</TH>
 		<TD><SELECT  NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
 			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
@@ -186,7 +195,7 @@
 		<TD></TD>
 		<TD></TD>
 	</TR>
-<!--Test  -->
+Test  -->
 	<TR ALIGN="left" VALIGN="middle">
 		<TH>PiPos1Piquard:</TH>
 		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.PiPos1Piquadr"  Value="" readonly></TD>
