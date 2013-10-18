@@ -145,8 +145,8 @@ struct Tcb {
 #if 0
 	uint32_t RCV_WND;	/* Receive window */
 	uint32_t RCV_UP;	/* Receive urgent pointer */
-
 #endif				/*  */
+
 	uint8_t nxtFlgs;
 	bool txDataAvail;	/* Set by the upper protocol layer if data can be fetched */
 	bool inUse;
@@ -835,6 +835,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 		}
 		if (!tcb) {
 			DBG(Con_Printf("No ssock, ignoring\n"));
+			Con_Printf("No TCB, ignoring\n");
 			return;
 		}
 		tcb->srcPort = ntohs(tcpHdr->srcPort);
@@ -853,7 +854,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 		 * and SYN the OWN initial sequence number
 		 *********************************************************************************
 		 */
-		Enqueue_Retransmit(tcb, TCPFLG_SYN | TCPFLG_ACK, NULL, 0, tcb->SND_NXT, 2);
+		Enqueue_Retransmit(tcb, TCPFLG_SYN | TCPFLG_ACK, NULL, 0, tcb->SND_NXT, 3);
 		Tcp_Send(tcb, TCPFLG_SYN | TCPFLG_ACK, NULL, 0);
 		TCB_Unlock(tcb);
 		return;
@@ -1110,9 +1111,9 @@ cmd_tcp(Interp * interp, uint8_t argc, char *argv[])
 	uint16_t i;
 	for (i = 0; i < array_size(tcpConnection); i++) {
 		Tcb *tcb = &tcpConnection[i];
-		Con_Printf("TCB %u, inUse %u, busy %u, hasLock %u, tryLock %u, ip %u.%u.%u.%u\n", 
+		Con_Printf("TCB %u, inUse %u, busy %u, hasLock %u, tryLock %u, ip %u.%u.%u.%u, IRS %lu\n", 
 			i, tcb->inUse, tcb->busy,tcb->hasLockLine,tcb->tryLockLine,
-			tcb->ipAddr[0],tcb->ipAddr[1],tcb->ipAddr[2],tcb->ipAddr[3]);
+			tcb->ipAddr[0],tcb->ipAddr[1],tcb->ipAddr[2],tcb->ipAddr[3],tcb->IRS);
 	}
 	return 0;
 }
