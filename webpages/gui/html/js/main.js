@@ -3,13 +3,13 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
-  var my_sek=200;
+  var my_sek=250;
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
   var myVarPattern= new Array("bert0.L0.prbsPatGenSel","bert0.L1.prbsPatGenSel","bert0.L2.prbsPatGenSel","bert0.L3.prbsPatGenSel",
                               "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
-                              "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  //,"Loopback_en","tx_disable","pat_ver_en","pat_gen_en","error_insert");
+                              "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  
   var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel"); 
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
 			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
@@ -37,7 +37,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //  'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -57,7 +57,7 @@
 }
      socket.onclose = function()
      {
-		alert('Verbindung unterbrochen');
+		//alert('Verbindung unterbrochen');
 		bl_Communication=false;
                 my_Interval=clearInterval(my_Interval);
 }
@@ -363,11 +363,11 @@ function createTreeMenu(id) {
 $(document).ready(function()
 {
                 
-        	 myElement=myVarSystem;
-                n=2;
-		laodpage("html/system.html","#frame");
-              // n=3;
-          //laodpage("html/main.html","#frame");
+        	// myElement=myVarSystem;
+                //n=2;
+		//laodpage("html/system.html","#frame");
+               n=3;
+          laodpage("html/main.html","#frame");
 	  SocketNew();
 	//Click.
 	$( "#homeBut" ).click(function() {

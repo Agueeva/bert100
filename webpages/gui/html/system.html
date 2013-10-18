@@ -1,5 +1,4 @@
 <LINK href="css/subpages.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/valid.js" ></script>	
 <div class="headline">System</div>
 
 <div name="wrap_System">
@@ -41,15 +40,15 @@
 	</TR>
 <TR ALIGN="left" VALIGN="middle">
 <TH>FAN speed:</TH>
-<TD><input class="textfildsys" type="text" name="fanco.fan0.rpm" id="fanco.fan0.rpm" value="0" size=15 readonly </TD>
-<TD><input class="textfildsys" type="text" name="fanco.fan1.rpm" id="fanco.fan1.rpm" value="0" size=15 readonly </TD>
-<TD><input class="textfildsys" type="text" name="fanco.fan2.rpm" id="fanco.fan2.rpm" value="0" size=15 readonly </TD>
+<TD><input class="textfildsys" type="text"  id="fanco.fan0.rpm" value="0" size=15 readonly> </TD>
+<TD><input class="textfildsys" type="text"  id="fanco.fan1.rpm" value="0" size=15 readonly></TD>
+<TD><input class="textfildsys" type="text"  id="fanco.fan2.rpm" value="0" size=15 readonly> </TD>
 </TR>
 
 
 <TR ALIGN="left">
 <TH>Chassis Temperature, &deg;C:</TH>
-<TD><input class="textfildsys" type="text" name="temp0" id="system.temp" value="" size=3 readonly </TD>
+<TD><input class="textfildsys" type="text"  id="system.temp" value="" size=3 readonly> </TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
@@ -62,75 +61,24 @@
 
 <TR ALIGN="left">
 <TH>IP address:</TH>
-<TD><input class="textfildsys" type="text" name="system.ip" id="system.ip" size="15" maxlength="15" readonly onChange="javascript: CheckIP(this)"></TD>
+<TD><input class="textfildsys" type="text"  id="system.ip" size="15" maxlength="15" readonly ></TD>
 </TR>
 
 <TR ALIGN="left">
 <TH>Netmask:</TH>
-<TD><input class="textfildsys" type="text" name="Netmask" id="system.netmask" size="15" maxlength="15" readonly onChange="javascript: CheckNetmask(this)"></TD>
+<TD><input class="textfildsys" type="text"  id="system.netmask" size="15" maxlength="15" readonly ></TD>
 </TR>
 
 <TR ALIGN="left">
 <TH>Gateway:</TH>
-<TD><input class="textfildsys" type="text" name="system.gateway" id="system.gateway" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
+<TD><input class="textfildsys" type="text"  id="system.gateway" size="15" maxlength="15" readonly ></TD>
 </TR>
 
 <TR ALIGN="left">
 <TH>MAC Adresse:</TH>
-<TD><input class="textfildsys" type="text" name="system.mac" id="system.mac" size="15" maxlength="15" readonly onChange="javascript: CheckGateway(this)"></TD>
+<TD><input class="textfildsys" type="text"  id="system.mac" size="15" maxlength="15" readonly ></TD>
 </TR>
 
-<TR ALIGN="left">
-<TH>Time refresh, msec:</TH>
-<TD><input class="textfildsys" type="text" name="timeRefr" id="timeRefr" size="15" maxlength="15"  onChange="javascript: window.parent.my_sek=Number(this.value);"></TD>
-</TR>
-
-<!--
-<tr><td width="30%">IP address</td><td >
-<input type="text" name="IP" size="15" maxlength="15"></td></tr>
-<tr><td width="30%">Netmask</td><td width="70%"> <input type="text" name="Netmask" size="15" maxlength="15"></td></tr>
-<tr><td width="30%">Gateway</td><td width="70%"> <input type="text" name="Gateway" size="15" maxlength="15"></td></tr>
--->
 </TABLE>
 </FORM>
 </div>
-<script type="text/javascript">
-	<!--
-document.getElementById('timeRefr').value=window.parent.my_sek;	
-var iperrmsg = " is not a valid IP address."
-function CheckIP(form)
-{
-if( !verifyIP(form.value) )
-{
-alert(form.value + iperrmsg);
-form.focus();
-
-}}
-
-function CheckNetmask(form)
-{
-if( form.value.length > 0 )
-{
-if( !verifyNetmask(form.value) )
-{
-alert(form.value + iperrmsg);
-form.focus();
-
-}
-}
-
-}
-function CheckGateway(form)
-{
-if( form.value.length > 0 )
-{
-if( !verifyNetmask(form.value) )
-{
-alert(form.value + iperrmsg);
-form.focus();
-
-}
-}
-}
--->
-	</script>
