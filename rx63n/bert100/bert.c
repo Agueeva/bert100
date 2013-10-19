@@ -555,32 +555,6 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_RX),
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	},
-#if 0
-	{
-		.name = "L0.CdrTrip",
-		.cdrRegId = CDR_CDR2_TRIP(0), 
-		.bfCdrSelectW = (1 << CDR_ID_RX),
-		.bfCdrSelectR = (1 << CDR_ID_RX),
-	},
-	{
-		.name = "L1.CdrTrip",
-		.cdrRegId = CDR_CDR2_TRIP(1), 
-		.bfCdrSelectW = (1 << CDR_ID_RX),
-		.bfCdrSelectR = (1 << CDR_ID_RX),
-	},
-	{
-		.name = "L2.CdrTrip",
-		.cdrRegId = CDR_CDR2_TRIP(2), 
-		.bfCdrSelectW = (1 << CDR_ID_RX),
-		.bfCdrSelectR = (1 << CDR_ID_RX),
-	},
-	{
-		.name = "L3.CdrTrip",
-		.cdrRegId = CDR_CDR2_TRIP(3), 
-		.bfCdrSelectW = (1 << CDR_ID_RX),
-		.bfCdrSelectR = (1 << CDR_ID_RX),
-	},
-#endif
 };
 
 /*
@@ -965,10 +939,10 @@ PVCdrTrip_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	int32_t value = 0;	
 	float ppm;
 	unsigned int i;
-	for(i = 0; i < 8; i++) {
+	for(i = 0; i < 4; i++) {
        		value += CDR_Read(CDR_ID_RX,cdrRegId);
 	}
-	ppm = (value >> 3) - 8192;
+	ppm = (value >> 2) - 8192;
 	bufP[f32toa(ppm, bufP,  maxlen)] = 0;
 	return true;
 }

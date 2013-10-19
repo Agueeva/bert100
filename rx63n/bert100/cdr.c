@@ -83,6 +83,8 @@
 typedef struct CDR {
 	uint64_t berCntr[4];
 	uint8_t phyAddr;
+	bool cdrAlive;
+	Timer aliveCheckTimer;
 } CDR;
 
 static CDR gCDR[2];
@@ -1343,27 +1345,6 @@ CDR_GetErrCnt(uint8_t cdrID, uint8_t lane)
 	return cdr->berCntr[lane];
 }
 
-static bool
-PVBerCntr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
-{
-	CDR *cdr = cbData;
-	uint32_t lane = adId;
-	uint64_t value = cdr->berCntr[lane];
-        bufP[uitoa64(value,bufP)] = 0;
-	return true;
-}
-
-static bool
-PVBerCntr_Set(void *cbData, uint32_t adId, const char *strP)
-{
-	CDR *cdr = cbData;
-	uint64_t value;
-	uint32_t lane = adId;
-	value  = astrtoi64(strP);
-	cdr->berCntr[lane] = value;
-	return true;
-}
-
 /**
  *****************************************************************
  * Timer Interrupt routine for reading the error rates
@@ -1376,6 +1357,9 @@ Excep_CMT1_CMI1(void)
 	unsigned int i;
 	CDR *cdr = &gCDR[0];
 	ENABLE_IRQ();
+	if(!cdr->cdrAlive) {
+		return;
+	}
 	MDIO_Address(cdr->phyAddr, DEVTYPE, CDR_LANE0_ERROR_COUNTER);
 	for(i = 0; i < 4; i++) {
 		uint16_t errCnt;
@@ -1384,6 +1368,24 @@ Excep_CMT1_CMI1(void)
 	}
 }
 
+/**
+ ************************************************************************************
+ *
+ ************************************************************************************
+ */
+static void
+Cdr_AliveCheck(void *eventData)
+{
+	CDR *cdr = eventData;
+	uint16_t uVal;
+	Timer_Start(&cdr->aliveCheckTimer,2000);
+	uVal = Cdr_ReadPart(cdr->phyAddr, CDR_VS_DEVICE_IDENTIFIER3, 15, 4);
+	if (uVal == 0x740) {
+		cdr->cdrAlive = true;
+	} else {
+		cdr->cdrAlive = false;
+	}
+}
 /*
  ************************************************************************************
  * Zum Webinterface exportierte Variablen:
@@ -1408,6 +1410,8 @@ CDR_Init(const char *name)
 	Cdr_SoftReset(cdr->phyAddr);
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);
+	Timer_Init(&cdr->aliveCheckTimer,Cdr_AliveCheck,cdr);
+	Timer_Start(&cdr->aliveCheckTimer,4000);
 
 	/* Initialize the RX CDR */
 	cdr = &gCDR[0];
@@ -1417,6 +1421,8 @@ CDR_Init(const char *name)
 	Cdr_Recalibrate(cdr->phyAddr);
 	Cdr_InitCdr(cdr->phyAddr);
 	Cdr_WriteReg(cdr->phyAddr, 1184, 0X0000);
+	Timer_Init(&cdr->aliveCheckTimer,Cdr_AliveCheck,cdr);
+	Timer_Start(&cdr->aliveCheckTimer,4000);
 
 	Interp_RegisterCmd(&cdrCmd);
 	for(i = 0; i < array_size(gCdrRegister); i++) {
@@ -1429,11 +1435,6 @@ CDR_Init(const char *name)
 			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
 		}
 	}
-	for(lane = 0; lane < 4; lane++) {
-		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"%s.l%lu.%s",name,lane,"err_cntr64");
-		PVar_New(PVBerCntr_Get,PVBerCntr_Set,cdr,lane ,"bert0.L%lu.%s",lane,"errCntr");
-	}
-
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
