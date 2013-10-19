@@ -555,6 +555,7 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_RX),
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	},
+#if 0
 	{
 		.name = "L0.CdrTrip",
 		.cdrRegId = CDR_CDR2_TRIP(0), 
@@ -579,6 +580,7 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_RX),
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	},
+#endif
 };
 
 /*
@@ -938,29 +940,6 @@ static bool
 PVLatchedLol_Set(void *cbData, uint32_t adId, const char *strP)
 {
 	return false;
-#if 0
-        Bert *bert = cbData;
-	uint8_t lane = adId;
-	uint32_t regId = 0;
-	uint32_t value = astrtoi16(strP);
-	switch(lane) {
-		case 0:
-			regId =	CDR_L0_LATCHED_LOL;
-			break;
-		case 1:
-			regId = CDR_L1_LATCHED_LOL; 
-			break;
-		case 2:
-			regId = CDR_L2_LATCHED_LOL;
-			break;
-		case 3:
-			regId = CDR_L3_LATCHED_LOL;
-			break;
-	}
-	CDR_Read(CDR_ID_RX,regId); // throw away the result, Clear on read
-	bert->pvLatchedLol[lane] = !!value; 
-	return true;
-#endif
 }
 
 static bool
@@ -977,6 +956,21 @@ Bert_RecalCdrProc(void *eventData)
 {
 	CDR_Recalibrate(CDR_ID_TX);
 	CDR_Recalibrate(CDR_ID_RX);
+}
+
+static bool 
+PVCdrTrip_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint32_t cdrRegId = adId;
+	int32_t value = 0;	
+	float ppm;
+	unsigned int i;
+	for(i = 0; i < 8; i++) {
+       		value += CDR_Read(CDR_ID_RX,cdrRegId);
+	}
+	ppm = (value >> 3) - 8192;
+	bufP[f32toa(ppm, bufP,  maxlen)] = 0;
+	return true;
 }
 
 static bool
@@ -1090,6 +1084,8 @@ Bert_Init(void)
 		PVar_New(PVBeratio_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accBeRatio");
 		PVar_New(PVRelErrCntr_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accErrCntr");
 		PVar_New(PVAccMeasValid_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accMeasValid");
+	
+		PVar_New(PVCdrTrip_Get,NULL,bert,CDR_CDR2_TRIP(ch) ,"%s.L%lu.%s",name,ch,"CdrTrip");
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
