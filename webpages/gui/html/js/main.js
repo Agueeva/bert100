@@ -35,7 +35,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -73,6 +73,15 @@
          myCh="#Loss"+item.substr(7, 1);
           if ( $("#frame").contents().find(myCh).attr('class')=='redfield') {
                value="--";
+               $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 50+"%");
+          }else {
+               if (value < -200){
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 2+"%");
+               }else if( value > 200) {
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 99+"%");
+               }else{
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', ((value+200)/4)+"%");
+               }
           }
           }
           
@@ -278,8 +287,8 @@
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
      var variab=$("#frame").contents().find("#var_val").attr('id');
           if(typeof var_id == "undefined" && typeof variab != "undefined") {
-               var_id=$("#frame").contents().find("#var_val").val(value);}
-          else{
+               var_id=$("#frame").contents().find("#var_val").val(value);
+               }else{
                $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
           if (myQueueBool) {  
                window_onload_variable();}      
