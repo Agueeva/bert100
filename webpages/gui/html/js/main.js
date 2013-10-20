@@ -426,21 +426,7 @@ $(document).ready(function()
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
-        $( "#Variables" ).click(function() {
-		n=3;
-		laodpage("html/variablen.html","#frame");
-		return false;
-	});
-        $( "#VariablesDAC0" ).click(function() {
-		n=3;
-		laodpage("html/variablendac0.html","#frame");
-		return false;
-	});
-        $( "#VariablesADC12" ).click(function() {
-		n=3;
-		laodpage("html/variablenadc12.html","#frame");
-		return false;
-	});
+      
         $( "#MeasureBut" ).click(function() {
 		myElement=myVarErr;
                 n=2;
