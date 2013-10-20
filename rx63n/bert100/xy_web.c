@@ -31,6 +31,9 @@
 #define REALM	"Munich Instruments C-BERT"
 #endif
 
+#define USERNAME 	"cbertran1"
+#define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "bert" */
+
 char *content_string[] = {
 	"text/html",
 	"image/gif",
@@ -592,6 +595,7 @@ execute_web_request(WebCon * wc, char *line)
 		wc->http_state = HTS_GET;
 		if (!line)
 			return;
+		Con_Printf("Web Request: %s\n",line);
 		wc->argc = split_args(line, MAX_PAGEARGS, wc->argv);
 		if (!wc->argc)
 			return;
@@ -805,7 +809,7 @@ WebServ_DataSrc(void *eventData, uint32_t fpos, void **_buf, uint16_t maxlen)
 				Tcp_Close(wc->tcb);
 				return 0;
 			}
-			//Con_Printf("\nHandover to WebSocket Server\n");
+			Con_Printf("\nHandover to WebSocket Server\n");
 			ws->tcb = wc->tcb;
 			Tcb_RegisterOps(ws->tcb, &websockTcbOps, ws);
 			Tcb_SetMaxWinSize(ws->tcb,WS_TCP_MAX_WIN_SZ);
@@ -1255,9 +1259,9 @@ XY_NewWebServer(void)
 	wserv->rqHandlerHash = StrHash_New(16);
 	Web_PoolsInit();
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
-	XY_WebAddMD5Auth(wserv, "/sd/", REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
 	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
-	XY_WebAddMD5Auth(wserv, "/", REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
 	return wserv;
 }
 
@@ -1667,7 +1671,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 {
 	wops->eventData = wopsServData;
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
-	//XY_WebAddMD5Auth(wserv, path, REALM, "ernie", "3de0746a7d2762a87add40dac2bc95a0");	/* Passwd is "bert" */
+	XY_WebAddMD5Auth(wserv, path, REALM, USERNAME, MD5PASS);
 }
 
 /**
