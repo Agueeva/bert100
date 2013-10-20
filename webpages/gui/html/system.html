@@ -1,6 +1,8 @@
-<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
-<div class="headline">System</div>
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 
+</head>
+<body  onload="javascript: onStart();">
 <div name="wrap_System">
 <FORM  ID="Form_PG">
 <TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
@@ -82,3 +84,20 @@
 </TABLE>
 </FORM>
 </div>
+</body>
+
+<script type="text/javascript">
+	<!--
+var my_Inter, my_sek;
+my_sek= 500;
+function onStart(){	
+         setTimeout(StartInterval, 500);
+	}
+function StartInterval(){
+		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
+                 my_Inter=setInterval(window.parent.window_onload,my_sek);
+		}
+		-->
+</script>
+		
+		

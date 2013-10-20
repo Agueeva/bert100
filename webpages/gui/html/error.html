@@ -139,7 +139,7 @@
 	<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
 	<TR ALIGN="left" VALIGN="middle">
 		<TR ALIGN="left">
-		<TH>Sync | Sync-Mem:</TH>
+		<TH>Sync Los |<br>Sync Los mem:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
 		<INPUT class="textfild" TYPE="Text" size=5  ID="Mem0"  Value=""></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Loss1"  Value="" readonly>
@@ -151,7 +151,7 @@
 	</TR>
 
 	<TR ALIGN="left" >
-		<TH>Pattern Sync:</TH>
+		<TH>Pattern Sync Los:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock0"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock1"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="Lock2"  Value="" readonly></TD>
@@ -159,22 +159,65 @@
 	</TR>
  	<!--Prozent-->
 	<TR ALIGN="left" >
-		<TH>Input EQ State:</TH>		
-		<TD class="prozentBg"> <div class="wrapprozent">
-			<div class="eqstatefield" ID="bert0.L0.EqState_st"></div><INPUT class="eqstatetextfield" TYPE="Text" ID="bert0.L0.EqState"  Value="" readonly>
+		<TH>Input Signal Quality<br>(EQ State):</TH>		
+		<TD> <div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L0.EqState_st"></div><INPUT class="eqstatetextfield" TYPE="Text" ID="bert0.L0.EqState"  Value="--" readonly>
 		</div></TD>
-		<TD class="prozentBg"><div class="wrapprozent">
-			<div class="eqstatefield" ID="bert0.L1.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L1.EqState"  Value="" readonly>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L1.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L1.EqState"  Value="--" readonly>
 		</div></TD>
-		<TD class="prozentBg"><div class="wrapprozent">
-			<div class="eqstatefield" ID="bert0.L2.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L2.EqState"  Value="" readonly>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L2.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L2.EqState"  Value="--" readonly>
 		</div></TD>
-		<TD class="prozentBg"><div class="wrapprozent">
-			<div class="eqstatefield" ID="bert0.L3.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L3.EqState"  Value="" readonly>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield" ID="bert0.L3.EqState_st"> </div><INPUT class="eqstatetextfield" TYPE="Text"  ID="bert0.L3.EqState"  Value="--" readonly>
 		</div></TD>
 	</TR>
+	
 	<TR ALIGN="left" >
-		<TH>TX-PLL lock | X-PLL lock:</TH>
+		<TH>Recovered CLK dev (ppm):</TH>
+		<TD>
+		<div class="cDRTripFeld">
+			<img src=".\img\red_left.png" >
+			<img class="cDRTripBgMid" src=".\img\mid_marker.png" >  
+			<img class="cDRTripBgRight" src=".\img\red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L0.CdrTrip_line" src=".\img\line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L0.CdrTrip"  Value="--" readonly>
+		</div></TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src=".\img\red_left.png" >
+			<img class="cDRTripBgMid" src=".\img\mid_marker.png" >  
+			<img class="cDRTripBgRight" src=".\img\red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L1.CdrTrip_line" src=".\img\line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L1.CdrTrip"  Value="--" readonly>
+		</div></TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src=".\img\red_left.png" >
+			<img class="cDRTripBgMid" src=".\img\mid_marker.png" >  
+			<img class="cDRTripBgRight" src=".\img\red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L2.CdrTrip_line" src=".\img\line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L2.CdrTrip"  Value="--" readonly>
+		</div>
+		</TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src=".\img\red_left.png" >
+			<img class="cDRTripBgMid" src=".\img\mid_marker.png" >  
+			<img class="cDRTripBgRight" src=".\img\red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L3.CdrTrip_line" src=".\img\line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L3.CdrTrip"  Value="--" readonly>
+		</div>
+		</TD>
+	</TR>
+	
+	
+	<TR ALIGN="left" >
+		<TH>TX-PLL lock |<br>RX-PLL lock:</TH>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
 		<TD><INPUT class="textfild" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
 		<TD></TD>
@@ -185,49 +228,7 @@
 		<TD class="seperator_blank_big" colspan=5></TD>
 		
 	</TR>
-<!--	<TR ALIGN="left" VALIGN="middle">
-		<TH>Data Rate:</TH>
-		<TD><SELECT  NAME="bert0.bitrate" ID="bert0.bitrate"  disabled>
-			<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
-			<OPTION VALUE ="27952493392">27.9524934 Gbit/s</OPTION>
-		</SELECT></TD>
-		<TD></TD>
-		<TD></TD>
-		<TD></TD>
-	</TR>
-Test  -->
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>PiPos1Piquard:</TH>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.PiPos1Piquadr"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.PiPos1Piquadr"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.PiPos1Piquadr"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.PiPos1Piquadr"  Value="" readonly></TD>
-	</TR>
-	
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>PiPos1Picode:</TH>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.PiPos1Picode"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.PiPos1Picode"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.PiPos1Picode"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.PiPos1Picode"  Value="" readonly></TD>
-	</TR>
-	
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>SecOrderState:</TH>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.SecOrderState"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.SecOrderState"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.SecOrderState"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.SecOrderState"  Value="" readonly></TD>
-	</TR>
-	
-	<TR ALIGN="left" VALIGN="middle">
-		<TH>CdrTrip:</TH>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.CdrTrip"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.CdrTrip"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.CdrTrip"  Value="" readonly></TD>
-		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.CdrTrip"  Value="" readonly></TD>
-	</TR>
-	
+
 </TABLE>
 </FORM>
 </div>

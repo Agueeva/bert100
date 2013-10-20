@@ -28,16 +28,14 @@
                           "bert0.L0.currBeRatio","bert0.L1.currBeRatio","bert0.L2.currBeRatio","bert0.L3.currBeRatio",
                           "bert0.rxPllLock","bert0.txPllLock",
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
-                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr","bert0.L0.accTime",
-                          "bert0.L0.PiPos1Piquadr","bert0.L1.PiPos1Piquadr","bert0.L2.PiPos1Piquadr","bert0.L3.PiPos1Piquadr",
-                          "bert0.L0.PiPos1Picode","bert0.L1.PiPos1Picode","bert0.L2.PiPos1Picode","bert0.L3.PiPos1Picode",
-                          "bert0.L0.SecOrderState","bert0.L1.SecOrderState","bert0.L2.SecOrderState","bert0.L3.SecOrderState",
+                          "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr",
+                          "bert0.L0.accTime",
                           "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip" ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -63,7 +61,7 @@
 }
      socket.onmessage = function(evt)
      {
-
+        var myCh;
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
@@ -71,11 +69,32 @@
     if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
           }
-      
+       if (item.substr(9, 7)=="CdrTrip") {
+         myCh="#Loss"+item.substr(7, 1);
+          if ( $("#frame").contents().find(myCh).attr('class')=='redfield') {
+               value="--";
+               $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 50+"%");
+          }else {
+               if (value < -200){
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 2+"%");
+               }else if( value > 200) {
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 99+"%");
+               }else{
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', ((value+200)/4)+"%");
+               }
+          }
+          }
+          
+          
       if (item.substr(9, 7)=="EqState") {      
           $("#frame").contents().find(("#"+item+"_st").replace(/[.]/g,"\\.")).width((100-value*7)+"%");
           }
       if (item.substr(9, 11)=="currBeRatio" ||  item.substr(9, 10)=="accBeRatio") {
+          myCh="#Loss"+item.substr(7, 1);
+          if ( $("#frame").contents().find(myCh).attr('class')=='redfield') {
+               value="--";
+          }
+          else{
           value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
@@ -84,11 +103,15 @@
           my_str=erst.toString();
           my_str=my_str.concat("E");
           value=my_str.concat(my_arr[1]);
-          }          
+         } }         
           }
          // bert0.L0.absErrCntr
       if (item.substr(9, 10)=="absErrCntr" ||  item.substr(9, 10)=="accErrCntr" ) {
-          //alert(item + "=" + value);
+          myCh="#Loss"+item.substr(7, 1);
+          if ( $("#frame").contents().find(myCh).attr('class')=='redfield') {
+               value="--";
+          }
+          else{
           value=value.toExponential();
           var my_str=value.toString();
           if (my_str.match('e')) {
@@ -98,7 +121,7 @@
           my_str=my_str.concat("E");
           value=my_str.concat(my_arr[1]);
           }         
-          }
+          }}
 
       switch(item)
      {
@@ -264,8 +287,8 @@
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
      var variab=$("#frame").contents().find("#var_val").attr('id');
           if(typeof var_id == "undefined" && typeof variab != "undefined") {
-               var_id=$("#frame").contents().find("#var_val").val(value);}
-          else{
+               var_id=$("#frame").contents().find("#var_val").val(value);
+               }else{
                $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
           if (myQueueBool) {  
                window_onload_variable();}      
