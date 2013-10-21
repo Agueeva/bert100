@@ -609,8 +609,70 @@ cmd_arp(Interp * interp, uint8_t argc, char *argv[])
 	return 0;
 }
 
+static bool 
+parse_hex(uint8_t *dst, const char *str)
+{
+        char c;
+        int i;
+        for (i = 0; i < 2; i++) {
+                c = str[i];
+                if (!c)
+                        return false;
+                if (c >= '0' && c <= '9') {
+                        c = c - '0';
+                } else if (c >= 'A' && c <= 'F') {
+                        c = c - 'A' + 10;
+                } else if (c >= 'a' && c <= 'f') {
+                        c = c - 'a' + 10;
+                } else {
+                        return false;
+                }
+                if (i & 1) {
+                        *dst |= c;
+                } else {
+                        *dst = c << 4;
+                }
+        }
+        return true;
+}
+
 
 INTERP_CMD(arpCmd,"arp", cmd_arp, "arp  # Show arp cache");
+
+static int8_t
+cmd_mac(Interp * interp, uint8_t argc, char *argv[])
+{
+	EthIf *eth = &g_EthIf;
+	unsigned int i;
+	if(argc == 2) {
+		char *s = argv[1];
+		for(i = 0; i < 6; i++) {
+			if(parse_hex(eth->if_mac + i,s) == true) {
+				s += 2;
+			} else {
+				return -EC_BADARG;
+			}
+			if(i == 5) {
+				break;	
+			} else if (*s == ':') {
+				s++;
+			} else {
+				return -EC_BADARG;
+			}
+		}
+		if(eth->if_mac[0] & 1) {
+			Con_Printf("Broadcast MAC is illegal\n");	
+			eth->if_mac[0] &= ~1;
+		}
+		return 0;
+	} else {
+		Interp_Printf_P(interp,"%02x:%02x:%02x:%02x:%02x:%02x\n",
+			eth->if_mac[0],eth->if_mac[1],eth->if_mac[2],eth->if_mac[3],
+			eth->if_mac[4],eth->if_mac[5]);
+		return 0;
+	}
+}
+INTERP_CMD(macCmd,"mac", cmd_mac, "mac ?<mac address>? # set/get MAC address");
 
 /**
  *****************************************************
@@ -686,6 +748,7 @@ cmd_ip(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(ipCmd,"ip",cmd_ip,"ip ?<address>? ?/<netmask bits>? ?<gateway>?# show/change IP Address/Mask Gateway");
+
 static bool
 PVIP_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -722,6 +785,7 @@ PVMacAddr_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 
+
 /**
  *****************************************************************
  * \fn void Ethernet_Init(void) 
@@ -751,23 +815,22 @@ Ethernet_Init(EthDriver *drv)
 	}
 	//Param_Read(defaultGW,eth->defaultGW);
 	//if(Read32(eth->defaultGW) == ~UINT32_C(0)) {
-		eth->defaultGW[0] = 192;
-		eth->defaultGW[1] = 168;
-		eth->defaultGW[2] = 80;
-		eth->defaultGW[3] = 1;
+	eth->defaultGW[0] = 192;
+	eth->defaultGW[1] = 168;
+	eth->defaultGW[2] = 80;
+	eth->defaultGW[3] = 1;
 	//}
 		
 	memset(eth->if_mac,0xff,6);
-	//I2C_Read8(I2CA_PARAM_EEPROM,0xFA,eth->if_mac,6);
 	/* Check the broadcast bit */
 	//if(eth->if_mac[0] & 1) {
-		//Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
-		eth->if_mac[0] = 0xbe;
-		eth->if_mac[1] = 0x77;
-		eth->if_mac[2] = 0xc6;
-		eth->if_mac[3] = 0x4d;
-		eth->if_mac[4] = 0x30;
-		eth->if_mac[5] = 0x8a;
+	//Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
+	eth->if_mac[0] = 0xbe;
+	eth->if_mac[1] = 0x77;
+	eth->if_mac[2] = 0xc6;
+	eth->if_mac[3] = 0x4d;
+	eth->if_mac[4] = 0x30;
+	eth->if_mac[5] = 0x8a;
 	//}
 	eth->drv = drv;
 	drv->regPktSink(drv,Eth_PktRx,eth);
@@ -776,6 +839,7 @@ Ethernet_Init(EthDriver *drv)
 	drv->ctrlProc(drv,&ethCtrl);
 	Interp_RegisterCmd(&arpCmd);
 	Interp_RegisterCmd(&ipCmd);
+	Interp_RegisterCmd(&macCmd);
 	Interp_RegisterCmd(&ipstatusCmd);
 	PVar_New(PVIP_Get,NULL,eth,0 ,"system.ip");
 	PVar_New(PVNetmask_Get,NULL,eth,0 ,"system.netmask");
