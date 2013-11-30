@@ -15,6 +15,11 @@
 #include "config.h"
 
 
+/*
+ ********************************************************************
+ * Setup Tmer MTIO4C for clock output for the Modulator. 
+ ********************************************************************
+ */
 static void
 enable_modulator_clock(void)
 {

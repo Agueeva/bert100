@@ -52,6 +52,7 @@
 #include "bert.h"
 #include "pat_trig.h"
 #include "fanco.h"
+#include "modreg.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -148,6 +149,7 @@ main(void)
 	ADC12_Init();
 	DataFlash_Init();
 	SWUpdate_Init();
+	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	FanCo_Init();
