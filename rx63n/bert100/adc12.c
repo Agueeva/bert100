@@ -99,12 +99,14 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 	}
 	channel = astrtoi16(argv[1]);	
 	Con_Printf("ADVAL: %u\n",ADC12_Read(channel));
+#if 0
 	buf[f32toa(1.23456,buf,sizeof(buf))] = 0;
 	Con_Printf("Buf \"%s\"\n",buf);
 	buf[f32toa(-1.00123,buf,sizeof(buf))] = 0;
 	Con_Printf("Buf \"%s\"\n",buf);
 	buf[f32toa(4290967290.5,buf,sizeof(buf))] = 0;
 	Con_Printf("Buf \"%s\"\n",buf);
+#endif
 	return 0;
 }
 
