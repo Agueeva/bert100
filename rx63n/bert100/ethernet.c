@@ -643,6 +643,7 @@ static int8_t
 cmd_mac(Interp * interp, uint8_t argc, char *argv[])
 {
 	EthIf *eth = &g_EthIf;
+	EthControlCmd ethCtrl;	
 	unsigned int i;
 	if(argc == 2) {
 		char *s = argv[1];
@@ -664,6 +665,9 @@ cmd_mac(Interp * interp, uint8_t argc, char *argv[])
 			Con_Printf("Broadcast MAC is illegal\n");	
 			eth->if_mac[0] &= ~1;
 		}
+		ethCtrl.cmd = ETHCTL_SET_MAC;
+		ethCtrl.cmdArg = eth->if_mac;
+		eth->drv->ctrlProc(eth->drv,&ethCtrl);
 		return 0;
 	} else {
 		Interp_Printf_P(interp,"%02x:%02x:%02x:%02x:%02x:%02x\n",

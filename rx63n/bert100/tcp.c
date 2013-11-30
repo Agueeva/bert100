@@ -63,6 +63,7 @@ typedef struct TcpHdr {
 	uint16_be chksum;
 	uint16_be urgentPtr;
 } TcpHdr;
+
 typedef struct TcpServerSocket {
 	uint16_t port;
 	Tcp_AcceptProc *acceptProc;
@@ -1019,7 +1020,7 @@ Tcp_ProcessPacket(IpHdr * ipHdr, Skb * skb)
 		uint32_t missing;
 		missing = tcb->SND_NXT - ackNr;
 		if((tcpHdr->flags & TCPFLG_FIN) && (missing <= 1)) {
-			Con_Printf("hack %lu\n",missing);
+			Con_Printf("Ignore Diff %lu in Seq. cntr\n",missing);
 			Tcp_Send(tcb, TCPFLG_ACK, NULL, 0);
 			tcb->state = TCPS_TIME_WAIT;
 			TCB_Close(tcb);
