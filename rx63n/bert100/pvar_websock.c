@@ -210,26 +210,13 @@ SendAck(JSON_Parser *jp,WebSocket *ws)
 	SendMsgType(jp,ws,"ack");
 }
 
-void
-PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
-{
-	JSON_Parser *jp = &gJSON_Parser;
-	uint32_t i;
-	JSON_SMReset(jp);
-	for(i = 0; i < len; i++) {
-		JSON_SMFeed(jp,(char)data[i]);
-	}	
-	if(jp->state != STATE_DONE) {
-		Con_Printf("Err. in JSON data\n");
-		for(i = 0; i < len; i++) {
-			Con_Printf("%c",data[i]);
-		}
-		return;
-	}
+static void
+Handle_Message(JSON_Parser *jp,WebSocket *ws) {
 	jp->pvar = PVar_Find(jp->name);
 	if(jp->pvar == NULL) {
 		Con_Printf("MSG target \"%s\" not found\n",jp->name);
 	} else if(jp->isGet) {
+		//Con_Printf("MSG get \"%s\" \n",jp->name);
 		jp->value[sizeof(jp->value) - 1] = 0;	
 		if(PVar_Get(jp->pvar,jp->value,sizeof(jp->value)) == true) {
 		//	Con_Printf("Got %s: %s\n",jp->name,jp->value);
@@ -244,6 +231,28 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 		} else {
 			SendNak(jp,ws);
 		}
+	}
+
+}
+void
+PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
+{
+	JSON_Parser *jp = &gJSON_Parser;
+	uint32_t i;
+	JSON_SMReset(jp);
+	for(i = 0; i < len; i++) {
+		JSON_SMFeed(jp,(char)data[i]);
+		if(jp->state == STATE_DONE) {
+			Handle_Message(jp,ws);
+			JSON_SMReset(jp);
+		}
+	}	
+	if(jp->state != STATE_IDLE) {
+		Con_Printf("Err. in JSON data\n");
+		for(i = 0; i < len; i++) {
+			Con_Printf("%c",data[i]);
+		}
+		return;
 	}
 }
 
