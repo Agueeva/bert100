@@ -14,6 +14,7 @@
 #include "atomic.h"
 #include "config.h"
 
+#define SYNC_RESET	PE4
 
 /*
  ********************************************************************
@@ -21,7 +22,7 @@
  ********************************************************************
  */
 static void
-enable_modulator_clock(void)
+enable_modulator_clock(uint32_t hz)
 {
 	MSTP(MTU4) = 0;
 	/* Setup PE5 for MTIO4C/MTIO2B */
@@ -32,7 +33,7 @@ enable_modulator_clock(void)
 	MTU.TOER.BIT.OE4C = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B5 = 1; 
 
-	MTU4.TGRC = 1199;
+	MTU4.TGRC = (F_PCLK / (2 * hz) - 1);
 	/* PCLK / 1 */
         MTU4.TCR.BIT.TPSC = 0;
         /* Counter Cleared by TGRC match */
@@ -57,6 +58,6 @@ INTERP_CMD(modCmd, "mod", cmd_mod, "mod");
 void
 ModReg_Init(void)
 {
-	enable_modulator_clock();
+	enable_modulator_clock(20000);
 	Interp_RegisterCmd(&modCmd);
 }
