@@ -13,6 +13,8 @@
 #include "timer.h"
 #include "atomic.h"
 #include "config.h"
+#include "adc12.h"
+#include "ad537x.h"
 
 #define SYNC_RESET_DIROUT()     BSET(4,PORTE.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(4,PORTE.PODR.BYTE)
@@ -20,6 +22,8 @@
 
 typedef struct ModReg {
 	Timer syncTimer;	
+	float dacVolt[4];
+	float regKI[4];
 } ModReg;
 
 static ModReg gModReg;
@@ -28,11 +32,26 @@ static void
 ModSyncResetProc(void *eventData)
 {
 	ModReg *mr = eventData;
+	int32_t adval_before;
+	int32_t adval_after;
+	float diff;
 	Timer_Start(&mr->syncTimer,100);
+	adval_before = 	ADC12_Read(3);
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
+	adval_after = ADC12_Read(3);
+	diff = (adval_after - adval_before) * 3.3 / 4095;
+	//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
+	//Con_Printf("Diff %f\n",diff);
+	mr->dacVolt[0] = mr->dacVolt[0] + mr->regKI[0] * diff;
+	if(mr->dacVolt[0] > 10.) {
+		mr->dacVolt[0] = 10.;
+	} else if(mr->dacVolt[0] < -10.) {
+		mr->dacVolt[0] = -10.;
+	}
+	DAC_Set(0,mr->dacVolt[0]);
 }
 
 /*
@@ -66,10 +85,22 @@ enable_modulator_clock(uint32_t hz)
 static int8_t
 cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 {
-	if((argc == 1)  && (strcmp(argv[1],"clk"))) {
+	ModReg *mr = &gModReg;
+	if((argc == 2)  && (strcmp(argv[1],"clk") == 0)) {
 		Con_Printf("PE5: %u\n",PORTE.PIDR.BIT.B5);
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
 		Con_Printf("TGRC %u\n",MTU4.TGRC);
+	} else if((argc == 2)  && (strcmp(argv[1],"ki") == 0)) {
+		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[0] * 10);		
+	} else if((argc == 3)  && (strcmp(argv[1],"ki") == 0)) {
+		mr->regKI[0] = astrtof32(argv[2]) / 10;		
+		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[0] * 10);		
+	} else if((argc == 2)  && (strcmp(argv[1],"volt") == 0)) {
+		Con_Printf("Volt %f\n",mr->dacVolt[0]);
+	} else if((argc == 3)  && (strcmp(argv[1],"volt") == 0)) {
+		mr->dacVolt[0] = astrtof32(argv[2]);
+	} else {
+		return -EC_BADARG;
 	}
 	return 0;
 }

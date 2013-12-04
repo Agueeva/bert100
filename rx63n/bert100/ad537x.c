@@ -292,7 +292,7 @@ DACOFS1_Write(uint16_t value) {
 	AD537x_SFWrite(addrCode,value);
 }
 
-static bool 
+bool 
 DAC_Set(uint8_t chNr,float value)
 {
 	int32_t inputCode = ((value * 65536 + 10) / 20) + 32768;  		

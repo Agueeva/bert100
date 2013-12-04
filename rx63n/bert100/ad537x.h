@@ -1,3 +1,3 @@
 void AD537x_ModInit(const char *name);
-//void DAC_Set(uint16_t channel,uint16_t value);
+bool DAC_Set(uint8_t channelNr,float value);
 
