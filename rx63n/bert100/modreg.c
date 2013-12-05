@@ -16,9 +16,9 @@
 #include "adc12.h"
 #include "ad537x.h"
 
-#define SYNC_RESET_DIROUT()     BSET(4,PORTE.PDR.BYTE)
-#define SYNC_RESET_HIGH()       BSET(4,PORTE.PODR.BYTE)
-#define SYNC_RESET_LOW()        BCLR(4,PORTE.PODR.BYTE) 
+#define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
+#define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
+#define SYNC_RESET_LOW()        BCLR(3,PORTJ.PODR.BYTE) 
 
 typedef struct ModReg {
 	Timer syncTimer;	
@@ -64,8 +64,6 @@ enable_modulator_clock(uint32_t hz)
 {
 	MSTP(MTU4) = 0;
 	/* Setup PE5 for MTIO4C/MTIO2B */
-	BSET(5,PORTE.PDR.BYTE);
-	BSET(5,PORTE.PODR.BYTE);
 	MPC.PE5PFS.BYTE = 0x1; /* Switch Pin to MTIO4C mode */
 	MTU.TSTR.BIT.CST4 = 0;
 	MTU.TOER.BIT.OE4C = 1;	/* Enable the output,must be done before TIOR write */
@@ -84,7 +82,7 @@ enable_modulator_clock(uint32_t hz)
 	MPC.PE4PFS.BYTE = 0x1; /* Switch Pin to MTIO4D mode */
 	MTU.TOER.BIT.OE4D = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B4 = 1; 
-	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - 300;
+	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - 240;
         MTU4.TIORL.BIT.IOD = 7;
 
 
