@@ -36,12 +36,12 @@ ModSyncResetProc(void *eventData)
 	int32_t adval_after;
 	float diff;
 	Timer_Start(&mr->syncTimer,100);
-	adval_before = 	ADC12_Read(3);
+	adval_after = ADC12_Read(3);
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
-	adval_after = ADC12_Read(3);
+	adval_before = 	ADC12_Read(3);
 	diff = (adval_after - adval_before) * 3.3 / 4095;
 	//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
 	//Con_Printf("Diff %f\n",diff);
@@ -60,7 +60,7 @@ ModSyncResetProc(void *eventData)
  ********************************************************************
  */
 static void
-enable_modulator_clock(uint32_t hz)
+enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
 {
 	MSTP(MTU4) = 0;
 	/* Setup PE5 for MTIO4C/MTIO2B */
@@ -69,6 +69,7 @@ enable_modulator_clock(uint32_t hz)
 	MTU.TOER.BIT.OE4C = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B5 = 1; 
 
+	MTU4.TCNT = 0;
 	MTU4.TGRC = (F_PCLK / (2 * hz) - 1);
 	/* PCLK / 1 */
         MTU4.TCR.BIT.TPSC = 0;
@@ -82,7 +83,7 @@ enable_modulator_clock(uint32_t hz)
 	MPC.PE4PFS.BYTE = 0x1; /* Switch Pin to MTIO4D mode */
 	MTU.TOER.BIT.OE4D = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B4 = 1; 
-	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - 240;
+	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - delayCnt;
         MTU4.TIORL.BIT.IOD = 7;
 
 
@@ -107,6 +108,10 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("Volt %f\n",mr->dacVolt[0]);
 	} else if((argc == 3)  && (strcmp(argv[1],"volt") == 0)) {
 		mr->dacVolt[0] = astrtof32(argv[2]);
+	} else if((argc == 3)  && (strcmp(argv[1],"delay") == 0)) {
+		float delayUs = astrtof32(argv[2]);
+		uint32_t delayCnt = 48 * delayUs;
+		enable_modulator_clock(20000,delayCnt);
 	} else {
 		return -EC_BADARG;
 	}
@@ -120,7 +125,7 @@ ModReg_Init(void)
 {
 	ModReg *mr = &gModReg;
 	Timer_Init(&mr->syncTimer,ModSyncResetProc,mr);
-	enable_modulator_clock(20000);
+	enable_modulator_clock(20000,240);
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
 	Interp_RegisterCmd(&modCmd);

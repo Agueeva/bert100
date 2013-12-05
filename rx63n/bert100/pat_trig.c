@@ -16,12 +16,12 @@
 #define PATTRIG3_DIROUT BSET(5,PORT5.PDR.BYTE)
 #define PATTRIGSHIFTR_DIROUT BSET(2,PORT3.PDR.BYTE)
 #define PATTRIGSHIFTL_DIROUT BSET(3,PORT3.PDR.BYTE)
-#define PATTRIGPWR_DIROUT BSET(3,PORTJ.PDR.BYTE)
+//define PATTRIGPWR_DIROUT BSET(3,PORTJ.PDR.BYTE)
 
 #define PATTRIG1_SET(val) BMOD(2,PORT5.PODR.BYTE,(val))
 #define PATTRIG2_SET(val) BMOD(4,PORT5.PODR.BYTE,(val))
 #define PATTRIG3_SET(val) BMOD(5,PORT5.PODR.BYTE,(val))
-#define PATTRIGPWR_SET(val) BMOD(3,PORTJ.PODR.BYTE,(val))
+//define PATTRIGPWR_SET(val) BMOD(3,PORTJ.PODR.BYTE,(val))
 #define PATTRIGSHIFTR(val)  BMOD(2,PORT3.PODR.BYTE,val)
 #define PATTRIGSHIFTL(val)  BMOD(3,PORT3.PODR.BYTE,val)
 
@@ -57,9 +57,9 @@ PatTrig_SelPat(uint8_t modId,TrigPattern pattern)
 	PATTRIG2_SET(!!(pattern & 2));
 	PATTRIG1_SET(!!(pattern & 1));
 	if(pattern == 0) {
-		PATTRIGPWR_SET(0);
+		//PATTRIGPWR_SET(0);
 	} else {
-		PATTRIGPWR_SET(1);
+		//PATTRIGPWR_SET(1);
 	}
 	pt->currPattern = pattern;
 }
@@ -157,7 +157,7 @@ PatTrig_Init(const char *name)
 	PATTRIG3_DIROUT;
 	PATTRIGSHIFTL_DIROUT;
 	PATTRIGSHIFTR_DIROUT;
-	PATTRIGPWR_DIROUT;
+	//PATTRIGPWR_DIROUT;
 	PatTrig_SelPat(0,patTrigOff);
 	Interp_RegisterCmd(&ptrigCmd);
 	PVar_New(PVPattern_Get,PVPattern_Set,pt,0,"%s.pattern",name);
