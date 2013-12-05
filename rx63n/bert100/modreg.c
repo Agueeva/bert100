@@ -24,6 +24,8 @@ typedef struct ModReg {
 	Timer syncTimer;	
 	float dacVolt[4];
 	float regKI[4];
+	int32_t advalAfter;
+	int32_t advalBefore;
 } ModReg;
 
 static ModReg gModReg;
@@ -32,17 +34,16 @@ static void
 ModSyncResetProc(void *eventData)
 {
 	ModReg *mr = eventData;
-	int32_t adval_before;
-	int32_t adval_after;
 	float diff;
 	Timer_Start(&mr->syncTimer,100);
-	adval_after = ADC12_Read(3);
+	gModReg.advalAfter = ADC12_Read(3);
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
+	DelayNs(400);
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
-	adval_before = 	ADC12_Read(3);
-	diff = (adval_after - adval_before) * 3.3 / 4095;
+	gModReg.advalBefore = ADC12_Read(3);
+	diff = (gModReg.advalAfter - gModReg.advalBefore) * 3.3 / 4095;
 	//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
 	//Con_Printf("Diff %f\n",diff);
 	mr->dacVolt[0] = mr->dacVolt[0] + mr->regKI[0] * diff;
@@ -69,7 +70,8 @@ enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
 	MTU.TOER.BIT.OE4C = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B5 = 1; 
 
-	MTU4.TCNT = 0;
+	MTU4.TCNT = 0;	/* Reset counter to avoid phase inversion relative to
+			 * second signal */  
 	MTU4.TGRC = (F_PCLK / (2 * hz) - 1);
 	/* PCLK / 1 */
         MTU4.TCR.BIT.TPSC = 0;
@@ -80,6 +82,12 @@ enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
 	MTU4.TMDR.BIT.MD = 0;   /* Normal mode */
 
 
+	/* 
+	 *********************************************************
+	 * Setup PE4 with to be some microseconds before PE5 
+ 	 * required for delay compensation.
+	 *********************************************************
+	 */
 	MPC.PE4PFS.BYTE = 0x1; /* Switch Pin to MTIO4D mode */
 	MTU.TOER.BIT.OE4D = 1;	/* Enable the output,must be done before TIOR write */
 	PORTE.PMR.BIT.B4 = 1; 
@@ -110,8 +118,11 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		mr->dacVolt[0] = astrtof32(argv[2]);
 	} else if((argc == 3)  && (strcmp(argv[1],"delay") == 0)) {
 		float delayUs = astrtof32(argv[2]);
-		uint32_t delayCnt = 48 * delayUs;
+		uint32_t delayCnt = (48 * delayUs + 0.5);
 		enable_modulator_clock(20000,delayCnt);
+	} else if((argc == 2)  && (strcmp(argv[1],"ad") == 0)) {
+		Con_Printf("StartVal: %lu, EndVal %lu\n",
+			mr->advalBefore,mr->advalAfter);
 	} else {
 		return -EC_BADARG;
 	}
