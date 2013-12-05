@@ -79,7 +79,17 @@ enable_modulator_clock(uint32_t hz)
         /* Toggle at compare match */
         MTU4.TIORL.BIT.IOC = 7;
 	MTU4.TMDR.BIT.MD = 0;   /* Normal mode */
+
+
+	MPC.PE4PFS.BYTE = 0x1; /* Switch Pin to MTIO4D mode */
+	MTU.TOER.BIT.OE4D = 1;	/* Enable the output,must be done before TIOR write */
+	PORTE.PMR.BIT.B4 = 1; 
+	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - 300;
+        MTU4.TIORL.BIT.IOD = 7;
+
+
 	MTU.TSTR.BIT.CST4 = 1;
+	
 }
 
 static int8_t
