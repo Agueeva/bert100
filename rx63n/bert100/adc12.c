@@ -2,6 +2,7 @@
  * RX63N A/D converter module
  */
 
+#include <math.h>
 #include "types.h"
 #include "adc12.h"
 #include "iodefine.h"
@@ -93,20 +94,21 @@ static int8_t
 cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 {
 	int channel;
-	char buf[30];
+	int32_t adval;
+	float volt;
+	float db;
 	if(argc < 2) {
 		return -EC_BADNUMARGS;
 	}
 	channel = astrtoi16(argv[1]);	
-	Con_Printf("ADVAL: %u\n",ADC12_Read(channel));
-#if 0
-	buf[f32toa(1.23456,buf,sizeof(buf))] = 0;
-	Con_Printf("Buf \"%s\"\n",buf);
-	buf[f32toa(-1.00123,buf,sizeof(buf))] = 0;
-	Con_Printf("Buf \"%s\"\n",buf);
-	buf[f32toa(4290967290.5,buf,sizeof(buf))] = 0;
-	Con_Printf("Buf \"%s\"\n",buf);
-#endif
+	adval = ADC12_Read(channel);
+	volt = adval / 4095. * 3.3;
+	if(volt > 0) {
+		db = log(volt) / log(10) - log(0.001) / log(10);		
+	} else {
+		db = 0;
+	}
+	Con_Printf("ADVAL: %u, %f V %f dbmV\n",adval, adval / 4095. * 3.300,db);
 	return 0;
 }
 

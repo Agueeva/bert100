@@ -1,5 +1,10 @@
 /*
- * Modulator 
+ *******************************************************************************************
+ * Modulator for Mach Zehner Variant.
+ * 0 dbm 2.32 Volt
+ * 1 dbm 2.26 Volt
+ * -60 mV pro dB
+ *******************************************************************************************
  */
 
 #include <stdlib.h>
@@ -135,8 +140,13 @@ void
 ModReg_Init(void)
 {
 	ModReg *mr = &gModReg;
+	int i;
 	Timer_Init(&mr->syncTimer,ModSyncResetProc,mr);
-	enable_modulator_clock(20000,240);
+	for(i = 0; i < 4; i++) {
+		mr->regKI[i] = -1;
+		mr->dacVolt[i] = 0;
+	}
+	enable_modulator_clock(20000,840);
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
 	Interp_RegisterCmd(&modCmd);
