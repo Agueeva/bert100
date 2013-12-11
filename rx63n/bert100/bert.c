@@ -1051,7 +1051,7 @@ PVUserPattern_Set(void *cbData, uint32_t adId, const char *strP)
 {
         uint64_t userPattern;
 	if(*strP == '\"') {
-		*strP++;
+		strP++;
 	} else if(*strP != '0') {
 		return false;
 	}
