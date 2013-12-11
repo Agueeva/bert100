@@ -104,7 +104,7 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 	adval = ADC12_Read(channel);
 	volt = adval / 4095. * 3.3;
 	if(volt > 0) {
-		db = log(volt) / log(10) - log(0.001) / log(10);		
+		db = 10 * (log(volt) / log(10) - log(2.100) / log(10));
 	} else {
 		db = 0;
 	}

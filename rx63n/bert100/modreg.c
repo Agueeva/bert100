@@ -143,7 +143,7 @@ ModReg_Init(void)
 	int i;
 	Timer_Init(&mr->syncTimer,ModSyncResetProc,mr);
 	for(i = 0; i < 4; i++) {
-		mr->regKI[i] = -1;
+		mr->regKI[i] = -0.2;
 		mr->dacVolt[i] = 0;
 	}
 	enable_modulator_clock(20000,840);
