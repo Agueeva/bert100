@@ -1030,6 +1030,38 @@ PVForward_Set(void *cbData, uint32_t adId, const char *strP)
         return true;
 }
 
+static bool 
+PVUserPattern_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint64_t userPattern;
+       	userPattern = CDR_Read(CDR_ID_TX,CDR_CUSTOM_TST_PATL);
+       	userPattern |= (uint32_t)CDR_Read(CDR_ID_TX,CDR_CUSTOM_TST_PATM) << 16;
+       	userPattern |= (uint64_t)(CDR_Read(CDR_ID_TX,CDR_CUSTOM_TST_PATH) & 0xff) << 32; 
+	*bufP++ = '\"';
+	*bufP++ = '0';
+	*bufP++ = 'x';
+        bufP += itoahex64(userPattern,bufP);
+	*bufP++ = '\"';
+	*bufP++ = 0;
+        return true;
+}
+
+static bool 
+PVUserPattern_Set(void *cbData, uint32_t adId, const char *strP) 
+{
+        uint64_t userPattern;
+	if(*strP == '\"') {
+		*strP++;
+	} else if(*strP != '0') {
+		return false;
+	}
+        userPattern = astrtoi64(strP);
+       	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATL,userPattern & 0xffff);
+       	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATM,(userPattern >> 16) & 0xffff);
+       	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATH,(userPattern >> 32) & 0xff);
+	return true;
+}
+
 void
 Bert_Init(void) 
 {
@@ -1067,6 +1099,7 @@ Bert_Init(void)
         }
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
+	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
 	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
