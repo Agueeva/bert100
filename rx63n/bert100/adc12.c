@@ -143,9 +143,7 @@ ADC12_Init(void)
 	MSTP_S12AD = 0;
 	/* ADC clock = PCLK/8, single scan mode */
 	S12AD.ADCSR.BYTE = 0x00;
-	/* Selects AN000 */
-	//S12AD.ADANS0.WORD = 0x0001;
-	//PORT4.PMR.BYTE = 0x01;
+	S12AD.ADCSR.BIT.CKS = 3;
 	for(i = 0; i < NR_CHANNELS; i++) {
 		ch = &adc->adch[i];
 		ch->channelNr = i;
