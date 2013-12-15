@@ -125,7 +125,7 @@ static int8_t
 cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 {
 	ModReg *mr = &gModReg;
-	uint16_t ch,adCh;
+	uint16_t ch;
 	if((argc == 2)  && (strcmp(argv[1],"clk") == 0)) {
 		Con_Printf("PE5: %u\n",PORTE.PIDR.BIT.B5);
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
@@ -153,9 +153,8 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
 		mr->dacVolt[ch] = astrtof32(argv[3]);
 	} else if((argc == 3)  && (strcmp(argv[2],"ad") == 0)) {
-		adCh = mr->adCh[ch];
 		Con_Printf("StartVal: %lu, EndVal %lu\n",
-			mr->advalBefore[adCh],mr->advalAfter[adCh]);
+			mr->advalBefore[ch],mr->advalAfter[ch]);
 	} else {
 		return -EC_BADARG;
 	}

@@ -68,6 +68,28 @@ PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 static bool 
+PVAdc12_SetVolt(void *cbData, uint32_t adId, const char *strP)
+{
+	ADCChan *ch = cbData;
+	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
+	return false;
+}
+
+static bool 
+PVAdc12_GetVolt(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint32_t rawAdval;
+	float volt;
+	uint8_t cnt;
+	ADCChan *ch = cbData;
+	rawAdval = ADC12_Read(ch->channelNr);
+	volt = rawAdval * 3.300 / 4096;
+	cnt = f32toa(volt,bufP,maxlen);
+	bufP[cnt] = 0;
+	return true;
+}
+
+static bool 
 PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	uint32_t adval;
@@ -108,7 +130,7 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 	} else {
 		db = 0;
 	}
-	Con_Printf("ADVAL: %u, %f V %f dbmV\n",adval, adval / 4095. * 3.300,db);
+	Con_Printf("ADVAL: %u, %f V %f db\n",adval, adval / 4095. * 3.300,db);
 	return 0;
 }
 
@@ -154,6 +176,7 @@ ADC12_Init(void)
 		ch = &adc->adch[i];
 		ch->channelNr = i;
 		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%u",i);
+		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,ch,i,"adc12.ch%u",i);
 	}
 	PVar_New(PVAdc12_GetTemperature,NULL,adc,0,"system.temp");
 	/* enable the Temperature Sensor */
