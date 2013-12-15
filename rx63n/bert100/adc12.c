@@ -106,7 +106,7 @@ PVAdc12_GetDB(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 static bool 
 PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
-	uint32_t adval;
+	int32_t adval;
 	float temperature;
     	S12AD.ADANS0.WORD = 0;
     	S12AD.ADANS1.WORD = 0;
@@ -185,7 +185,7 @@ ADC12_Init(void)
 	MSTP_S12AD = 0;
 	/* ADC clock = PCLK/8, single scan mode */
 	S12AD.ADCSR.BYTE = 0x00;
-	S12AD.ADCSR.BIT.CKS = 3;
+	S12AD.ADCSR.BIT.CKS = 2;
 	for(i = 0; i < NR_CHANNELS; i++) {
 		ch = &adc->adch[i];
 		ch->channelNr = i;
@@ -193,8 +193,8 @@ ADC12_Init(void)
 		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,ch,i,"adc12.ch%u",i);
 	}
 	for(i = 0; i < 4; i++) {
-		ADCChan *pwrChan = &adc->adch[11-i];
-		PVar_New(PVAdc12_GetDB,NULL,pwrChan,11 - i,"tx.pwr%u",i);
+		ADCChan *pwrChan = &adc->adch[7-i];
+		PVar_New(PVAdc12_GetDB,NULL,pwrChan,7 - i,"tx.pwr%u",i);
 	}
 	PVar_New(PVAdc12_GetTemperature,NULL,adc,0,"system.temp");
 	/* enable the Temperature Sensor */
