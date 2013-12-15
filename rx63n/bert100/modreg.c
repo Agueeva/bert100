@@ -77,8 +77,9 @@ ModSyncResetProc(void *eventData)
  ********************************************************************
  */
 static void
-enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
+enable_modulator_clock(uint32_t hz,float delayUs)
 {
+	uint32_t delayCnt = (48 * delayUs + 0.5);
 	MSTP(MTU4) = 0;
 	/* Setup PE5 for MTIO4C/MTIO2B */
 	MPC.PE5PFS.BYTE = 0x1; /* Switch Pin to MTIO4C mode */
@@ -111,7 +112,6 @@ enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
         MTU4.TIORL.BIT.IOD = 7;
 
 	MTU.TSTR.BIT.CST4 = 1;
-	
 }
 
 static int8_t
@@ -123,14 +123,15 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("PE5: %u\n",PORTE.PIDR.BIT.B5);
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
 		Con_Printf("TGRC %u\n",MTU4.TGRC);
+		return 0;
 	} else if((argc == 3)  && (strcmp(argv[1],"delay") == 0)) {
 		float delayUs = astrtof32(argv[2]);
-		uint32_t delayCnt = (48 * delayUs + 0.5);
-		enable_modulator_clock(20000,delayCnt);
+		enable_modulator_clock(20000,delayUs);
+		return 0;
 	} else if(argc < 3) {
 		return -EC_BADNUMARGS;
 	}
-	ch = astrtoi16(argv[1]) - 1;
+	ch = astrtoi16(argv[1]);
 	if(ch > 4) {
 		Con_Printf("Bad Channel number\n");
 		return -EC_BADARG;
@@ -169,7 +170,7 @@ ModReg_Init(void)
 		mr->adCh[i] = 3 - i;
 		mr->daCh[i] = i;
 	}
-	enable_modulator_clock(20000,840);
+	enable_modulator_clock(20000,17.5);
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
 	Interp_RegisterCmd(&modCmd);
