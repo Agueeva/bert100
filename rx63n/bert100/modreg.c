@@ -29,8 +29,11 @@ typedef struct ModReg {
 	Timer syncTimer;	
 	float dacVolt[4];
 	float regKI[4];
-	int32_t advalAfter;
-	int32_t advalBefore;
+	int32_t advalAfter[4];
+	int32_t advalBefore[4];
+	/* Mapping from Channel Number to A/D or D/A converter channel number */
+	uint32_t adCh[4];
+	uint32_t daCh[4];
 } ModReg;
 
 static ModReg gModReg;
@@ -40,24 +43,32 @@ ModSyncResetProc(void *eventData)
 {
 	ModReg *mr = eventData;
 	float diff;
+	uint32_t ch,adCh,daCh;
 	Timer_Start(&mr->syncTimer,100);
-	gModReg.advalAfter = ADC12_Read(3);
+	for(ch = 0; ch < 4; ch++) {
+		adCh = mr->adCh[ch];	
+		mr->advalAfter[ch] = ADC12_Read(adCh);
+	}
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
 	DelayNs(400);
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
-	gModReg.advalBefore = ADC12_Read(3);
-	diff = (gModReg.advalAfter - gModReg.advalBefore) * 3.3 / 4095;
-	//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
-	//Con_Printf("Diff %f\n",diff);
-	mr->dacVolt[0] = mr->dacVolt[0] + mr->regKI[0] * diff;
-	if(mr->dacVolt[0] > 10.) {
-		mr->dacVolt[0] = 10.;
-	} else if(mr->dacVolt[0] < -10.) {
-		mr->dacVolt[0] = -10.;
+	for(ch = 0; ch < 4; ch++) {
+		daCh = mr->daCh[ch];
+		adCh = mr->adCh[ch];	
+		diff = (mr->advalAfter[ch] - mr->advalBefore[ch]) * 3.3 / 4095;
+		//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
+		//Con_Printf("Diff %f\n",diff);
+		mr->dacVolt[ch] = mr->dacVolt[ch] + mr->regKI[ch] * diff;
+		if(mr->dacVolt[ch] > 10.) {
+			mr->dacVolt[ch] = 10.;
+		} else if(mr->dacVolt[ch] < -10.) {
+			mr->dacVolt[ch] = -10.;
+		}
+		DAC_Set(daCh,mr->dacVolt[ch]);
+		mr->advalBefore[ch] = ADC12_Read(adCh);
 	}
-	DAC_Set(0,mr->dacVolt[0]);
 }
 
 /*
@@ -99,7 +110,6 @@ enable_modulator_clock(uint32_t hz,uint32_t delayCnt)
 	MTU4.TGRD = (F_PCLK / (2 * hz) - 1) - delayCnt;
         MTU4.TIORL.BIT.IOD = 7;
 
-
 	MTU.TSTR.BIT.CST4 = 1;
 	
 }
@@ -108,33 +118,43 @@ static int8_t
 cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 {
 	ModReg *mr = &gModReg;
+	uint16_t ch,adCh;
 	if((argc == 2)  && (strcmp(argv[1],"clk") == 0)) {
 		Con_Printf("PE5: %u\n",PORTE.PIDR.BIT.B5);
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
 		Con_Printf("TGRC %u\n",MTU4.TGRC);
-	} else if((argc == 2)  && (strcmp(argv[1],"ki") == 0)) {
-		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[0] * 10);		
-	} else if((argc == 3)  && (strcmp(argv[1],"ki") == 0)) {
-		mr->regKI[0] = astrtof32(argv[2]) / 10;		
-		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[0] * 10);		
-	} else if((argc == 2)  && (strcmp(argv[1],"volt") == 0)) {
-		Con_Printf("Volt %f\n",mr->dacVolt[0]);
-	} else if((argc == 3)  && (strcmp(argv[1],"volt") == 0)) {
-		mr->dacVolt[0] = astrtof32(argv[2]);
 	} else if((argc == 3)  && (strcmp(argv[1],"delay") == 0)) {
 		float delayUs = astrtof32(argv[2]);
 		uint32_t delayCnt = (48 * delayUs + 0.5);
 		enable_modulator_clock(20000,delayCnt);
-	} else if((argc == 2)  && (strcmp(argv[1],"ad") == 0)) {
+	} else if(argc < 3) {
+		return -EC_BADNUMARGS;
+	}
+	ch = astrtoi16(argv[1]) - 1;
+	if(ch > 4) {
+		Con_Printf("Bad Channel number\n");
+		return -EC_BADARG;
+	}
+	if((argc == 3)  && (strcmp(argv[2],"ki") == 0)) {
+		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch] * 10);		
+	} else if((argc == 4)  && (strcmp(argv[2],"ki") == 0)) {
+		mr->regKI[ch] = astrtof32(argv[3]) / 10;		
+		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch] * 10);		
+	} else if((argc == 3)  && (strcmp(argv[2],"volt") == 0)) {
+		Con_Printf("Volt %f\n",mr->dacVolt[ch]);
+	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
+		mr->dacVolt[ch] = astrtof32(argv[3]);
+	} else if((argc == 3)  && (strcmp(argv[2],"ad") == 0)) {
+		adCh = mr->adCh[ch];
 		Con_Printf("StartVal: %lu, EndVal %lu\n",
-			mr->advalBefore,mr->advalAfter);
+			mr->advalBefore[adCh],mr->advalAfter[adCh]);
 	} else {
 		return -EC_BADARG;
 	}
 	return 0;
 }
 
-INTERP_CMD(modCmd, "mod", cmd_mod, "mod");
+INTERP_CMD(modCmd, "mod", cmd_mod, "mod <channelNr> ki|volt|ad  ?<value>? ");
 
 void
 ModReg_Init(void)
@@ -145,6 +165,9 @@ ModReg_Init(void)
 	for(i = 0; i < 4; i++) {
 		mr->regKI[i] = -0.2;
 		mr->dacVolt[i] = 0;
+
+		mr->adCh[i] = 3 - i;
+		mr->daCh[i] = i;
 	}
 	enable_modulator_clock(20000,840);
 	SYNC_RESET_DIROUT(); 

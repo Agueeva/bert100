@@ -66,6 +66,7 @@ PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	bufP[cnt] = 0;
 	return true;
 }
+
 static bool 
 PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -83,7 +84,6 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
 }
-
 
 /**
  ****************************************************************************
@@ -114,6 +114,12 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit A/D converter");
 
+/*
+ ************************************************************************************************
+ * \fn static int8_t cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
+ * Meassure the Temperature of the CPU
+ ************************************************************************************************
+ */
 static int8_t
 cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 {
