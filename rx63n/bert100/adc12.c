@@ -88,6 +88,20 @@ PVAdc12_GetVolt(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	bufP[cnt] = 0;
 	return true;
 }
+static bool 
+PVAdc12_GetDB(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	uint32_t rawAdval;
+	float volt,db;
+	uint8_t cnt;
+	ADCChan *ch = cbData;
+	rawAdval = ADC12_Read(ch->channelNr);
+	volt = rawAdval * 3.300 / 4096;
+	db = 10 * (log(volt) / log(10) - log(2.100) / log(10));
+	cnt = f32toa(db,bufP,maxlen);
+	bufP[cnt] = 0;
+	return true;
+}
 
 static bool 
 PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
@@ -155,7 +169,7 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 	/* Wait for the conversion to end */
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
-	temperature = (((adval * 3300) / 4096 - 1260) / 4.1) + 25 - 13;
+	temperature = (((adval * 3300) / 4095 - 1260) / 4.1) + 25 - 13;
 	Con_Printf("adval %lu, temp %f\n",adval,temperature);
 	return 0;	
 }
@@ -177,6 +191,10 @@ ADC12_Init(void)
 		ch->channelNr = i;
 		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%u",i);
 		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,ch,i,"adc12.ch%u",i);
+	}
+	for(i = 0; i < 4; i++) {
+		ADCChan *pwrChan = &adc->adch[11-i];
+		PVar_New(PVAdc12_GetDB,NULL,pwrChan,11 - i,"tx.pwr%u",i);
 	}
 	PVar_New(PVAdc12_GetTemperature,NULL,adc,0,"system.temp");
 	/* enable the Temperature Sensor */
