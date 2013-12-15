@@ -20,6 +20,7 @@
 #include "config.h"
 #include "adc12.h"
 #include "ad537x.h"
+#include "pvar.h"k
 
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
@@ -39,7 +40,7 @@ typedef struct ModReg {
 static ModReg gModReg;
 
 static void
-ModSyncResetProc(void *eventData)
+ModulatorControlProc(void *eventData)
 {
 	ModReg *mr = eventData;
 	float diff;
@@ -114,6 +115,12 @@ enable_modulator_clock(uint32_t hz,float delayUs)
 	MTU.TSTR.BIT.CST4 = 1;
 }
 
+/**
+ ***************************************************************************************
+ * \fn static int8_t cmd_mod(Interp * interp, uint8_t argc, char *argv[])
+ * Command Shell interface to the Modulator controller.
+ ***************************************************************************************
+ */
 static int8_t
 cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -157,18 +164,97 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(modCmd, "mod", cmd_mod, "mod <channelNr> ki|volt|ad  ?<value>? ");
 
+/**
+ ****************************************************************************************************
+ * Modulator Bias: Read from the Control loop, written to the control Loop and directly 
+ * to the  D/A converter.
+ ****************************************************************************************************
+ */
+static bool
+PVModBias_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	ModReg *mr = cbData;
+        float val;
+	uint32_t daCh;
+	if(chNr >= array_size(mr->daCh)) {
+		return false;
+	}
+	daCh = mr->daCh[chNr];
+        val = astrtof32(strP);
+	mr->dacVolt[chNr] = val;
+        return DAC_Set(daCh,val);
+}
+
+static bool
+PVModBias_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+        float dacval;
+        uint8_t cnt;
+	if(chNr >= array_size(mr->dacVolt)) {
+		return false;
+	}
+        dacval = mr->dacVolt[chNr]; 
+        cnt = f32toa(dacval,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
+}
+
+/**
+ *****************************************************************************
+ * Get/Set the Integral Konstant of the Control Loop
+ *****************************************************************************
+ */
+static bool
+PVModKi_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	ModReg *mr = cbData;
+        float val;
+	if(chNr >= array_size(mr->regKI)) {
+		return false;
+	}
+        val = astrtof32(strP);
+	mr->regKI[chNr] = val / 10;		
+        return true;
+}
+
+static bool
+PVModKi_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+        float ki;
+        uint8_t cnt;
+	if(chNr >= array_size(mr->regKI)) {
+		return false;
+	}
+        ki = mr->regKI[chNr] * 10; 
+        cnt = f32toa(ki,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
+}
+
+
+/**
+ ****************************************************************************
+ * \fn void ModReg_Init(void)
+ * Initialize the Mach Zehner Modulator controller
+ ****************************************************************************
+ */
+
 void
 ModReg_Init(void)
 {
 	ModReg *mr = &gModReg;
-	int i;
-	Timer_Init(&mr->syncTimer,ModSyncResetProc,mr);
-	for(i = 0; i < 4; i++) {
-		mr->regKI[i] = -0.2;
-		mr->dacVolt[i] = 0;
+	int ch;
+	Timer_Init(&mr->syncTimer,ModulatorControlProc,mr);
+	for(ch = 0; ch < 4; ch++) {
+		mr->regKI[ch] = -0.2;
+		mr->dacVolt[ch] = 0;
 
-		mr->adCh[i] = 3 - i;
-		mr->daCh[i] = i;
+		mr->adCh[ch] = 3 - ch;
+		mr->daCh[ch] = ch;
+                PVar_New(PVModBias_Get,PVModBias_Set,mr,ch,"mzMod%d.modBias",ch);
+                PVar_New(PVModKi_Get,PVModKi_Set,mr,ch,"mzMod%d.Ki",ch);
 	}
 	enable_modulator_clock(20000,17.5);
 	SYNC_RESET_DIROUT(); 

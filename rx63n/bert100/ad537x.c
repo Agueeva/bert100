@@ -202,15 +202,10 @@ AD537x_Write(uint32_t value)
 	SYNC_LOW;
 	for(i = UINT32_C(0x00800000); i > 0;i >>= 1) {
 		if(value & i) {
-			//Con_Printf("1");
 			SDI_HIGH;
 		} else {
-			//Con_Printf("0");
 			SDI_LOW;
 		}
-		//asm("nop");
-		//asm("nop");
-		//asm("nop");
 		SCLK_HIGH;
 		asm("nop");
 		asm("nop");
@@ -223,7 +218,6 @@ AD537x_Write(uint32_t value)
 		}
 	}		
 	SYNC_HIGH;
-	//Con_Printf("\n");
 	return inval;
 }
 

@@ -1429,6 +1429,7 @@ CDR_Init(const char *name)
 	Timer_Start(&cdr->aliveCheckTimer,4000);
 
 	Interp_RegisterCmd(&cdrCmd);
+#if 1
 	for(i = 0; i < array_size(gCdrRegister); i++) {
 		const CdrRegister *reg = &gCdrRegister[i];
 		PVar_New(PVReg_Get,PVReg_Set,cdr,i,"%s.%s",name,reg->name);
@@ -1439,6 +1440,7 @@ CDR_Init(const char *name)
 			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
 		}
 	}
+#endif
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;
