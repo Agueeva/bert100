@@ -578,7 +578,7 @@ Tcp_Send(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 static void
 Tcp_SendData(Tcb * tcb, uint8_t flags, uint8_t * dataP, uint16_t dataLen)
 {
-	if (dataLen > 128) {
+	if (dataLen > 16) {
 		uint16_t half = dataLen >> 1;
 		Tcp_Send(tcb, flags, dataP, half);
 		Tcp_Send(tcb, flags, dataP + half, dataLen - half);

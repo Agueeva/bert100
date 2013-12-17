@@ -2,6 +2,7 @@
  * RX63N A/D converter module
  */
 
+#include <string.h>
 #include <math.h>
 #include "types.h"
 #include "adc12.h"
@@ -116,6 +117,7 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	/* Wait for the conversion to end */
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
+	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
 	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - 13;
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
@@ -133,8 +135,28 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 	int32_t adval;
 	float volt;
 	float db;
-	if(argc < 2) {
-		return -EC_BADNUMARGS;
+	if(argc == 1) {
+		Con_Printf("MSTP_S12AD %u\n", MSTP_S12AD);
+		Con_Printf("ADCSR  0x%02x\n",S12AD.ADCSR.BYTE);
+		Con_Printf("ADEXIR %02x\n",S12AD.ADEXICR.WORD);
+		return 0;
+	}
+	if(strcmp(argv[1],"reset") == 0) {
+
+		
+	} else if(strcmp(argv[1],"ref") == 0) {
+    		S12AD.ADANS0.WORD = 0;
+    		S12AD.ADANS1.WORD = 0;
+		S12AD.ADEXICR.BIT.OCS = 1; /* Ref. Voltage select */
+		/* Start a conversion */
+		S12AD.ADCSR.BIT.ADST = 1;
+		/* Wait for the conversion to end */
+		while(1 == S12AD.ADCSR.BIT.ADST);
+		adval = S12AD.ADOCDR;
+		S12AD.ADEXICR.BIT.OCS = 0; /* Ref. Voltage uselect */
+		volt = ((adval * 3300) / 4096);
+		Con_Printf("Ref: %u Volt\n",volt);
+		return 0;
 	}
 	channel = astrtoi16(argv[1]);	
 	adval = ADC12_Read(channel);
@@ -169,6 +191,7 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 	/* Wait for the conversion to end */
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
+	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
 	temperature = (((adval * 3300) / 4095 - 1260) / 4.1) + 25 - 13;
 	Con_Printf("adval %lu, temp %f\n",adval,temperature);
 	return 0;	
