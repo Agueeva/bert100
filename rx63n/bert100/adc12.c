@@ -139,6 +139,8 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("MSTP_S12AD %u\n", MSTP_S12AD);
 		Con_Printf("ADCSR  0x%02x\n",S12AD.ADCSR.BYTE);
 		Con_Printf("ADEXIR %02x\n",S12AD.ADEXICR.WORD);
+    		Con_Printf("ADANS0 %04x\n",S12AD.ADANS0.WORD);
+    		Con_Printf("ADANS1 %04x\n",S12AD.ADANS1.WORD);
 		return 0;
 	}
 	if(strcmp(argv[1],"reset") == 0) {
@@ -154,8 +156,8 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 		while(1 == S12AD.ADCSR.BIT.ADST);
 		adval = S12AD.ADOCDR;
 		S12AD.ADEXICR.BIT.OCS = 0; /* Ref. Voltage uselect */
-		volt = ((adval * 3300) / 4096);
-		Con_Printf("Ref: %u Volt\n",volt);
+		volt = ((adval * 3.300) / 4096);
+		Con_Printf("Ref: %f Volt\n",volt);
 		return 0;
 	}
 	channel = astrtoi16(argv[1]);	
