@@ -65,6 +65,7 @@
 #define CDR_TX_MAIN_CONTROL(lane)               (0x100 + (0x100 * (lane)))
 #define CDR_TX_EQ_CONTROL(lane)                 (0x101 + (0x100 * (lane)))
 #define CDR_TX_SWING_CONTROL(lane)              (0x102 + (0x100 * (lane)))
+#define CDR_TX_SWING_FINE(lane)			(0x111 + (0x100 * (lane)))
 /* Receive lane register spaces */
 #define CDR_RX_MAIN_CONTROL(lane)               (384 + (0x100 * (lane)))
 #define CDR_RX_1ST_ORDER_CONTROL(lane)          (385 + (0x100 * (lane)))

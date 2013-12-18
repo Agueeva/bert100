@@ -458,6 +458,30 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_TX),
 		.bfCdrSelectR = (1 << CDR_ID_TX),
 	},
+	{ 
+		.name = "L0.txaSwingFine",
+		.cdrRegId = CDR_TXA_SWING_FINE(0),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L1.txaSwingFine",
+		.cdrRegId = CDR_TXA_SWING_FINE(1),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L2.txaSwingFine",
+		.cdrRegId = CDR_TXA_SWING_FINE(2),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
+	{ 
+		.name = "L3.txaSwingFine",
+		.cdrRegId = CDR_TXA_SWING_FINE(3),
+		.bfCdrSelectW = (1 << CDR_ID_TX),
+		.bfCdrSelectR = (1 << CDR_ID_TX),
+	},
 	{
 		.name = "L0.EqState",
 		.cdrRegId = CDR_EQ_STATE(0), 
