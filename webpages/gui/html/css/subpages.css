@@ -52,6 +52,34 @@
 	font-weight:bold;
 	color: #FFFFFF;
 }
+
+.saveindicatorGreen{
+	width: 100px;
+	
+	background-color: #00ff40;
+	font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	text-align:center;
+	border-width: 0;
+	border-radius: 6px;
+}
+
+.saveindicatorRed{
+	width: 100px;
+	
+	background-color: #ff0000;
+	font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	text-align:center;
+	border-width: 0;
+	border-radius: 6px;
+}
+
+
+
+
 /*Prozent*/
 .wrapprozent{
 	position: relative;
@@ -116,7 +144,13 @@
 	font-weight:bold;
 	color: #FFFFFF;
 }
-
+.textfildPattern{
+	position: relative;
+	height: 32px;
+	width: 80px;
+	border-width: 3px;
+        border-color: #00aeeb;
+}
 .textfild_error{
 	background-color: #FF0000;
 	color: #FFFFFF;
@@ -301,6 +335,32 @@ select {
          *border-radius: 6px;
          **/
 }
+/*Blue Button*/
+.buttonBlue{
+	height: 32px;
+	max-width: 150px;
+	min-width: 60px;
+        width: 150px;
+	background-repeat:no-repeat;
+	background-color: #00aeeb;
+
+        font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	border-width: 0;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+.buttonBlue:hover {
+	background-color: #00bdff;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+.buttonBlue:active {
+	background-color: #009ad0;
+	box-shadow:inset 0 0 4px #016b90; 
+}
 
 /*Red Button*/
 .buttonRed{
@@ -349,28 +409,6 @@ select {
 }
 .buttonGreen:active {
 	background-color: #075d00;
-	box-shadow:inset 0 0 4px #016b90; 
-}
-
-
-/*Normal Button*/
-.buttonNorm{
-	height: 32px;
-	background-repeat:no-repeat;
-	background-color: #00aeeb;
-	
-	border-width: 0;
-	border-radius: 6px;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-}
-
-.buttonNorm:hover {
-	background-color: #00bdff;
-	box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-}
-.buttonNorm:active {
-	background-color: #009ad0;
 	box-shadow:inset 0 0 4px #016b90; 
 }
 
