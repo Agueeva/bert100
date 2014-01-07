@@ -268,7 +268,7 @@ DFlash_Erase(uint32_t relAddr,uint32_t len)
 
 /**
  *****************************************************************************
- * \fn bool DFlash_BlankCheck8(uint32_t addr) 
+ * \fn bool DFlash_BlankCheck2(uint32_t addr) 
  * returns true if 2 Bytes are blank 
  *****************************************************************************
  */
@@ -434,6 +434,19 @@ copy_to_fcu_ram(void)
         }
         return;
 }
+
+void
+DFlash_Lock(void)
+{
+        Mutex_Lock(&flashSema);
+}
+
+void
+DFlash_Unlock(void)
+{
+        Mutex_Unlock(&flashSema);
+}
+
 
 /**
  ********************************************************
