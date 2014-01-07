@@ -53,6 +53,7 @@
 #include "pat_trig.h"
 #include "fanco.h"
 #include "modreg.h"
+#include "database.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -148,6 +149,7 @@ main(void)
 	PVarSocket_New(wserv);	
 	ADC12_Init();
 	DataFlash_Init();
+	DB_Init();
 	SWUpdate_Init();
 	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */
