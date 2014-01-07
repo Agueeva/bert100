@@ -510,12 +510,12 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 			tag = astrtoi32(argv[2]);
 			DB_SetObj(tag, argv[3],strlen(argv[3]) + 1);
 	} else if (argc > 2) {
-		if (strcmp(argv[1], "tag") == 0) {
-			uint32_t tag;
+		if (strcmp(argv[1], "key") == 0) {
+			uint32_t key;
 			uint16_t len;
 			uint8_t *obj;
-			tag = astrtoi32(argv[2]);
-			obj = DB_GetObjP(db->currBlock, tag, &len);
+			key = astrtoi32(argv[2]);
+			obj = DB_GetObjP(db->currBlock, key, &len);
 			if (obj) {
 				DFlash_Lock();
 				for (i = 0; i < len; i++) {
