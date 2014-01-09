@@ -35,7 +35,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -66,6 +66,13 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
+        
+        if (item.substr(9, 13)=="prbsPatGenSel" && value==3) {
+         ReadVarByName("bert0.userPattern");
+          $("#frame").contents().find("#userPattern0").css('display','table-row');
+          
+          
+          }
     if (item.substr(0, 6)=="emlAmp") {
           value=Math.round(value * 100) / 100;
           }
@@ -149,8 +156,16 @@
       value= my_Tag+ ":" + my_Stunde + ":" + my_Minuten + ":" + my_Sek;
           } 
      break;
-     
-     
+     case "bert0.userPattern":
+          var i;
+      var valuebinary=parseInt(value, 16).toString(2);
+      
+      for (i = 1; i <= 4; i++){
+          item="userHex"+i;
+          value=valuebinary.substr((i-1)*10,10);
+     $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
+     return;
+
      case "system.temp":
      if (value!=0) {
       value=Math.round(Number(value) * 10)/ 10;
@@ -333,7 +348,7 @@ function laodpage(url,id) {
                                  }else{
                                             requestToRelaod=false;
 
-                                            window_onload();
+                                            window_onload(); 
                                  }
                        });
 		      },210);
@@ -391,7 +406,7 @@ $(document).ready(function()
 		//laodpage("html/system.html","#frame");
                n=3;
           laodpage("html/main.html","#frame");
-	  SocketNew();
+	  SocketNew();  
 	//Click.
 	$( "#homeBut" ).click(function() {
                 
@@ -408,6 +423,7 @@ $(document).ready(function()
                 page_pref="bert0.L";
                 page_k=0;
 		laodpage("html/pattern.html","#frame");
+                
 		return false;
 	});
 	$( "#TXBut" ).click(function() {
@@ -433,10 +449,21 @@ $(document).ready(function()
 		laodpage("html/error.html","#frame");
 		return false;
 	});
+        $( "#Variables" ).click(function() {
+		n=3;
+		laodpage("html/variablen.html","#frame");
+		return false;
+	});
 	$( "#SystemBut" ).click(function() {
 		myElement=myVarSystem;
                 n=2;
 		laodpage("html/system.html","#frame");
+		return false;
+	});
+        $( "#OpticalTXBut" ).click(function() {
+		myElement=myVarSystem;
+                n=2;
+		laodpage("html/tx_opt.html","#frame");
 		return false;
 	});
 
@@ -445,17 +472,21 @@ $(document).ready(function()
 
 function ReadVar(variable){
 	      //  alert(bl_Communication);
-		if(!bl_Communication) SocketNew();
+		if(!bl_Communication) SocketNew(); 
 		var my_var;
 		my_var=variable.value;
 		socket.send(JSON.stringify({get: my_var}));
      }
-
+function ReadVarByName(variable){
+	      //  alert(bl_Communication);
+		if(!bl_Communication) SocketNew();  
+		socket.send(JSON.stringify({get: variable}));
+     }
 
 function window_onload()
 {
      
-   if(!bl_Communication) SocketNew();
+  if(!bl_Communication) SocketNew(); 
   var my_var;
   var j,i,k;
   k=0;
@@ -566,7 +597,7 @@ function myDisableAuto()
 }
 
 function SaveVar(myVar, typeVar,pref,k){
-    if(!bl_Communication) SocketNew();
+   if(!bl_Communication) SocketNew(); 
           var formval, myID, myForm, myBool;     
           myID=myVar.id;
           formval=myVar.value;

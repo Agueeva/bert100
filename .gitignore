@@ -1,4 +1,5 @@
 *.o
+*.fw
 *.eep
 *.hex
 *.lss
