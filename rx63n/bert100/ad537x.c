@@ -97,6 +97,42 @@ const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 	{NULL, 0},
 };	
 
+const DacAlias dac0AliasesMZ[NR_CHANNELS] = 
+{
+	{"mod1.bias",FLG_READABLE | FLG_WRITABLE },
+	{"mod2.bias",FLG_READABLE | FLG_WRITABLE },
+	{"mod3.bias",FLG_READABLE | FLG_WRITABLE },
+	{"mod4.bias",FLG_READABLE | FLG_WRITABLE },
+	{"amp1.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"amp2.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"amp3.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"amp4.vg1", FLG_READABLE | FLG_WRITABLE },
+	{"amp1.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"amp2.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"amp3.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"amp4.vg2", FLG_READABLE | FLG_WRITABLE },
+	{"amp1.vg3", FLG_READABLE | FLG_WRITABLE },
+	{"amp2.vg3", FLG_READABLE | FLG_WRITABLE },
+	{"amp3.vg3", FLG_READABLE | FLG_WRITABLE },
+	{"amp4.vg3", FLG_READABLE | FLG_WRITABLE },
+	{"amp1.vd1", FLG_READABLE | FLG_WRITABLE },
+	{"amp2.vd1", FLG_READABLE | FLG_WRITABLE },
+	{"amp3.vd1", FLG_READABLE | FLG_WRITABLE },
+	{"amp4.vd1", FLG_READABLE | FLG_WRITABLE },
+	{"amp1.vd2", FLG_READABLE | FLG_WRITABLE },
+	{"amp2.vd2", FLG_READABLE | FLG_WRITABLE },
+	{"amp3.vd2", FLG_READABLE | FLG_WRITABLE },
+	{"amp4.vd2", FLG_READABLE | FLG_WRITABLE },
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+	{NULL, 0},
+};	
+
 static ReadbackVar rbvars[] = {
 	{
 		.name = "x1a",
