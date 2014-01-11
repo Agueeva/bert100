@@ -6,7 +6,7 @@ function ClickUp(i,ud,sr,k, bez, gr1,gr2){
             if((Number(my_item.value)+sr*0.01) < gr1) {
                my_item.value=Math.round((Number(my_item.value)+(sr*0.01))* 100) / 100;
             }else {
-               my_item.value=gr1;
+             my_item.value=gr1;
             }
         break;
         case 2:
