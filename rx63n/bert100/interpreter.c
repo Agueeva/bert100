@@ -201,7 +201,7 @@ Interp_RegisterCmd(Cmd * cmd)
 static void
 Interp_ExecuteScript(void *eventData)
 {
-	char linebuf[40];
+	char linebuf[130];
 	char *line = NULL;
 	Interp *interp = eventData;
 	line = f_gets(linebuf, sizeof(linebuf), &interp->file);
