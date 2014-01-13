@@ -11,6 +11,7 @@
 #include "interpreter.h"
 #include "hex.h"
 #include "pvar.h"
+#include "version.h"
 
 #define NR_CHANNELS 21
 

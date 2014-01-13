@@ -28,10 +28,5 @@ INLINE bool DB_VarReadStr(uint32_t tag,void *_buf,uint16_t maxlen) {
 	} \
 }
 
-#define DBTAG_DDCMP(x)       	(0x08150000 | (x))
-#define DBTAG_WATCHDOG(x)    	(0x08160000 | (x))
-#define DBTAG_CASHLESS_DEV(x)	(0x08170000 | (x))
-#define DBTAG_LCD(x)			(0x08180000 | (x))
-#define DBTAG_CREDITCARD(x)		(0x08190000 | (x))
-#define DBTAG_SYSTEM(x)			(0x081a0000 | (x))
+#define DBKEY_VERSION(x)       	(0x08150000 | (x))
 #endif

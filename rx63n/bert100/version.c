@@ -7,6 +7,9 @@
 #include "hex.h"
 #include "console.h"
 #include "pvar.h"
+#include "database.h"
+
+static uint8_t gVariant = 0;
 
 /* Year in BCD */
 #define YEAR ((((__DATE__ [7]-'0')*16+(__DATE__[8]-'0'))*16 \
@@ -29,13 +32,19 @@
 
 #define SWNAME	"CBEe"
 
-static char g_Version[16];
+static char gVersion[16];
 
 const char *
 Version_GetStr(void)
 {
-	SNPrintf(g_Version,sizeof(g_Version) - 1,"%s%02x%02x%02x",SWNAME,YEAR2,MONTH,DAY);
-	return g_Version;
+	SNPrintf(gVersion,sizeof(gVersion) - 1,"%s%02x%02x%02x",SWNAME,YEAR2,MONTH,DAY);
+	return gVersion;
+}
+
+uint8_t 
+Variant_Get(void)
+{
+	return gVariant;
 }
 
 static bool 
@@ -55,6 +64,27 @@ cmd_version(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(versionCmd, "version", cmd_version, "version # Print version information");
 
+static int8_t
+cmd_variant(Interp * interp, uint8_t argc, char *argv[])
+{
+	char *strVariant;
+	if((argc == 3) && (strcmp(argv[1],"set") == 0)) {
+		gVariant = astrtoi16(argv[2]);
+		DB_VarWrite(DBKEY_VARIANT,&gVariant);
+	}
+	if(gVariant == VARIANT_EML) {
+		strVariant = "EML";
+	} else if(gVariant == VARIANT_MZ) {
+		strVariant = "MZ";
+	} else {
+		strVariant = "unknown";
+	}
+        Interp_Printf_P(interp, "Hardware Variant %u (%s)\n",gVariant,strVariant);
+	return 0;
+}
+
+INTERP_CMD(variantCmd, "variant", cmd_variant, "variant # Print variant information");
+
 /**
  ******************************************************************************************
  * Register shell command and process variable interface to Bert
@@ -64,5 +94,8 @@ void
 Version_Init(void)
 {
 	Interp_RegisterCmd(&versionCmd);
+	Interp_RegisterCmd(&variantCmd);
+	DB_VarInit(DBKEY_VARIANT,&gVariant);
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
+	//PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.variant");
 }

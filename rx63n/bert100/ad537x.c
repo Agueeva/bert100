@@ -10,6 +10,8 @@
 #include "config.h"
 #include "timer.h"
 #include "pvar.h"
+#include "database.h"
+#include "version.h"
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -592,6 +594,7 @@ void
 AD537x_ModInit(const char *name)
 {
 	int ch;
+	uint8_t variant = Variant_Get();
 	RESET_HIGH;
 	RESET_DIROUT;
 
@@ -621,7 +624,14 @@ AD537x_ModInit(const char *name)
 		DACX_Set(ch,value);
 		value = 0x8000;
 		DACC_Set(ch,value);
-		alias = &dac0AliasesEml[ch];
+		if(variant == VARIANT_MZ) {
+			alias = &dac0AliasesMZ[ch];
+		} else if(variant == VARIANT_EML) {
+			alias = &dac0AliasesEml[ch];
+		} else {
+			Con_Printf("DAC aliases: unknown Hardware variant\n");
+			break;
+		}
 		if(alias->name) {
 			if(alias->flags == (FLG_READABLE | FLG_WRITABLE)) {
 				PVar_New(PVDac_Get,PVDac_Set,NULL,ch,alias->name);
