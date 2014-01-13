@@ -122,17 +122,23 @@ main(void)
 	RxCRC_Init(); /* Needed for the hash buckets of the PVARs */
 	PVars_Init(); /* We need this early because som HW modules export objects */
 
+	DataFlash_Init();
+	DB_Init();
+	Version_Init();
+
 	UsbStor_Init();
 	Spi_Init();
 	if(SDCard_ModuleInit() == true) {
 		UsbStor_UnitReady(true);
 	}
+
 	FatCmds_Init();
 	ShiftReg_Init(0xffff);
 	I2CM_Init();
 	MD5Lib_Init();
 	Sha1Lib_Init();
 	WDTA_Init();
+
 #ifndef BOARD_SAKURA 
 	AD537x_ModInit("dac0");
 #endif
@@ -148,14 +154,11 @@ main(void)
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	ADC12_Init();
-	DataFlash_Init();
-	DB_Init();
 	SWUpdate_Init();
 	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
 	FanCo_Init();
-	Version_Init();
 	Bert_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
