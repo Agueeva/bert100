@@ -215,16 +215,37 @@ Interp_ExecuteScript(void *eventData)
 	}
 }
 
-void
+/**
+ ********************************************************************************
+ * \fn void Interp_StartScript(Interp * interp, char *path)
+ ********************************************************************************
+ */
+bool
 Interp_StartScript(Interp * interp, char *path)
 {
 	FRESULT res;
 	res = f_open(&interp->file, path, FA_READ);
 	if (res == FR_OK) {
 		EV_Trigger(&interp->nextLineEvent);
+		return true;
+	}
+	return false;
+}
+
+static int8_t
+cmd_script(Interp * interp, uint8_t argc, char *argv[])
+{
+	if(argc > 1) {
+		if(Interp_StartScript(interp,argv[1]) != true) {
+			Con_Printf("Failed to start script %s\n",argv[1]);
+		}
+		return 0;
+	} else {
+		return -EC_BADNUMARGS;
 	}
 }
 
+INTERP_CMD(cmdScript, "script", cmd_script, "script        <filename>");
 /**
  ***************************************************************************
  * \fn Interp *Interp_Init(Interp_OutProc * OutStr, Interp_Printf* Printf_P)
@@ -238,6 +259,7 @@ Interp_Init(Interp_OutProc * OutStr, Interp_PrintVA * PrintVA_P)
 	interp->OutStr = OutStr;
 	interp->PrintVA_P = PrintVA_P;
 	Interp_RegisterCmd(&helpcmd);
+	Interp_RegisterCmd(&cmdScript);
 	EV_Init(&interp->nextLineEvent, Interp_ExecuteScript, interp);
 	return interp;
 }

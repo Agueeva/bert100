@@ -69,7 +69,7 @@ Interp *Interp_Init(Interp_OutProc * outStr, Interp_PrintVA * PrintVA_P);
  * Run a shell script from the filesystem
  *******************************************************************
  */
-void Interp_StartScript(Interp * interp, char *path);
+bool Interp_StartScript(Interp * interp, char *path);
 /*
  *****************************************************************************
  * Interp_Feed

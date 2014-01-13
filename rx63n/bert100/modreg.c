@@ -20,7 +20,8 @@
 #include "config.h"
 #include "adc12.h"
 #include "ad537x.h"
-#include "pvar.h"k
+#include "pvar.h"
+#include "version.h"
 
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
@@ -245,6 +246,9 @@ ModReg_Init(void)
 {
 	ModReg *mr = &gModReg;
 	int ch;
+	if(Variant_Get() != VARIANT_MZ) {
+		return;
+	}
 	Timer_Init(&mr->syncTimer,ModulatorControlProc,mr);
 	for(ch = 0; ch < 4; ch++) {
 		mr->regKI[ch] = -0.2;
