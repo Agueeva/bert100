@@ -43,7 +43,7 @@
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -75,7 +75,8 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-        if (item.substr(9, 13)=="prbsPatGenSel" && value==3) {
+      
+        if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
            mystr='l'+item.substr(7, 1)+'.prbs_autovr';
@@ -83,7 +84,7 @@
            mystr=item.substr(0, 8)+'.patVerSel';
            $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
-    if (item.substr(0, 6)=="emlAmp") {
+    if (item.substr(0, 6)=="emlAmp" || item.substr(0, 3)=="amp") {
           value=Math.round(value * 100) / 100;
           }
        if (item.substr(9, 7)=="CdrTrip") {

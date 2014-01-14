@@ -1,5 +1,5 @@
 
-function ClickUp(i,ud,sr,k, bez, gr1,gr2){
+function ClickUp(i,ud,sr,k, bez, gr1,gr2){ 
     var my_item=document.getElementById('amp'+i+bez);
     switch(ud){
         case 1:
@@ -19,7 +19,8 @@ function ClickUp(i,ud,sr,k, bez, gr1,gr2){
         default:
         break;
     }
-TestVal(i);
+TestVal(i,bez, gr1,gr2);
+
 my_item=document.getElementById('amp'+i+bez);
 window.parent.SaveVar(my_item,k,'amp',1);
 if (k==2) {
