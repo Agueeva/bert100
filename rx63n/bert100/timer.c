@@ -234,6 +234,21 @@ cmd_uptime(Interp * interp, uint8_t argc, char *argv[])
 
 INTERP_CMD(uptimeCmd, "uptime", cmd_uptime, "uptime     # Print the system uptime");
 
+static int8_t
+cmd_msleep(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint32_t sleepTimeMs; 
+	if(argc > 1) {
+		sleepTimeMs = astrtoi32(argv[1]);
+		SleepMs(sleepTimeMs);
+	} else {
+		return -EC_BADNUMARGS;
+	}
+	return 0;
+}
+
+INTERP_CMD(msleepCmd, "msleep", cmd_msleep, "msleep   <time/ms> #  Sleep for some milliseconds");
+
 /*
  **************************************************************
  * \fn void Timers_Init(void)
@@ -253,4 +268,5 @@ Timers_Init(void)
 	IEN(CMT0, CMI0) = 1;
 	Interp_RegisterCmd(&delayCmd);
 	Interp_RegisterCmd(&uptimeCmd);
+	Interp_RegisterCmd(&msleepCmd);
 }
