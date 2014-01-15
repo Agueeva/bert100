@@ -12,6 +12,7 @@
 #include "hex.h"
 #include "pvar.h"
 #include "version.h"
+#include "database.h"
 
 #define NR_CHANNELS 21
 
@@ -21,6 +22,7 @@ typedef struct  ADCChan {
 
 typedef struct ADC12 {
 	ADCChan adch[NR_CHANNELS];
+	float pwrRef[4];
 } ADC12;
 
 static ADC12 gAdc12;
@@ -50,57 +52,75 @@ int16_t ADC12_Read(int channel)
 }
 
 static bool 
-PVAdc12_SetRaw (void *cbData, uint32_t adId, const char *strP)
+PVAdc12_SetRaw (void *cbData, uint32_t chNr, const char *strP)
 {
-	ADCChan *ch = cbData;
-	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
+	Con_Printf("The value of the A/D Channel %u is readonly\n",chNr);
 	return false;
 }
 
 static bool 
-PVAdc12_GetRaw (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVAdc12_GetRaw (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
 	uint8_t cnt;
-	ADCChan *ch = cbData;
-	rawAdval = ADC12_Read(ch->channelNr);
+	rawAdval = ADC12_Read(chNr);
 	cnt = uitoa16(rawAdval,bufP);		
 	bufP[cnt] = 0;
 	return true;
 }
 
 static bool 
-PVAdc12_SetVolt(void *cbData, uint32_t adId, const char *strP)
+PVAdc12_SetVolt(void *cbData, uint32_t chNr, const char *strP)
 {
-	ADCChan *ch = cbData;
-	Con_Printf("The value of the A/D Channel %u is readonly\n",ch->channelNr);
+	Con_Printf("The value of the A/D Channel %u is readonly\n",chNr);
 	return false;
 }
 
 static bool 
-PVAdc12_GetVolt(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVAdc12_GetVolt(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
 	float volt;
 	uint8_t cnt;
-	ADCChan *ch = cbData;
-	rawAdval = ADC12_Read(ch->channelNr);
+	rawAdval = ADC12_Read(chNr);
 	volt = rawAdval * 3.300 / 4096;
 	cnt = f32toa(volt,bufP,maxlen);
 	bufP[cnt] = 0;
 	return true;
 }
 static bool 
-PVAdc12_GetDB(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
 	float volt,db;
 	uint8_t cnt;
-	ADCChan *ch = cbData;
-	rawAdval = ADC12_Read(ch->channelNr);
+	rawAdval = ADC12_Read(chNr);
 	volt = rawAdval * 3.300 / 4096;
 	db = 10 * (log(volt) / log(10) - log(2.100) / log(10));
 	cnt = f32toa(db,bufP,maxlen);
+	bufP[cnt] = 0;
+	return true;
+}
+
+static bool
+PVAdc12_SetPwrRef(void *cbData, uint32_t chNr, const char *strP)
+{
+        float val;
+	ADC12 *adc = cbData;
+        val = astrtof32(strP);
+	DB_VarWrite(DBKEY_PWRREF(chNr),&val);
+	adc->pwrRef[chNr] = val;
+	return true;
+}
+
+static bool
+PVAdc12_GetPwrRef(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+        float val;
+	uint8_t cnt;
+	ADC12 *adc = cbData;
+	val = adc->pwrRef[chNr];
+	cnt = f32toa(val,bufP,maxlen);
 	bufP[cnt] = 0;
 	return true;
 }
@@ -215,12 +235,13 @@ ADC12_Init(void)
 	for(i = 0; i < NR_CHANNELS; i++) {
 		ch = &adc->adch[i];
 		ch->channelNr = i;
-		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,ch,i,"adc12.raw%u",i);
-		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,ch,i,"adc12.ch%u",i);
+		PVar_New(PVAdc12_GetRaw,PVAdc12_SetRaw,adc,i,"adc12.raw%u",i);
+		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,adc,i,"adc12.ch%u",i);
 	}
 	for(i = 0; i < 4; i++) {
-		ADCChan *pwrChan = &adc->adch[7-i];
-		PVar_New(PVAdc12_GetDB,NULL,pwrChan,7 - i,"tx.pwr%u",i);
+		DB_VarRead(DBKEY_PWRREF(i),&adc->pwrRef[i]);
+		PVar_New(PVAdc12_GetDB,NULL,adc,7 - i,"tx%u.pwr",i);
+		PVar_New(PVAdc12_GetPwrRef,PVAdc12_SetPwrRef,adc,i,"tx%u.pwrRef",i);
 	}
 	PVar_New(PVAdc12_GetTemperature,NULL,adc,0,"system.temp");
 	/* enable the Temperature Sensor */
