@@ -29,4 +29,6 @@ INLINE bool DB_VarReadStr(uint32_t tag,void *_buf,uint16_t maxlen) {
 }
 
 #define DBKEY_VERSION(x)       	(0x08150000 | (x))
+#define DBKEY_DAC(x)       	(0x08160000 | (x))
+#define DBKEY_ADC(x)       	(0x08170000 | (x))
 #endif

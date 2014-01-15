@@ -145,7 +145,6 @@ main(void)
 	MDIO_Init();
 	PatTrig_Init("ptrig0");
 	Synth_Init("synth0",0x10aa);
-	SleepMs(5); /* Delay CDR init relative to DAC init */	
 	CDR_Init("cdr0");
 	Timer_Start(&blinkTimer,500);
 	Skb_Init();
