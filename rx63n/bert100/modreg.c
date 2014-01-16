@@ -148,7 +148,6 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch] * 10);		
 	} else if((argc == 4)  && (strcmp(argv[2],"ki") == 0)) {
 		mr->regKI[ch] = astrtof32(argv[3]) / 10;		
-		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch] * 10);		
 	} else if((argc == 3)  && (strcmp(argv[2],"volt") == 0)) {
 		Con_Printf("Volt %f\n",mr->dacVolt[ch]);
 	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
