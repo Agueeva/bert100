@@ -88,15 +88,18 @@ PVAdc12_GetVolt(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	bufP[cnt] = 0;
 	return true;
 }
+
 static bool 
 PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	uint32_t rawAdval;
+	uint32_t adCh = 7 - chNr;
 	float volt,db;
 	uint8_t cnt;
-	rawAdval = ADC12_Read(chNr);
+	ADC12 *adc = cbData;
+	rawAdval = ADC12_Read(adCh);
 	volt = rawAdval * 3.300 / 4096;
-	db = 10 * (log(volt) / log(10) - log(2.100) / log(10));
+	db = 10 * (log(volt) / log(10)) - adc->pwrRef[chNr];
 	cnt = f32toa(db,bufP,maxlen);
 	bufP[cnt] = 0;
 	return true;
@@ -240,7 +243,7 @@ ADC12_Init(void)
 	}
 	for(i = 0; i < 4; i++) {
 		DB_VarRead(DBKEY_PWRREF(i),&adc->pwrRef[i]);
-		PVar_New(PVAdc12_GetDB,NULL,adc,7 - i,"tx%u.pwr",i);
+		PVar_New(PVAdc12_GetDB,NULL,adc,i,"tx%u.pwr",i);
 		PVar_New(PVAdc12_GetPwrRef,PVAdc12_SetPwrRef,adc,i,"tx%u.pwrRef",i);
 	}
 	PVar_New(PVAdc12_GetTemperature,NULL,adc,0,"system.temp");

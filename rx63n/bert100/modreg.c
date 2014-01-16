@@ -59,7 +59,7 @@ ModulatorControlProc(void *eventData)
 	for(ch = 0; ch < 4; ch++) {
 		daCh = mr->daCh[ch];
 		adCh = mr->adCh[ch];	
-		diff = (mr->advalAfter[ch] - mr->advalBefore[ch]) * 3.3 / 4095;
+		diff = (mr->advalAfter[ch] - mr->advalBefore[ch]) * 3.3 / 4096;
 		//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
 		//Con_Printf("Diff %f\n",diff);
 		mr->dacVolt[ch] = mr->dacVolt[ch] + mr->regKI[ch] * diff;
@@ -153,8 +153,9 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
 		mr->dacVolt[ch] = astrtof32(argv[3]);
 	} else if((argc == 3)  && (strcmp(argv[2],"ad") == 0)) {
-		Con_Printf("StartVal: %lu, EndVal %lu\n",
-			mr->advalBefore[ch],mr->advalAfter[ch]);
+		Con_Printf("StartVal: %lu, EndVal %lu ControlDev. %f\n",
+			mr->advalBefore[ch],mr->advalAfter[ch],
+			(mr->advalBefore[ch] - mr->advalAfter[ch]) * 3.300/4096);
 	} else {
 		return -EC_BADARG;
 	}
@@ -199,6 +200,20 @@ PVModBias_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+static bool
+PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+        float deviation;
+        uint8_t cnt;
+	if(chNr >= array_size(mr->dacVolt)) {
+		return false;
+	}
+	deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 3.300/4096;
+        cnt = f32toa(deviation,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
+}
 /**
  *****************************************************************************
  * Get/Set the Integral Konstant of the Control Loop
@@ -257,6 +272,7 @@ ModReg_Init(void)
 		mr->daCh[ch] = ch;
                 PVar_New(PVModBias_Get,PVModBias_Set,mr,ch,"mzMod%d.modBias",ch);
                 PVar_New(PVModKi_Get,PVModKi_Set,mr,ch,"mzMod%d.Ki",ch);
+                PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
 	}
 	enable_modulator_clock(20000,17.5);
 	SYNC_RESET_DIROUT(); 

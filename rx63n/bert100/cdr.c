@@ -1430,7 +1430,7 @@ CDR_Init(const char *name)
 	Timer_Start(&cdr->aliveCheckTimer,4000);
 
 	Interp_RegisterCmd(&cdrCmd);
-#if 1
+#if 0
 	for(i = 0; i < array_size(gCdrRegister); i++) {
 		const CdrRegister *reg = &gCdrRegister[i];
 		PVar_New(PVReg_Get,PVReg_Set,cdr,i,"%s.%s",name,reg->name);
