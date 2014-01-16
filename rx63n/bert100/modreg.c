@@ -63,10 +63,10 @@ ModulatorControlProc(void *eventData)
 		//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
 		//Con_Printf("Diff %f\n",diff);
 		mr->dacVolt[ch] = mr->dacVolt[ch] + mr->regKI[ch] * diff;
-		if(mr->dacVolt[ch] > 10.) {
-			mr->dacVolt[ch] = 10.;
-		} else if(mr->dacVolt[ch] < -10.) {
-			mr->dacVolt[ch] = -10.;
+		if(mr->dacVolt[ch] > 8.5) {
+			mr->dacVolt[ch] = 0.;
+		} else if(mr->dacVolt[ch] < -8.5) {
+			mr->dacVolt[ch] = 0.;
 		}
 		DAC_Set(daCh,mr->dacVolt[ch]);
 		mr->advalBefore[ch] = ADC12_Read(adCh);
@@ -251,7 +251,7 @@ ModReg_Init(void)
 	}
 	Timer_Init(&mr->syncTimer,ModulatorControlProc,mr);
 	for(ch = 0; ch < 4; ch++) {
-		mr->regKI[ch] = -0.2;
+		mr->regKI[ch] = -0.1;
 		mr->dacVolt[ch] = 0;
 
 		mr->adCh[ch] = 3 - ch;
