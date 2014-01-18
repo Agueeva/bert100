@@ -51,6 +51,12 @@ int16_t ADC12_Read(int channel)
     return adc_value;
 }
 
+float
+ADC12_ReadVolt(int channel)
+{
+	return ADC12_Read(channel) * 3.3 / 4096;
+}
+
 static bool 
 PVAdc12_SetRaw (void *cbData, uint32_t chNr, const char *strP)
 {

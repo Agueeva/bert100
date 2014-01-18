@@ -54,6 +54,7 @@
 #include "fanco.h"
 #include "modreg.h"
 #include "database.h"
+#include "ntc.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -154,6 +155,7 @@ main(void)
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	ADC12_Init();
+	NTC_Init();
 	SWUpdate_Init();
 	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */
