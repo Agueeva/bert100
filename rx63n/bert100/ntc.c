@@ -120,6 +120,12 @@ NTC_Read(int16_t adchannel)
 	return NTC_Interpol(ohm,10000);
 }
 
+/*
+ ***************************************************************************
+ * \fn static int8_t cmd_ntc(Interp *interp,uint8_t argc,char *argv[])
+ * NTC shell interface 
+ ***************************************************************************
+ */
 static int8_t
 cmd_ntc(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -130,7 +136,7 @@ cmd_ntc(Interp *interp,uint8_t argc,char *argv[])
 	} else if((argc == 3) && (strcmp(argv[1],"volt") == 0)) {
 		float volt = astrtof32(argv[2]);
 		float Ri = 1000.0;
-		float Rv = 10000;
+		float Rv = 9500;
 		float ohm = (4.1 / volt) * Ri - Ri - Rv;
 		Con_Printf("Ohm %f, NTC %f\n",ohm,NTC_Interpol(ohm,10000));
         	return 0;
