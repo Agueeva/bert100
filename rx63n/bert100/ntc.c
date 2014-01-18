@@ -105,7 +105,7 @@ NTC_Read(int16_t adchannel)
 	float ohm;
 	Ri = 1000.0;
 	Rv = 10000.0; 
-	ohm = (3.3 / volt) * Ri - Ri - Rv;
+	ohm = (4.1 / volt) * Ri - Ri - Rv;
 	return NTC_Interpol_10k(ohm);
 }
 
