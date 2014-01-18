@@ -6,8 +6,11 @@
 #include "timer.h"
 #include "adc12.h"
 #include "interpreter.h"
+#include "database.h"
 #include "hex.h"
 #include "console.h"
+#include "ntc.h"
+#include "pvar.h"
 #include "ntc.h"
 #include <stdlib.h>
 #include <string.h>
@@ -15,8 +18,8 @@
 #define NTC_EC_OK               (0)
 #define NTC_EC_RANGE            (1)
 
-//Kanal 12 mod Temp
-//Kanal 13 amp Temp
+static float gRPreMod = 10000.0;
+static float gRPreAmp = 10000.0;
 
 typedef struct Point {
         float temp;
@@ -89,6 +92,9 @@ NTC_Interpol_10k(float ohm)
 }
 
 /**
+ ********************************************************************************
+ * Read from the NTC
+ ********************************************************************************
  */
 static float 
 NTC_Read(int16_t adchannel) 
@@ -98,7 +104,7 @@ NTC_Read(int16_t adchannel)
 	float Rv;
 	float ohm;
 	Ri = 1000.0;
-	Rv = 10000; 
+	Rv = 10000.0; 
 	ohm = (3.3 / volt) * Ri - Ri - Rv;
 	return NTC_Interpol_10k(ohm);
 }
@@ -124,8 +130,21 @@ cmd_ntc(Interp *interp,uint8_t argc,char *argv[])
 INTERP_CMD(ntcCmd, "ntc", cmd_ntc,
            "ntc ohm <value> ");
 
+static bool
+PVNTC_GetTemperature (void *cbData, uint32_t adchannel, char *bufP,uint16_t maxlen)
+{
+        float temperature;
+        temperature = NTC_Read(adchannel);
+        bufP[f32toa(temperature,bufP,maxlen)] = 0;
+        return true;
+}
 
-void NTC_Init(void) 
+void 
+NTC_Init(void) 
 {
 	Interp_RegisterCmd(&ntcCmd);		
+	PVar_New(PVNTC_GetTemperature,NULL,NULL,12,"mzMod.temp");
+	PVar_New(PVNTC_GetTemperature,NULL,NULL,13,"amp.temp");
+	DB_VarInit(DBKEY_NTC_MOD_RPRE,&gRPreMod);
+	DB_VarInit(DBKEY_NTC_AMP_RPRE,&gRPreAmp);
 }
