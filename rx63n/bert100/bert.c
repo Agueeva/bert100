@@ -12,6 +12,8 @@
 #include "hex.h"
 #include "pvar.h"
 #include "shiftreg.h"
+#include "database.h"
+#include "bert.h"
 #include <math.h>
 
 #define NR_CHANNELS	(4)
@@ -54,6 +56,7 @@ typedef struct Bert {
 	Timer cdrRecalTimer;
 	uint32_t dataRate; 
 	uint8_t pvLatchedLol[NR_CHANNELS];
+	bool dbSwapTxPNInv[NR_CHANNELS];
 } Bert;
 
 static Bert gBert;
@@ -359,6 +362,8 @@ static const CdrForward gForwardRegs[] =
 #define CDR_L2_FIFO_ERROR                   (0x002500aa)
 #define CDR_L3_FIFO_ERROR                   (0x002500bb)
 #endif
+
+#if 0
 	{
 		.name = "L0.swapTxPN",
 		.cdrRegId = CDR_SWAP_TXP_N(0), 
@@ -383,6 +388,7 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_TX),
 		.bfCdrSelectR = (1 << CDR_ID_TX),
 	},
+#endif
 	{
 		.name = "L0.txaEqpst",
 		.cdrRegId = CDR_TXA_EQPST(0),
@@ -996,6 +1002,45 @@ PVBitrate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 }
 
 /**
+ **************************************************************************************************
+ * \fn static bool PVSwapTxPN_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+ * Forwarded after translation by database.
+ **************************************************************************************************
+ */
+static bool
+PVSwapTxPN_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	uint32_t cdrRegId;
+	uint16_t value;
+        if(chNr >= 4) {
+                Con_Printf("Bert %s Unexpected Channel %lu\n",__func__,chNr);
+                return false;
+        }
+	cdrRegId = CDR_SWAP_TXP_N(chNr); 
+       	value = !!CDR_Read(CDR_ID_TX,cdrRegId) ^ bert->dbSwapTxPNInv[chNr];
+        bufP[uitoa16(value,bufP)] = 0;
+        return true;
+}
+
+static bool
+PVSwapTxPN_Set(void *cbData, uint32_t chNr, const char *strP)
+{
+	Bert *bert = cbData;
+	uint32_t cdrRegId;
+        uint16_t value;
+        if(chNr >= 4) {
+                Con_Printf("Bert %s Unexpected Channel %lu\n",__func__,chNr);
+                return false;
+        }
+	cdrRegId = CDR_SWAP_TXP_N(chNr); 
+        value = !!astrtoi16(strP);
+       	value ^= bert->dbSwapTxPNInv[chNr];
+       	CDR_Write(CDR_ID_TX,cdrRegId,value);
+	return true;
+}
+
+/**
  ***********************************************************************************************
  * \fn static bool PVForward_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
  * Reading some variables are directly forwarded to one of the CDR's. Here the reading
@@ -1086,6 +1131,11 @@ PVUserPattern_Set(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+/*
+ ********************************************
+ * \fn void Bert_Init(void) 
+ ********************************************
+ */
 void
 Bert_Init(void) 
 {
@@ -1116,6 +1166,10 @@ Bert_Init(void)
 		PVar_New(PVAccMeasValid_Get,NULL,bert,ch ,"%s.L%lu.%s",name,ch,"accMeasValid");
 	
 		PVar_New(PVCdrTrip_Get,NULL,bert,CDR_CDR2_TRIP(ch) ,"%s.L%lu.%s",name,ch,"CdrTrip");
+
+		/* Some registers are forwarded after a translation */
+		PVar_New(PVSwapTxPN_Get,PVSwapTxPN_Set,bert,ch ,"%s.L%lu.%s",name,ch,"swapTxPN");
+		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];

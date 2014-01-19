@@ -130,6 +130,5 @@ FanCo_Init(void)
 	for(fanNr = 0 ; fanNr < NR_FANS; fanNr++)
 	{
 		PVar_New(PVRpm_Get,NULL,fc,fanNr ,"fanco.fan%u.rpm",fanNr);
-		//PVar_New(PVRpm_Get,NULL,fc,fanNr ,"fanco.fan%u.fault",fanNr);
 	}
 }

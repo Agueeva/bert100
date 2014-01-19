@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "rx_crc.h"
 #include "version.h"
+#include "strhash.h"
 
 #define DB_SPACE	(8192)
 #define MIN_WRITE	(8)
@@ -31,6 +32,7 @@
 
 typedef struct Database {
 	Mutex dbSema;
+	StrHashTable *objIdHash;
 	uint32_t dbBlock[2];
 	uint32_t fillLevel[2];
 	uint16_t crcinit;
@@ -363,6 +365,29 @@ DB_SetObj(uint32_t tag, void *buf, uint16_t len)
 	return retval;
 }
 
+bool
+DB_SetObjName(uint32_t objKey, const char *format, ...) 
+{
+	Database *db = &g_Database;
+	char printfBuf[42];
+        StrHashEntry *she;
+	void *objId = (void *)objKey;
+        va_list ap;
+        va_start(ap,format);
+        VSNPrintf(printfBuf,array_size(printfBuf),format,ap);
+        va_end(ap);
+	Mutex_Lock(&db->dbSema);
+	she = StrHash_CreateEntry(db->objIdHash,printfBuf);
+	if(!she) {
+		Con_Printf("Can not create Hash table entry for DB Obj %s(0x%08x)\n",printfBuf,objKey);
+		Mutex_Unlock(&db->dbSema);
+		return false;
+	}
+	StrHash_SetValue(she,objId);
+	Mutex_Unlock(&db->dbSema);
+	return true;
+}
+
 /**
  ********************************************************
  * Create a database by initializing both blocks
@@ -495,6 +520,18 @@ DB_Fix(Database * db)
 	}
 }
 
+static void
+Keys_Dump(Database *db) {
+        StrHashSearch hashSearch;
+        StrHashEntry * hashEntry;
+        hashEntry = StrHash_FirstEntry(db->objIdHash,&hashSearch);
+        for(;hashEntry;hashEntry = StrHash_NextEntry(&hashSearch)) {
+                const char *key = StrHash_GetKey(hashEntry);
+		uint32_t objId = (uint32_t)StrHash_GetValue(hashEntry);
+                Con_Printf("0x%08lx: %s\n",objId,key);
+        }
+}
+
 /**
  *****************************************************************************
  * \fn static int8_t cmd_db(Interp * interp, uint8_t argc, char *argv[])
@@ -506,9 +543,11 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 	Database *db = &g_Database;
 	uint16_t i;
 	if (argc == 4) {
-			uint32_t tag;
-			tag = astrtoi32(argv[2]);
-			DB_SetObj(tag, argv[3],strlen(argv[3]) + 1);
+		uint32_t tag;
+		tag = astrtoi32(argv[2]);
+		DB_SetObj(tag, argv[3],strlen(argv[3]) + 1);
+	} else if ((argc == 2) && (strcmp(argv[1],"keys") == 0)) {
+		Keys_Dump(db); 
 	} else if (argc > 2) {
 		if (strcmp(argv[1], "key") == 0) {
 			uint32_t key;
@@ -599,6 +638,7 @@ DB_Init(void)
 	 */
 	Mutex_Init(&db->dbSema);
 	//db->crcinit = CRC16(0,(uint8_t*)g_Version,3);
+	db->objIdHash = StrHash_New(32);
 	db->crcinit = DB_CRCINIT;
 
 	db->dbBlock[0] = DFLASH_MAP_ADDR(0);

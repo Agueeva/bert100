@@ -194,6 +194,6 @@ NTC_Init(void)
 	Interp_RegisterCmd(&ntcCmd);		
 	PVar_New(PVNTC_GetTemperature,NULL,NULL,12,"mzMod.temp");
 	PVar_New(PVNTC_GetTemperature,NULL,NULL,13,"amp.temp");
-	DB_VarInit(DBKEY_NTC_MOD_RPRE,&gRPreMod);
-	DB_VarInit(DBKEY_NTC_AMP_RPRE,&gRPreAmp);
+	DB_VarInit(DBKEY_NTC_MOD_RPRE,&gRPreMod,"mzMod.temp.RPre");
+	DB_VarInit(DBKEY_NTC_AMP_RPRE,&gRPreAmp,"amp.temp.RPre");
 }

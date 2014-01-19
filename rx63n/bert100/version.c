@@ -95,7 +95,7 @@ Version_Init(void)
 {
 	Interp_RegisterCmd(&versionCmd);
 	Interp_RegisterCmd(&variantCmd);
-	DB_VarInit(DBKEY_VARIANT,&gVariant);
+	DB_VarInit(DBKEY_VARIANT,&gVariant,"system.variant");
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
 	//PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.variant");
 }
