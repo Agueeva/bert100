@@ -10,11 +10,26 @@
   var myVarPattern= new Array("bert0.L0.prbsPatGenSel","bert0.L1.prbsPatGenSel","bert0.L2.prbsPatGenSel","bert0.L3.prbsPatGenSel",
                               "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
                               "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  
-  var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel"); 
+  var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel");
+  var myVarTX_opt_test=new Array("bert0.L0.txaSwingFine", "bert0.L1.txaSwingFine", "bert0.L2.txaSwingFine", "bert0.L3.txaSwingFine",
+                                  "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
+                                  "bert0.L0.txaEqpst","bert0.L1.txaEqpst","bert0.L2.txaEqpst","bert0.L3.txaEqpst",
+                                  "bert0.L0.txaEqpre","bert0.L1.txaEqpre","bert0.L2.txaEqpre","bert0.L3.txaEqpre",
+			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
+                         "amp1.vg1","amp2.vg1","amp3.vg1","amp4.vg1",
+                          "amp1.vg2","amp2.vg2","amp3.vg2","amp4.vg2",
+			 "amp1.vd1","amp2.vd1","amp3.vd1","amp4.vd1",
+                         "amp1.vd2","amp2.vd2","amp3.vd2","amp4.vd2");
+  var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
+  var myVarTX_opt_test2= new Array("txaSwingFine","swapTxPN","txaSwing","swapTxPN");
   var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
 			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
 			 "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
+  var myVarTX_opt= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
+                             "mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev","mzMod0.ctrlDev",
+			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
+                         "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
@@ -32,15 +47,17 @@
                           "bert0.L0.accTime",
                           "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip" ); 
   
-  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm",
-                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp"); 
+  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
+                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp");
+  var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
+			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
      all_tx=false;
-     
+     all_tx_opt_test=false;
 /* Socket-Functions */
 
    function SocketNew()
@@ -62,18 +79,21 @@
      socket.onmessage = function(evt)
      {
         var myCh;
+        var mystr;
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-        
-        if (item.substr(9, 13)=="prbsPatGenSel" && value==3) {
+      
+        if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
-          
-          
+           mystr='l'+item.substr(7, 1)+'.prbs_autovr';
+           $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
+           mystr=item.substr(0, 8)+'.patVerSel';
+           $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
-    if (item.substr(0, 6)=="emlAmp") {
+    if (item.substr(0, 6)=="emlAmp" || item.substr(0, 3)=="amp" || item.substr(0, 5)=="mzMod" || item.substr(4, 3)=="pwr") {
           value=Math.round(value * 100) / 100;
           }
        if (item.substr(9, 7)=="CdrTrip") {
@@ -135,18 +155,12 @@
      case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
-     
-     // "bert0.L0.accTime
+    
       case "bert0.L0.accTime":
           //alert(value);
      if (value!=0) {
-       /*   var wert=Number(value);
-          var    my_Tag = Math.floor(wert/86400);
-          var d = new Date(wert*1000);
-         
-     value = '%02d:%02d:%02d:%02d'.sprintf(my_Tag,d.getHours(), d.getMinutes(), d.getSeconds());
-     alert(value);*/
-          var wert=Number(value);
+     
+      var wert=Number(value);
       var    my_Tag = Math.floor(wert/86400);
       wert=wert-my_Tag*86400;
       var    my_Stunde= Math.floor(wert/3600);
@@ -163,10 +177,20 @@
       for (i = 1; i <= 4; i++){
           item="userHex"+i;
           value=valuebinary.substr((i-1)*10,10);
-     $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
+          $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
      return;
 
      case "system.temp":
+     if (value!=0) {
+      value=Math.round(Number(value) * 10)/ 10;
+          } 
+     break;
+case "mzMod.temp":
+     if (value!=0) {
+      value=Math.round(Number(value) * 10)/ 10;
+          } 
+     break;
+case "amp.temp":
      if (value!=0) {
       value=Math.round(Number(value) * 10)/ 10;
           } 
@@ -461,12 +485,29 @@ $(document).ready(function()
 		return false;
 	});
         $( "#OpticalTXBut" ).click(function() {
-		myElement=myVarSystem;
+		myElement=myVarTX_opt;
                 n=2;
 		laodpage("html/tx_opt.html","#frame");
 		return false;
 	});
-
+        $( "#OpticalTXTestBut" ).click(function() {
+	        myElement=myVarTX_opt_test;
+		n=2;
+		all=all_tx_opt_test;
+                page_pref="amp";
+                page_k=1;
+		laodpage("html/tx_opt_test.html","#frame");
+		return false;
+	});
+       $( "#OpticalGraphBut" ).click(function() {
+	        myElement=myVarGraph;
+		n=2;
+		all=all_tx_opt_test;
+                page_pref="amp";
+                page_k=1;
+		laodpage("html/tx_opt_graph.html","#frame");
+		return false;
+	});
            createTreeMenu("treemenu");
      });
 
@@ -512,7 +553,7 @@ function window_onload()
         myQueueBool=true;
         myQueueCount=1;
         if (myQueue.length>0) {
-	socket.send(JSON.stringify({get: myQueue[0]})); 
+	socket.send(JSON.stringify({get: myQueue[0]}));
 	}
 	break;
       default:
@@ -524,7 +565,7 @@ function window_onload_variable()
 {
    
     // setTimeout(callback, 500);
-     if (myQueueCount<myQueue.length) {     
+     if (myQueueCount<myQueue.length) {
   socket.send(JSON.stringify({get: myQueue[myQueueCount]}));
   myQueueCount++;
      }

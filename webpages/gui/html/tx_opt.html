@@ -1,9 +1,9 @@
 <head>
 	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
-	<!-- tx eml functions -->
+	 <!-- tx eml functions -->
 	<script type="text/javascript" src="js/tx_eml.js" ></script>
 </head>
-<body onload="javascript: Check_all();">
+<body onload="javascript: onStart();">
 
 <div class="headline">Optical TX</div>
 
@@ -95,7 +95,7 @@
 </TR>
 	<!--Row 3-->
 
-	<!--Row 4-->
+	
 <TR ALIGN="left" VALIGN="middle">
 	<TH>Control Loop</TH>
 	<TD>
@@ -127,7 +127,7 @@
 	</TD>
 	
 </TR>
-	<!--Row 5-->
+	<!--Row 4-->
 <TR ALIGN="left" VALIGN="middle">
 	<TH>Swap P_N</TH>
 	
@@ -161,8 +161,181 @@
 	</SELECT>
 	</TD>
 </TR>
+	
+	
+	
+	<!--Row 5-->
+<TR ALIGN="left" VALIGN="middle">
+        <TH>&nbsp;&nbsp;</TH>
+	<TH>&nbsp;&nbsp;</TH>
+	<TH>&nbsp;&nbsp;</TH>
+	<TH>&nbsp;&nbsp;</TH>
+	<TH>&nbsp;&nbsp;</TH></TR>
+
+	<!--Row 6-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>MZBias(V)</TH>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod0.modBias" value="0" size=3 readonly >
+	</TD>
+	
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod1.modBias" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod2.modBias" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod3.modBias" value="0" size=3 readonly >
+	</TD>
+</TR>
+	<!--Row 7-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>mzModx.ctrlDev</TH>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod0.ctrlDev" value="0" size=3 readonly >
+	</TD>
+	
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod1.ctrlDev" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod2.ctrlDev" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod3.ctrlDev" value="0" size=3 readonly >
+	</TD>
+</TR>
+<!--Row 8-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Relative Optical<br>Power (dB)tx0.pwr</TH>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx0.pwr" value="0" size=3 readonly >
+	</TD>
+	
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx1.pwr" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx2.pwr" value="0" size=3 readonly >
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx3.pwr" value="0" size=3 readonly >
+	</TD>
+</TR>
+
+<!--Row 9-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Referenz Optical<br>Power (dB)tx0.pwrRef</TH>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx0.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+	<button class="buttonBlue" type="button" id="tx0.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>	
+	</TD>
+	
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx1.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="tx1.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx2.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="tx2.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="tx3.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="tx3.pwrRef_But" onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+</TR>
 </TABLE>
 </FORM>
 
 </div>
 </body>
+<script type="text/javascript">
+	<!--
+document.getElementById("tx0.pwrRef_But").style.display="none";
+document.getElementById("tx1.pwrRef_But").style.display="none";
+document.getElementById("tx2.pwrRef_But").style.display="none";
+document.getElementById("tx3.pwrRef_But").style.display="none";	
+var my_Inter, my_sek;
+my_sek= 1000;
+function onStart(){	
+        setTimeout(StartInterval, my_sek);
+	}
+function StartInterval(){
+		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
+                my_Inter=setInterval(window.parent.window_onload,my_sek);
+		}
+		
+		
+//**********************************************************
+function validateImput(evt,Feld) {
+	//the pressed key
+	var theEvent = evt || window.event;
+	var bkey = theEvent.keyCode || theEvent.which;
+	key = String.fromCharCode( bkey );
+	console.log("theEvent:"+theEvent+" key: "+bkey);
+	
+	//allow arrow keys
+	if ( bkey == 39 || bkey == 37) return;
+	
+	//allow backspace and color save indicator red
+	if (bkey == 8){
+		makeSaveVisible(Feld);
+		return;
+	}
+	
+	var s=Feld.value;
+	var regex = /[-.0-9]/;
+	if( !regex.test(key) || s.length>=10) {
+		theEvent.returnValue = false;
+		if(theEvent.preventDefault) theEvent.preventDefault();
+		return;
+	}
+	
+	makeSaveVisible(Feld);
+}
+//**********************************************************    
+function  makeSaveVisible(Feld){
+	var but=(Feld.id+'_But');   
+	my_Inter=clearInterval(my_Inter);	
+	document.getElementById(but).style.display='table-row';	
+}
+
+function TestpwrRef(item){
+
+var myname=item.id;
+myname=myname.substr(0,10);
+var elem=document.getElementById(myname);
+var val=elem.value;
+if (!isNumber(val) || val>10 || val<-50) {	
+elem.value="";
+}
+else {
+window.parent.SaveVar(elem,1,'.L',0);
+document.getElementById("tx0.pwrRef_But").style.display="none";
+document.getElementById("tx1.pwrRef_But").style.display="none";
+document.getElementById("tx2.pwrRef_But").style.display="none";
+document.getElementById("tx3.pwrRef_But").style.display="none";	
+onStart();
+}
+}
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
