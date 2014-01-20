@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <title>Date Axes, Rotated Labels and Zooming</title>
+
+    <link class="include" rel="stylesheet" type="text/css" href="css/graph/jquery.jqplot.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/graph/examples.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/graph/shCoreDefault.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/graph/shThemejqPlot.min.css" />
+    <LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/graph/excanvas.js"></script><![endif]-->
+    <script class="include" type="text/javascript" src="js/graph/jquery.min.js"></script>
+
+
+</head>
+<body onload="javascript: start();">
+    
+<FORM>
+<TABLE  class="blue-select" ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+	<!--Row 1-->
+    <TR ALIGN="left" VALIGN="middle">  
+        <TH ALIGN="middle" rowspan="2">mzMod0.modBias<br>tx0.pwr</TH>
+        <TD>
+            <div class="graphLoad">Loading</div>
+            <div class="example-plot" id="chart1" style="width: 800px; height: 110px;"></div>
+        </TD>
+    </TR>
+    
+    <TR>
+	<TD ALIGN="left" ><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(0)">Reset</button></TD>
+    </TR>
+        
+    <TR ALIGN="left" VALIGN="middle">     
+        <TH ALIGN="middle" rowspan="2">mzMod1.modBias<br>tx1.pwr</TH>
+        <TD>
+            <div class="graphLoad">Loading</div>
+            <div class="example-plot" id="chart2" style="width: 800px; height: 110px;"></div>
+        </TD>
+    </TR>
+    
+    <TR>
+	<TD ALIGN="left"><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(1)">Reset</button></TD>
+    </TR>
+    
+    <TR ALIGN="left" VALIGN="middle">
+        <TH ALIGN="middle" rowspan="2" >mzMod2.modBias<br>tx2.pwr</TH>
+        <TD>
+            <div class="graphLoad">Loading</div>
+            <div class="example-plot" id="chart3" style="width: 800px; height: 110px;"></div>
+        </TD>
+    </TR>
+    
+    <TR>
+	<TD ALIGN="left"><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(2)">Reset</button></TD>
+    </TR>
+        
+    <TR ALIGN="left" VALIGN="middle"> 
+        <TH ALIGN="middle" rowspan="2" >mzMod3.modBias<br>tx3.pwr</TH>
+        <TD>
+            <div class="graphLoad">Loading</div>
+            <div class="example-plot" id="chart4" style="width: 800px; height: 110px;"></div>
+        </TD>
+    </TR>
+    
+    <TR>
+	<TD ALIGN="left"><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(3)">Reset</button></TD>
+    </TR>
+        
+</TABLE>
+
+
+    <input type="hidden"  id="mzMod0.modBias" value="0">
+    <input type="hidden"  id="mzMod1.modBias" value="0">
+    <input type="hidden"  id="mzMod2.modBias" value="0">
+    <input type="hidden"  id="mzMod3.modBias" value="0">
+ 
+    <input type="hidden"  id="tx0.pwr" value="0">
+    <input type="hidden"  id="tx1.pwr" value="0">
+    <input type="hidden"  id="tx2.pwr" value="0">
+    <input type="hidden"  id="tx3.pwr" value="0">
+    
+</FORM>
+
+
+
+
+    <script type="text/javascript" src="js/graph/example.min.js"></script>
+
+</body>
+
+<script type="text/javascript" class="code">
+<!--
+
+var my_item1,my_item2, chart1_1,chart1_2,chart2_1,chart2_2,chart3_1,chart3_2,chart4_1,chart4_2;
+var plot1,plot2,plot3,plot4;
+
+function graphData()
+{
+    this.x = [[]];
+    this.y = [[]];
+}
+
+var graph01 = new graphData();
+var graph02 = new graphData();
+var graph03 = new graphData();
+var graph04 = new graphData();
+
+
+function GraphReset(item){
+  switch(item)
+    {
+    case 0:
+        clearGraphData(graph01,plot1);
+    break;
+    case 1:
+        clearGraphData(graph02,plot2);
+    break;
+    case 2:
+        clearGraphData(graph03,plot3);
+    break;
+    case 3:
+        clearGraphData(graph04,plot4);
+    break;
+    }
+}
+
+
+function start(){
+    plot1.replot();
+    plot2.replot();
+    plot3.replot();
+    plot4.replot();
+}
+
+function setUpGraphData(graphData,ID1,ID2)
+{
+    var Datum = new Date();
+    
+    //console.log("ID's: 1:"+ID1+" 2:"+ID2);
+    var item1 = document.getElementById(ID1);
+    var item2 = document.getElementById(ID2);
+    //console.log("Item's: 1:"+item1+" 2:"+item2);
+    
+    var wert=Math.round(Number(item1.value) * 100) / 100;
+    graphData.x = [[Datum, wert]];
+    wert=Math.round(Number(item2.value) * 100) / 100;
+    graphData.y =[[Datum, wert]];
+}
+
+function updateGraphData(graphData,ID1,ID2,plot)
+{
+    var Datum = new Date();
+
+    var item1 = document.getElementById(ID1);
+    var item2 = document.getElementById(ID2);
+    
+    if (graphData.x == "") {
+        wert=Math.round(Number(item1.value) * 100) / 100;
+        graphData.x[0].push([Datum, wert]);
+        wert=Math.round(Number(item2.value) * 100) / 100;
+        graphData.y[0].push([Datum, wert]);
+        return;
+    }
+    wert=Math.round(Number(item1.value) * 100) / 100;
+    graphData.x[0].push([Datum, wert]);
+    wert=Math.round(Number(item2.value) * 100) / 100;
+    graphData.y[0].push([Datum, wert]);
+    
+    plot.series[0].data = graphData.x[0];
+    plot.series[1].data = graphData.y[0];
+    plot.resetAxesScale();
+    plot.replot();
+}
+
+function clearGraphData(graphData,plot){
+
+    graphData.x = [[]];
+    graphData.y = [[]];
+    
+    plot.series[0].data = graphData.x[0];
+    plot.series[1].data = graphData.y[0];
+    plot.resetAxesScale();
+    //$('#chart1').empty(); 
+    plot.redraw();
+   
+}
+
+function createGraphs() {
+    plot1 = $.jqplot('chart1', [graph01.x,graph01.y], {
+        //title:'Channel 1',
+        axes:{
+           xaxis:{
+                renderer:$.jqplot.DateAxisRenderer,
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer
+                },
+                tickOptions:{
+                    fontSize:'10pt',
+                    fontFamily:'Tahoma',
+                    angle:0
+                }
+            },
+            yaxis:{
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer},
+                    tickOptions:{
+                        fontSize:'10pt',
+                        fontFamily:'Tahoma',
+                        angle:0,
+                        formatString:'%.0e'
+                    }
+            }
+        },
+        
+        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        
+        cursor:{
+            zoom:true,
+            looseZoom: true
+        }
+       
+     
+    });
+    
+    plot2 = $.jqplot('chart2', [graph02.x,graph02.y], {
+        //title:'Channel 2',
+        axes:{
+            xaxis:{
+                renderer:$.jqplot.DateAxisRenderer,
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer
+                },
+                tickOptions:{
+                    fontSize:'10pt',
+                    fontFamily:'Tahoma',
+                    angle:0
+                }
+            },
+            yaxis:{
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer},
+                    tickOptions:{
+                        fontSize:'10pt',
+                        fontFamily:'Tahoma',
+                        angle:0,
+                        formatString:'%.0e'
+                    }
+            }
+        },
+        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        cursor:{
+            zoom:true,
+            looseZoom: true
+        },
+        tickInterval:null,
+        numberTicks:null
+    });
+
+    
+    plot3 = $.jqplot('chart3', [graph03.x,graph03.y], {
+        //title:'Channel 3',
+        axes:{
+            xaxis:{
+                renderer:$.jqplot.DateAxisRenderer,
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer
+                },
+                tickOptions:{
+                    fontSize:'10pt',
+                    fontFamily:'Tahoma',
+                    angle:0,
+                    formatString:'%.0e'
+                }
+            },
+            yaxis:{
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer},
+                    tickOptions:{
+                        fontSize:'10pt',
+                        fontFamily:'Tahoma',
+                        angle:0,
+                        formatString:'%.0e'
+                    }
+            }
+        },
+        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        cursor:{
+            zoom:true,
+            looseZoom: true
+        }
+    });
+     
+    plot4 = $.jqplot('chart4', [graph04 .x,graph04.y], {
+       // title:'Channel 4',
+        axes:{
+            xaxis:{
+                renderer:$.jqplot.DateAxisRenderer,
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer
+                },
+                tickOptions:{
+                    fontSize:'10pt',
+                    fontFamily:'Tahoma',
+                    angle:0
+                }
+            },
+            yaxis:{
+                rendererOptions:{
+                    tickRenderer:$.jqplot.CanvasAxisTickRenderer},
+                    tickOptions:{
+                        fontSize:'10pt',
+                        fontFamily:'Tahoma',
+                        angle:0
+                    }
+            }
+        },
+        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        cursor:{
+            zoom:true,
+            looseZoom: true
+        }
+    });
+
+}
+
+
+
+$(document).ready(function(){
+    $.jqplot.config.enablePlugins = true;
+    createGraphs();
+    
+    
+    
+    setUpGraphData(graph01,'mzMod0.modBias','tx0.pwr');
+    setUpGraphData(graph02,'mzMod1.modBias','tx1.pwr');
+    setUpGraphData(graph03,'mzMod2.modBias','tx2.pwr');
+    setUpGraphData(graph04,'mzMod3.modBias','tx3.pwr');
+    
+    var intervalId = setInterval(function() {
+        
+        updateGraphData(graph01,'mzMod0.modBias','tx0.pwr',plot1);
+        updateGraphData(graph02,'mzMod1.modBias','tx1.pwr',plot2);
+        updateGraphData(graph03,'mzMod2.modBias','tx2.pwr',plot3);
+        updateGraphData(graph04,'mzMod3.modBias','tx3.pwr',plot4);
+       
+        window.parent.window_onload();
+    }, 1000);  
+
+});
+
+
+-->
+</script>
+
+
+<!-- End example scripts -->
+
+<!-- Don't touch this! -->
+
+
+    <script class="include" type="text/javascript" src="js/graph/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="js/graph/shCore.min.js"></script>
+    <script type="text/javascript" src="js/graph/shBrushJScript.min.js"></script>
+    <script type="text/javascript" src="js/graph/shBrushXml.min.js"></script>
+<!-- End Don't touch this! -->
+
+<!-- Additional plugins go here -->
+
+    <!-- to render rotated axis ticks, include both the canvasText and canvasAxisTick renderers -->
+    <script language="javascript" type="text/javascript" src="js/graph/jqplot.canvasTextRenderer.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/graph/jqplot.canvasAxisTickRenderer.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/graph/jqplot.dateAxisRenderer.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/graph/jqplot.cursor.min.js"></script>
+
+<!-- End additional plugins -->
+
+
+</html>
+
+</script>
+		

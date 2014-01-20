@@ -23,7 +23,8 @@ if (my_itemA.value==1) {
 	my_item=document.getElementById('bert0.L'+n+'.patVerSel');
         my_item.value=document.getElementById('bert0.L'+n+'.prbsPatGenSel').value;
 	my_item.disabled=true;
-	window.parent.SaveVar(my_item,i,'.L',0);
+        if (document.getElementById('bert0.L'+n+'.prbsPatGenSel').value!=3 && document.getElementById('bert0.L'+n+'.prbsPatGenSel').value!=2) {
+	window.parent.SaveVar(my_item,i,'.L',0); }
         window.parent.window_onload();
 }
 else {
@@ -46,11 +47,17 @@ if (window.parent.all_pat) {
 else {
     AUTO_main_all_on();
 for (i = 0; i <= 3; i++){
-    var my_itemA=document.getElementById('l'+i+'.prbs_autovr');
+  //  var my_itemA=document.getElementById('l'+i+'.prbs_autovr');
 	my_item=document.getElementById('bert0.L'+i+'.patVerSel');
 	my_item.disabled=true;
 }}
-
+for (i = 0; i <= 3; i++){
+ my_item=document.getElementById('bert0.L'+i+'.prbsPatGenSel');
+ if ( my_item.value==3) {
+   document.getElementById('bert0.L'+i+'.patVerSel').disabled=true;
+   document.getElementById('l'+i+'.prbs_autovr').disabled=true;
+ }
+}
 }
 
 //**********************************************************
@@ -66,6 +73,8 @@ function fun_all(item){
 }
 	else {AUTO_main_all_on();}
 		AUTO_main();
+       showFun(false);         
+                
 }
 
 //**********************************************************
@@ -126,16 +135,21 @@ function AUTO_main() {
 function Check_Pattern(L,element,n)
 {
 	if (element.value=="3") {
-		
 		window.parent.ReadVarByName("bert0.userPattern");
-		window.parent.SaveVar(element,1,'.L',0);
-		document.getElementById('l'+L+'.prbs_autovr').value=0;
+		window.parent.SaveVar(element,n,'.L',0);
+		//document.getElementById('l'+L+'.prbs_autovr').value=0;
+                document.getElementById('l'+L+'.prbs_autovr').disabled=true;
+                document.getElementById('bert0.L'+L+'.patVerSel').disabled=true;
+                if (window.parent.all_pat) {
+                    AUTO_main_all_ch()
+                }
 		showFun( true);
 	}
 	else if (element.value=="2") {
 	showFun(false);
 	window.parent.SaveVar(element,n,'.L',0);
 	document.getElementById('l'+L+'.prbs_autovr').value=0;
+        document.getElementById('l'+L+'.prbs_autovr').disabled=false;
 	Check_Auto(L);
 	}
 	else {
@@ -143,6 +157,8 @@ function Check_Pattern(L,element,n)
 		window.parent.SaveVar(element,n,'.L',0);
 		document.getElementById('bert0.L'+L+'.prbsPatGenSel').value=element.value;
 		window.parent.SaveVar(document.getElementById('bert0.L'+L+'.prbsPatGenSel'),n,'.L',0);
+                document.getElementById('l'+L+'.prbs_autovr').disabled=false;
+                Check_Auto(L);
 	}
 }
 
@@ -152,11 +168,11 @@ function showFun(visible) {
     if(visible) {
 	document.getElementById('userPattern0').style.display = 'table-row';
 	
-	document.getElementById('l0.prbs_autovr').value=0;
 	
 
     } else {
-if (document.getElementById('bert0.L0.prbsPatGenSel').value!=3 && document.getElementById('bert0.L1.prbsPatGenSel').value!=3 && document.getElementById('bert0.L2.prbsPatGenSel').value!=3 && document.getElementById('bert0.L3.prbsPatGenSel').value!=3) {
+if ((document.getElementById('bert0.L0.prbsPatGenSel').value!=3 && document.getElementById('bert0.L1.prbsPatGenSel').value!=3 && document.getElementById('bert0.L2.prbsPatGenSel').value!=3 && document.getElementById('bert0.L3.prbsPatGenSel').value!=3)
+    || (document.getElementById('all').checked && document.getElementById('bert0.L0.prbsPatGenSel').value!=3)) {
 	
 
 	document.getElementById('userPattern0').style.display = 'none';
