@@ -216,6 +216,12 @@ PVModBias_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+/*
+ *****************************************************************************************
+ * Get the difference between the voltage at the Integrator before and after the
+ * meassurement interval. 
+ *****************************************************************************************
+ */
 static bool
 PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
@@ -225,7 +231,8 @@ PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	if(chNr >= array_size(mr->dacVolt)) {
 		return false;
 	}
-	deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 3.300/4096;
+	/* normalize by multiplikation with 1/(meassurement Interval) */
+	deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 10. * 3.300/4096;
         cnt = f32toa(deviation,bufP,maxlen);
         bufP[cnt] = 0;
         return true;
