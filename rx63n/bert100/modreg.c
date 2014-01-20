@@ -31,6 +31,8 @@ typedef struct ModReg {
 	Timer syncTimer;	
 	float dacVolt[4];
 	float regKI[4];
+	float regKIEffPerInterval[4];
+	bool  ctrlEnable[4];
 	int32_t advalAfter[4];
 	int32_t advalBefore[4];
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
@@ -62,7 +64,7 @@ ModulatorControlProc(void *eventData)
 		diff = (mr->advalAfter[ch] - mr->advalBefore[ch]) * 3.3 / 4096;
 		//Con_Printf("before %lu, after %lu\n",adval_before,adval_after);
 		//Con_Printf("Diff %f\n",diff);
-		mr->dacVolt[ch] = mr->dacVolt[ch] + mr->regKI[ch] * diff;
+		mr->dacVolt[ch] = mr->dacVolt[ch] + mr->regKIEffPerInterval[ch] * diff;
 		if(mr->dacVolt[ch] > 8.5) {
 			mr->dacVolt[ch] = 0.;
 		} else if(mr->dacVolt[ch] < -8.5) {
@@ -116,6 +118,19 @@ enable_modulator_clock(uint32_t hz,float delayUs)
 	MTU.TSTR.BIT.CST4 = 1;
 }
 
+static void
+update_eff_ki(ModReg *mr,uint8_t chNr) 
+{
+	if(chNr >= array_size(mr->ctrlEnable)) {
+		return;
+	}
+	if(mr->ctrlEnable[chNr]) {
+		mr->regKIEffPerInterval[chNr] = mr->regKI[chNr] / 10;
+	} else {
+		mr->regKIEffPerInterval[chNr] = 0;
+	}
+}
+
 /**
  ***************************************************************************************
  * \fn static int8_t cmd_mod(Interp * interp, uint8_t argc, char *argv[])
@@ -140,14 +155,15 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		return -EC_BADNUMARGS;
 	}
 	ch = astrtoi16(argv[1]);
-	if(ch > 4) {
+	if(ch >= 4) {
 		Con_Printf("Bad Channel number\n");
 		return -EC_BADARG;
 	}
 	if((argc == 3)  && (strcmp(argv[2],"ki") == 0)) {
-		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch] * 10);		
+		Con_Printf("Regelkonstante Integral: %f / s\n",mr->regKI[ch]);		
 	} else if((argc == 4)  && (strcmp(argv[2],"ki") == 0)) {
-		mr->regKI[ch] = astrtof32(argv[3]) / 10;		
+		mr->regKI[ch] = astrtof32(argv[3]);		
+		update_eff_ki(mr,ch);
 	} else if((argc == 3)  && (strcmp(argv[2],"volt") == 0)) {
 		Con_Printf("Volt %f\n",mr->dacVolt[ch]);
 	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
@@ -228,7 +244,8 @@ PVModKi_Set (void *cbData, uint32_t chNr, const char *strP)
 		return false;
 	}
         val = astrtof32(strP);
-	mr->regKI[chNr] = val / 10;		
+	mr->regKI[chNr] = val;		
+	update_eff_ki(mr,chNr);
         return true;
 }
 
@@ -241,8 +258,37 @@ PVModKi_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	if(chNr >= array_size(mr->regKI)) {
 		return false;
 	}
-        ki = mr->regKI[chNr] * 10; 
+        ki = mr->regKI[chNr]; 
         cnt = f32toa(ki,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
+}
+
+static bool
+PVCtrlEnable_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	ModReg *mr = cbData;
+        bool enable;
+	if(chNr >= array_size(mr->ctrlEnable)) {
+		return false;
+	}
+        enable = astrtoi16(strP);
+	mr->ctrlEnable[chNr] = enable;		
+	update_eff_ki(mr,chNr);
+        return true;
+}
+
+static bool
+PVCtrlEnable_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+        bool enable;
+        uint8_t cnt;
+	if(chNr >= array_size(mr->ctrlEnable)) {
+		return false;
+	}
+        enable = mr->ctrlEnable[chNr]; 
+        cnt = uitoa16(enable,bufP);
         bufP[cnt] = 0;
         return true;
 }
@@ -251,7 +297,7 @@ PVModKi_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 /**
  ****************************************************************************
  * \fn void ModReg_Init(void)
- * Initialize the Mach Zehner Modulator controller
+ * Initialize the Mach Zehnder Modulator controller
  ****************************************************************************
  */
 
@@ -265,16 +311,19 @@ ModReg_Init(void)
 	}
 	Timer_Init(&mr->syncTimer,ModulatorControlProc,mr);
 	for(ch = 0; ch < 4; ch++) {
-		mr->regKI[ch] = -0.1;
+		mr->regKI[ch] = -0.5;
+		mr->ctrlEnable[ch] = true;
+		update_eff_ki(mr,ch);
 		mr->dacVolt[ch] = 0;
 
 		mr->adCh[ch] = 3 - ch;
 		mr->daCh[ch] = ch;
                 PVar_New(PVModBias_Get,PVModBias_Set,mr,ch,"mzMod%d.modBias",ch);
                 PVar_New(PVModKi_Get,PVModKi_Set,mr,ch,"mzMod%d.Ki",ch);
+		PVar_New(PVCtrlEnable_Get,PVCtrlEnable_Set,mr,ch,"mzMod%d.ctrlEnable",ch);
                 PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
 	}
-	enable_modulator_clock(20000,17.5);
+	enable_modulator_clock(20000,12.0);
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
 	Interp_RegisterCmd(&modCmd);
