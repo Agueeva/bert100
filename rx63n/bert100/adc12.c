@@ -92,6 +92,7 @@ ADC12_GetTemperature(void)
 	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - adc->tempSensCorr;
 	return temperature;
 }
+
 static bool 
 PVAdc12_SetRaw (void *cbData, uint32_t chNr, const char *strP)
 {
@@ -174,19 +175,6 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	float temperature;
 	temperature = ADC12_GetTemperature();
-#if 0
-	int32_t adval;
-    	S12AD.ADANS0.WORD = 0;
-    	S12AD.ADANS1.WORD = 0;
-	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
-	/* Start a conversion */
-	S12AD.ADCSR.BIT.ADST = 1;
-	/* Wait for the conversion to end */
-    	while(1 == S12AD.ADCSR.BIT.ADST);
-	adval = S12AD.ADTSDR;
-	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
-	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - 13;
-#endif
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
 }
@@ -269,7 +257,7 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 	return 0;
 }
 
-INTERP_CMD(temperatureCmd, "temperature", cmd_temperature, "temperature  # Read temperature");
+INTERP_CMD(temperatureCmd, "temperature", cmd_temperature, "temperature ?<realTemperature>?  # Read temperature / Calculate temperature");
 
 void
 ADC12_Init(void) 
