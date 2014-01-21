@@ -23,6 +23,7 @@ typedef struct  ADCChan {
 typedef struct ADC12 {
 	ADCChan adch[NR_CHANNELS];
 	float pwrRef[4];
+	float tempSensCorr;
 } ADC12;
 
 static ADC12 gAdc12;
@@ -57,6 +58,40 @@ ADC12_ReadVolt(int channel)
 	return ADC12_Read(channel) * 3.3 / 4096;
 }
 
+float
+ADC12_ReadVoltMultiple(int channel,uint8_t repeatCnt)
+{
+	int i;
+	uint32_t sum;
+	for(i = 0, sum = 0; i < repeatCnt; i++) {
+		sum += ADC12_Read(channel);
+	}
+	return sum * 3.3 / (4096 * repeatCnt);
+}
+
+/**
+  *****************************************************************
+  * \fn float ADC12_GetTemperature(void)
+  *****************************************************************
+  */
+float
+ADC12_GetTemperature(void)
+{
+	int32_t adval;
+	float temperature;
+	ADC12 *adc = &gAdc12;
+    	S12AD.ADANS0.WORD = 0;
+    	S12AD.ADANS1.WORD = 0;
+	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
+	/* Start a conversion */
+	S12AD.ADCSR.BIT.ADST = 1;
+	/* Wait for the conversion to end */
+    	while(1 == S12AD.ADCSR.BIT.ADST);
+	adval = S12AD.ADTSDR;
+	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
+	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - adc->tempSensCorr;
+	return temperature;
+}
 static bool 
 PVAdc12_SetRaw (void *cbData, uint32_t chNr, const char *strP)
 {
@@ -137,8 +172,10 @@ PVAdc12_GetPwrRef(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 static bool 
 PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
-	int32_t adval;
 	float temperature;
+	temperature = ADC12_GetTemperature();
+#if 0
+	int32_t adval;
     	S12AD.ADANS0.WORD = 0;
     	S12AD.ADANS1.WORD = 0;
 	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
@@ -149,6 +186,7 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	adval = S12AD.ADTSDR;
 	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
 	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - 13;
+#endif
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
 }
@@ -213,20 +251,22 @@ INTERP_CMD(adc12Cmd, "adc12", cmd_adc12, "adc12 <channel-nr> # Read from 12 Bit 
 static int8_t
 cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 {
-	int32_t adval;
 	float temperature;
-    	S12AD.ADANS0.WORD = 0;
-    	S12AD.ADANS1.WORD = 0;
-	S12AD.ADEXICR.WORD = (1 << 8); /* Temperature sensor select */
-	/* Start a conversion */
-	S12AD.ADCSR.BIT.ADST = 1;
-	/* Wait for the conversion to end */
-    	while(1 == S12AD.ADCSR.BIT.ADST);
-	adval = S12AD.ADTSDR;
-	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
-	temperature = (((adval * 3300) / 4095 - 1260) / 4.1) + 25 - 13;
-	Con_Printf("adval %lu, temp %f\n",adval,temperature);
-	return 0;	
+	float tempCorr;
+	ADC12 *adc = &gAdc12;
+	if(argc == 1) {
+		temperature = ADC12_GetTemperature();
+		Con_Printf("CPU Temp. %f C\n",temperature);
+	} else if(argc == 2) {
+		float measTemp;
+		temperature = astrtof32(argv[1]); 
+		measTemp = ADC12_GetTemperature();
+		tempCorr = temperature - measTemp;
+		adc->tempSensCorr -= tempCorr;
+		Con_Printf("Temp Sensor correction ist now %f C\n",adc->tempSensCorr);
+		DB_VarWrite(DBKEY_TEMPSENS_CORR(channel),&adc->tempSensCorr);
+	}
+	return 0;
 }
 
 INTERP_CMD(temperatureCmd, "temperature", cmd_temperature, "temperature  # Read temperature");
@@ -248,7 +288,7 @@ ADC12_Init(void)
 		PVar_New(PVAdc12_GetVolt,PVAdc12_SetVolt,adc,i,"adc12.ch%u",i);
 	}
 	for(i = 0; i < 4; i++) {
-		DB_VarRead(DBKEY_PWRREF(i),&adc->pwrRef[i]);
+		DB_VarInit(DBKEY_PWRREF(i),&adc->pwrRef[i],"tx%u.pwrRef",i);
 		PVar_New(PVAdc12_GetDB,NULL,adc,i,"tx%u.pwr",i);
 		PVar_New(PVAdc12_GetPwrRef,PVAdc12_SetPwrRef,adc,i,"tx%u.pwrRef",i);
 	}
@@ -257,6 +297,9 @@ ADC12_Init(void)
 	MSTP_TEMPS = 0;
 	TEMPS.TSCR.BIT.TSEN = 1;
 	TEMPS.TSCR.BIT.TSOE = 1;
+	adc->tempSensCorr = 0;
+	DB_VarInit(DBKEY_TEMPSENS_CORR(channel),&adc->tempSensCorr,"adc12.tempSensCorr");
+
 	Interp_RegisterCmd(&adc12Cmd);
 	Interp_RegisterCmd(&temperatureCmd);
 }

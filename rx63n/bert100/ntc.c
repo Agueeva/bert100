@@ -104,7 +104,7 @@ NTC_Interpol(float ohm,float ntcOhm)
 static float 
 NTC_Read(int16_t adchannel) 
 {
-	float volt = ADC12_ReadVolt(adchannel); 
+	float volt = ADC12_ReadVoltMultiple(adchannel,5); 
 	float Ri;
 	float Rv;
 	float ohm;
