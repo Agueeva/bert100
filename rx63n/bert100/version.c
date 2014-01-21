@@ -54,6 +54,22 @@ PVVersionSW_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+static bool 
+PVVariantHW_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	char *strVariant;
+	if(gVariant == VARIANT_EML) {
+		strVariant = "EML";
+	} else if(gVariant == VARIANT_MZ) {
+		strVariant = "MZ";
+	} else {
+		strVariant = "unknown";
+	}
+	SNPrintf(bufP,maxlen,"\"%s\"",strVariant);
+	//SNPrintf(bufP,maxlen,"%d",gVariant);
+	return true;
+}
+
 static int8_t
 cmd_version(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -97,5 +113,5 @@ Version_Init(void)
 	Interp_RegisterCmd(&variantCmd);
 	DB_VarInit(DBKEY_VARIANT,&gVariant,"system.variant");
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
-	//PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.variant");
+	PVar_New(PVVariantHW_Get,NULL,NULL,0,"system.variant");
 }
