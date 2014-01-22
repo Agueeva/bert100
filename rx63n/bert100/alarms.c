@@ -32,6 +32,14 @@ Alarm_Clear(uint8_t alarmNr)
 	}
 }
 
+static bool
+PVAlarms_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+        SNPrintf(bufP,maxlen,"%lu",gAlarmBits);
+        return true;
+}
+
+
 static int8_t
 cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -46,4 +54,5 @@ void
 Alarm_Init(void) 
 {
 	Interp_RegisterCmd(&alarmCmd);	
+	PVar_New(PVAlarms_Get,NULL,NULL,0,"system.alarms");
 }
