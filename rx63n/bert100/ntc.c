@@ -131,14 +131,14 @@ NTC_PollTimerProc(void *eventData)
 {
 	float tempMod,tempAmp;
 	tempMod = NTC_Read(ADCH_NTC_MOD,1); 
-	if(tempMod > 50) {
+	if(tempMod > 40) {
 		Alarm_Set(ALARM_MOD_TEMP);
 	} else {
 		Alarm_Clear(ALARM_MOD_TEMP);
 	}
 	EV_Yield();
 	tempAmp = NTC_Read(ADCH_NTC_AMP,1); 
-	if(tempAmp > 50) {
+	if(tempAmp > 40) {
 		Alarm_Set(ALARM_AMP_TEMP);
 	} else {
 		Alarm_Clear(ALARM_AMP_TEMP);

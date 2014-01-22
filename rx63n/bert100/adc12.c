@@ -140,13 +140,11 @@ PVAdc12_GetVolt(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 static bool 
 PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
-	uint32_t rawAdval;
 	uint32_t adCh = 7 - chNr;
 	float volt,db;
 	uint8_t cnt;
 	ADC12 *adc = cbData;
-	rawAdval = ADC12_ReadVoltMultiple(adCh,5);
-	volt = rawAdval * 3.300 / 4096;
+	volt = ADC12_ReadVoltMultiple(adCh,5);
 	db = 10 * (log(volt) / log(10)) - adc->pwrRef[chNr];
 	cnt = f32toa(db,bufP,maxlen);
 	bufP[cnt] = 0;

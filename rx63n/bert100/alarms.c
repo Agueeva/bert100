@@ -16,7 +16,7 @@ Alarm_Set(uint8_t alarmNr)
 	uint32_t bitmask = (UINT32_C(1) << alarmNr);
 	if(!(gAlarmBits & bitmask)) {
 		gAlarmBits |= bitmask; 
-		Buzzer_Start(4000);
+		Buzzer_Start(3000);
 	}
 }
 

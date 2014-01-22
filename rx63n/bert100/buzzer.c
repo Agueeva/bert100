@@ -15,7 +15,10 @@ void
 Buzzer_Start(uint32_t hz) 
 {
 	if(hz == 0) {
-		MSTP(MTU3) = 1;
+        	PORT1.PMR.BIT.B7 = 0;
+        	MPC.P17PFS.BYTE = 0x0; 
+		PORT1.PDR.BIT.B7 = 1;
+		PORT1.PODR.BIT.B7 = 0;
 		return;
 	}
 	MSTP(MTU3) = 0;
@@ -55,5 +58,4 @@ INTERP_CMD(buzzerCmd, "buzzer", cmd_buzzer, "buzzer <frequency> ");
 void Buzzer_Init(void)
 {
 	Interp_RegisterCmd(&buzzerCmd);
-	Buzzer_Start(4000);
 }
