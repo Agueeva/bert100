@@ -77,6 +77,12 @@ FanCo_GetRpm(FanCo *fc,int fanNr)
 	return rpm;
 }
 
+/**
+ *********************************************************************
+ * \fn static void FanCo_PollTimer(void *eventData)
+ * Poll one FAN and set Alarms appropriately
+ *********************************************************************
+ */
 static void
 FanCo_PollTimer(void *eventData)
 {

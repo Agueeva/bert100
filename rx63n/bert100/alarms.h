@@ -2,6 +2,7 @@
 
 void Alarm_Set(uint8_t alarmNr);
 void Alarm_Clear(uint8_t alarmNr);
+void Alarm_Init(void);
 
 #define ALARM_MOD_TEMP	(0)
 #define ALARM_AMP_TEMP	(1)

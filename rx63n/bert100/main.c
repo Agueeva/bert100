@@ -56,6 +56,7 @@
 #include "database.h"
 #include "ntc.h"
 #include "buzzer.h"
+#include "alarms.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -164,6 +165,7 @@ main(void)
 	FanCo_Init();
 	Bert_Init();
 	Buzzer_Init();
+	Alarm_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
 	EV_Loop();
 }
