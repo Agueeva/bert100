@@ -10,6 +10,7 @@
 #include "fanco.h"
 #include "timer.h"
 #include "pvar.h"
+#include "alarms.h"
 
 #define MAX6651_SPEED       (0)
 #define MAX6651_CONFIG      (2)
@@ -40,6 +41,8 @@ typedef struct FanCo {
 	uint16_t i2cAddr;
 	uint16_t fanRpm[NR_FANS];
 	TimeMs_t timeStamp[NR_FANS];
+	Timer fanPollTimer;
+	uint8_t fanPollIdx;
 } FanCo;
 
 static FanCo gFanCo[1];
@@ -72,6 +75,21 @@ FanCo_GetRpm(FanCo *fc,int fanNr)
 		rpm = fc->fanRpm[fanNr];
 	}
 	return rpm;
+}
+
+static void
+FanCo_PollTimer(void *eventData)
+{
+	FanCo *fc = eventData;
+	uint32_t rpm;
+	fc->fanPollIdx = (fc->fanPollIdx + 1) % NR_FANS;
+	rpm = FanCo_GetRpm(fc,fc->fanPollIdx);	
+	if(rpm < 1000) {
+		Alarm_Set(ALARM_FAN_0 + fc->fanPollIdx);
+	}  else {
+		Alarm_Clear(ALARM_FAN_0 + fc->fanPollIdx);
+	}
+	Timer_Start(&fc->fanPollTimer,1002);
 }
 
 /**
@@ -131,4 +149,6 @@ FanCo_Init(void)
 	{
 		PVar_New(PVRpm_Get,NULL,fc,fanNr ,"fanco.fan%u.rpm",fanNr);
 	}
+	Timer_Init(&fc->fanPollTimer, FanCo_PollTimer, fc); 
+	Timer_Start(&fc->fanPollTimer,10000);
 }
