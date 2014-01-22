@@ -131,6 +131,12 @@ PVAdc12_GetVolt(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+/**
+ *************************************************************************************************
+ * \fn static bool PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+ * Read the power reference in decibel.
+ *************************************************************************************************
+ */
 static bool 
 PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
@@ -139,7 +145,7 @@ PVAdc12_GetDB(void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	float volt,db;
 	uint8_t cnt;
 	ADC12 *adc = cbData;
-	rawAdval = ADC12_Read(adCh);
+	rawAdval = ADC12_ReadVoltMultiple(adCh,5);
 	volt = rawAdval * 3.300 / 4096;
 	db = 10 * (log(volt) / log(10)) - adc->pwrRef[chNr];
 	cnt = f32toa(db,bufP,maxlen);

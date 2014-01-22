@@ -12,6 +12,7 @@
 #include "ntc.h"
 #include "pvar.h"
 #include "ntc.h"
+#include "alarms.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -24,6 +25,7 @@
 
 static float gRPreMod = 10000.0;
 static float gRPreAmp = 10000.0;
+static Timer gNtcPollTimer;
 
 typedef struct Point {
         float temp;
@@ -102,9 +104,9 @@ NTC_Interpol(float ohm,float ntcOhm)
  ********************************************************************************
  */
 static float 
-NTC_Read(int16_t adchannel) 
+NTC_Read(int16_t adchannel, uint8_t measCnt) 
 {
-	float volt = ADC12_ReadVoltMultiple(adchannel,5); 
+	float volt = ADC12_ReadVoltMultiple(adchannel,measCnt); 
 	float Ri;
 	float Rv;
 	float ohm;
@@ -118,6 +120,30 @@ NTC_Read(int16_t adchannel)
 	}
 	ohm = (4.1 / volt) * Ri - Ri - Rv;
 	return NTC_Interpol(ohm,10000);
+}
+
+/**
+ * \fn static void NTC_PollTimerProc(void *eventData)
+ * 
+ */
+static void
+NTC_PollTimerProc(void *eventData)
+{
+	float tempMod,tempAmp;
+	tempMod = NTC_Read(ADCH_NTC_MOD,1); 
+	if(tempMod > 50) {
+		Alarm_Set(ALARM_MOD_TEMP);
+	} else {
+		Alarm_Clear(ALARM_MOD_TEMP);
+	}
+	EV_Yield();
+	tempAmp = NTC_Read(ADCH_NTC_AMP,1); 
+	if(tempAmp > 50) {
+		Alarm_Set(ALARM_AMP_TEMP);
+	} else {
+		Alarm_Clear(ALARM_AMP_TEMP);
+	}
+	Timer_Start(&gNtcPollTimer,2000);
 }
 
 /*
@@ -155,7 +181,7 @@ cmd_ntc(Interp *interp,uint8_t argc,char *argv[])
 		DB_VarWrite(DBKEY_NTC_MOD_RPRE,&gRPreMod);
         	return 0;
 	} else if(argc == 1) {
-		Con_Printf("Mod %f C, Amp %f C\n",NTC_Read(ADCH_NTC_MOD),NTC_Read(ADCH_NTC_AMP));
+		Con_Printf("Mod %f C, Amp %f C\n",NTC_Read(ADCH_NTC_MOD,5),NTC_Read(ADCH_NTC_AMP,5));
         	return 0;
 	}
         return -EC_BADARG;
@@ -168,7 +194,7 @@ static bool
 PVNTC_GetTemperature (void *cbData, uint32_t adchannel, char *bufP,uint16_t maxlen)
 {
         float temperature;
-        temperature = NTC_Read(adchannel);
+        temperature = NTC_Read(adchannel,5);
         bufP[f32toa(temperature,bufP,maxlen)] = 0;
         return true;
 }
@@ -196,4 +222,6 @@ NTC_Init(void)
 	PVar_New(PVNTC_GetTemperature,NULL,NULL,13,"amp.temp");
 	DB_VarInit(DBKEY_NTC_MOD_RPRE,&gRPreMod,"mzMod.temp.RPre");
 	DB_VarInit(DBKEY_NTC_AMP_RPRE,&gRPreAmp,"amp.temp.RPre");
+	Timer_Init(&gNtcPollTimer,NTC_PollTimerProc,NULL);
+	Timer_Start(&gNtcPollTimer,2000);
 }

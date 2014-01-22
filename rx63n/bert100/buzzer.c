@@ -11,8 +11,9 @@
 #include "config.h"
 #include "version.h"
 
-
-static void Buzzer_Start(uint32_t hz) {
+void 
+Buzzer_Start(uint32_t hz) 
+{
 	if(hz == 0) {
 		MSTP(MTU3) = 1;
 		return;
