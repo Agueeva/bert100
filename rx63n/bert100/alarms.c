@@ -54,5 +54,5 @@ void
 Alarm_Init(void) 
 {
 	Interp_RegisterCmd(&alarmCmd);	
-	PVar_New(PVAlarms_Get,NULL,NULL,0,"system.alarms");
+	PVar_New(PVAlarms_Get,NULL,NULL,0,"system.fault");
 }
