@@ -7,6 +7,7 @@
 #include "interpreter.h"
 #include "console.h"
 #include "hex.h"
+#include "pvar.h"
 
 static uint32_t gAlarmBits = 0;
 
