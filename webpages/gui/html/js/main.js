@@ -3,7 +3,7 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
-  var my_sek=250;
+  var my_sek=300;
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
@@ -29,11 +29,15 @@
   var myVarTX_opt= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
                              "mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev","mzMod0.ctrlDev",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
-                         "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef");
+                         "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
+                         "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
   var myVarErr= new Array("bert0.bitrate",
+                           "mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
+                          "mzMod0.ctrlDev","mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev",
+                          "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
                           "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
@@ -45,14 +49,15 @@
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
                           "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr",
                           "bert0.L0.accTime",
-                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip" ); 
+                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip"
+                         ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp");
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; //'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -66,7 +71,7 @@
      socket = new WebSocket(urlWS);
 
  socket.onopen = function() {
-             //alert("Verbindung open");
+            // alert("Verbindung open");
              bl_Communication=true;
 	     my_Interval=setInterval(keepAlive,3000);
 }
@@ -84,7 +89,7 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-      
+    
         if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
@@ -149,17 +154,51 @@
           value=my_str.concat(my_arr[1]);
           }         
           }}
-
-      switch(item)
+var k;
+ //**********neu if aus case************************************         
+     if (item.substr(9, 7)=="LolStat") {
+          k=item.substr(7, 1);
+       if (value==0) {
+      $("#frame").contents().find("#Loss"+k).attr('class','greenfield');
+          }else{
+      $("#frame").contents().find("#Loss"+k).attr('class','redfield');
+          }
+     }
+     if (item.substr(9, 10)=="latchedLol") {
+           k=item.substr(7, 1);
+       if (value==0) {
+      $("#frame").contents().find("#Mem"+k).attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Mem"+k).attr('class','redfield');
+     }
+     }
+     if (item.substr(9, 8)=="prbsLock") {
+          k=item.substr(7, 1);
+       if (value==1) {
+      $("#frame").contents().find("#Lock"+k).attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#Lock"+k).attr('class','redfield');
+     }
+     }
+ //***********************************************************************+         
+        
+switch(item)
      {
-     case "test.var1":
+case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
+case "system.fault":
+       document.getElementById('system.fault').value=value;
+       if (value==0) {
+         savePatternIndicatorElement.className = "AlarmindicatorGreen";
+       }
+       else {
+         savePatternIndicatorElement.className = "AlarmindicatorRed"; 
+       }
+     return;
     
-      case "bert0.L0.accTime":
-          //alert(value);
+case "bert0.L0.accTime":
      if (value!=0) {
-     
       var wert=Number(value);
       var    my_Tag = Math.floor(wert/86400);
       wert=wert-my_Tag*86400;
@@ -170,17 +209,16 @@
       value= my_Tag+ ":" + my_Stunde + ":" + my_Minuten + ":" + my_Sek;
           } 
      break;
-     case "bert0.userPattern":
-          var i;
+case "bert0.userPattern":
+      var i;
       var valuebinary=parseInt(value, 16).toString(2);
-      
       for (i = 1; i <= 4; i++){
           item="userHex"+i;
           value=valuebinary.substr((i-1)*10,10);
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
      return;
 
-     case "system.temp":
+case "system.temp":
      if (value!=0) {
       value=Math.round(Number(value) * 10)/ 10;
           } 
@@ -195,104 +233,8 @@ case "amp.temp":
       value=Math.round(Number(value) * 10)/ 10;
           } 
      break;
-     
-     case "bert0.L0.LolStat":
-     if (value==0) {
-      $("#frame").contents().find("#Loss0").attr('class','greenfield');
-          }else{
-      $("#frame").contents().find("#Loss0").attr('class','redfield');
-          } 
-     break;
 
-     case "bert0.L1.LolStat":
-     if (value==0) {
-      $("#frame").contents().find("#Loss1").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Loss1").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L2.LolStat":
-     if (value==0) {
-      $("#frame").contents().find("#Loss2").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Loss2").attr('class','redfield');
-     }
-     break;
-     
-     case "bert0.L3.LolStat":
-      if (value==0) {
-      $("#frame").contents().find("#Loss3").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Loss3").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L0.latchedLol":
-     if (value==0) {
-      $("#frame").contents().find("#Mem0").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Mem0").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L1.latchedLol":
-     if (value==0) {
-      $("#frame").contents().find("#Mem1").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Mem1").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L2.latchedLol":
-      if (value==0) {
-      $("#frame").contents().find("#Mem2").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Mem2").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L3.latchedLol":
-      if (value==0) {
-      $("#frame").contents().find("#Mem3").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Mem3").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L0.prbsLock":
-     if (value==1) {
-      $("#frame").contents().find("#Lock0").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Lock0").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L1.prbsLock":
-     if (value==1) {
-      $("#frame").contents().find("#Lock1").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Lock1").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L2.prbsLock":
-      if (value==1) {
-      $("#frame").contents().find("#Lock2").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Lock2").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.L3.prbsLock":
-      if (value==1) {
-      $("#frame").contents().find("#Lock3").attr('class','greenfield');
-     }else{
-      $("#frame").contents().find("#Lock3").attr('class','redfield');
-     }
-     break;
-
-     case "bert0.txPllLock":
+case "bert0.txPllLock":
      if (value==0) {
       $("#frame").contents().find("#TX").attr('class','redfield');
      } else {
@@ -300,7 +242,7 @@ case "amp.temp":
      }
       break;
      
-     case "bert0.rxPllLock":
+case "bert0.rxPllLock":
      if (value==0) {
       $("#frame").contents().find("#RX").attr('class','redfield');
      } else {
@@ -308,21 +250,21 @@ case "amp.temp":
      }
      break;
      
-     case "bert0.berMeasWin_ms":    
+case "bert0.berMeasWin_ms":    
       $("#frame").contents().find("#msec").val(value/1000);     
      break;
      
-     case "bert0.bitrate":
+case "bert0.bitrate":
      if (value>25781249900 && value<25781250080) {
          value=25781250000;}
      if (value>27952493300 && value<27952493482) {
          value=27952493392;}
      break; 
      // 27952493320
-     default:
+default:
      break;
      }
-    
+     
      var var_id=$("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr('id');
      var variab=$("#frame").contents().find("#var_val").attr('id');
           if(typeof var_id == "undefined" && typeof variab != "undefined") {
@@ -331,14 +273,19 @@ case "amp.temp":
                $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).val(value);}
           if (myQueueBool) {  
                window_onload_variable();}      
+
+
 }
    
 
      function keepAlive() {
           socket.send(JSON.stringify({get: "test.var1"}));
-} 
+          socket.send(JSON.stringify({get: "system.fault"}));
+}
+
 }
    
+  
 /* Socket-Functions End */ 
 //---------------------Laod page---------------------
 var requestToRelaod = false;
@@ -430,7 +377,8 @@ $(document).ready(function()
 		//laodpage("html/system.html","#frame");
                n=3;
           laodpage("html/main.html","#frame");
-	  SocketNew();  
+	  SocketNew();
+          
 	//Click.
 	$( "#homeBut" ).click(function() {
                 
@@ -509,7 +457,8 @@ $(document).ready(function()
 		return false;
 	});
            createTreeMenu("treemenu");
-     });
+     }
+     );
 
 function ReadVar(variable){
 	      //  alert(bl_Communication);

@@ -1,3 +1,4 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
 <!DOCTYPE html>
 
 <html>
@@ -21,7 +22,7 @@
 <TABLE  class="blue-select" ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
 	<!--Row 1-->
     <TR ALIGN="left" VALIGN="middle">  
-        <TH ALIGN="middle" rowspan="2">mzMod0.modBias<br>tx0.pwr</TH>
+        <TH ALIGN="middle" rowspan="2">mzMod0.modBias</TH>
         <TD>
             <div class="graphLoad">Loading</div>
             <div class="example-plot" id="chart1" style="width: 800px; height: 110px;"></div>
@@ -33,7 +34,7 @@
     </TR>
         
     <TR ALIGN="left" VALIGN="middle">     
-        <TH ALIGN="middle" rowspan="2">mzMod1.modBias<br>tx1.pwr</TH>
+        <TH ALIGN="middle" rowspan="2">tx0.pwr</TH>
         <TD>
             <div class="graphLoad">Loading</div>
             <div class="example-plot" id="chart2" style="width: 800px; height: 110px;"></div>
@@ -45,7 +46,7 @@
     </TR>
     
     <TR ALIGN="left" VALIGN="middle">
-        <TH ALIGN="middle" rowspan="2" >mzMod2.modBias<br>tx2.pwr</TH>
+        <TH ALIGN="middle" rowspan="2" >mzMod1.modBias</TH>
         <TD>
             <div class="graphLoad">Loading</div>
             <div class="example-plot" id="chart3" style="width: 800px; height: 110px;"></div>
@@ -56,8 +57,8 @@
 	<TD ALIGN="left"><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(2)">Reset</button></TD>
     </TR>
         
-    <TR ALIGN="left" VALIGN="middle"> 
-        <TH ALIGN="middle" rowspan="2" >mzMod3.modBias<br>tx3.pwr</TH>
+    <TR ALIGN="middle" VALIGN="middle"> 
+        <TH ALIGN="middle" rowspan="2" >tx1.pwr</TH>
         <TD>
             <div class="graphLoad">Loading</div>
             <div class="example-plot" id="chart4" style="width: 800px; height: 110px;"></div>
@@ -67,7 +68,12 @@
     <TR>
 	<TD ALIGN="left"><button class="buttonBlue" type="button"  onclick="javascript: GraphReset(3)">Reset</button></TD>
     </TR>
-        
+    
+    
+    <TR>
+	 <TH ALIGN="middle" rowspan="2" ></TH>
+	<TD ALIGN="middle"> <button class="buttonBlue" type="button"  id="StopBut" onclick="javascript: GraphStop()">Stop</button></TD>
+    </TR>    
 </TABLE>
 
 
@@ -80,7 +86,7 @@
     <input type="hidden"  id="tx1.pwr" value="0">
     <input type="hidden"  id="tx2.pwr" value="0">
     <input type="hidden"  id="tx3.pwr" value="0">
-    
+   
 </FORM>
 
 
@@ -95,11 +101,12 @@
 
 var my_item1,my_item2, chart1_1,chart1_2,chart2_1,chart2_2,chart3_1,chart3_2,chart4_1,chart4_2;
 var plot1,plot2,plot3,plot4;
-
+var bStop=false;
+var intervalId;
 function graphData()
 {
-    this.x = [[]];
-    this.y = [[]];
+    this.x= [[]];
+   
 }
 
 var graph01 = new graphData();
@@ -134,42 +141,37 @@ function start(){
     plot4.replot();
 }
 
-function setUpGraphData(graphData,ID1,ID2)
+function setUpGraphData(graphData,ID)
 {
     var Datum = new Date();
     
     //console.log("ID's: 1:"+ID1+" 2:"+ID2);
-    var item1 = document.getElementById(ID1);
-    var item2 = document.getElementById(ID2);
-    //console.log("Item's: 1:"+item1+" 2:"+item2);
+    var item = document.getElementById(ID);
+   
     
-    var wert=Math.round(Number(item1.value) * 100) / 100;
+    var wert=Math.round(Number(item.value) * 100) / 100;
     graphData.x = [[Datum, wert]];
-    wert=Math.round(Number(item2.value) * 100) / 100;
-    graphData.y =[[Datum, wert]];
+   
 }
 
-function updateGraphData(graphData,ID1,ID2,plot)
+function updateGraphData(graphData,ID,plot)
 {
     var Datum = new Date();
 
-    var item1 = document.getElementById(ID1);
-    var item2 = document.getElementById(ID2);
+    var item = document.getElementById(ID);
+   
     
     if (graphData.x == "") {
-        wert=Math.round(Number(item1.value) * 100) / 100;
+        wert=Math.round(Number(item.value) * 100) / 100;
         graphData.x[0].push([Datum, wert]);
-        wert=Math.round(Number(item2.value) * 100) / 100;
-        graphData.y[0].push([Datum, wert]);
+       
         return;
     }
-    wert=Math.round(Number(item1.value) * 100) / 100;
+    wert=Math.round(Number(item.value) * 100) / 100;
     graphData.x[0].push([Datum, wert]);
-    wert=Math.round(Number(item2.value) * 100) / 100;
-    graphData.y[0].push([Datum, wert]);
+   
     
     plot.series[0].data = graphData.x[0];
-    plot.series[1].data = graphData.y[0];
     plot.resetAxesScale();
     plot.replot();
 }
@@ -177,10 +179,10 @@ function updateGraphData(graphData,ID1,ID2,plot)
 function clearGraphData(graphData,plot){
 
     graphData.x = [[]];
-    graphData.y = [[]];
+   
     
     plot.series[0].data = graphData.x[0];
-    plot.series[1].data = graphData.y[0];
+   
     plot.resetAxesScale();
     //$('#chart1').empty(); 
     plot.redraw();
@@ -188,7 +190,7 @@ function clearGraphData(graphData,plot){
 }
 
 function createGraphs() {
-    plot1 = $.jqplot('chart1', [graph01.x,graph01.y], {
+    plot1 = $.jqplot('chart1', [graph01.x], {
         //title:'Channel 1',
         axes:{
            xaxis:{
@@ -209,12 +211,12 @@ function createGraphs() {
                         fontSize:'10pt',
                         fontFamily:'Tahoma',
                         angle:0,
-                        formatString:'%.0e'
+                       // formatString:'%.0e'
                     }
             }
         },
         
-        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        series:[{ showLine:false, markerOptions:{ size:1,style:'square' }}],
         
         cursor:{
             zoom:true,
@@ -224,7 +226,7 @@ function createGraphs() {
      
     });
     
-    plot2 = $.jqplot('chart2', [graph02.x,graph02.y], {
+    plot2 = $.jqplot('chart2', [graph02.x], {
         //title:'Channel 2',
         axes:{
             xaxis:{
@@ -245,11 +247,11 @@ function createGraphs() {
                         fontSize:'10pt',
                         fontFamily:'Tahoma',
                         angle:0,
-                        formatString:'%.0e'
+                       // formatString:'%.0e'
                     }
             }
         },
-        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        series:[{ showLine:false, markerOptions:{ size:1,style:'square'}}],
         cursor:{
             zoom:true,
             looseZoom: true
@@ -259,7 +261,7 @@ function createGraphs() {
     });
 
     
-    plot3 = $.jqplot('chart3', [graph03.x,graph03.y], {
+    plot3 = $.jqplot('chart3', [graph03.x], {
         //title:'Channel 3',
         axes:{
             xaxis:{
@@ -271,7 +273,7 @@ function createGraphs() {
                     fontSize:'10pt',
                     fontFamily:'Tahoma',
                     angle:0,
-                    formatString:'%.0e'
+                  //  formatString:'%.0e'
                 }
             },
             yaxis:{
@@ -281,18 +283,18 @@ function createGraphs() {
                         fontSize:'10pt',
                         fontFamily:'Tahoma',
                         angle:0,
-                        formatString:'%.0e'
+                       // formatString:'%.0e'
                     }
             }
         },
-        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        series:[{ showLine:false, markerOptions:{ size:1,style:'square'}}],
         cursor:{
             zoom:true,
             looseZoom: true
         }
     });
      
-    plot4 = $.jqplot('chart4', [graph04 .x,graph04.y], {
+    plot4 = $.jqplot('chart4', [graph04 .x], {
        // title:'Channel 4',
         axes:{
             xaxis:{
@@ -316,7 +318,8 @@ function createGraphs() {
                     }
             }
         },
-        series:[{ lineWidth:1, markerOptions:{ size:1,style:'square' }}, { lineWidth:1, markerOptions:{ size:1 }}],
+        series:[{ showLine:false, markerOptions:{ size:1,style:'square' }}], //showMarker:false lineWidth:1
+      
         cursor:{
             zoom:true,
             looseZoom: true
@@ -331,25 +334,34 @@ $(document).ready(function(){
     $.jqplot.config.enablePlugins = true;
     createGraphs();
     
+    setUpGraphData(graph01,'mzMod0.modBias');
+    setUpGraphData(graph02,'tx0.pwr');
+    setUpGraphData(graph03,'mzMod1.modBias');
+    setUpGraphData(graph04,'tx1.pwr');
     
-    
-    setUpGraphData(graph01,'mzMod0.modBias','tx0.pwr');
-    setUpGraphData(graph02,'mzMod1.modBias','tx1.pwr');
-    setUpGraphData(graph03,'mzMod2.modBias','tx2.pwr');
-    setUpGraphData(graph04,'mzMod3.modBias','tx3.pwr');
-    
-    var intervalId = setInterval(function() {
-        
-        updateGraphData(graph01,'mzMod0.modBias','tx0.pwr',plot1);
-        updateGraphData(graph02,'mzMod1.modBias','tx1.pwr',plot2);
-        updateGraphData(graph03,'mzMod2.modBias','tx2.pwr',plot3);
-        updateGraphData(graph04,'mzMod3.modBias','tx3.pwr',plot4);
-       
-        window.parent.window_onload();
-    }, 1000);  
+    intervalId = setInterval(IntervalFunc, 1000);  
 
 });
-
+function IntervalFunc() {       
+        updateGraphData(graph01,'mzMod0.modBias',plot1);
+        updateGraphData(graph02,'tx0.pwr',plot2);
+        updateGraphData(graph03,'mzMod1.modBias',plot3);
+        updateGraphData(graph04,'tx1.pwr',plot4);
+        window.parent.window_onload();
+}
+function GraphStop(){
+   if(bStop){
+    intervalId = setInterval(IntervalFunc, 1000); 
+    bStop=false;
+    document.getElementById('StopBut').innerHTML = "Stop";
+    }
+    else {
+	clearInterval(intervalId);
+	bStop=true;
+	document.getElementById('StopBut').innerHTML = "Start";
+    }
+    
+}
 
 -->
 </script>
@@ -381,3 +393,4 @@ $(document).ready(function(){
 
 </script>
 		
+
