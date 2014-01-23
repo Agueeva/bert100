@@ -532,6 +532,19 @@ Keys_Dump(Database *db) {
         }
 }
 
+static uint32_t 
+Key_FindByName(Database *db, const char *keyname) 
+{
+        StrHashEntry * hashEntry;
+	uint32_t objId;
+        hashEntry = StrHash_FindEntry(db->objIdHash,keyname);
+	if(!hashEntry) {
+		return 0;
+	}	
+	objId = (uint32_t)StrHash_GetValue(hashEntry);
+	return objId;
+}
+
 /**
  *****************************************************************************
  * \fn static int8_t cmd_db(Interp * interp, uint8_t argc, char *argv[])
@@ -542,18 +555,39 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 {
 	Database *db = &g_Database;
 	uint16_t i;
-	if (argc == 4) {
-		uint32_t tag;
-		tag = astrtoi32(argv[2]);
-		DB_SetObj(tag, argv[3],strlen(argv[3]) + 1);
+	if (argc == 5 && (strcmp(argv[1],"set") == 0)) {
+		uint32_t key;
+		key = Key_FindByName(db,argv[2]);
+		if(key == 0) {
+			Con_Printf("Database entry \"%s\" not found\n");
+			return 0;
+		}		
+		if(strcmp(argv[3],"byte") == 0) {
+			uint8_t val = astrtoi16(argv[4]);
+			DB_SetObj(key,&val,1);
+		} else if(strncmp(argv[3],"bool",1) == 0) {
+			uint8_t val = !!astrtoi16(argv[4]);
+			DB_SetObj(key,&val,1);
+		} else if(strncmp(argv[3],"float",1) == 0) {
+			float val = astrtof32(argv[4]);
+			DB_SetObj(key,&val,4);
+		} else if(strncmp(argv[3],"string",1) == 0) {
+			DB_SetObj(key, argv[4],strlen(argv[4]) + 1);
+		} else {
+			return -EC_BADARG;
+		}
 	} else if ((argc == 2) && (strcmp(argv[1],"keys") == 0)) {
 		Keys_Dump(db); 
 	} else if (argc > 2) {
-		if (strcmp(argv[1], "key") == 0) {
+		if (strcmp(argv[1], "get") == 0) {
 			uint32_t key;
 			uint16_t len;
 			uint8_t *obj;
-			key = astrtoi32(argv[2]);
+			key = Key_FindByName(db,argv[2]);
+			if(key == 0) {
+				Con_Printf("Database entry \"%s\" not found\n");
+				return 0;
+			}		
 			obj = DB_GetObjP(db->currBlock, key, &len);
 			if (obj) {
 				DFlash_Lock();
