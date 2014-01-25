@@ -65,6 +65,7 @@
 #define CDR_TX_MAIN_CONTROL(lane)               (0x100 + (0x100 * (lane)))
 #define CDR_TX_EQ_CONTROL(lane)                 (0x101 + (0x100 * (lane)))
 #define CDR_TX_SWING_CONTROL(lane)              (0x102 + (0x100 * (lane)))
+#define CDR_TX_OPZ_CONTROL(lane)              		(0x103 + (0x100 * (lane)))
 #define CDR_TX_SWING_FINE(lane)			(0x111 + (0x100 * (lane)))
 /* Receive lane register spaces */
 #define CDR_RX_MAIN_CONTROL(lane)               (384 + (0x100 * (lane)))
@@ -813,6 +814,12 @@ static const CdrRegister gCdrLaneRegister[] =
 		.lastBit = 2,
 	},
 	{
+		.name = "txa_opz",
+		.regNo = 259,
+		.firstBit = 1,
+		.lastBit = 4,
+	},
+	{
 		.name = "eq_state",
 		.regNo = 421,
 		.firstBit = 0,
@@ -1401,7 +1408,6 @@ Cdr_AliveCheck(void *eventData)
 void
 CDR_Init(const char *name)
 {
-	uint32_t i,lane;
 	CDR *cdr;
 
 	CDR_RESET_DIR = 1;

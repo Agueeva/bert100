@@ -110,7 +110,9 @@
 #define CDR_LOOPBACKOE(lane)                (0x01000011 + ((lane) << 24))
 #define CDR_TXA_EQPST(lane)                 (0x0101008a + ((lane) << 24))
 #define CDR_TXA_EQPRE(lane)                 (0x01010001 + ((lane) << 24))
+
 #define CDR_TXA_SWING(lane)                 (0x01020002 + ((lane) << 24))
+#define	CDR_TXA_OPZ(lane)		    (0x01030014 + ((lane) << 24))
 #define CDR_TXA_SWING_FINE(lane)            (0x01110047 + ((lane) << 24))
 #define CDR_EQ_STATE(lane)                  (0x01a50003 + ((lane) << 24))
 #define CDR_CDR2_TRIP(lane)                 (0x01a7000d + ((lane) << 24))
