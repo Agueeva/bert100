@@ -9,15 +9,19 @@
 #include "hex.h"
 #include "pvar.h"
 
-static uint32_t gAlarmBits = 0;
+typedef struct Buzzer {
+	uint32_t alarmBits;
+} Buzzer;
+
+static Buzzer gBuzzer;
 
 void 
 Alarm_Set(uint8_t alarmNr)
 {
 	uint32_t bitmask = (UINT32_C(1) << alarmNr);
-	if(!(gAlarmBits & bitmask)) {
-		gAlarmBits |= bitmask; 
-		Buzzer_Start(3000);
+	if(!(gBuzzer.alarmBits & bitmask)) {
+		gBuzzer.alarmBits |= bitmask; 
+		Buzzer_Start(2100);
 	}
 }
 
@@ -25,9 +29,9 @@ void
 Alarm_Clear(uint8_t alarmNr)
 {
 	uint32_t bitmask = (UINT32_C(1) << alarmNr);
-	if(gAlarmBits & bitmask) {
-		gAlarmBits &= ~(UINT32_C(1) << alarmNr);
-		if(gAlarmBits == 0) {
+	if(gBuzzer.alarmBits & bitmask) {
+		gBuzzer.alarmBits &= ~(UINT32_C(1) << alarmNr);
+		if(gBuzzer.alarmBits == 0) {
 			Buzzer_Start(0);
 		}
 	}
@@ -36,7 +40,8 @@ Alarm_Clear(uint8_t alarmNr)
 static bool
 PVAlarms_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
-        SNPrintf(bufP,maxlen,"%lu",gAlarmBits);
+	Buzzer *bz = cbData;
+        SNPrintf(bufP,maxlen,"%lu",bz->alarmBits);
         return true;
 }
 
@@ -44,7 +49,8 @@ PVAlarms_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 static int8_t
 cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
 {
-	Con_Printf("Alarms 0x%08lx\n",gAlarmBits);
+	Buzzer *bz = &gBuzzer; 
+	Con_Printf("Alarms 0x%08lx\n",bz->alarmBits);
 	return 0;
 }
 
@@ -54,6 +60,8 @@ INTERP_CMD(alarmCmd, "alarm", cmd_alarm,
 void
 Alarm_Init(void) 
 {
+	Buzzer *bz = &gBuzzer;
+	bz->alarmBits = 0;
 	Interp_RegisterCmd(&alarmCmd);	
-	PVar_New(PVAlarms_Get,NULL,NULL,0,"system.fault");
+	PVar_New(PVAlarms_Get,NULL,bz,0,"system.fault");
 }
