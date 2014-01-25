@@ -210,3 +210,26 @@ ul.menu, .item-list ul {
     text-decoration:none;  
 }
 
+.AlarmindicatorGreen{
+	width: 100px;
+	background-color: #00ff40;
+	font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	text-align:center;
+	border-width: 0;
+	border-radius: 6px;
+        display:none;
+}
+
+.AlarmindicatorRed{
+	width: 100px;
+	background-color: #ff0000;
+	font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	text-align:center;
+	border-width: 0;
+	border-radius: 6px;
+        display:block;
+}

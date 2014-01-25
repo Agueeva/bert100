@@ -2,6 +2,7 @@
 	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
 	 <!-- tx eml functions -->
 	<script type="text/javascript" src="js/tx_eml.js" ></script>
+	
 </head>
 <body onload="javascript: onStart();">
 
@@ -261,6 +262,41 @@
 		<button class="buttonBlue" type="button" ID="tx3.pwrRef_But" onclick="javascript: TestpwrRef(this); ">Save</button>
 	</TD>
 </TR>
+<TR ALIGN="left" VALIGN="middle">
+	<TH> MZ Control Loop ON/OFF</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="mzMod0.ctrlEnable"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="mzMod1.ctrlEnable"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="mzMod2.ctrlEnable"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="mzMod3.ctrlEnable"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+</TR>
 </TABLE>
 </FORM>
 
@@ -268,10 +304,7 @@
 </body>
 <script type="text/javascript">
 	<!--
-document.getElementById("tx0.pwrRef_But").style.display="none";
-document.getElementById("tx1.pwrRef_But").style.display="none";
-document.getElementById("tx2.pwrRef_But").style.display="none";
-document.getElementById("tx3.pwrRef_But").style.display="none";	
+
 var my_Inter, my_sek;
 my_sek= 1000;
 function onStart(){	
@@ -281,61 +314,6 @@ function StartInterval(){
 		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
                 my_Inter=setInterval(window.parent.window_onload,my_sek);
 		}
-		
-		
-//**********************************************************
-function validateImput(evt,Feld) {
-	//the pressed key
-	var theEvent = evt || window.event;
-	var bkey = theEvent.keyCode || theEvent.which;
-	key = String.fromCharCode( bkey );
-	console.log("theEvent:"+theEvent+" key: "+bkey);
-	
-	//allow arrow keys
-	if ( bkey == 39 || bkey == 37) return;
-	
-	//allow backspace and color save indicator red
-	if (bkey == 8){
-		makeSaveVisible(Feld);
-		return;
-	}
-	
-	var s=Feld.value;
-	var regex = /[-.0-9]/;
-	if( !regex.test(key) || s.length>=10) {
-		theEvent.returnValue = false;
-		if(theEvent.preventDefault) theEvent.preventDefault();
-		return;
-	}
-	
-	makeSaveVisible(Feld);
-}
-//**********************************************************    
-function  makeSaveVisible(Feld){
-	var but=(Feld.id+'_But');   
-	my_Inter=clearInterval(my_Inter);	
-	document.getElementById(but).style.display='table-row';	
-}
 
-function TestpwrRef(item){
-
-var myname=item.id;
-myname=myname.substr(0,10);
-var elem=document.getElementById(myname);
-var val=elem.value;
-if (!isNumber(val) || val>10 || val<-50) {	
-elem.value="";
-}
-else {
-window.parent.SaveVar(elem,1,'.L',0);
-document.getElementById("tx0.pwrRef_But").style.display="none";
-document.getElementById("tx1.pwrRef_But").style.display="none";
-document.getElementById("tx2.pwrRef_But").style.display="none";
-document.getElementById("tx3.pwrRef_But").style.display="none";	
-onStart();
-}
-}
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
 </script>
+<script type="text/javascript" src="js/PwrOptRef.js" ></script>
