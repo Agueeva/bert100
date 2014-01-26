@@ -938,6 +938,12 @@ Cdr_InitCdr(uint16_t phy_addr)
 	Cdr_WriteReg(phy_addr, 50, 0X0000);
 	Cdr_WriteReg(phy_addr, 51, 0X0000);
 
+#if 0
+	for(lane = 0; lane < 4; lane++) {
+		Cdr_WriteReg(phy_addr,  256 + 256 * lane, 0X0007);
+		Cdr_WritePart(phy_addr, 256 + 256 * lane, 0, 0, 1);
+	}
+#endif
 	Cdr_WriteReg(phy_addr, 256, 0X0007);
 	Cdr_WriteReg(phy_addr, 512, 0X0007);
 	Cdr_WriteReg(phy_addr, 768, 0X0007);
@@ -1436,18 +1442,6 @@ CDR_Init(const char *name)
 	Timer_Start(&cdr->aliveCheckTimer,4000);
 
 	Interp_RegisterCmd(&cdrCmd);
-#if 0
-	for(i = 0; i < array_size(gCdrRegister); i++) {
-		const CdrRegister *reg = &gCdrRegister[i];
-		PVar_New(PVReg_Get,PVReg_Set,cdr,i,"%s.%s",name,reg->name);
-	}	
-	for(i = 0; i < array_size(gCdrLaneRegister); i++) {
-		const CdrRegister *reg = &gCdrLaneRegister[i];
-		for(lane = 0; lane < 4; lane++) {
-			PVar_New(PVLaneReg_Get,PVLaneReg_Set,cdr,i + (lane << 16) ,"%s.l%lu.%s",name,lane,reg->name);
-		}
-	}
-#endif
 	MSTP(CMT1) = 0;
         CMT.CMSTR0.BIT.STR1 = 1;
         CMT1.CMCR.BIT.CKS = 0;

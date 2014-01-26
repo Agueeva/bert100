@@ -1333,6 +1333,7 @@ Bert_Init(void)
 		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
 		PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.L%lu.%s",name,ch,"loadDataSet");
 		PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.L%lu.%s",name,ch,"saveDataSet");
+		CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(ch),!!bert->dbSwapTxPNInv[ch]);
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
