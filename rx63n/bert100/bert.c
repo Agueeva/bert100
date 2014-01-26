@@ -17,6 +17,7 @@
 #include "ad537x.h"
 #include "modreg.h"
 #include <math.h>
+#include <string.h>
 
 #define NR_CHANNELS	(4)
 
@@ -1292,6 +1293,22 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
 	return true;
 }
 
+static int8_t
+cmd_bert(Interp * interp, uint8_t argc, char *argv[])
+{
+	uint16_t dataSetNr;
+	if((argc == 3) && (strcmp(argv[1],"load") == 0)) {
+		dataSetNr = astrtoi16(argv[2]); 
+		Bert_LoadDataset(dataSetNr);
+	} else if((argc == 3) && (strcmp(argv[1],"save") == 0)) {
+		dataSetNr = astrtoi16(argv[2]); 
+		Bert_SaveDataset(dataSetNr);
+	}
+	return 0;
+}
+
+INTERP_CMD(bertCmd, "bert", cmd_bert, "bert <load | save> <DataSetNr> # ");
+
 /*
  ********************************************
  * \fn void Bert_Init(void) 
@@ -1346,4 +1363,5 @@ Bert_Init(void)
 	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
+	Interp_RegisterCmd(&bertCmd);
 }

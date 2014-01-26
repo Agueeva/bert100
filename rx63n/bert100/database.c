@@ -603,6 +603,26 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 				DFlash_Unlock();
 			}
 			return 0;
+		} else if (strcmp(argv[1], "key") == 0) {
+			uint32_t key;
+			uint16_t len;
+			uint8_t *obj;
+			key = astrtoi32(argv[2]);
+			obj = DB_GetObjP(db->currBlock, key, &len);
+			if (obj) {
+				DFlash_Lock();
+				for (i = 0; i < len; i++) {
+					Con_Printf("%02x ", obj[i]);
+					if ((i & 15) == 15) {
+						Con_Printf("\n");
+					}
+				}
+				if ((i & 15) != 15) {
+					Con_Printf("\n");
+				}
+				DFlash_Unlock();
+			}
+			return 0;
 		} else {
 			return -EC_BADARG;
 		}
