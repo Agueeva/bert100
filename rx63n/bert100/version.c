@@ -10,6 +10,7 @@
 #include "database.h"
 
 static uint8_t gVariant = 0;
+static uint8_t gHwRevision = 1;
 
 /* Year in BCD */
 #define YEAR ((((__DATE__ [7]-'0')*16+(__DATE__[8]-'0'))*16 \
@@ -70,6 +71,13 @@ PVVariantHW_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+static bool 
+PVHWRev_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	SNPrintf(bufP,maxlen,"%u",gHwRevision);
+	return true;
+}
+
 static int8_t
 cmd_version(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -111,7 +119,9 @@ Version_Init(void)
 {
 	Interp_RegisterCmd(&versionCmd);
 	Interp_RegisterCmd(&variantCmd);
+	DB_VarInit(DBKEY_HWREV,&gHwRevision,"system.hwRevision");
 	DB_VarInit(DBKEY_VARIANT,&gVariant,"system.variant");
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
 	PVar_New(PVVariantHW_Get,NULL,NULL,0,"system.variant");
+	PVar_New(PVHWRev_Get,NULL,NULL,0,"system.hwRevision");
 }

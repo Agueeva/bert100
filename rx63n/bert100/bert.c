@@ -14,6 +14,8 @@
 #include "shiftreg.h"
 #include "database.h"
 #include "bert.h"
+#include "ad537x.h"
+#include "modreg.h"
 #include <math.h>
 
 #define NR_CHANNELS	(4)
@@ -1127,6 +1129,12 @@ PVForward_Set(void *cbData, uint32_t adId, const char *strP)
         return true;
 }
 
+/*
+ *************************************************************************************************
+ * \fn static bool PVUserPattern_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ * Set a User pattern. There is only one global user pattern.
+ *************************************************************************************************
+ */
 static bool 
 PVUserPattern_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -1156,6 +1164,131 @@ PVUserPattern_Set(void *cbData, uint32_t adId, const char *strP)
        	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATL,userPattern & 0xffff);
        	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATM,(userPattern >> 16) & 0xffff);
        	CDR_Write(CDR_ID_TX,CDR_CUSTOM_TST_PATH,(userPattern >> 32) & 0xff);
+	return true;
+}
+
+#define NR_TX_DRIVER_SETTINGS	(20)
+
+typedef struct TxDriverSettings {
+	uint32_t signature;
+	float vg1[4];
+	float vg2[4];
+	float vd1[4];
+	float vd2[4];
+
+	uint8_t txaSwing[4];
+	uint8_t txaEqpst[4];
+	uint8_t txaEqpre[4];
+	uint8_t txaSwingFine[4];
+	bool	swapTxPN[4];
+	float   modKi[4];	
+} TxDriverSettings;
+
+/**
+ ********************************************************************************
+ * \fn static bool Bert_LoadDataset(uint16_t idx) 
+ ********************************************************************************
+ */
+static bool 
+Bert_LoadDataset(uint16_t idx) 
+{
+        TxDriverSettings txDs;
+	bool result;
+	unsigned int chNr;
+	if(idx >= NR_TX_DRIVER_SETTINGS) {
+		Con_Printf("Selected bad driver setting with index %u\n",idx);
+		return false;
+	}
+	result = DB_GetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
+	if(result == false) {
+		Con_Printf("Failed to load dataset %u\n",idx);
+		return false;
+	}
+	if(txDs.signature != 0x08154711) {
+		Con_Printf("Dataset not valid\n");
+		return false;
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Set(DAC_MZAMP1_VG1(chNr),txDs.vg1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Set(DAC_MZAMP1_VG2(chNr),txDs.vg2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Set(DAC_MZAMP1_VD1(chNr),txDs.vd1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Set(DAC_MZAMP1_VD2(chNr),txDs.vd2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+        	CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs.txaSwing[chNr]);
+        	CDR_Write(CDR_ID_TX,CDR_TXA_EQPST(chNr),txDs.txaEqpst[chNr]);
+        	CDR_Write(CDR_ID_TX,CDR_TXA_EQPRE(chNr),txDs.txaEqpre[chNr]);
+        	CDR_Write(CDR_ID_TX,CDR_TXA_SWING_FINE(chNr),txDs.txaSwingFine[chNr]);
+        	CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(chNr),txDs.swapTxPN[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		ModReg_SetKi(chNr,txDs.modKi[chNr]);	
+	}
+	return true;		
+}
+
+static bool 
+Bert_SaveDataset(uint16_t idx) 
+{
+        TxDriverSettings txDs;
+	bool result;
+	unsigned int chNr;
+	if(idx >= NR_TX_DRIVER_SETTINGS) {
+		Con_Printf("Selected bad driver setting with index %u\n",idx);
+		return false;
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Get(DAC_MZAMP1_VG1(chNr),&txDs.vg1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Get(DAC_MZAMP1_VG2(chNr),&txDs.vg2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Get(DAC_MZAMP1_VD1(chNr),&txDs.vd1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		DAC_Get(DAC_MZAMP1_VD2(chNr),&txDs.vd2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		txDs.txaSwing[chNr] =	CDR_Read(CDR_ID_TX,CDR_TXA_SWING(chNr));
+		txDs.txaEqpst[chNr] =	CDR_Read(CDR_ID_TX,CDR_TXA_EQPST(chNr));
+		txDs.txaEqpre[chNr] =  	CDR_Read(CDR_ID_TX,CDR_TXA_EQPRE(chNr));
+		txDs.txaSwingFine[chNr] = CDR_Read(CDR_ID_TX,CDR_TXA_SWING_FINE(chNr));
+		txDs.swapTxPN[chNr] = CDR_Read(CDR_ID_TX,CDR_SWAP_TXP_N(chNr));
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		txDs.modKi[chNr] = ModReg_GetKi(chNr);	
+	}
+	txDs.signature = 0x08154711;
+	result = DB_SetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
+	if(result == false) {
+		Con_Printf("Failed to save dataset %u\n",idx);
+		return false;
+	}
+	return true;		
+}
+
+static bool 
+PVDataSet_Load(void *cbData, uint32_t adId, const char *strP) 
+{
+        uint16_t idx; 
+        idx = astrtoi16(strP);
+	Bert_LoadDataset(idx);
+	return true;
+}
+
+static bool 
+PVDataSet_Save(void *cbData, uint32_t adId, const char *strP) 
+{
+        uint16_t idx; 
+        idx = astrtoi16(strP);
+	Bert_SaveDataset(idx);
 	return true;
 }
 
@@ -1198,6 +1331,8 @@ Bert_Init(void)
 		/* Some registers are forwarded after a translation */
 		PVar_New(PVSwapTxPN_Get,PVSwapTxPN_Set,bert,ch ,"%s.L%lu.%s",name,ch,"swapTxPN");
 		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
+		PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.L%lu.%s",name,ch,"loadDataSet");
+		PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.L%lu.%s",name,ch,"saveDataSet");
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];

@@ -1353,6 +1353,9 @@ cmd_sdcard(Interp * interp, uint8_t argc, char *argv[])
 	if ((argc > 1) && (strcmp(argv[1], "info") == 0)) {
 		Interp_Printf_P(interp, "CardDetect: %s\n",
 				MMC_CardPlugged()? "present" : "not present");
+		
+		SDCard_Lock(sdc);
+		SDCard_StopMult(sdc);
 		SDCard_Deselect(sdc);
 		SDCard_EnableBuffer(sdc);
 
@@ -1384,6 +1387,7 @@ cmd_sdcard(Interp * interp, uint8_t argc, char *argv[])
 				break;
 			}
 		}
+		SDCard_Unlock(sdc);
 	} else {
 		Con_Printf("MaxWriteTime:  %lu\n", sdc->statMaxWriteTime);
 		Con_Printf("MaxReadTime :  %lu\n", sdc->statMaxReadTime);

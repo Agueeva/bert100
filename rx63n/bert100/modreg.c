@@ -243,6 +243,22 @@ PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
  * Get/Set the Integral Konstant of the Control Loop
  ***************************************************************************************
  */
+
+void
+ModReg_SetKi(uint8_t chNr, float Ki) 
+{
+	ModReg *mr = &gModReg;
+	mr->regKI[chNr] = Ki;		
+	update_eff_ki(mr,chNr);
+}
+
+float
+ModReg_GetKi(uint8_t chNr) 
+{
+	ModReg *mr = &gModReg;
+	return mr->regKI[chNr];
+}
+
 static bool
 PVModKi_Set (void *cbData, uint32_t chNr, const char *strP)
 {

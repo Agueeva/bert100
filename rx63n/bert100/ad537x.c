@@ -348,7 +348,13 @@ DAC_Set(uint8_t chNr,float value)
 	return true;
 }
 
-static bool 
+/*
+ *****************************************************************************
+ * \fn static bool DAC_Get(uint8_t chNr,float *valRet)
+ * Read back the dac value
+ *****************************************************************************
+ */
+bool 
 DAC_Get(uint8_t chNr,float *valRet)
 {
 	float anaVOut;
@@ -368,6 +374,13 @@ DAC_Get(uint8_t chNr,float *valRet)
 	*valRet = anaVOut;
 	return true;
 }
+
+/**
+ ***************************************************************************
+ * \fn static int8_t cmd_dac(Interp *interp,uint8_t argc, char *argv[]) 
+ * Shell command for reading / writing a volt value to a dac channel
+ ***************************************************************************
+ */
 static int8_t
 cmd_dac(Interp *interp,uint8_t argc, char *argv[]) 
 {
@@ -570,6 +583,12 @@ INTERP_CMD(dacresetCmd, "dacreset", cmd_dacrreset,
 INTERP_CMD(dacCmd, "dac", cmd_dac,
            "dac                  # write to dac");
 
+
+/**
+ **************************************************************************************
+ * Process variable interface to the DAC
+ **************************************************************************************
+ */
 static bool 
 PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
 {
