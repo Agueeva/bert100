@@ -1198,6 +1198,7 @@ Bert_Init(void)
 		/* Some registers are forwarded after a translation */
 		PVar_New(PVSwapTxPN_Get,PVSwapTxPN_Set,bert,ch ,"%s.L%lu.%s",name,ch,"swapTxPN");
 		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
+		CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(ch),!!bert->dbSwapTxPNInv[ch]);
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
