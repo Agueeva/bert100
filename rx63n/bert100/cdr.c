@@ -944,10 +944,10 @@ Cdr_InitCdr(uint16_t phy_addr)
 		Cdr_WritePart(phy_addr, 256 + 256 * lane, 0, 0, 1);
 	}
 #endif
-	Cdr_WriteReg(phy_addr, 256, 0X0007);
-	Cdr_WriteReg(phy_addr, 512, 0X0007);
-	Cdr_WriteReg(phy_addr, 768, 0X0007);
-	Cdr_WriteReg(phy_addr, 1024, 0X0007);
+	Cdr_WriteReg(phy_addr, 256, 0X0006);
+	Cdr_WriteReg(phy_addr, 512, 0X0006);
+	Cdr_WriteReg(phy_addr, 768, 0X0006);
+	Cdr_WriteReg(phy_addr, 1024, 0X0006);
 
 	Cdr_WriteReg(phy_addr, 257, 0X0000);
 	Cdr_WriteReg(phy_addr, 513, 0X0000);

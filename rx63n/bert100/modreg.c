@@ -35,6 +35,7 @@ typedef struct ModReg {
 	bool  ctrlEnable[4];
 	int32_t advalAfter[4];
 	int32_t advalBefore[4];
+	float filteredDeviation[4];
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
 	uint32_t adCh[4];
 	uint32_t daCh[4];
@@ -72,6 +73,8 @@ ModulatorControlProc(void *eventData)
 		}
 		DAC_Set(daCh,mr->dacVolt[ch]);
 		mr->advalBefore[ch] = ADC12_Read(adCh);
+		//mr->filteredDeviation[ch] = (mr->filteredDeviation[ch] * 0.9) + (diff / 10); // IIR filtered
+		mr->filteredDeviation[ch] = diff;
 	}
 }
 
@@ -232,14 +235,15 @@ PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 		return false;
 	}
 	/* normalize by multiplikation with 1/(meassurement Interval) */
-	deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 3.300/4096;
+	//deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 3.300/4096;
+	deviation = mr->filteredDeviation[chNr];
         cnt = f32toa(deviation,bufP,maxlen);
         bufP[cnt] = 0;
         return true;
 }
 /**
  ***************************************************************************************
- * \fn static bool PVModKi_Set/Set (void *cbData, uint32_t chNr, const char *strP)
+ * \fn static bool ModReg_Set/GetKi (void *cbData, uint32_t chNr, const char *strP)
  * Get/Set the Integral Konstant of the Control Loop
  ***************************************************************************************
  */
@@ -259,6 +263,11 @@ ModReg_GetKi(uint8_t chNr)
 	return mr->regKI[chNr];
 }
 
+/**
+ ******************************************************************************************
+ * Process variable interface for setting/getting integral constant of control loop
+ ******************************************************************************************
+ */
 static bool
 PVModKi_Set (void *cbData, uint32_t chNr, const char *strP)
 {
@@ -387,6 +396,7 @@ ModReg_Init(void)
 		PVar_New(PVCtrlEnable_Get,PVCtrlEnable_Set,mr,ch,"mzMod%d.ctrlEnable",ch);
                 PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
                 PVar_New(PVBias_Get,PVBias_Set,mr,ch,"mzMod%d.bias",ch);
+                //PVar_New(PVCtrlFault_Get,PVCtrlFault_Set,mr,ch,"mzMod%d.ctrlFault",ch);
 	}
 	enable_modulator_clock(20000,12.0);
 	SYNC_RESET_DIROUT(); 
