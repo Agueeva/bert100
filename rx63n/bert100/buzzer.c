@@ -22,8 +22,7 @@ Buzzer_Start(uint32_t hz)
 		return;
 	}
 	MSTP(MTU3) = 0;
-        /* Setup PE5 for MTIO4C/MTIO2B */
-        MPC.P17PFS.BYTE = 0x1; /* Switch Pin to MTIO4C mode */
+        MPC.P17PFS.BYTE = 0x1; /* Switch Pin to MTIO3A mode */
         MTU.TSTR.BIT.CST3 = 0;
         //MTU.TOER.BIT.OE3C = 1;  /* Enable the output,must be done before TIOR write */
         PORT1.PMR.BIT.B7 = 1;

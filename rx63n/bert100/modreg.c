@@ -33,6 +33,7 @@ typedef struct ModReg {
 	float regKI[4];
 	float regKIEffPerInterval[4];
 	bool  ctrlEnable[4];
+	bool  notLocked[4];
 	int32_t advalAfter[4];
 	int32_t advalBefore[4];
 	float filteredDeviation[4];
@@ -56,9 +57,10 @@ ModulatorControlProc(void *eventData)
 	}
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
-	DelayNs(400);
+	DelayNs(500);
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
+	DelayUs(10);
 	for(ch = 0; ch < 4; ch++) {
 		daCh = mr->daCh[ch];
 		adCh = mr->adCh[ch];	
@@ -75,6 +77,11 @@ ModulatorControlProc(void *eventData)
 		mr->advalBefore[ch] = ADC12_Read(adCh);
 		//mr->filteredDeviation[ch] = (mr->filteredDeviation[ch] * 0.9) + (diff / 10); // IIR filtered
 		mr->filteredDeviation[ch] = diff;
+		if(diff > 0.5) {
+			mr->notLocked[ch] = true;
+		} else {
+			mr->notLocked[ch] = false;
+		}
 	}
 }
 
