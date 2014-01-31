@@ -57,7 +57,7 @@ ModulatorControlProc(void *eventData)
 	}
 	DISABLE_IRQ();
 	SYNC_RESET_HIGH();	
-	DelayNs(500);
+	DelayNs(400);
 	SYNC_RESET_LOW();	
 	ENABLE_IRQ();
 	DelayUs(10);
