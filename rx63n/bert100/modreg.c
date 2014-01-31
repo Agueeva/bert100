@@ -36,7 +36,8 @@ typedef struct ModReg {
 	bool  notLocked[4];
 	int32_t advalAfter[4];
 	int32_t advalBefore[4];
-	float filteredDeviation[4];
+	float deviation[4];
+	float ctrlDevFiltered[4];
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
 	uint32_t adCh[4];
 	uint32_t daCh[4];
@@ -75,8 +76,8 @@ ModulatorControlProc(void *eventData)
 		}
 		DAC_Set(daCh,mr->dacVolt[ch]);
 		mr->advalBefore[ch] = ADC12_Read(adCh);
-		//mr->filteredDeviation[ch] = (mr->filteredDeviation[ch] * 0.9) + (diff / 10); // IIR filtered
-		mr->filteredDeviation[ch] = diff;
+		mr->ctrlDevFiltered[ch] = (mr->ctrlDevFiltered[ch] * 0.9) + (diff / 10); // IIR filtered
+		mr->deviation[ch] = diff;
 		if(diff > 0.5) {
 			mr->notLocked[ch] = true;
 		} else {
@@ -179,9 +180,9 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 4)  && (strcmp(argv[2],"volt") == 0)) {
 		mr->dacVolt[ch] = astrtof32(argv[3]);
 	} else if((argc == 3)  && (strcmp(argv[2],"ad") == 0)) {
-		Con_Printf("StartVal: %lu, EndVal %lu ControlDev. %f\n",
+		Con_Printf("StartVal: %lu, EndVal %lu ControlDev. %f, filtered %f\n",
 			mr->advalBefore[ch],mr->advalAfter[ch],
-			(mr->advalBefore[ch] - mr->advalAfter[ch]) * 3.300/4096);
+			(mr->advalBefore[ch] - mr->advalAfter[ch]) * 3.300/4096,mr->ctrlDevFiltered[ch]);
 	} else {
 		return -EC_BADARG;
 	}
@@ -243,7 +244,7 @@ PVCtrlDev_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	}
 	/* normalize by multiplikation with 1/(meassurement Interval) */
 	//deviation = (mr->advalBefore[chNr] - mr->advalAfter[chNr]) * 3.300/4096;
-	deviation = mr->filteredDeviation[chNr];
+	deviation = mr->deviation[chNr];
         cnt = f32toa(deviation,bufP,maxlen);
         bufP[cnt] = 0;
         return true;
@@ -373,6 +374,30 @@ PVCtrlEnable_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+static bool
+PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+        bool enable;
+	bool fault;
+	float pwrDB;
+        enable = mr->ctrlEnable[chNr]; 
+	pwrDB = ADC12_ReadDB(ADCH_TX_PWR(chNr));
+	
+	if(!enable) {
+		fault = false;	
+	} else if(pwrDB < -9.0) {
+		fault = false;	
+	} else if(mr->ctrlDevFiltered[chNr] > 0.5) {
+		fault = true;
+	} else {
+		fault = false;
+	}
+        bufP[0] = '0' + fault;
+	bufP[1] = 0;
+        return true;
+}
+
 
 /**
  ****************************************************************************
@@ -403,7 +428,7 @@ ModReg_Init(void)
 		PVar_New(PVCtrlEnable_Get,PVCtrlEnable_Set,mr,ch,"mzMod%d.ctrlEnable",ch);
                 PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
                 PVar_New(PVBias_Get,PVBias_Set,mr,ch,"mzMod%d.bias",ch);
-                //PVar_New(PVCtrlFault_Get,PVCtrlFault_Set,mr,ch,"mzMod%d.ctrlFault",ch);
+                PVar_New(PVCtrlFault_Get,NULL,mr,ch,"mzMod%d.ctrlFault",ch);
 	}
 	enable_modulator_clock(20000,12.0);
 	SYNC_RESET_DIROUT(); 

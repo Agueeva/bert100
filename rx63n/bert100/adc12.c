@@ -53,6 +53,19 @@ int16_t ADC12_Read(int channel)
 }
 
 float
+ADC12_ReadDB(int channel)
+{
+	float db,volt;
+	ADC12 *adc = &gAdc12;
+	if(channel > 3) {
+		return 0;
+	}
+	volt = ADC12_ReadVolt(channel);
+        db = 10 * (log(volt) / log(10)) - adc->pwrRef[channel];
+	return db;
+}
+
+float
 ADC12_ReadVolt(int channel)
 {
 	return ADC12_Read(channel) * 3.3 / 4096;
