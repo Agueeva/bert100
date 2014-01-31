@@ -388,7 +388,7 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 		fault = false;	
 	} else if(pwrDB < -9.0) {
 		fault = false;	
-	} else if(mr->ctrlDevFiltered[chNr] > 0.5) {
+	} else if(mr->ctrlDevFiltered[chNr] > 0.4) {
 		fault = true;
 	} else {
 		fault = false;
