@@ -1235,6 +1235,58 @@ Bert_LoadDataset(uint16_t idx)
 	return true;		
 }
 
+static bool 
+Bert_ShowDataset(uint16_t idx) 
+{
+        TxDriverSettings txDs;
+	bool result;
+	unsigned int chNr;
+	if(idx >= NR_TX_DRIVER_SETTINGS) {
+		Con_Printf("Selected bad driver setting with index %u\n",idx);
+		return false;
+	}
+	result = DB_GetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
+	if(result == false) {
+		Con_Printf("Failed to load dataset %u\n",idx);
+		return false;
+	}
+	if(txDs.signature != 0x08154711) {
+		Con_Printf("Dataset not valid\n");
+		return false;
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("vg1_%u %f\n",chNr,txDs.vg1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("vg2_%u %f\n",chNr,txDs.vg2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("vd2_%u %f\n",chNr,txDs.vd2[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("vd1_%u %f\n",chNr,txDs.vd1[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("txaSwing_%u: %u\n",chNr,txDs.txaSwing[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("txaSwingFine_%u: %u\n",chNr,txDs.txaSwingFine[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("txaEqpst_%u: %u\n",chNr,txDs.txaEqpst[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("txaEqpre_%u: %u\n",chNr,txDs.txaEqpre[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("swapTxPN_%u: %u\n",chNr,txDs.txaEqpre[chNr]);
+	}
+	for(chNr = 0; chNr < 4; chNr++) {
+		Con_Printf("modKI_%u: %f\n",chNr,txDs.modKi[chNr]);
+	}
+	return true;		
+}
+
 /**
  ********************************************************************************
  * \nf static bool Bert_SaveDataset(uint16_t idx) 
@@ -1315,6 +1367,11 @@ cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 3) && (strcmp(argv[1],"save") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
 		Bert_SaveDataset(dataSetNr);
+	} else if((argc == 3) && (strcmp(argv[1],"show") == 0)) {
+		dataSetNr = astrtoi16(argv[2]); 
+		Bert_ShowDataset(dataSetNr);
+	} else {
+		return -EC_BADARG;		
 	}
 	return 0;
 }
