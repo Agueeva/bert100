@@ -35,7 +35,8 @@
 #endif
 
 #define USERNAME 	"cbertran1"
-#define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "bert" */
+//define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "dog100#" */
+#define MD5PASS		"3de0746a7d2762a87add40dac2bc95a0"	/* Passwd is ernie */
 
 char *content_string[] = {
 	"text/html",

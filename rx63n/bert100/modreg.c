@@ -27,6 +27,7 @@
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
 #define SYNC_RESET_LOW()        BCLR(3,PORTJ.PODR.BYTE) 
+#define	CTRL_FAULT_LIMIT	(0.25) // Volt
 
 typedef struct ModReg {
 	Timer syncTimer;	
@@ -39,6 +40,7 @@ typedef struct ModReg {
 	int32_t advalBefore[4];
 	float deviation[4];
 	float ctrlDevFiltered[4];
+	bool ctrlLatchedFault[4];
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
 	uint32_t adCh[4];
 	uint32_t daCh[4];
@@ -79,6 +81,9 @@ ModulatorControlProc(void *eventData)
 		DAC_Set(daCh,mr->dacVolt[ch]);
 		mr->advalBefore[ch] = ADC12_Read(adCh);
 		mr->ctrlDevFiltered[ch] = (mr->ctrlDevFiltered[ch] * 0.9) + (diff / 10); // IIR filtered
+		if(mr->ctrlDevFiltered[ch] > CTRL_FAULT_LIMIT) {
+			mr->ctrlLatchedFault[ch] = true;
+		}
 		mr->deviation[ch] = diff;
 		if(diff > 0.5) {
 			mr->notLocked[ch] = true;
@@ -397,13 +402,34 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 		fault = false;	
 	} else if(pwrDB < -9.0) {
 		fault = false;	
-	} else if(mr->ctrlDevFiltered[chNr] > 0.250) {
+	} else if(mr->ctrlDevFiltered[chNr] > CTRL_FAULT_LIMIT) {
 		fault = true;
 	} else {
 		fault = false;
 	}
         bufP[0] = '0' + fault;
 	bufP[1] = 0;
+        return true;
+}
+
+static bool
+PVLatchedFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+	if(mr->ctrlLatchedFault[chNr] == true) {
+        	bufP[0] = '1';
+	} else {
+        	bufP[0] = '0';
+	}
+	bufP[1] = 0;
+        return true;
+}
+
+static bool
+PVLatchedFault_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	ModReg *mr = cbData;
+	mr->ctrlLatchedFault[chNr] = !!astrtoi16(strP);
         return true;
 }
 
@@ -438,6 +464,7 @@ ModReg_Init(void)
                 PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
                 PVar_New(PVBias_Get,PVBias_Set,mr,ch,"mzMod%d.bias",ch);
                 PVar_New(PVCtrlFault_Get,NULL,mr,ch,"mzMod%d.ctrlFault",ch);
+                PVar_New(PVLatchedFault_Get,PVLatchedFault_Set,mr,ch,"mzMod%d.latchedFault",ch);
 	}
 	mr->rectDelayUs = 12.0;
 	DB_VarInit(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs,"mzMod.rectDelay");
