@@ -1299,7 +1299,7 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
 }
 
 static int8_t
-cmd_bert(Interp * interp, uint8_t argc, char *argv[])
+cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 {
 	uint16_t dataSetNr;
 	if((argc == 3) && (strcmp(argv[1],"load") == 0)) {
@@ -1312,7 +1312,7 @@ cmd_bert(Interp * interp, uint8_t argc, char *argv[])
 	return 0;
 }
 
-INTERP_CMD(bertCmd, "bert", cmd_bert, "bert <load | save> <DataSetNr> # ");
+INTERP_CMD(datasetCmd, "dataset", cmd_dataset, "dataset <load | save> <DataSetNr> # ");
 
 /*
  ********************************************
@@ -1368,5 +1368,5 @@ Bert_Init(void)
 	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
 	Timer_Start(&bert->updateLedsTimer,250);
 	Interp_RegisterCmd(&berCmd);
-	Interp_RegisterCmd(&bertCmd);
+	Interp_RegisterCmd(&datasetCmd);
 }
