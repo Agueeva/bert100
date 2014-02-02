@@ -17,6 +17,7 @@
 #include "tcp.h"
 #include "iram.h"
 #include "pvar.h"
+#include "database.h"
 
 typedef struct IpStack {
 	bool inArp;	
@@ -662,9 +663,13 @@ cmd_mac(Interp * interp, uint8_t argc, char *argv[])
 			}
 		}
 		if(eth->if_mac[0] & 1) {
-			Con_Printf("Broadcast MAC is illegal\n");	
-			eth->if_mac[0] &= ~1;
+			Con_Printf("Error: MAC address is a Broadcast address\n");	
+			return 0;
 		}
+		if(!(eth->if_mac[0] & 2)) {
+			Con_Printf("Warning: MAC address is a globally assigned address\n");	
+		}
+		DB_VarWrite(DBKEY_ETH_MAC,eth->if_mac);
 		ethCtrl.cmd = ETHCTL_SET_MAC;
 		ethCtrl.cmdArg = eth->if_mac;
 		eth->drv->ctrlProc(eth->drv,&ethCtrl);
@@ -817,25 +822,22 @@ Ethernet_Init(EthDriver *drv)
 	} else {
 		Write32(ntohl(UINT32_C(~0) << (32 - netmask_bits)),eth->if_netmask);
 	}
-	//Param_Read(defaultGW,eth->defaultGW);
-	//if(Read32(eth->defaultGW) == ~UINT32_C(0)) {
 	eth->defaultGW[0] = 192;
 	eth->defaultGW[1] = 168;
 	eth->defaultGW[2] = 80;
 	eth->defaultGW[3] = 1;
-	//}
 		
 	memset(eth->if_mac,0xff,6);
 	/* Check the broadcast bit */
-	//if(eth->if_mac[0] & 1) {
-	//Con_Printf("Error: No valid ethernet MAC address in EEPROM\n");
+
 	eth->if_mac[0] = 0xbe;
 	eth->if_mac[1] = 0x77;
 	eth->if_mac[2] = 0xc6;
 	eth->if_mac[3] = 0x4d;
 	eth->if_mac[4] = 0x30;
 	eth->if_mac[5] = 0x8a;
-	//}
+	DB_VarInit(DBKEY_ETH_MAC,&eth->if_mac,"system.mac");
+
 	eth->drv = drv;
 	drv->regPktSink(drv,Eth_PktRx,eth);
 	ethCtrl.cmd = ETHCTL_SET_MAC;

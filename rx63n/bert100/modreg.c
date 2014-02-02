@@ -470,7 +470,7 @@ ModReg_Init(void)
                 PVar_New(PVCtrlDev_Get,NULL,mr,ch,"mzMod%d.ctrlDev",ch);
                 PVar_New(PVBias_Get,PVBias_Set,mr,ch,"mzMod%d.bias",ch);
                 PVar_New(PVCtrlFault_Get,NULL,mr,ch,"mzMod%d.ctrlFault",ch);
-                PVar_New(PVLatchedFault_Get,PVLatchedFault_Set,mr,ch,"mzMod%d.latchedFault",ch);
+                PVar_New(PVLatchedFault_Get,PVLatchedFault_Set,mr,ch,"mzMod%d.latchedCtrlFault",ch);
 	}
 	mr->rectDelayUs = 12.0;
 	DB_VarInit(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs,"mzMod.rectDelay");

@@ -2,6 +2,7 @@
 #define _ETHERNET_H
 #include "types.h"
 #include "ethdrv.h"
+#include "database.h"
 
 
 /**
@@ -56,4 +57,5 @@ void * skb_get_header(Skb *skb);
 void * skb_reserve_header(Skb *skb,uint16_t len); 
 Skb *skb_alloc(uint16_t hdrlen,uint16_t datalen);
 void skb_reset(Skb *skb);
+#define DBKEY_ETH_MAC	DBKEY_ETHERNET(0)
 #endif

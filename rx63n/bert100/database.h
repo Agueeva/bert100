@@ -38,4 +38,5 @@ INLINE bool DB_VarReadStr(uint32_t tag,void *_buf,uint16_t maxlen) {
 #define DBKEY_BERT(x)       	(0x08190000 | (x))
 #define DBKEY_WSERV(x)       	(0x081A0000 | (x))
 #define DBKEY_MODREG(x)       	(0x081B0000 | (x))
+#define DBKEY_ETHERNET(x)      	(0x081C0000 | (x))
 #endif
