@@ -1360,14 +1360,14 @@ Bert_Init(void)
 		/* Some registers are forwarded after a translation */
 		PVar_New(PVSwapTxPN_Get,PVSwapTxPN_Set,bert,ch ,"%s.L%lu.%s",name,ch,"swapTxPN");
 		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
-		PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.L%lu.%s",name,ch,"loadDataSet");
-		PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.L%lu.%s",name,ch,"saveDataSet");
 		CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(ch),!!bert->dbSwapTxPNInv[ch]);
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
+	PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.%s",name,"loadDataSet");
+	PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.%s",name,"saveDataSet");
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
