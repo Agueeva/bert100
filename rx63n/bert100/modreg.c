@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "iodefine.h"
 #include "types.h"
 #include "interpreter.h"
@@ -374,21 +375,26 @@ PVCtrlEnable_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+/**
+ ************************************************************************************************
+ * \fn static bool PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+ ************************************************************************************************
+ */
 static bool
 PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	ModReg *mr = cbData;
         bool enable;
 	bool fault;
-	float pwrDB;
+	float pwrVolt;
         enable = mr->ctrlEnable[chNr]; 
-	pwrDB = ADC12_ReadDB(ADCH_TX_PWR(chNr));
+	pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(chNr));
 	
 	if(!enable) {
 		fault = false;	
-	} else if(pwrDB < -9.0) {
-		fault = false;	
-	} else if(mr->ctrlDevFiltered[chNr] > 0.250) {
+	} else if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
+		fault = true;	
+	} else if(fabs(mr->ctrlDevFiltered[chNr]) > 0.250) {
 		fault = true;
 	} else {
 		fault = false;
