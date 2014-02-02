@@ -3,7 +3,7 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
-  var my_sek=300;
+  var my_sek=1000;
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
@@ -22,22 +22,27 @@
                          "amp1.vd2","amp2.vd2","amp3.vd2","amp4.vd2");
   var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
   var myVarTX_opt_test2= new Array("txaSwingFine","swapTxPN","txaSwing","swapTxPN");
-  var myVarTX= new Array("emlAmp1.vg1","emlAmp2.vg1","emlAmp3.vg1","emlAmp4.vg1",
-			 "emlAmp1.vg2","emlAmp2.vg2","emlAmp3.vg2","emlAmp4.vg2",
+  var myVarTX= new Array("amp1.vg1","amp2.vg1","amp3.vg1","amp4.vg1",
+			 "amp1.vg2","amp2.vg2","amp3.vg2","amp4.vg2",
 			 "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
   var myVarTX_opt= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
                              "mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev","mzMod0.ctrlDev",
+                             "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
+                             "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
                          "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
-                         "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable");
+                         "mzMod0.bias","mzMod1.bias","mzMod2.bias","mzMod3.bias");
+   var myVarTX_opt0= new Array("swapTxPN");
+   var myVarTX_opt1= new Array("ctrlEnable");
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
   var myVarErr= new Array("bert0.bitrate",
                            "mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
                           "mzMod0.ctrlDev","mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev",
-                          "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
+                          "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
+                          "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable",
                           "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel",
                           "bert0.L0.EqState","bert0.L1.EqState","bert0.L2.EqState","bert0.L3.EqState",
                           "bert0.L0.latchedLol","bert0.L1.latchedLol","bert0.L2.latchedLol","bert0.L3.latchedLol",
@@ -53,11 +58,11 @@
                          ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
-                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp");
+                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp","system.variant");
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -89,7 +94,7 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-    
+ 
         if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
@@ -98,10 +103,18 @@
            mystr=item.substr(0, 8)+'.patVerSel';
            $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
-    if (item.substr(0, 6)=="emlAmp" || item.substr(0, 3)=="amp" || item.substr(0, 5)=="mzMod" || item.substr(4, 3)=="pwr") {
+    if (item.substr(0, 3)=="amp" || item.substr(0, 5)=="mzMod" || item.substr(4, 3)=="pwr") {
+     
           value=Math.round(value * 100) / 100;
+          if (value>10) {
+           value=10;    
           }
-       if (item.substr(9, 7)=="CdrTrip") {
+           if (value<-10) {
+           value=-10;    
+          }
+          }
+       if (item.substr(9, 7)=="CdrTrip") {  //bert0.L0.CdrTrip
+          
          myCh="#Loss"+item.substr(7, 1);
           if ( $("#frame").contents().find(myCh).attr('class')=='redfield') {
                value="--";
@@ -116,7 +129,16 @@
                }
           }
           }
-          
+         if (item.substr(7, 7)=="ctrlDev") {  //mzMod0.ctrlDev
+         
+               if (value < -0.5){
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 2+"%");
+               }else if( value > 0.5) {
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', 99+"%");
+               }else{
+                    $("#frame").contents().find(("#"+item+"_line").replace(/[.]/g,"\\.")).css('left', (value*100+50)+"%");
+               }
+          }
           
       if (item.substr(9, 7)=="EqState") {      
           $("#frame").contents().find(("#"+item+"_st").replace(/[.]/g,"\\.")).width((100-value*7)+"%");
@@ -196,7 +218,13 @@ case "system.fault":
          savePatternIndicatorElement.className = "AlarmindicatorRed"; 
        }
      return;
-    
+case  "system.variant":
+     if (value=="MZ") {
+      $("#frame").contents().find("#version").innerHTML = "Optical TX Version";    
+     }
+     else {
+     $("#frame").contents().find("#version").innerHTML ="EML Version";}
+     return;
 case "bert0.L0.accTime":
      if (value!=0) {
       var wert=Number(value);
@@ -435,6 +463,7 @@ $(document).ready(function()
         $( "#OpticalTXBut" ).click(function() {
 		myElement=myVarTX_opt;
                 n=2;
+                all=all_tx;
 		laodpage("html/tx_opt.html","#frame");
 		return false;
 	});

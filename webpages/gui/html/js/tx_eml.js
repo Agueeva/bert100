@@ -1,6 +1,6 @@
 
 function ClickUp(i,ud,sr,k){
-    var my_item=document.getElementById('emlAmp'+i+'.vg1');
+    var my_item=document.getElementById('amp'+i+'.vg1');
     switch(ud){
         case 1:
             if((Number(my_item.value)+sr*0.01) < 2.8) {
@@ -20,8 +20,8 @@ function ClickUp(i,ud,sr,k){
         break;
     }
 TestVal(i);
-my_item=document.getElementById('emlAmp'+i+'.vg1');
-window.parent.SaveVar(my_item,k,'Amp',1);
+my_item=document.getElementById('amp'+i+'.vg1');
+window.parent.SaveVar(my_item,k,'amp',1);
 if (k==2) {
   window.parent.myElement=window.parent.myVarTX;
   window.parent.window_onload();
@@ -43,7 +43,7 @@ function TestVal(i){
 
 // Crossing
 function ClickUpCr(i,ud,sr,k){
-var my_item=document.getElementById('emlAmp'+i+'.vg2');
+var my_item=document.getElementById('amp'+i+'.vg2');
 switch(ud){
     case 1:
         if((Number(my_item.value)+sr*0.01) < 1.5) {
@@ -61,7 +61,7 @@ switch(ud){
     default:
     break;
 }
-window.parent.SaveVar(my_item,k,'Amp',1);
+window.parent.SaveVar(my_item,k,'amp',1);
 if (k==2) {
   window.parent.myElement=window.parent.myVarTX;
   window.parent.window_onload();
@@ -69,8 +69,8 @@ if (k==2) {
 }
 
 function TestValCr(i){
-var my_item=document.getElementById('emlAmp'+i+'.vg2');
- 	var item = "emlAmp"+i+".vg1";
+var my_item=document.getElementById('amp'+i+'.vg2');
+ 	var item = "amp"+i+".vg1";
 	if (isNaN(my_item.value)) {
 		
 	}else {
@@ -87,7 +87,7 @@ var my_all=document.getElementById('all');
 if (window.parent.all_tx) {
 	my_all.checked=true;
 	window.parent.myElement=window.parent.myVarTX0;
-	window.parent.myDisableAll(my_all,'emlAmp','Amp',1);
+	window.parent.myDisableAll(my_all,'amp','amp',1);
 	window.parent.myElement=window.parent.myVarTX2;
 	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX;

@@ -211,26 +211,7 @@ function TestUserPat() {
 	}
 }
 
-/*
-//Old validateImput
-function PruefeInhalt(Feld) {
-	var s=Feld.value;
-	var s2=s.substr(s.length-1,1);
-	
-	//change the save indicator to red
-	makeSavePatternIndicatorRed();
-	
-	//remove everything but for "0" and "1"
-	s=s.replace(/[^0-1]+/,'');
-	
-	//check length of string
-	if( s.length>40){
-		Feld.value=s.substring(0,40);	
-	}else{
-		Feld.value=s;	
-	}
-}
-*/
+
 //**********************************************************
 function validateImput(evt,Feld) {
 	//the pressed key

@@ -131,6 +131,7 @@ JSON_SMFeed(JSON_Parser *jp,char c)
 			}
 			break;
 
+
 		case STATE_FIND_VAL:
 			if(c == ':') {		
 				jp->state = STATE_VAL;		
