@@ -119,7 +119,7 @@ DB_Erase(Database * db, uint8_t blockNr)
  ********************************************************************
  */
 static bool
-_DB_SetObj(uint8_t currBlock, uint32_t tag, void *buf, uint16_t len)
+_DB_SetObj(uint8_t currBlock, uint32_t tag, const void *buf, uint16_t len)
 {
 	uint8_t data[8], hdr[8];
 	uint16_t i;
@@ -349,7 +349,7 @@ DB_Defrag(Database * db)
  ***********************************************************
  */
 bool
-DB_SetObj(uint32_t tag, void *buf, uint16_t len)
+DB_SetObj(uint32_t tag, const void *buf, uint16_t len)
 {
 	Database *db = &g_Database;
 	bool retval;

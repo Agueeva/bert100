@@ -24,6 +24,9 @@
 #include "timer.h"
 #include "iram.h"
 #include "md5.h"
+#include "database.h"
+#include "interpreter.h"
+#include "pvar.h"
 
 #ifdef BOARD_SAKURA
 #define REALM	"Guten Morgen!"
@@ -32,7 +35,8 @@
 #endif
 
 #define USERNAME 	"cbertran1"
-#define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "bert" */
+//define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "dog100#" */
+#define MD5PASS		"3de0746a7d2762a87add40dac2bc95a0"	/* Passwd is ernie */
 
 char *content_string[] = {
 	"text/html",
@@ -1243,27 +1247,6 @@ XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const
 	return 0;
 }
 
-/**
- *****************************************************
- * Create a new webserver.
- *****************************************************
- */
-XY_WebServer *
-XY_NewWebServer(void)
-{
-	XY_WebServer *wserv = IRam_Calloc(sizeof(XY_WebServer));
-	if (!wserv)
-		return NULL;
-	Tcp_ServerSocket(80, WebServ_Accept, wserv);
-	wserv->connections = 0;
-	wserv->rqHandlerHash = StrHash_New(16);
-	Web_PoolsInit();
-	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
-	XY_WebAddMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
-	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
-	XY_WebAddMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
-	return wserv;
-}
 
 /*
  *************************************************************
@@ -1670,8 +1653,19 @@ void
 XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, void *wopsServData,int32_t labviewPortNr)
 {
 	wops->eventData = wopsServData;
+	char username[33];
+	char passwd_md5hex[33];
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
 	XY_WebAddMD5Auth(wserv, path, REALM, USERNAME, MD5PASS);
+	if(DB_VarRead(DBKEY_WSERV_PASSWD,&passwd_md5hex) == false) {
+		return;
+	}
+	if(DB_VarRead(DBKEY_WSERV_USERNAME,&username) == false) {	
+		return;
+	}
+	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
+		XY_WebAddMD5Auth(wserv, path, REALM, username, passwd_md5hex);
+	}
 }
 
 /**
@@ -1693,4 +1687,104 @@ XY_RegisterPostProc(XY_WebServer * wserv, const char *path, XY_PostProc * proc, 
 	reg->postProc = proc;
 	reg->postData = postData;
 	return 0;
+}
+
+/**
+ ******************************************************************
+ * Data base interface to the Username and password
+ ******************************************************************
+ */
+static void 
+SetPasswd(XY_WebServer *wserv,const char *passwd) 
+{
+	uint32_t i;
+	unsigned char passwd_md5[16];
+	char passwd_md5hex[33];
+	MD5_EncodeString(passwd_md5, passwd);
+	for(i = 0; i < 16; i++) {
+		SNPrintf(&passwd_md5hex[i * 2] ,3,"%02x",passwd_md5[i]);
+	}
+	DB_VarWrite(DBKEY_WSERV_PASSWD,&passwd_md5hex);
+}
+
+static void 
+SetUsername(XY_WebServer *wserv,const char *username) 
+{
+	DB_SetObj(DBKEY_WSERV_USERNAME,username,strlen(username) + 1);
+}
+
+/**
+ ******************************************************************
+ * Processvariable interface to the Username and password
+ ******************************************************************
+ */
+static bool
+PVPasswd_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	XY_WebServer *wserv = cbData;
+	SetPasswd(wserv,strP);
+	return true;
+}
+
+static bool
+PVPasswd_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	memset(bufP,0,maxlen);
+	DB_GetObj(DBKEY_WSERV_PASSWD,bufP,maxlen);
+	bufP[maxlen - 1] = 0;
+	return true;
+}
+
+static bool
+PVUsername_Set(void *cbData, uint32_t adId, const char *strP)
+{
+	XY_WebServer *wserv = cbData;
+	SetUsername(wserv,strP);
+	return true;
+}
+
+static bool
+PVUsername_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	memset(bufP,0,maxlen);
+	DB_GetObj(DBKEY_WSERV_USERNAME,bufP,maxlen);
+	bufP[maxlen - 1] = 0;
+	return true;
+}
+
+/**
+ *****************************************************
+ * Create a new webserver.
+ *****************************************************
+ */
+XY_WebServer *
+XY_NewWebServer(void)
+{
+	XY_WebServer *wserv; 
+	char passwd_md5hex[33] = {0,};
+	char username[33] = {0,};
+	wserv = IRam_Calloc(sizeof(XY_WebServer));
+	if (!wserv)
+		return NULL;
+
+	DB_VarInit(DBKEY_WSERV_PASSWD,&passwd_md5hex,"system.passwd");
+	DB_VarInit(DBKEY_WSERV_USERNAME,&username,"system.username");
+	PVar_New(PVPasswd_Get,PVPasswd_Set,wserv,0,"system.passwd");
+	PVar_New(PVUsername_Get,PVUsername_Set,wserv,0,"system.username");
+
+	Tcp_ServerSocket(80, WebServ_Accept, wserv);
+	wserv->connections = 0;
+	wserv->rqHandlerHash = StrHash_New(16);
+	Web_PoolsInit();
+	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
+	XY_WebAddMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
+	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
+		XY_WebAddMD5Auth(wserv, "/sd/", REALM, username, passwd_md5hex);
+	}
+	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
+	XY_WebAddMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
+	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
+		XY_WebAddMD5Auth(wserv, "/", REALM, username, passwd_md5hex);
+	}
+	return wserv;
 }

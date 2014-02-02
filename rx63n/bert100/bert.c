@@ -1188,6 +1188,7 @@ typedef struct TxDriverSettings {
 /**
  ********************************************************************************
  * \fn static bool Bert_LoadDataset(uint16_t idx) 
+ * Load a dataset with DAC, CDR and modulator settings from the database
  ********************************************************************************
  */
 static bool 
@@ -1216,10 +1217,10 @@ Bert_LoadDataset(uint16_t idx)
 		DAC_Set(DAC_MZAMP1_VG2(chNr),txDs.vg2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Set(DAC_MZAMP1_VD1(chNr),txDs.vd1[chNr]);
+		DAC_Set(DAC_MZAMP1_VD2(chNr),txDs.vd2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Set(DAC_MZAMP1_VD2(chNr),txDs.vd2[chNr]);
+		DAC_Set(DAC_MZAMP1_VD1(chNr),txDs.vd1[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
         	CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs.txaSwing[chNr]);
@@ -1234,6 +1235,12 @@ Bert_LoadDataset(uint16_t idx)
 	return true;		
 }
 
+/**
+ ********************************************************************************
+ * \nf static bool Bert_SaveDataset(uint16_t idx) 
+ * Write a dataset with DAC, CDR and modulator settings to the database
+ ********************************************************************************
+ */
 static bool 
 Bert_SaveDataset(uint16_t idx) 
 {
@@ -1251,10 +1258,10 @@ Bert_SaveDataset(uint16_t idx)
 		DAC_Get(DAC_MZAMP1_VG2(chNr),&txDs.vg2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Get(DAC_MZAMP1_VD1(chNr),&txDs.vd1[chNr]);
+		DAC_Get(DAC_MZAMP1_VD2(chNr),&txDs.vd2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Get(DAC_MZAMP1_VD2(chNr),&txDs.vd2[chNr]);
+		DAC_Get(DAC_MZAMP1_VD1(chNr),&txDs.vd1[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
 		txDs.txaSwing[chNr] =	CDR_Read(CDR_ID_TX,CDR_TXA_SWING(chNr));
@@ -1353,14 +1360,14 @@ Bert_Init(void)
 		/* Some registers are forwarded after a translation */
 		PVar_New(PVSwapTxPN_Get,PVSwapTxPN_Set,bert,ch ,"%s.L%lu.%s",name,ch,"swapTxPN");
 		DB_VarInit(DBKEY_BERT0_SWAP_TXPN(ch),&bert->dbSwapTxPNInv[ch],"%s.L%lu.swapTxPNInv",name,ch);
-		PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.L%lu.%s",name,ch,"loadDataSet");
-		PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.L%lu.%s",name,ch,"saveDataSet");
 		CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(ch),!!bert->dbSwapTxPNInv[ch]);
 	}
 	for(i = 0; i < array_size(gForwardRegs); i++) {
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
+	PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.%s",name,"loadDataSet");
+	PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.%s",name,"saveDataSet");
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
