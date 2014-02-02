@@ -81,4 +81,6 @@ void WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,void *_data,uint16_t pllen);
 #define WSOP_PING               (9)
 #define WSOP_PONG               (0xa)
 
+#define DBKEY_WSERV_USERNAME	DBKEY_WSERV(0)
+#define DBKEY_WSERV_PASSWD	DBKEY_WSERV(1)
 #endif 

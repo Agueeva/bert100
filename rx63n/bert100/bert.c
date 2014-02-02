@@ -1188,6 +1188,7 @@ typedef struct TxDriverSettings {
 /**
  ********************************************************************************
  * \fn static bool Bert_LoadDataset(uint16_t idx) 
+ * Load a dataset with DAC, CDR and modulator settings from the database
  ********************************************************************************
  */
 static bool 
@@ -1216,10 +1217,10 @@ Bert_LoadDataset(uint16_t idx)
 		DAC_Set(DAC_MZAMP1_VG2(chNr),txDs.vg2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Set(DAC_MZAMP1_VD1(chNr),txDs.vd1[chNr]);
+		DAC_Set(DAC_MZAMP1_VD2(chNr),txDs.vd2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Set(DAC_MZAMP1_VD2(chNr),txDs.vd2[chNr]);
+		DAC_Set(DAC_MZAMP1_VD1(chNr),txDs.vd1[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
         	CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs.txaSwing[chNr]);
@@ -1234,6 +1235,12 @@ Bert_LoadDataset(uint16_t idx)
 	return true;		
 }
 
+/**
+ ********************************************************************************
+ * \nf static bool Bert_SaveDataset(uint16_t idx) 
+ * Write a dataset with DAC, CDR and modulator settings to the database
+ ********************************************************************************
+ */
 static bool 
 Bert_SaveDataset(uint16_t idx) 
 {
@@ -1251,10 +1258,10 @@ Bert_SaveDataset(uint16_t idx)
 		DAC_Get(DAC_MZAMP1_VG2(chNr),&txDs.vg2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Get(DAC_MZAMP1_VD1(chNr),&txDs.vd1[chNr]);
+		DAC_Get(DAC_MZAMP1_VD2(chNr),&txDs.vd2[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
-		DAC_Get(DAC_MZAMP1_VD2(chNr),&txDs.vd2[chNr]);
+		DAC_Get(DAC_MZAMP1_VD1(chNr),&txDs.vd1[chNr]);
 	}
 	for(chNr = 0; chNr < 4; chNr++) {
 		txDs.txaSwing[chNr] =	CDR_Read(CDR_ID_TX,CDR_TXA_SWING(chNr));

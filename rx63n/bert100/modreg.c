@@ -22,6 +22,7 @@
 #include "ad537x.h"
 #include "pvar.h"
 #include "version.h"
+#include "modreg.h"
 
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
@@ -41,6 +42,7 @@ typedef struct ModReg {
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
 	uint32_t adCh[4];
 	uint32_t daCh[4];
+	float rectDelayUs;
 } ModReg;
 
 static ModReg gModReg;
@@ -92,9 +94,12 @@ ModulatorControlProc(void *eventData)
  ********************************************************************
  */
 static void
-enable_modulator_clock(uint32_t hz,float delayUs)
+enable_modulator_clock(ModReg *mr,uint32_t hz,float delayUs)
 {
-	uint32_t delayCnt = (48 * delayUs + 0.5);
+	uint32_t delayCnt;
+	mr->rectDelayUs = delayUs;
+
+	delayCnt = (48 * delayUs + 0.5);
 	MSTP(MTU4) = 0;
 	/* Setup PE5 for MTIO4C/MTIO2B */
 	MPC.PE5PFS.BYTE = 0x1; /* Switch Pin to MTIO4C mode */
@@ -158,9 +163,13 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
 		Con_Printf("TGRC %u\n",MTU4.TGRC);
 		return 0;
+	} else if((argc == 2)  && (strcmp(argv[1],"delay") == 0)) {
+		Con_Printf("%f us\n",mr->rectDelayUs);
+		return 0;
 	} else if((argc == 3)  && (strcmp(argv[1],"delay") == 0)) {
 		float delayUs = astrtof32(argv[2]);
-		enable_modulator_clock(20000,delayUs);
+		enable_modulator_clock(mr,20000,delayUs);
+		DB_VarWrite(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs);
 		return 0;
 	} else if(argc < 3) {
 		return -EC_BADNUMARGS;
@@ -430,7 +439,10 @@ ModReg_Init(void)
                 PVar_New(PVBias_Get,PVBias_Set,mr,ch,"mzMod%d.bias",ch);
                 PVar_New(PVCtrlFault_Get,NULL,mr,ch,"mzMod%d.ctrlFault",ch);
 	}
-	enable_modulator_clock(20000,12.0);
+	mr->rectDelayUs = 12.0;
+	DB_VarInit(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs,"mzMod.rectDelay");
+	enable_modulator_clock(mr,20000,mr->rectDelayUs);
+
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
 	Interp_RegisterCmd(&modCmd);
