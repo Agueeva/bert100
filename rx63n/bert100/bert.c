@@ -1366,8 +1366,8 @@ Bert_Init(void)
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
-	PVar_New(NULL,PVDataSet_Load,bert,ch ,"%s.%s",name,"loadDataSet");
-	PVar_New(NULL,PVDataSet_Save,bert,ch ,"%s.%s",name,"saveDataSet");
+	PVar_New(NULL,PVDataSet_Load,bert,0 ,"%s.%s",name,"loadDataSet");
+	PVar_New(NULL,PVDataSet_Save,bert,0 ,"%s.%s",name,"saveDataSet");
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");

@@ -34,9 +34,9 @@
 #define REALM	"Munich Instruments C-BERT"
 #endif
 
-#define USERNAME 	"cbertran1"
+#define USERNAME 	"ernie"
 //define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "dog100#" */
-#define MD5PASS		"3de0746a7d2762a87add40dac2bc95a0"	/* Passwd is ernie */
+#define MD5PASS		"3de0746a7d2762a87add40dac2bc95a0"	/* Passwd is bert */
 
 char *content_string[] = {
 	"text/html",
