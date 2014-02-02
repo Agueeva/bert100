@@ -1367,7 +1367,7 @@ cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 3) && (strcmp(argv[1],"save") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
 		Bert_SaveDataset(dataSetNr);
-	} else if((argc == 3) && (strcmp(argv[1],"show") == 0)) {
+	} else if((argc == 3) && (strcmp(argv[1],"dump") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
 		Bert_ShowDataset(dataSetNr);
 	} else {
