@@ -408,14 +408,7 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	ModReg *mr = cbData;
 	bool fault;
 	float pwrVolt;
-//	bool enable;
-//        enable = mr->ctrlEnable[chNr]; 
 	pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(chNr));
-#if 0
-	if(!enable) {
-		fault = false;	
-	} else 
-#endif
 	if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 		fault = true;	
 	} else if(fabs(mr->ctrlDevFiltered[chNr]) > CTRL_FAULT_LIMIT) {
