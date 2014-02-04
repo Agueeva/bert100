@@ -67,9 +67,9 @@ char *content_string[] = {
 	"Content-Type: text/html\r\n\r\n"
 
 typedef struct XYWebAuthInfo {
-	char *realm;
-	char *username;
-	uint8_t passwd_md5[16];
+	const char *realm;
+	const char *username;
+	uint8_t *passwd_md5;
 	struct XYWebAuthInfo *next;
 } XYWebAuthInfo;
 
@@ -403,7 +403,7 @@ redirect_page(int argc, char *argv[], XY_WebRequest * wr, void *eventData)
  ************************************************************************
  */
 static void
-create_authpage(WebCon * wc, char *realm)
+create_authpage(WebCon * wc, const char *realm)
 {
 	char *page = wc->page;
 	page += xy_strcpylen(page,
@@ -1215,7 +1215,7 @@ parse_md5hexstring(uint8_t * md5passwd, const char *md5hexstring)
  * ------------------------------------------------------------------
  */
 int
-XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const char *username,
+XY_WebCreateMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const char *username,
 		 const char *md5string)
 {
 	WebPageRegistration *reg;
@@ -1228,12 +1228,43 @@ XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const
 	auth = IRam_Calloc(sizeof(XYWebAuthInfo));
 	if (!auth)
 		return -1;
+	auth->passwd_md5 = IRam_Calloc(16);
 	if (parse_md5hexstring(auth->passwd_md5, md5string) < 0) {
 		Con_Printf("Error in parse_md5hexstring\n");
 		return -1;
 	}
 	auth->username = IRam_Strdup(username);
 	auth->realm = IRam_Strdup(realm);
+	auth->next = NULL;
+
+	if (!reg->authInfo) {
+		reg->authInfo = auth;
+		return 0;
+	}
+	for (cursor = reg->authInfo; cursor->next; cursor = cursor->next) {
+
+	}
+	cursor->next = auth;
+	return 0;
+}
+
+int
+XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const char *username,
+		 uint8_t *md5bin)
+{
+	WebPageRegistration *reg;
+	XYWebAuthInfo *auth;
+	XYWebAuthInfo *cursor;
+	reg = FindRequestHandler(wserv, uri);
+	if (!reg)
+		return -1;
+
+	auth = IRam_Calloc(sizeof(XYWebAuthInfo));
+	if (!auth)
+		return -1;
+	auth->passwd_md5 = md5bin;
+	auth->username = username;
+	auth->realm = realm;
 	auth->next = NULL;
 
 	if (!reg->authInfo) {
@@ -1656,15 +1687,15 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 	char username[33];
 	char passwd_md5hex[33];
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
-	XY_WebAddMD5Auth(wserv, path, REALM, USERNAME, MD5PASS);
+	XY_WebCreateMD5Auth(wserv, path, REALM, USERNAME, MD5PASS);
 	if(DB_VarRead(DBKEY_WSERV_PASSWD,&passwd_md5hex) == false) {
 		return;
 	}
 	if(DB_VarRead(DBKEY_WSERV_USERNAME,&username) == false) {	
 		return;
 	}
-	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
-		XY_WebAddMD5Auth(wserv, path, REALM, username, passwd_md5hex);
+	if(strlen(wserv->username)) {
+		XY_WebAddMD5Auth(wserv, path, REALM, wserv->username, wserv->passwd_md5);
 	}
 }
 
@@ -1698,11 +1729,10 @@ static void
 SetPasswd(XY_WebServer *wserv,const char *passwd) 
 {
 	uint32_t i;
-	unsigned char passwd_md5[16];
 	char passwd_md5hex[33];
-	MD5_EncodeString(passwd_md5, passwd);
+	MD5_EncodeString(wserv->passwd_md5, passwd);
 	for(i = 0; i < 16; i++) {
-		SNPrintf(&passwd_md5hex[i * 2] ,3,"%02x",passwd_md5[i]);
+		SNPrintf(&passwd_md5hex[i * 2] ,3,"%02x",wserv->passwd_md5[i]);
 	}
 	DB_VarWrite(DBKEY_WSERV_PASSWD,&passwd_md5hex);
 }
@@ -1711,6 +1741,7 @@ static void
 SetUsername(XY_WebServer *wserv,const char *username) 
 {
 	DB_SetObj(DBKEY_WSERV_USERNAME,username,strlen(username) + 1);
+	SNPrintf(wserv->username,array_size(wserv->username),"%s",username);
 }
 
 /**
@@ -1763,14 +1794,19 @@ XY_WebServer *
 XY_NewWebServer(void)
 {
 	XY_WebServer *wserv; 
-	char passwd_md5hex[33] = {0,};
-	char username[33] = {0,};
+	char passwd_md5hex[33];
 	wserv = IRam_Calloc(sizeof(XY_WebServer));
 	if (!wserv)
 		return NULL;
 
 	DB_VarInit(DBKEY_WSERV_PASSWD,&passwd_md5hex,"system.passwd");
-	DB_VarInit(DBKEY_WSERV_USERNAME,&username,"system.username");
+	DB_VarInit(DBKEY_WSERV_USERNAME,&wserv->username,"system.username");
+	wserv->username[array_size(wserv->username) - 1] = 0;
+	passwd_md5hex[array_size(passwd_md5hex) - 1] = 0;
+	parse_md5hexstring(wserv->passwd_md5, passwd_md5hex);
+	
+	Con_Printf("The username is %s\n",wserv->username);
+
 	PVar_New(PVPasswd_Get,PVPasswd_Set,wserv,0,"system.passwd");
 	PVar_New(PVUsername_Get,PVUsername_Set,wserv,0,"system.username");
 
@@ -1779,14 +1815,14 @@ XY_NewWebServer(void)
 	wserv->rqHandlerHash = StrHash_New(16);
 	Web_PoolsInit();
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
-	XY_WebAddMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
-	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
-		XY_WebAddMD5Auth(wserv, "/sd/", REALM, username, passwd_md5hex);
+	XY_WebCreateMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
+	if(strlen(wserv->username)) {
+		XY_WebAddMD5Auth(wserv, "/sd/", REALM, wserv->username, wserv->passwd_md5);
 	}
 	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
-	XY_WebAddMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
-	if(strlen(username) && (strlen(passwd_md5hex) == 32)) {
-		XY_WebAddMD5Auth(wserv, "/", REALM, username, passwd_md5hex);
+	XY_WebCreateMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
+	if(strlen(wserv->username)) {
+		XY_WebAddMD5Auth(wserv, "/", REALM, wserv->username, wserv->passwd_md5);
 	}
 	return wserv;
 }

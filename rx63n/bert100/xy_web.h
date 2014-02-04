@@ -12,6 +12,9 @@ typedef struct XY_WebServer {
 	//XY_TcpServer tcpserv;
 	StrHashTable *rqHandlerHash;
 	int connections;
+
+	uint8_t passwd_md5[16];
+	char username[40];
 } XY_WebServer;
 
 #define XY_WEBCONTENT_HTML  	(0)
