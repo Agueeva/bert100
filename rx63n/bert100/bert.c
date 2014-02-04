@@ -58,6 +58,7 @@ typedef struct Bert {
 	Timer updateLedsTimer;
 	Timer cdrRecalTimer;
 	uint32_t dataRate; 
+	int32_t currentDataSet;
 	uint8_t pvLatchedLol[NR_CHANNELS];
 	bool dbSwapTxPNInv[NR_CHANNELS];
 } Bert;
@@ -867,6 +868,7 @@ PVAccBerMeasStart_Set(void *cbData, uint32_t adId, const char *strP)
 		/* currently accessing the global LOL, not good but a quick hack */
 		LatchedLol_Update (bert,lane);
 		bert->pvLatchedLol[lane] = 0; 
+		ModReg_ResetCtrlFault(lane);
 		fifo->accMeasValid = true;
 	}
 	fifo->accRunning = newval;	
@@ -1344,8 +1346,11 @@ PVDataSet_Load(void *cbData, uint32_t adId, const char *strP)
 {
         uint16_t idx; 
         idx = astrtoi16(strP);
-	Bert_LoadDataset(idx);
-	return true;
+	if(Bert_LoadDataset(idx) == false) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 static bool 
@@ -1353,8 +1358,11 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
 {
         uint16_t idx; 
         idx = astrtoi16(strP);
-	Bert_SaveDataset(idx);
-	return true;
+	if(Bert_SaveDataset(idx) == false) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 static int8_t
@@ -1391,6 +1399,7 @@ Bert_Init(void)
 	const char *name = "bert0";
 	unsigned int ch;
 	int i;
+	bert->currentDataSet = -1; // Invalid
 	for(ch = 0 ; ch < NR_CHANNELS; ch++)
 	{
 		fifo = &bert->beFifo[ch];	

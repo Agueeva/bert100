@@ -28,7 +28,7 @@
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
 #define SYNC_RESET_LOW()        BCLR(3,PORTJ.PODR.BYTE) 
-#define	CTRL_FAULT_LIMIT	(0.25) // Volt
+#define	CTRL_FAULT_LIMIT	(0.5) // Volt
 
 typedef struct ModReg {
 	Timer syncTimer;	
@@ -68,6 +68,7 @@ ModulatorControlProc(void *eventData)
 	ENABLE_IRQ();
 	DelayUs(10);
 	for(ch = 0; ch < 4; ch++) {
+		float pwrVolt;
 		daCh = mr->daCh[ch];
 		adCh = mr->adCh[ch];	
 		diff = (mr->advalAfter[ch] - mr->advalBefore[ch]) * 3.3 / 4096;
@@ -82,7 +83,11 @@ ModulatorControlProc(void *eventData)
 		DAC_Set(daCh,mr->dacVolt[ch]);
 		mr->advalBefore[ch] = ADC12_Read(adCh);
 		mr->ctrlDevFiltered[ch] = (mr->ctrlDevFiltered[ch] * 0.9) + (diff / 10); // IIR filtered
+
+		pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(ch));
 		if(mr->ctrlDevFiltered[ch] > CTRL_FAULT_LIMIT) {
+			mr->ctrlLatchedFault[ch] = true;
+		} else if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 			mr->ctrlLatchedFault[ch] = true;
 		}
 		mr->deviation[ch] = diff;
@@ -150,6 +155,15 @@ update_eff_ki(ModReg *mr,uint8_t chNr)
 		mr->regKIEffPerInterval[chNr] = mr->regKI[chNr] / 10;
 	} else {
 		mr->regKIEffPerInterval[chNr] = 0;
+	}
+}
+
+void 
+ModReg_ResetCtrlFault(uint8_t chNr) 
+{
+	ModReg *mr = &gModReg;
+	if(chNr < array_size(mr->ctrlLatchedFault)) {
+		mr->ctrlLatchedFault[chNr] = false;	
 	}
 }
 
@@ -398,15 +412,17 @@ static bool
 PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
 	ModReg *mr = cbData;
-        bool enable;
 	bool fault;
 	float pwrVolt;
-        enable = mr->ctrlEnable[chNr]; 
+//	bool enable;
+//        enable = mr->ctrlEnable[chNr]; 
 	pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(chNr));
-	
+#if 0
 	if(!enable) {
 		fault = false;	
-	} else if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
+	} else 
+#endif
+	if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 		fault = true;	
 	} else if(mr->ctrlDevFiltered[chNr] > CTRL_FAULT_LIMIT) {
 		fault = true;
