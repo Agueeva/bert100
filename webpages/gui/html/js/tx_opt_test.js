@@ -55,3 +55,13 @@ if (window.parent.all_tx_opt_test) {
 	window.parent.myElement=window.parent.myVarTX_opt_test;
 }
 }
+function Dataset(my_action){
+var my_item=document.getElementById(my_action);
+if (my_item.value>=0 && my_item.value<=19) {
+   window.parent.SaveVar(my_item,1,'',1);
+ window.parent.window_onload();
+}
+else {alert("Falshe Dataset Number!"); }  
+    
+}
+

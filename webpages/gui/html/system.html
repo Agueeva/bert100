@@ -1,6 +1,5 @@
 <head>
 	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
-
 </head>
 <body  onload="javascript: onStart();">
 <div name="wrap_System">
@@ -20,7 +19,7 @@
 <TR ALIGN="left">
 <TH>HW rev.:
 </TH>
-<TD>01</TD>
+<TD><input class="textfildsys" type="text" name="system.firmware" id="system.hwRevision" size="15" maxlength="15" readonly></TD>
 </TR>
 
 
@@ -99,11 +98,31 @@
 <TH>MAC Adresse:</TH>
 <TD><input class="textfildsys" type="text"  id="system.mac" size="15" maxlength="15" readonly ></TD>
 </TR>
+</TABLE>
+</div>
+
+<div class="headline">Security Settings</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
+
+<TR ALIGN="left">
+<TH>User:</TH>
+<TD><input class="textfildsys" type="text"  id="system.username" size="15" maxlength="15" ></TD><TD>&nbsp;&nbsp;</TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Password:</TH>
+<TD><input class="textfildsys" type="password"  id="system.passwd" size="15" maxlength="15" ></TD><TD><button class="buttonBlue" type="button" id="mzMod1.bias_But"  onclick="javascript: SaveUser(); ">Save</button></TD>
+</TR>
+
 
 </TABLE>
-</FORM>
 </div>
+</FORM>
+
 </body>
+
+
 
 <script type="text/javascript">
 	<!--
@@ -116,6 +135,26 @@ function StartInterval(){
 		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
                  my_Inter=setInterval(window.parent.window_onload,my_sek);
 		}
+		
+function SaveUser(){		
+var pass = document.getElementById('system.passwd').value;
+var user = document.getElementById('system.username').value;
+	
+	var re = /[",',\\]/gi;                //      ',",\\
+	var found = pass.match(re);
+	if (found!=null){
+	alert("Not: "+ found);	
+	}
+	else {
+	window.parent.SaveVar(document.getElementById('system.passwd'),1,'',0);
+	window.parent.SaveVar(document.getElementById('system.username'),1,'',0);
+	Readsecurety();
+	}
+}
+function Readsecurety(){
+window.parent.socket.send(JSON.stringify({get: "system.passwd"}));
+window.parent.socket.send(JSON.stringify({get: "system.username"}));}
+Readsecurety();
 		-->
 </script>
 		

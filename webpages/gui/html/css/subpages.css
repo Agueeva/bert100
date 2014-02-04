@@ -45,7 +45,7 @@
 
 .greenfield{
 	position: relative;
-	height: 32px;
+	height: 24px;
 	width: 50px;
 	background-color: #00ff40;
         font-size: 16px;
@@ -83,7 +83,7 @@
 .wrapprozent{
 	position: relative;
 	width: 100%;
-	height: 32px;
+	height: 24px;
 	background-color: #505050;
 	border-width: 0;
 	border-radius: 6px;
@@ -91,13 +91,7 @@
 	-moz-border-radius: 6px;
 	overflow: hidden;
 }
-/*
-.prozentBg{
-	background-color: #505050;
-	overflow: hidden;
-	height: 32px;
-}
-*/
+
 
 .bg{
 	background-color: #ff0;
@@ -118,7 +112,21 @@
 
 	color: #FFFFFF;
 }
+.eqstatefield_sm{
+	position: relative;
+	height: 24px;
+	width: 100%;
+	background-color: #00ff40;
+	box-shadow:inset 0 0 4px #016b90;
+	
+	border-top-width: 0;
+	border-bottom-width: 0;
+	border-left-width: 0;
+	border-right-width: 3px;
+	border-right-color: #F0F0F0;
 
+	color: #FFFFFF;
+}
 .eqstatetextfield{
 	position:absolute;
 	top:0;
@@ -133,10 +141,22 @@
 	background-color: transparent;
 }
 
-
+.eqstatetextfield_sm{
+	position:absolute;
+	top:0;
+	left: 0;
+	height: 23px;
+	width: 100%;
+	border: 0;
+        font-size: 16px;
+	font-weight:bold;
+	color: #FFFFFF;
+	text-align: center;
+	background-color: transparent;
+}
 .redfield{
 	position: relative;
-	height: 32px;
+	height: 24px;
 	width: 50px;
 	background-color: #ff0000;
         font-size: 16px;
@@ -146,6 +166,13 @@
 .textfildPattern{
 	position: relative;
 	height: 32px;
+	width: 80px;
+	border-width: 3px;
+        border-color: #00aeeb;
+}
+.textfildPattern_sm{
+	position: relative;
+	height: 24px;
 	width: 80px;
 	border-width: 3px;
         border-color: #00aeeb;
@@ -222,7 +249,7 @@ tr:nth-of-type(even) {
 .cDRTripFeld{
 	position: relative;
 	width: 100%;
-	height: 32px;
+	height: 24px;
 	
 	border-width: 0;
 	border-radius: 6px;
@@ -240,7 +267,7 @@ tr:nth-of-type(even) {
 
 .cDRTripBgMid{
 	position: absolute;
-	height: 32px;
+	height: 24px;
 	
 	margin-left: -2px;
 	left: 50%;
@@ -248,7 +275,7 @@ tr:nth-of-type(even) {
 
 .cDRTripMid{
 	position: absolute;
-	height: 32px;
+	height: 24px;
 	width: 2px;
 	margin-left: -2px;
 	top:0;
@@ -259,7 +286,7 @@ tr:nth-of-type(even) {
 	position:absolute;
 	top:0;
 	left: -1px;
-	height: 32px;
+	height: 24px;
 	width: 100%;
 	border: 0;
         font-size: 16px;

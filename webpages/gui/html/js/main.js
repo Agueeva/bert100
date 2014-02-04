@@ -40,6 +40,8 @@
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
   var myVarErr= new Array("bert0.bitrate",
                            "mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
+                           "mzMod0.ctrlFault", "mzMod1.ctrlFault","mzMod2.ctrlFault","mzMod3.ctrlFault",
+                           "mzMod0.latchedCtrlFault", "mzMod1.latchedCtrlFault", "mzMod2.latchedCtrlFault", "mzMod3.latchedCtrlFault",
                           "mzMod0.ctrlDev","mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev",
                           "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
                           "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable",
@@ -55,10 +57,11 @@
                           "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr",
                           "bert0.L0.accTime",
                           "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip"
+
                          ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
-                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp","system.variant");
+                             "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp","system.variant","system.hwRevision");
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
@@ -94,6 +97,7 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
+     
  
         if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
@@ -103,7 +107,7 @@
            mystr=item.substr(0, 8)+'.patVerSel';
            $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
-    if (item.substr(0, 3)=="amp" || item.substr(0, 5)=="mzMod" || item.substr(4, 3)=="pwr") {
+    if ((item.substr(0, 3)=="amp" && item!="amp.temp") || (item.substr(0, 5)=="mzMod" && item!="mzMod.temp") || item.substr(4, 3)=="pwr") {
      
           value=Math.round(value * 100) / 100;
           if (value>10) {
@@ -202,6 +206,27 @@ var k;
       $("#frame").contents().find("#Lock"+k).attr('class','redfield');
      }
      }
+     
+  //************************************************************************  "mzMod0.ctrlFault" mzMod0.ctrlEnable  mzMod0.latchedCtrlFault
+     if (item.substr(7, 9)=="ctrlFault") {
+          k=item.substr(5, 1);
+    //     var ctrlEnable=$("#frame").contents().find("#mzMod0.ctrlEnable").val();
+       if (value==0) {
+      $("#frame").contents().find("#Fault"+k).attr('class','greenfield');
+          }else{
+      $("#frame").contents().find("#Fault"+k).attr('class','redfield');
+          }
+     }
+     if (item.substr(7, 16)=="latchedCtrlFault") {
+           k=item.substr(5, 1);
+          
+       if (value==0) {
+      $("#frame").contents().find("#MZMem"+k).attr('class','greenfield');
+     }else{
+      $("#frame").contents().find("#MZMem"+k).attr('class','redfield');
+     }
+     }  
+     
  //***********************************************************************+         
         
 switch(item)
@@ -219,12 +244,12 @@ case "system.fault":
        }
      return;
 case  "system.variant":
-     if (value=="MZ") {
+      if (value=="MZ") {
       $("#frame").contents().find("#version").innerHTML = "Optical TX Version";    
      }
      else {
      $("#frame").contents().find("#version").innerHTML ="EML Version";}
-     return;
+     break;
 case "bert0.L0.accTime":
      if (value!=0) {
       var wert=Number(value);
@@ -307,8 +332,8 @@ default:
    
 
      function keepAlive() {
-          socket.send(JSON.stringify({get: "test.var1"}));
-          socket.send(JSON.stringify({get: "system.fault"}));
+        //  socket.send(JSON.stringify({get: "test.var1"}));
+        //  socket.send(JSON.stringify({get: "system.fault"}));
 }
 
 }
