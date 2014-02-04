@@ -1729,9 +1729,10 @@ PVPasswd_Set(void *cbData, uint32_t adId, const char *strP)
 static bool
 PVPasswd_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
-	memset(bufP,0,maxlen);
-	DB_GetObj(DBKEY_WSERV_PASSWD,bufP,maxlen);
-	bufP[maxlen - 1] = 0;
+	char passwd_md5[40];
+	memset(passwd_md5,0,array_size(passwd_md5));
+	DB_GetObj(DBKEY_WSERV_PASSWD,passwd_md5,array_size(passwd_md5));
+	SNPrintf(bufP,maxlen,"\"%s\"",passwd_md5);
 	return true;
 }
 
@@ -1746,9 +1747,10 @@ PVUsername_Set(void *cbData, uint32_t adId, const char *strP)
 static bool
 PVUsername_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
-	memset(bufP,0,maxlen);
-	DB_GetObj(DBKEY_WSERV_USERNAME,bufP,maxlen);
-	bufP[maxlen - 1] = 0;
+	char username[80];
+	memset(username,0,array_size(username));
+	DB_GetObj(DBKEY_WSERV_USERNAME,username,array_size(username));
+	SNPrintf(bufP,maxlen,"\"%s\"",username);
 	return true;
 }
 
