@@ -84,7 +84,7 @@ ModulatorControlProc(void *eventData)
 		mr->ctrlDevFiltered[ch] = (mr->ctrlDevFiltered[ch] * 0.9) + (diff / 10); // IIR filtered
 
 		pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(ch));
-		if(mr->ctrlDevFiltered[ch] > CTRL_FAULT_LIMIT) {
+		if(fabs(mr->ctrlDevFiltered[ch]) > CTRL_FAULT_LIMIT) {
 			mr->ctrlLatchedFault[ch] = true;
 		} else if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 			mr->ctrlLatchedFault[ch] = true;
@@ -418,7 +418,7 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 #endif
 	if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 		fault = true;	
-	} else if(mr->ctrlDevFiltered[chNr] > CTRL_FAULT_LIMIT) {
+	} else if(fabs(mr->ctrlDevFiltered[chNr]) > CTRL_FAULT_LIMIT) {
 		fault = true;
 	} else {
 		fault = false;
