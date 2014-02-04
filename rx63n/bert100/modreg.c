@@ -36,7 +36,6 @@ typedef struct ModReg {
 	float regKI[4];
 	float regKIEffPerInterval[4];
 	bool  ctrlEnable[4];
-	bool  notLocked[4];
 	int32_t advalAfter[4];
 	int32_t advalBefore[4];
 	float deviation[4];
@@ -91,11 +90,6 @@ ModulatorControlProc(void *eventData)
 			mr->ctrlLatchedFault[ch] = true;
 		}
 		mr->deviation[ch] = diff;
-		if(diff > 0.5) {
-			mr->notLocked[ch] = true;
-		} else {
-			mr->notLocked[ch] = false;
-		}
 	}
 }
 
