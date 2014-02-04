@@ -1684,16 +1684,8 @@ void
 XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, void *wopsServData,int32_t labviewPortNr)
 {
 	wops->eventData = wopsServData;
-	char username[33];
-	char passwd_md5hex[33];
 	XY_WebRegisterPage(wserv, path, WebSocket_Handshake, wops);
 	XY_WebCreateMD5Auth(wserv, path, REALM, USERNAME, MD5PASS);
-	if(DB_VarRead(DBKEY_WSERV_PASSWD,&passwd_md5hex) == false) {
-		return;
-	}
-	if(DB_VarRead(DBKEY_WSERV_USERNAME,&username) == false) {	
-		return;
-	}
 	if(strlen(wserv->username)) {
 		XY_WebAddMD5Auth(wserv, path, REALM, wserv->username, wserv->passwd_md5);
 	}

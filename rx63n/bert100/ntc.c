@@ -194,7 +194,7 @@ static bool
 PVNTC_GetTemperature (void *cbData, uint32_t adchannel, char *bufP,uint16_t maxlen)
 {
         float temperature;
-        temperature = NTC_Read(adchannel,5);
+        temperature = NTC_Read(adchannel,15);
         bufP[f32toa(temperature,bufP,maxlen)] = 0;
         return true;
 }
