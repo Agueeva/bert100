@@ -11,6 +11,7 @@
 #include "pvar_websock.h"
 #include "pvar.h"
 #include "xy_string.h"
+#include "tpos.h"
 
 #define MAX_NAMELEN	(40)
 #define MAX_VALUELEN	(40)
@@ -19,6 +20,7 @@
 #define OPERATION_GET	(1)
 #define OPERATION_MSG	(2)
 typedef struct JSON_Parser {
+	Mutex jpLock;
 	uint16_t state;
 	bool isGet;
 	uint8_t cmdlen;
@@ -235,11 +237,19 @@ Handle_Message(JSON_Parser *jp,WebSocket *ws) {
 	}
 
 }
+
+/**
+ ***************************************************************************************************
+ * \fn void PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
+ * Feed a complete message from a websocket into the JSON parser and handle it
+ ***************************************************************************************************
+ */
 void
 PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t len)
 {
 	JSON_Parser *jp = &gJSON_Parser;
 	uint32_t i;
+	Mutex_Lock(&jp->jpLock);
 	JSON_SMReset(jp);
 	for(i = 0; i < len; i++) {
 		JSON_SMFeed(jp,(char)data[i]);
@@ -253,8 +263,8 @@ PVarSock_MsgSink(WebSocket *ws,void *eventData,uint8_t op,uint8_t *data,uint16_t
 		for(i = 0; i < len; i++) {
 			Con_Printf("%c",data[i]);
 		}
-		return;
 	}
+	Mutex_Unlock(&jp->jpLock);
 }
 
 void
@@ -274,5 +284,6 @@ void
 PVarSocket_New(XY_WebServer *wserv) 
 {
 	JSON_Parser *jp = &gJSON_Parser;
+	Mutex_Init(&jp->jpLock);
 	XY_WebSocketRegister(wserv,"/messages",&pvarWsOps,jp,-1);
 }
