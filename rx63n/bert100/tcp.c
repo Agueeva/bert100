@@ -90,8 +90,9 @@ INLINE void
 Write32(uint32_t value, void *addr)
 {
 	*(uint32_t *) (addr) = (value);
-} INLINE uint32_t
+} 
 
+INLINE uint32_t
 Read32(const void *addr)
 {
 	return *(const uint32_t *)(addr);
