@@ -1318,7 +1318,7 @@ XY_WebRegisterPage(XY_WebServer * wserv, const char *path, XY_WebReqHandler * ha
  **************************************************************************************************
  */
 static uint16_t
-WebSocket_ComposeMsg(uint8_t opcode, uint8_t * dst, uint8_t * src, uint16_t pllen)
+WebSocket_ComposeMsg(uint8_t opcode, uint8_t * dst, const uint8_t * src, uint16_t pllen)
 {
 	uint16_t idx = 0;
 	uint16_t i;
@@ -1337,6 +1337,14 @@ WebSocket_ComposeMsg(uint8_t opcode, uint8_t * dst, uint8_t * src, uint16_t plle
 	Con_Printf("Msgdump %u: ", idx);
 	for (i = 0; i < idx; i++) {
 		Con_Printf("%02x ", dst[i]);
+	}
+	Con_Printf("\n");
+	for (i = 0; i < idx; i++) {
+		if(isprint(dst[i])) {
+			Con_Printf("%c ", dst[i]);
+		} else {
+			Con_Printf("? ", dst[i]);
+		}
 	}
 	Con_Printf("\n");
 #endif
@@ -1600,6 +1608,52 @@ WebSocket_DataSink(void *eventData, uint32_t fpos, const uint8_t * data, uint16_
 			    break;
 		}
 	}
+#if 0
+	for (i = 0; i < len; i++) {
+		if((i & 0x1f) == 0) {
+			Con_Printf("\n");
+		}
+		Con_Printf("%02x ",data[i]);
+	}
+	for (i = 0; i < len; i++) {
+		uint8_t unmasked;
+		if((i & 0x1f) == 0) {
+			Con_Printf("\n");
+		}
+		unmasked = data[i] ^ ws->msg_msk[(i + 2) % 4];
+		if(i > 1) {
+			Con_Printf("%02x ",unmasked);
+		} else {
+			Con_Printf("%02x ",data[i]);
+		}
+	}
+	Con_Printf("\n");
+	Con_Printf("\n");
+	for (i = 0; i < len; i++) {
+		if((i & 0x1f) == 0) {
+			Con_Printf("\n");
+		}
+		if(isalnum(data[i])) {
+			Con_Printf("%c  ",data[i]);
+		} else {
+			Con_Printf("?  ");
+		}
+	}
+	Con_Printf("\n");
+	for (i = 0; i < len; i++) {
+		uint8_t unmasked;
+		if((i & 0x1f) == 0) {
+			Con_Printf("\n");
+		}
+		unmasked = data[i] ^ ws->msg_msk[(i + 2) % 4];
+		if(isprint(unmasked)) {
+			Con_Printf("%c  ",unmasked);
+		} else {
+			Con_Printf("?  ");
+		}
+	}
+	Con_Printf("\n");
+#endif
 	return len;
 }
 
