@@ -13,7 +13,8 @@ typedef struct XY_WebServer {
 	StrHashTable *rqHandlerHash;
 	int connections;
 
-	uint8_t passwd_md5[16];
+	uint8_t passwdUser_md5[16];
+	uint8_t passwdAdmin_md5[16];
 	char username[40];
 } XY_WebServer;
 
@@ -84,6 +85,7 @@ void WebSocket_SendMsg(WebSocket *ws,uint8_t opcode,void *_data,uint16_t pllen);
 #define WSOP_PING               (9)
 #define WSOP_PONG               (0xa)
 
-#define DBKEY_WSERV_USERNAME	DBKEY_WSERV(0)
-#define DBKEY_WSERV_PASSWD	DBKEY_WSERV(1)
+#define DBKEY_WSERV_USERNAME		DBKEY_WSERV(0)
+#define DBKEY_WSERV_PASSWD		DBKEY_WSERV(1)
+#define DBKEY_WSERV_PASSWD_ADMIN	DBKEY_WSERV(2)
 #endif 

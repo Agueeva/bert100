@@ -1237,6 +1237,11 @@ Bert_LoadDataset(uint16_t idx)
 	return true;		
 }
 
+/*
+ ************************************************************************************************
+ * \fn static bool Bert_ShowDataset(uint16_t idx) 
+ ************************************************************************************************
+ */
 static bool 
 Bert_ShowDataset(uint16_t idx) 
 {
@@ -1337,9 +1342,9 @@ Bert_SaveDataset(uint16_t idx)
 }
 
 /**
- ******************************************************************************
+ *********************************************************************************
  * \fn static bool PVDataSet_Load(void *cbData, uint32_t adId, const char *strP) 
- ******************************************************************************
+ *********************************************************************************
  */
 static bool 
 PVDataSet_Load(void *cbData, uint32_t adId, const char *strP) 
@@ -1353,11 +1358,21 @@ PVDataSet_Load(void *cbData, uint32_t adId, const char *strP)
 	}
 }
 
+/**
+ ***********************************************************************************
+ * \fn static bool PVDataSet_Save(void *cbData, uint32_t adId, const char *strP) 
+ * Save a dataset to the database. 
+ ***********************************************************************************
+ */
 static bool 
 PVDataSet_Save(void *cbData, uint32_t adId, const char *strP) 
 {
         uint16_t idx; 
         idx = astrtoi16(strP);
+	if(idx < 1) {
+		/* Dataset 0 is unchangeable by the user */
+		return false;
+	}
 	if(Bert_SaveDataset(idx) == false) {
 		return false;
 	} else {
@@ -1365,6 +1380,11 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
 	}
 }
 
+/**
+ ***********************************************************************************
+ * \fn static int8_t cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
+ ***********************************************************************************
+ */
 static int8_t
 cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 {

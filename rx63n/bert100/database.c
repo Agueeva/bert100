@@ -100,6 +100,7 @@ FindEnd(uint32_t dbBlock)
 
 /**
  ***************************************************************
+ * \fn static void DB_Erase(Database * db, uint8_t blockNr)
  * Erase all flash blocks belonging to both database blocks
  ***************************************************************
  */
@@ -114,9 +115,9 @@ DB_Erase(Database * db, uint8_t blockNr)
 }
 
 /**
- ********************************************************************
- *
- ********************************************************************
+ ***********************************************************************************************
+ * \fn static bool _DB_SetObj(uint8_t currBlock, uint32_t tag, const void *buf, uint16_t len)
+ ***********************************************************************************************
  */
 static bool
 _DB_SetObj(uint8_t currBlock, uint32_t tag, const void *buf, uint16_t len)
@@ -663,12 +664,6 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 	}
 	Con_Printf("Use Flash Block %u, used %lu of %u bytes\n",
 		   db->currBlock, db->fillLevel[db->currBlock], DB_SPACE);
-#if 0
-	DB_SetObj(0x12345679, "01234567890123456789012345678901234567890", 45);
-	Con_Printf("Used flash BlockNr %u, level %lu\n", db->currBlock,
-		   db->fillLevel[db->currBlock]);
-	DB_GetObjP(db->currBlock, 0x12345679, NULL);
-#endif
 	return 0;
 }
 
