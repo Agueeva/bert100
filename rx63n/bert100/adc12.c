@@ -192,10 +192,10 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	float temperature;
 	int i;
-	for(i = 0, temperature = 0; i < 4; i++) {
+	for(i = 0, temperature = 0; i < 12; i++) {
 		temperature += ADC12_GetTemperature();
 	}
-	temperature = temperature / 4;
+	temperature = temperature / 12;
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
 }

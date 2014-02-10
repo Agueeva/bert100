@@ -195,6 +195,7 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_RX),
 		.bfCdrSelectR = (1 << CDR_ID_RX),
 	}, 
+#if 1
 	{		
 		.name = "L0.prbsPatGenSel",	
 		.cdrRegId = CDR_L0_PAT_GEN_SEL,
@@ -219,6 +220,7 @@ static const CdrForward gForwardRegs[] =
 		.bfCdrSelectW = (1 << CDR_ID_TX),
 		.bfCdrSelectR = (1 << CDR_ID_TX),
 	},
+#endif
 #if 0
 #define CDR_L0_ODB_EN                       (0x00100077)
 #define CDR_L0_TX_DISABLE                   (0x00100066)
@@ -367,32 +369,6 @@ static const CdrForward gForwardRegs[] =
 #define CDR_L3_FIFO_ERROR                   (0x002500bb)
 #endif
 
-#if 0
-	{
-		.name = "L0.swapTxPN",
-		.cdrRegId = CDR_SWAP_TXP_N(0), 
-		.bfCdrSelectW = (1 << CDR_ID_TX),
-		.bfCdrSelectR = (1 << CDR_ID_TX),
-	},
-	{
-		.name = "L1.swapTxPN",
-		.cdrRegId = CDR_SWAP_TXP_N(1), 
-		.bfCdrSelectW = (1 << CDR_ID_TX),
-		.bfCdrSelectR = (1 << CDR_ID_TX),
-	},
-	{
-		.name = "L2.swapTxPN",
-		.cdrRegId = CDR_SWAP_TXP_N(2), 
-		.bfCdrSelectW = (1 << CDR_ID_TX),
-		.bfCdrSelectR = (1 << CDR_ID_TX),
-	},
-	{
-		.name = "L3.swapTxPN",
-		.cdrRegId = CDR_SWAP_TXP_N(3), 
-		.bfCdrSelectW = (1 << CDR_ID_TX),
-		.bfCdrSelectR = (1 << CDR_ID_TX),
-	},
-#endif
 	{
 		.name = "L0.txaEqpst",
 		.cdrRegId = CDR_TXA_EQPST(0),
@@ -767,6 +743,13 @@ PVRelErrCntr_Get(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+/**
+ *********************************************************************************************
+ * \fn static bool PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ * Get the Bit error ratio of the last accumulated meassurement. If the accumulation is
+ * still running calculate the BERate of the partial interval.
+ *********************************************************************************************
+ */
 static bool
 PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
@@ -803,6 +786,15 @@ PVBeratio_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	bufP[f32toExp(ratio, bufP,  maxlen)] = 0;
 	return true;
 }
+
+/**
+ **************************************************************************************************
+ * \fn static bool PVAccTime_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ * Get the time of the meassurement. If the accumulation is no longer running this is the
+ * difference between the stop and the start time. If the accumulation is running this is
+ * the timer between the current time and the start time. 
+ **************************************************************************************************
+ */
 
 static bool
 PVAccTime_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
