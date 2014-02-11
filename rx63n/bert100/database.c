@@ -16,6 +16,7 @@
 #include "rx_crc.h"
 #include "version.h"
 #include "strhash.h"
+#include "fat.h"
 
 #define DB_SPACE	(8192)
 #define MIN_WRITE	(8)
@@ -555,7 +556,7 @@ static int8_t
 cmd_db(Interp * interp, uint8_t argc, char *argv[])
 {
 	Database *db = &g_Database;
-	uint16_t i;
+	unsigned int i;
 	if (argc == 5 && (strcmp(argv[1],"set") == 0)) {
 		uint32_t key;
 		key = Key_FindByName(db,argv[2]);
@@ -577,6 +578,22 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 		} else {
 			return -EC_BADARG;
 		}
+	} else if ((argc == 3) && (strcmp(argv[1],"save") == 0)) {
+		char *filename = argv[2];
+		FRESULT res;
+		UINT s2;
+		FIL file;
+		res = f_open(&file, filename, FA_CREATE_ALWAYS | FA_WRITE);
+        	if (res) {
+                	Con_Printf("open destination failed with %d\n", res);
+                	return 0;
+        	}
+              	res = f_write(&file,(void*)DFLASH_MAP_ADDR(0), 2 * DB_SPACE, &s2);
+        	if (res) {
+                	Con_Printf("Write failed with %d\n", res);
+        	}
+              	f_close(&file);
+               	return 0;
 	} else if ((argc == 2) && (strcmp(argv[1],"keys") == 0)) {
 		Keys_Dump(db); 
 	} else if (argc > 2) {
