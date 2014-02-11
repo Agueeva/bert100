@@ -1433,7 +1433,7 @@ cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 	return 0;
 }
 
-INTERP_CMD(datasetCmd, "dataset", cmd_dataset, "dataset <load | save> <DataSetNr> # ");
+INTERP_CMD(datasetCmd, "dataset", cmd_dataset, "dataset <load | save | dump> <DataSetNr> # ");
 
 /*
  ********************************************
