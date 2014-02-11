@@ -59,6 +59,7 @@ typedef struct Bert {
 	Timer cdrRecalTimer;
 	uint32_t dataRate; 
 	int32_t currentDataSet;
+	char currDataSetDescr[32];
 	uint8_t pvLatchedLol[NR_CHANNELS];
 	bool dbSwapTxPNInv[NR_CHANNELS];
 } Bert;
@@ -1177,6 +1178,7 @@ typedef struct TxDriverSettings {
 	uint8_t txaSwingFine[4];
 	bool	swapTxPN[4];
 	float   modKi[4];	
+	char	strDescription[32];
 } TxDriverSettings;
 
 /**
@@ -1186,19 +1188,25 @@ typedef struct TxDriverSettings {
  ********************************************************************************
  */
 static bool 
-Bert_LoadDataset(uint16_t idx) 
+Bert_LoadDataset(Bert *bert,uint16_t idx) 
 {
         TxDriverSettings txDs;
 	bool result;
 	unsigned int chNr;
+	unsigned int descrLen;
 	if(idx >= NR_TX_DRIVER_SETTINGS) {
 		Con_Printf("Selected bad driver setting with index %u\n",idx);
 		return false;
 	}
+	memset(&txDs,0,sizeof(txDs));
 	result = DB_GetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
 	if(result == false) {
 		Con_Printf("Failed to load dataset %u\n",idx);
 		return false;
+	}
+	descrLen = array_size(txDs.strDescription);
+	if(txDs.strDescription[descrLen - 1] != 0) {
+		txDs.strDescription[0] = 0;	/* Completely invalidate it in this case */
 	}
 	if(txDs.signature != 0x08154711) {
 		Con_Printf("Dataset not valid\n");
@@ -1226,6 +1234,7 @@ Bert_LoadDataset(uint16_t idx)
 	for(chNr = 0; chNr < 4; chNr++) {
 		ModReg_SetKi(chNr,txDs.modKi[chNr]);	
 	}
+	SNPrintf(bert->currDataSetDescr,array_size(bert->currDataSetDescr),"%s",txDs.strDescription);
 	return true;		
 }
 
@@ -1239,15 +1248,21 @@ Bert_ShowDataset(uint16_t idx)
 {
         TxDriverSettings txDs;
 	bool result;
+	unsigned int descrLen;
 	unsigned int chNr;
 	if(idx >= NR_TX_DRIVER_SETTINGS) {
 		Con_Printf("Selected bad driver setting with index %u\n",idx);
 		return false;
 	}
+	memset(&txDs,0,sizeof(txDs));
 	result = DB_GetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
 	if(result == false) {
 		Con_Printf("Failed to load dataset %u\n",idx);
 		return false;
+	}
+	descrLen = array_size(txDs.strDescription);
+	if(txDs.strDescription[descrLen - 1] != 0) {
+		txDs.strDescription[0] = 0;	/* Completely invalidate it in this case */
 	}
 	if(txDs.signature != 0x08154711) {
 		Con_Printf("Dataset not valid\n");
@@ -1283,6 +1298,7 @@ Bert_ShowDataset(uint16_t idx)
 	for(chNr = 0; chNr < 4; chNr++) {
 		Con_Printf("modKI_%u: %f\n",chNr,txDs.modKi[chNr]);
 	}
+	Con_Printf("Name: \"%s\"\n",txDs.strDescription);
 	return true;		
 }
 
@@ -1293,11 +1309,12 @@ Bert_ShowDataset(uint16_t idx)
  ********************************************************************************
  */
 static bool 
-Bert_SaveDataset(uint16_t idx) 
+Bert_SaveDataset(Bert *bert, uint16_t idx) 
 {
         TxDriverSettings txDs;
 	bool result;
 	unsigned int chNr;
+	memset(&txDs,0,sizeof(txDs));
 	if(idx >= NR_TX_DRIVER_SETTINGS) {
 		Con_Printf("Selected bad driver setting with index %u\n",idx);
 		return false;
@@ -1324,6 +1341,7 @@ Bert_SaveDataset(uint16_t idx)
 	for(chNr = 0; chNr < 4; chNr++) {
 		txDs.modKi[chNr] = ModReg_GetKi(chNr);	
 	}
+	SNPrintf(txDs.strDescription,array_size(txDs.strDescription), "%s",bert->currDataSetDescr);
 	txDs.signature = 0x08154711;
 	result = DB_SetObj(DBKEY_BERT0_TXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
 	if(result == false) {
@@ -1342,8 +1360,9 @@ static bool
 PVDataSet_Load(void *cbData, uint32_t adId, const char *strP) 
 {
         uint16_t idx; 
+	Bert *bert = cbData;
         idx = astrtoi16(strP);
-	if(Bert_LoadDataset(idx) == false) {
+	if(Bert_LoadDataset(bert, idx) == false) {
 		return false;
 	} else {
 		return true;
@@ -1360,16 +1379,33 @@ static bool
 PVDataSet_Save(void *cbData, uint32_t adId, const char *strP) 
 {
         uint16_t idx; 
+	Bert *bert = cbData;
         idx = astrtoi16(strP);
 	if(idx < 1) {
 		/* Dataset 0 is unchangeable by the user */
 		return false;
 	}
-	if(Bert_SaveDataset(idx) == false) {
+	if(Bert_SaveDataset(bert, idx) == false) {
 		return false;
 	} else {
 		return true;
 	}
+}
+
+static bool 
+PVDataSet_SetDescr(void *cbData, uint32_t adId, const char *strP) 
+{
+	Bert *bert = cbData;
+	SNPrintf(bert->currDataSetDescr, array_size(bert->currDataSetDescr), "%s", strP);
+	return true;
+}
+
+static bool 
+PVDataSet_GetDescr(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+	Bert *bert = cbData;
+	SNPrintf(bufP,maxlen,"\"%s\"",bert->currDataSetDescr);
+	return true;
 }
 
 /**
@@ -1381,12 +1417,13 @@ static int8_t
 cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 {
 	uint16_t dataSetNr;
+	Bert *bert = &gBert;
 	if((argc == 3) && (strcmp(argv[1],"load") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
-		Bert_LoadDataset(dataSetNr);
+		Bert_LoadDataset(bert,dataSetNr);
 	} else if((argc == 3) && (strcmp(argv[1],"save") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
-		Bert_SaveDataset(dataSetNr);
+		Bert_SaveDataset(bert,dataSetNr);
 	} else if((argc == 3) && (strcmp(argv[1],"dump") == 0)) {
 		dataSetNr = astrtoi16(argv[2]); 
 		Bert_ShowDataset(dataSetNr);
@@ -1411,6 +1448,7 @@ Bert_Init(void)
 	const char *name = "bert0";
 	unsigned int ch;
 	int i;
+	memset(bert, 0, sizeof(*bert));
 	bert->currentDataSet = -1; // Invalid
 	for(ch = 0 ; ch < NR_CHANNELS; ch++)
 	{
@@ -1446,6 +1484,7 @@ Bert_Init(void)
         }
 	PVar_New(NULL,PVDataSet_Load,bert,0 ,"%s.%s",name,"loadDataSet");
 	PVar_New(NULL,PVDataSet_Save,bert,0 ,"%s.%s",name,"saveDataSet");
+	PVar_New(PVDataSet_GetDescr,PVDataSet_SetDescr,bert,0 ,"%s.%s",name,"dataSetDescription");
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
