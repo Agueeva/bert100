@@ -1490,7 +1490,7 @@ Bert_Init(void)
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
 	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
-	Timer_Start(&bert->updateLedsTimer,250);
+	Timer_Start(&bert->updateLedsTimer,4000);
 	Interp_RegisterCmd(&berCmd);
 	Interp_RegisterCmd(&datasetCmd);
 }
