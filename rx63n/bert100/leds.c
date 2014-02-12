@@ -43,7 +43,7 @@ static LedSeq gLedSeq;
 INLINE void 
 LedsRefresh(LedSeq *seq)
 {
-       ShiftReg_Out(seq->shiftReg);
+       ShiftReg_Out(~seq->shiftReg);
 }
 
 /**
