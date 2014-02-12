@@ -43,6 +43,7 @@ static LedSeq gLedSeq;
 INLINE void 
 LedsRefresh(LedSeq *seq)
 {
+//	Con_Printf("%04x\n",seq->shiftReg);
        ShiftReg_Out(~seq->shiftReg);
 }
 
@@ -117,60 +118,61 @@ refresh:
 	LedsRefresh(seq);
 }
 
+#define DELAY	(200)
 const uint32_t seq_startup[] = {
 	CMD_SET_PATTERN | 0,
+	CMD_DELAY  | DELAY,
         CMD_LOOP | 0,
                 CMD_LED_ON | 0,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 1,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 2,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 3,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 4,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 5,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 6,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 7,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 8,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 9,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 10,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 11,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 12,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 13,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 14,
-                CMD_DELAY  | 100,
+                CMD_DELAY  | DELAY,
                 CMD_LED_ON | 15,
                 CMD_DELAY  | 500,
         CMD_ENDLOOP,
 	CMD_SET_PATTERN | 0x1111,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x2222,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x4444,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x8888,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x4444,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x2222,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0x1111,
-        CMD_DELAY  | 100,
+        CMD_DELAY  | DELAY,
 	CMD_SET_PATTERN | 0,
         CMD_DONE,
 };
-
 
 void 
 Leds_Init() 
@@ -180,6 +182,6 @@ Leds_Init()
 	ls->leds_enabled = true;
 	ls->code = seq_startup;
 	Timer_Init(&ls->seqTimer, Seq_TimerProc, ls);
-	Timer_Start(&ls->seqTimer, 200);
+	Timer_Start(&ls->seqTimer, 10);
 
 }
