@@ -212,6 +212,7 @@ Buzzer_SetAlarm(bool on)
 		bs->code = 0;
                 bs->instrP = 0;
                 bs->stackP = 0;
+		Buzzer_Start(0);
 	}
 }
 
