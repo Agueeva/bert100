@@ -49,6 +49,7 @@ LedsRefresh(LedSeq *seq)
 
 /**
  **************************************************************************
+ * \fn static void Seq_TimerProc(void *eventData)
  *  The interpreter for the sequences.
  **************************************************************************
  */
@@ -119,6 +120,7 @@ refresh:
 }
 
 #define DELAY	(200)
+
 const uint32_t seq_startup[] = {
 	CMD_SET_PATTERN | 0,
 	CMD_DELAY  | DELAY,
