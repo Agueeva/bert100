@@ -87,7 +87,7 @@ Buzzer_Start(uint32_t hz)
 /**
  **************************************************************************
  * \fn static void Seq_TimerProc(void *eventData)
- *  The interpreter for the sequences.
+ * The interpreter for the sequences.
  **************************************************************************
  */
 static void
@@ -330,10 +330,9 @@ void Buzzer_Init(void)
 {
 	Interp_RegisterCmd(&buzzerCmd);
 	BuzzerSeq *bs = &gBuzzerSeq;
-        bs->code = sound_ok;
+        bs->code = 0;
 	bs->instrP = 0;
 	bs->stackP = 0;
         Timer_Init(&bs->seqTimer, Seq_TimerProc, bs);
-        Timer_Start(&bs->seqTimer, 500);
 	bs->initialized = true;
 }

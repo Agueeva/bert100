@@ -167,5 +167,6 @@ main(void)
 	Buzzer_Init();
 	Alarm_Init();
 	Interp_StartScript(interp, "0:/bert100.scr");
+	Buzzer_SelectMelody(BUZZER_MELODY_OK);
 	EV_Loop();
 }
