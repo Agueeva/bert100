@@ -1,6 +1,7 @@
 /**
  * Alarm module
  */
+#include <string.h>
 #include "alarms.h"
 #include "types.h"
 #include "buzzer.h"
@@ -11,6 +12,7 @@
 
 typedef struct Buzzer {
 	uint32_t alarmBits;
+	uint32_t latchedAlarmBits;
 } Buzzer;
 
 static Buzzer gBuzzer;
@@ -21,6 +23,7 @@ Alarm_Set(uint8_t alarmNr)
 	uint32_t bitmask = (UINT32_C(1) << alarmNr);
 	if(!(gBuzzer.alarmBits & bitmask)) {
 		gBuzzer.alarmBits |= bitmask; 
+		gBuzzer.latchedAlarmBits |= bitmask; 
 		Buzzer_Start(2100);
 	}
 }
@@ -50,12 +53,16 @@ static int8_t
 cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
 {
 	Buzzer *bz = &gBuzzer; 
-	Con_Printf("Alarms 0x%08lx\n",bz->alarmBits);
+	Con_Printf("Alarms         0x%08lx\n",bz->alarmBits);
+	Con_Printf("Latched Alarms 0x%08lx\n",bz->latchedAlarmBits);
+	if((argc > 1) && (strcmp(argv[2],"clear") == 0)) {
+		bz->latchedAlarmBits = 0;
+	}
 	return 0;
 }
 
 INTERP_CMD(alarmCmd, "alarm", cmd_alarm,
-           "alarm    # show alarm bitfield");
+           "alarm ?clear?   # show alarm bitfield / clear latched alarms");
 
 void
 Alarm_Init(void) 
