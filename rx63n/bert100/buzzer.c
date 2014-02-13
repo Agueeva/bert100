@@ -1,7 +1,7 @@
 /**
  ***************************************************************************
  * Buzzer sequencer
- * A command interpreter modifies the Buzzer states 
+ * A command interpreter plays melodie sequences 
  ***************************************************************************
  */
 #include <stdlib.h>
@@ -17,6 +17,7 @@
 #include "config.h"
 #include "version.h"
 #include "atomic.h"
+#include "buzzer.h"
 
 
 #define FREQ_C(n)		(523 << (n))
@@ -43,7 +44,6 @@
 
 typedef struct BuzzerSeq {
         Timer seqTimer;
-        uint16_t shiftReg;
         const uint32_t *code;
         const uint32_t *alarmcode;
         uint16_t instrP;
@@ -150,25 +150,44 @@ Seq_TimerProc(void *eventData)
         }
 }
 
-#if 0
-
-static const Ton_t soundfailed[] = {
-        {PWM_A1, 50},
-        {PWM_G1, 50},
-        {PWM_F1, 50},
-        {PWM_E1, 50},
-        {PWM_D1, 50},
-        {PWM_C1, 50},
-        {PWM_A0, 50},
-        {PWM_C0 * 1.5, 150},
-        {PWM_PAUSE, 200},
-        {PWM_C0 * 1.5, 150},
-        {0, 0}
+/*
+ ********************************************************************************
+ * sound_failed
+ * Play a downward tone ladder with two deep beeps.
+ ********************************************************************************
+ */
+static const uint32_t sound_failed[] = {
+	CMD_BUZZER_ON | FREQ_A(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_G(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_F(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_E(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_D(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_C(2),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_A(1),
+        CMD_DELAY  | 50,
+	CMD_BUZZER_ON | FREQ_F(1),
+        CMD_DELAY  | 150,
+	CMD_BUZZER_OFF,
+        CMD_DELAY  | 200,
+	CMD_BUZZER_ON | FREQ_F(1),
+        CMD_DELAY  | 150,
+	CMD_BUZZER_OFF,
+        CMD_DONE
 };
-#endif
 
-
-const uint32_t sound_ok[] = {
+/**
+ *****************************************************************************
+ * sound_ok
+ * Play a rising tone ladder
+ *****************************************************************************
+ */
+static const uint32_t sound_ok[] = {
 	CMD_BUZZER_ON | FREQ_C(2),
         CMD_DELAY  | 50,
 	CMD_BUZZER_ON | FREQ_D(2),
@@ -185,7 +204,13 @@ const uint32_t sound_ok[] = {
         CMD_DONE
 };
 
-const uint32_t sound_alarm[] = {
+/**
+ ****************************************************************************
+ * sound_alarm
+ * Play an aggressive fast beeping with small pauses.
+ ****************************************************************************
+ */
+static const uint32_t sound_alarm[] = {
 	CMD_BUZZER_ON |  FREQ_C(2),
         CMD_DELAY  | 150,
 	CMD_BUZZER_OFF,
@@ -193,6 +218,26 @@ const uint32_t sound_alarm[] = {
 	CMD_RESTART
 };
 
+/**
+ ****************************************************************************
+ * sound_click
+ * Play a very short sound. Just enough for generating a click in the
+ * speaker
+ ****************************************************************************
+ */
+static const uint32_t sound_click[] = {
+	CMD_BUZZER_ON |  FREQ_C(2),
+        CMD_DELAY  | 20,
+	CMD_DONE
+};
+
+/**
+ ***************************************************************************
+ * \fn void Buzzer_SetAlarm(bool on) 
+ * Enable/Disable the alarm sound. The alarm sound is stacked while
+ * playing other short melodies.
+ ***************************************************************************
+ */
 void 
 Buzzer_SetAlarm(bool on) 
 {
@@ -207,7 +252,7 @@ Buzzer_SetAlarm(bool on)
         		Timer_Start(&bs->seqTimer, 100);
 		}	
 	} else {
-		bs->alarmcode = NULL;
+		bs->alarmcode = 0;
 		Timer_Cancel(&bs->seqTimer);
 		bs->code = 0;
                 bs->instrP = 0;
@@ -216,20 +261,37 @@ Buzzer_SetAlarm(bool on)
 	}
 }
 
+/**
+ **********************************************************************
+ * \fn bool Buzzer_SelectMelody(uint16_t nr) 
+ * Select a new melody. 
+ **********************************************************************
+ */
 bool
-Buzzer_SelectSound(uint16_t nr) 
+Buzzer_SelectMelody(uint16_t nr) 
 {
 	BuzzerSeq *bs = &gBuzzerSeq;
 	const uint32_t *newcode;
+	if(!bs->initialized) {
+		return false;
+	}
 	switch(nr) {
-		case 0:
+		case BUZZER_MELODY_OK:
 			newcode = sound_ok;
 			break;
+
+		case BUZZER_MELODY_FAILED:
+			newcode = sound_failed;
+			break;
+
+		case BUZZER_MELODY_CLICK:
+			newcode = sound_click;
+			break;
+
 		default:
 			return false;
 	}
 	Timer_Cancel(&bs->seqTimer);
-	bs->code = 0;
         bs->instrP = 0;
         bs->stackP = 0;
 	bs->code = newcode;
@@ -237,27 +299,40 @@ Buzzer_SelectSound(uint16_t nr)
 	return true;
 }
 
+/**
+ **********************************************************************************************
+ * \fn static int8_t cmd_buzzer(Interp * interp, uint8_t argc, char *argv[])
+ * Shell interface to the buzzer.
+ **********************************************************************************************
+ */
 static int8_t
 cmd_buzzer(Interp * interp, uint8_t argc, char *argv[])
 {
 	if((argc == 3) && (strcmp(argv[1],"alarm") == 0)) {
 		bool on = !!astrtoi16(argv[2]);
 		Buzzer_SetAlarm(on);
-	} else if((argc == 3) && (strcmp(argv[1],"sound") == 0)) {
+	} else if((argc == 3) && (strcmp(argv[1],"mel") == 0)) {
 		uint16_t nr = astrtoi16(argv[2]);
-		Buzzer_SelectSound(nr);
+		Buzzer_SelectMelody(nr);
 	} else {
 		Con_Printf("P17: %u\n",PORT1.PIDR.BIT.B7);
 	}
 	return 0;
 }
-INTERP_CMD(buzzerCmd, "buzzer", cmd_buzzer, "buzzer <frequency> ");
+INTERP_CMD(buzzerCmd, "buzzer", cmd_buzzer, "buzzer ?mel? ?<melodyNr>? | (alarm 0|1)");
 
+/*
+ *********************************************************************************************
+ * Initialize the buzzer module.
+ *********************************************************************************************
+ */
 void Buzzer_Init(void)
 {
 	Interp_RegisterCmd(&buzzerCmd);
 	BuzzerSeq *bs = &gBuzzerSeq;
         bs->code = sound_ok;
+	bs->instrP = 0;
+	bs->stackP = 0;
         Timer_Init(&bs->seqTimer, Seq_TimerProc, bs);
         Timer_Start(&bs->seqTimer, 500);
 	bs->initialized = true;

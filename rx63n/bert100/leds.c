@@ -121,7 +121,12 @@ refresh:
 
 #define DELAY	(200)
 
-const uint32_t seq_startup[] = {
+/**
+ *************************************************************************************************
+ *  LED sequence played at device startup
+ *************************************************************************************************
+ */
+static const uint32_t seq_startup[] = {
 	CMD_SET_PATTERN | 0,
 	CMD_DELAY  | DELAY,
         CMD_LOOP | 0,

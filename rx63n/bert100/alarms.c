@@ -18,6 +18,13 @@ typedef struct Alarms {
 
 static Alarms gAlarms;
 
+/**
+ ***********************************************************
+ * \fn void Alarm_Set(uint8_t alarmNr)
+ * Set an Alarm Bit in the alarmBits and latchedAlarmBits
+ * The Buzzer is enabled on alarm
+ ***********************************************************
+ */
 void 
 Alarm_Set(uint8_t alarmNr)
 {
@@ -29,6 +36,13 @@ Alarm_Set(uint8_t alarmNr)
 	}
 }
 
+/**
+ **********************************************************************
+ * \fn void Alarm_Clear(uint8_t alarmNr)
+ * Clear an Alarm Bit in the alarmBits buzt not in latchedAlarmBits
+ * The Buzzer is disabled if no bit is set any more. 
+ ***********************************************************************
+ */
 void 
 Alarm_Clear(uint8_t alarmNr)
 {
