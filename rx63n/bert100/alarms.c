@@ -81,6 +81,14 @@ PVLatchedAlarms_Set(void *cbData, uint32_t adId, const char *strP)
         return true;
 }
 
+/**
+ **********************************************************************************************
+ * \fn static int8_t cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
+ *
+ * Command shell interface to the alarm module. Shows latched alarms and allows 
+ * to clear latched alarm.
+ **********************************************************************************************
+ */
 static int8_t
 cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -95,6 +103,13 @@ cmd_alarm(Interp *interp,uint8_t argc,char *argv[])
 
 INTERP_CMD(alarmCmd, "alarm", cmd_alarm,
            "alarm ?clear?   # show alarm bitfield / clear latched alarms");
+
+/**
+ *******************************************************************************
+ * \fn void Alarm_Init(void) 
+ * Initialize the Alarm module
+ *******************************************************************************
+ */
 
 void
 Alarm_Init(void) 
