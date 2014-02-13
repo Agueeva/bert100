@@ -208,6 +208,7 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 static int8_t
 cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 {
+	ADC12 *adc = &gAdc12;
 	int channel;
 	int32_t adval;
 	float volt;
@@ -241,7 +242,7 @@ cmd_adc12(Interp * interp, uint8_t argc, char *argv[])
 	adval = ADC12_Read(channel);
 	volt = adval / 4095. * 3.3;
 	if(volt > 0) {
-		db = 10 * (log(volt) / log(10) - log(2.100) / log(10));
+        	db = 10 * (log(volt) / log(10)) - adc->pwrRef[channel];
 	} else {
 		db = 0;
 	}
