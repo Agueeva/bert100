@@ -25,7 +25,7 @@ Alarm_Set(uint8_t alarmNr)
 	if(!(gAlarms.alarmBits & bitmask)) {
 		gAlarms.alarmBits |= bitmask; 
 		gAlarms.latchedAlarmBits |= bitmask; 
-		Buzzer_Start(2100);
+		Buzzer_SetAlarm(1);
 	}
 }
 
@@ -36,7 +36,7 @@ Alarm_Clear(uint8_t alarmNr)
 	if(gAlarms.alarmBits & bitmask) {
 		gAlarms.alarmBits &= ~(UINT32_C(1) << alarmNr);
 		if(gAlarms.alarmBits == 0) {
-			Buzzer_Start(0);
+			Buzzer_SetAlarm(0);
 		}
 	}
 }
