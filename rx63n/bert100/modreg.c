@@ -188,6 +188,7 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 			//PORTE.PDR.BIT.B5 = 0;
 			//PORTE.PODR.BIT.B5 = 0;
 		}
+		return 0;
 	} else if((argc == 2)  && (strcmp(argv[1],"delay") == 0)) {
 		Con_Printf("%f us\n",mr->rectDelayUs);
 		return 0;
