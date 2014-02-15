@@ -840,7 +840,9 @@ PVAccBerMeasStart_Set(void *cbData, uint32_t adId, const char *strP)
 	Bert *bert = cbData;
 	BeFifo *fifo = &bert->beFifo[lane];	
 	running = fifo->accRunning;
-	if(running == newval) {
+
+	/* Do not allow two time stopping the meassurement */
+	if((running == newval) && (newval == false)) {
 		return true;
 	}
 	if(newval == false) {
