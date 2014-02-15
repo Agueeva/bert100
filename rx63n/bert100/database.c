@@ -570,6 +570,9 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 		} else if(strncmp(argv[3],"bool",1) == 0) {
 			uint8_t val = !!astrtoi16(argv[4]);
 			DB_SetObj(key,&val,1);
+		} else if(strncmp(argv[3],"long",1) == 0) {
+			uint64_t val = astrtoi64(argv[4]);
+			DB_SetObj(key,&val,8);
 		} else if(strncmp(argv[3],"float",1) == 0) {
 			float val = astrtof32(argv[4]);
 			DB_SetObj(key,&val,4);

@@ -57,7 +57,8 @@ typedef struct Bert {
 	BeFifo beFifo[NR_CHANNELS];
 	Timer updateLedsTimer;
 	Timer cdrRecalTimer;
-	uint32_t dataRate; 
+	uint64_t dbBitrateMax;	// Limit from database
+	uint64_t dbBitrateMin;	// Limit from database
 	int32_t currentDataSet;
 	char currDataSetDescr[32];
 	uint8_t pvLatchedLol[NR_CHANNELS];
@@ -1005,6 +1006,11 @@ PVCdrTrip_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 	return true;
 }
 
+/*
+ **************************************************************************************
+ * \fn static bool PVBitrate_Set(void *cbData, uint32_t adId, const char *strP)
+ **************************************************************************************
+ */
 static bool
 PVBitrate_Set(void *cbData, uint32_t adId, const char *strP)
 {
@@ -1012,17 +1018,26 @@ PVBitrate_Set(void *cbData, uint32_t adId, const char *strP)
 	uint64_t bitrate;
 	uint32_t synthFreq;
 	bitrate = astrtoi64(strP);
+	if((bitrate > bert->dbBitrateMax) || (bitrate < bert->dbBitrateMin)) {
+		return false;
+	}
 	synthFreq = bitrate / 40;
 	Synth_SetFreq(SYNTH_0,synthFreq);
 	Timer_Start(&bert->cdrRecalTimer,200);
 	return true;
 }
 
+/**
+ *******************************************************************************************
+ * \fn static bool PVBitrate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+ *******************************************************************************************
+ */
 static bool
 PVBitrate_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	uint64_t bitrate;
 	uint32_t synthFreq;
+
 	synthFreq = Synth_GetFreq(SYNTH_0);	
 	bitrate = 40 * (uint64_t)synthFreq;	
 	bufP[uitoa64(bitrate,bufP)] = 0;
@@ -1493,6 +1508,12 @@ Bert_Init(void)
 	Timer_Init(&bert->updateLedsTimer,UpdateLedsTimerProc,bert);
 	Timer_Init(&bert->cdrRecalTimer,Bert_RecalCdrProc,bert);
 	Timer_Start(&bert->updateLedsTimer,8000);
+	{
+		bert->dbBitrateMin = UINT64_C(24000000000);
+		bert->dbBitrateMax = UINT64_C(29500000000);
+		DB_VarInit(DBKEY_BERT0_BITRATE_MIN,&bert->dbBitrateMin,"%s.bitrateMin",name);
+		DB_VarInit(DBKEY_BERT0_BITRATE_MAX,&bert->dbBitrateMax,"%s.bitrateMax",name);
+	}
 	Interp_RegisterCmd(&berCmd);
 	Interp_RegisterCmd(&datasetCmd);
 }
