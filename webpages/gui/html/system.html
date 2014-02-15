@@ -152,7 +152,6 @@ var user = document.getElementById('system.username').value;
 	}
 }
 function Readsecurety(){
-window.parent.socket.send(JSON.stringify({get: "system.passwd"}));
 window.parent.socket.send(JSON.stringify({get: "system.username"}));}
 Readsecurety();
 		-->

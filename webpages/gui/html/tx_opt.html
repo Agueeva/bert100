@@ -29,19 +29,36 @@
 	<TD>
 	<div class="control">
 		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,2)"/></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,2)"></button>
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2)"/></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2)"></button>
 			
 		</div>
 		<div class="control_elements">
-			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(1,1,1,2)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,2)"></button>
+			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(0,1,1,2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2)"></button>
 			
 		</div>	
 		
-		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(1); window.parent.SaveVar(this,2,'amp',1); window.parent.myElement=window.parent.myVarTX_opt; window.parent.window_onload();">
+		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(0); window.parent.SaveVar(this,2,'amp',0); window.parent.myElement=window.parent.myVarTX_opt; window.parent.window_onload();">
 	</div>
 	</TD>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(1); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
 	<TD>
 	<div class="control">
 		<div class="control_elements">
@@ -55,7 +72,7 @@
 			
 		</div>	
 		
-		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'amp',1)">
+		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'amp',0)">
 	</div>
 	</TD>
 	
@@ -72,24 +89,7 @@
 			
 		</div>	
 		
-		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'amp',1)">
-	</div>
-	</TD>
-	
-	<TD>
-	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(4,1,10,1)"></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(4,2,10,1)"></button>
-			
-		</div>
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(4,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(4,2,1,1)"></button>
-			
-		</div>	
-		
-		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(4); window.parent.SaveVar(this,1,'amp',1)">
+		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'amp',0)">
 	</div>
 	</TD>
 	

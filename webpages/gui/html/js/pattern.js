@@ -21,9 +21,9 @@ else {
 
 if (my_itemA.value==1) {
 	my_item=document.getElementById('bert0.L'+n+'.patVerSel');
-        my_item.value=document.getElementById('bert0.L'+n+'.prbsPatGenSel').value;
+        my_item.value=document.getElementById('bert0.L'+n+'.patGenSel').value;
 	my_item.disabled=true;
-        if (document.getElementById('bert0.L'+n+'.prbsPatGenSel').value!=3 && document.getElementById('bert0.L'+n+'.prbsPatGenSel').value!=2) {
+        if (document.getElementById('bert0.L'+n+'.patGenSel').value!=3 && document.getElementById('bert0.L'+n+'.patGenSel').value!=2) {
 	window.parent.SaveVar(my_item,i,'.L',0); }
         window.parent.window_onload();
 }
@@ -52,7 +52,7 @@ for (i = 0; i <= 3; i++){
 	my_item.disabled=true;
 }}
 for (i = 0; i <= 3; i++){
- my_item=document.getElementById('bert0.L'+i+'.prbsPatGenSel');
+ my_item=document.getElementById('bert0.L'+i+'.patGenSel');
  if ( my_item.value==3) {
    document.getElementById('bert0.L'+i+'.patVerSel').disabled=true;
    document.getElementById('l'+i+'.prbs_autovr').disabled=true;
@@ -65,7 +65,7 @@ function fun_all(item){
 	window.parent.all_pat=item.checked;
 	window.parent.myElement=window.parent.myVarPattern0;
 	window.parent.myCheckAll(item,'bert0.L','.L',0);
-	window.parent.myElement=window.parent.myVarPattern;
+	//window.parent.myElement=window.parent.myVarPattern;
 	window.parent.window_onload();
 	if (item.checked) {
 		AUTO_main_0();
@@ -155,8 +155,8 @@ function Check_Pattern(L,element,n)
 	else {
 		showFun(false);
 		window.parent.SaveVar(element,n,'.L',0);
-		document.getElementById('bert0.L'+L+'.prbsPatGenSel').value=element.value;
-		window.parent.SaveVar(document.getElementById('bert0.L'+L+'.prbsPatGenSel'),n,'.L',0);
+		document.getElementById('bert0.L'+L+'.patGenSel').value=element.value;
+		window.parent.SaveVar(document.getElementById('bert0.L'+L+'.patGenSel'),n,'.L',0);
                 document.getElementById('l'+L+'.prbs_autovr').disabled=false;
                 Check_Auto(L);
 	}
@@ -171,8 +171,8 @@ function showFun(visible) {
 	
 
     } else {
-if ((document.getElementById('bert0.L0.prbsPatGenSel').value!=3 && document.getElementById('bert0.L1.prbsPatGenSel').value!=3 && document.getElementById('bert0.L2.prbsPatGenSel').value!=3 && document.getElementById('bert0.L3.prbsPatGenSel').value!=3)
-    || (document.getElementById('all').checked && document.getElementById('bert0.L0.prbsPatGenSel').value!=3)) {
+if ((document.getElementById('bert0.L0.patGenSel').value!=3 && document.getElementById('bert0.L1.patGenSel').value!=3 && document.getElementById('bert0.L2.patGenSel').value!=3 && document.getElementById('bert0.L3.patGenSel').value!=3)
+    || (document.getElementById('all').checked && document.getElementById('bert0.L0.patGenSel').value!=3)) {
 	
 
 	document.getElementById('userPattern0').style.display = 'none';

@@ -61,7 +61,7 @@ switch(ud){
     default:
     break;
 }
-window.parent.SaveVar(my_item,k,'amp',1);
+window.parent.SaveVar(my_item,k,'amp',0);
 if (k==2) {
   window.parent.myElement=window.parent.myVarTX;
   window.parent.window_onload();
@@ -87,7 +87,7 @@ var my_all=document.getElementById('all');
 if (window.parent.all_tx) {
 	my_all.checked=true;
 	window.parent.myElement=window.parent.myVarTX0;
-	window.parent.myDisableAll(my_all,'amp','amp',1);
+	window.parent.myDisableAll(my_all,'amp','amp',0);
 	window.parent.myElement=window.parent.myVarTX2;
 	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX;

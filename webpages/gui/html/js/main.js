@@ -3,27 +3,27 @@
   var myQueueBool=false;
   var myQueueCount=0;
   var n=0;
-  var my_sek=1000;
+  var my_sek=300;
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
-  var myVarPattern= new Array("bert0.L0.prbsPatGenSel","bert0.L1.prbsPatGenSel","bert0.L2.prbsPatGenSel","bert0.L3.prbsPatGenSel",
+  var myVarPattern= new Array("bert0.L0.patGenSel","bert0.L1.patGenSel","bert0.L2.patGenSel","bert0.L3.patGenSel",
                               "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
                               "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  
-  var myVarPattern0= new Array("prbsPatGenSel","prbsVerInv","patVerSel");
+  var myVarPattern0= new Array("patGenSel","prbsVerInv","patVerSel");
   var myVarTX_opt_test=new Array("bert0.L0.txaSwingFine", "bert0.L1.txaSwingFine", "bert0.L2.txaSwingFine", "bert0.L3.txaSwingFine",
                                   "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
                                   "bert0.L0.txaEqpst","bert0.L1.txaEqpst","bert0.L2.txaEqpst","bert0.L3.txaEqpst",
                                   "bert0.L0.txaEqpre","bert0.L1.txaEqpre","bert0.L2.txaEqpre","bert0.L3.txaEqpre",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
-                         "amp1.vg1","amp2.vg1","amp3.vg1","amp4.vg1",
-                          "amp1.vg2","amp2.vg2","amp3.vg2","amp4.vg2",
-			 "amp1.vd1","amp2.vd1","amp3.vd1","amp4.vd1",
-                         "amp1.vd2","amp2.vd2","amp3.vd2","amp4.vd2");
+                         "amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
+                          "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
+			 "amp1.vd1","amp2.vd1","amp3.vd1","amp0.vd1",
+                         "amp1.vd2","amp2.vd2","amp3.vd2","amp0.vd2","bert0.dataSetDescription");
   var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
   var myVarTX_opt_test2= new Array("txaSwingFine","swapTxPN","txaSwing","swapTxPN");
-  var myVarTX= new Array("amp1.vg1","amp2.vg1","amp3.vg1","amp4.vg1",
-			 "amp1.vg2","amp2.vg2","amp3.vg2","amp4.vg2",
+  var myVarTX= new Array("amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
+			 "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
 			 "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
   var myVarTX_opt= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
@@ -97,9 +97,8 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-     
- 
-        if (item.substring(9, item.length)=="prbsPatGenSel" && value==3) {
+
+        if (item.substring(9, item.length)=="patGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
            mystr='l'+item.substr(7, 1)+'.prbs_autovr';
@@ -210,7 +209,6 @@ var k;
   //************************************************************************  "mzMod0.ctrlFault" mzMod0.ctrlEnable  mzMod0.latchedCtrlFault
      if (item.substr(7, 9)=="ctrlFault") {
           k=item.substr(5, 1);
-    //     var ctrlEnable=$("#frame").contents().find("#mzMod0.ctrlEnable").val();
        if (value==0) {
       $("#frame").contents().find("#Fault"+k).attr('class','greenfield');
           }else{
@@ -218,8 +216,7 @@ var k;
           }
      }
      if (item.substr(7, 16)=="latchedCtrlFault") {
-           k=item.substr(5, 1);
-          
+           k=item.substr(5, 1);          
        if (value==0) {
       $("#frame").contents().find("#MZMem"+k).attr('class','greenfield');
      }else{
@@ -235,12 +232,40 @@ case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
 case "system.fault":
+    //alert(value);
+     //$("#Alarmindicator").html("Amp. Overtemp");
        document.getElementById('system.fault').value=value;
        if (value==0) {
-         savePatternIndicatorElement.className = "AlarmindicatorGreen";
+         Alarmindicator.className = "AlarmindicatorGreen";
        }
        else {
-         savePatternIndicatorElement.className = "AlarmindicatorRed"; 
+          switch(value)
+     {
+     case 1:
+     
+          $("#Alarmindicator").html("Amp. Overtemp");
+         
+     break;
+     case 2:
+        $("#Alarmindicator").html("CPU (na)");
+     break;
+     case 3:
+      $("#Alarmindicator").html("FAN0 fault");
+     break;
+     case 4:
+      $("#Alarmindicator").html("FAN1 fault");
+     break;
+     case 5:
+      $("#Alarmindicator").html("FAN2 fault");
+     break;
+     case 6:
+      $("#Alarmindicator").html("FAN3 fault");
+     break;
+     default:
+           $("#Alarmindicator").html("Alarm!");
+     break;
+     }
+         Alarmindicator.className = "AlarmindicatorRed"; 
        }
      return;
 case  "system.variant":
@@ -332,8 +357,8 @@ default:
    
 
      function keepAlive() {
-        //  socket.send(JSON.stringify({get: "test.var1"}));
-        //  socket.send(JSON.stringify({get: "system.fault"}));
+          socket.send(JSON.stringify({get: "test.var1"}));
+          socket.send(JSON.stringify({get: "system.fault"}));
 }
 
 }
@@ -442,8 +467,8 @@ $(document).ready(function()
 	//---HOME BUTTON---
 	//Click
 	$( "#PatternBut" ).click(function() {
-		myElement=myVarPattern;
-		n=2;
+		myElement=myVarPattern0;
+		n=1;
                 all=all_pat;
                 page_pref="bert0.L";
                 page_k=0;
@@ -456,7 +481,7 @@ $(document).ready(function()
 		n=2;
 		all=all_tx;
                 page_pref="emlAmp";
-                page_k=1;
+                page_k=0;
 		laodpage("html/tx_eml.html","#frame");
 		return false;
 	});
@@ -464,6 +489,7 @@ $(document).ready(function()
 	$( "#RateTrBut" ).click(function() {
 	        myElement=myVarDrTr;
 		n=2;
+                page_k=0;
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
@@ -471,23 +497,22 @@ $(document).ready(function()
         $( "#MeasureBut" ).click(function() {
 		myElement=myVarErr;
                 n=2;
+                page_k=0;
 		laodpage("html/error.html","#frame");
 		return false;
 	});
-        $( "#Variables" ).click(function() {
-		n=3;
-		laodpage("html/variablen.html","#frame");
-		return false;
-	});
+       
 	$( "#SystemBut" ).click(function() {
 		myElement=myVarSystem;
                 n=2;
+                page_k=0;
 		laodpage("html/system.html","#frame");
 		return false;
 	});
         $( "#OpticalTXBut" ).click(function() {
 		myElement=myVarTX_opt;
                 n=2;
+                page_k=0;
                 all=all_tx;
 		laodpage("html/tx_opt.html","#frame");
 		return false;
@@ -497,8 +522,8 @@ $(document).ready(function()
 		n=2;
 		all=all_tx_opt_test;
                 page_pref="amp";
-                page_k=1;
-		laodpage("html/tx_opt_test.html","#frame");
+                page_k=0;
+		laodpage("html/tx_opt_calibr.html","#frame");
 		return false;
 	});
        $( "#OpticalGraphBut" ).click(function() {
@@ -506,8 +531,17 @@ $(document).ready(function()
 		n=2;
 		all=all_tx_opt_test;
                 page_pref="amp";
-                page_k=1;
+                page_k=0;
 		laodpage("html/tx_opt_graph.html","#frame");
+		return false;
+	});
+        $( "#VariableBut" ).click(function() {
+	        myElement=myVarGraph;
+		n=2;
+		all=all_tx_opt_test;
+                page_pref="amp";
+                page_k=0;
+		laodpage("html/variablen.html","#frame");
 		return false;
 	});
            createTreeMenu("treemenu");
