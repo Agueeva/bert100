@@ -177,6 +177,16 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 		Con_Printf("TCNT %u\n",MTU4.TCNT);
 		Con_Printf("TGRC %u\n",MTU4.TGRC);
 		return 0;
+	} else if((argc == 3)  && (strcmp(argv[1],"clk") == 0)) {
+		if(strncmp(argv[2],"ena",3) == 0) {
+			MPC.PE5PFS.BYTE = 0; /* Mode to gpio mode */
+			PORTE.PDR.BIT.B5 = 1;
+			PORTE.PODR.BIT.B5 = 0;
+		} else if(strncmp(argv[2],"ena",3) == 0) {
+			MPC.PE5PFS.BYTE = 1; /* Mode to clk mode */
+			//PORTE.PDR.BIT.B5 = 0;
+			//PORTE.PODR.BIT.B5 = 0;
+		}
 	} else if((argc == 2)  && (strcmp(argv[1],"delay") == 0)) {
 		Con_Printf("%f us\n",mr->rectDelayUs);
 		return 0;
