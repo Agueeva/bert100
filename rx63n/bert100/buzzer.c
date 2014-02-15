@@ -227,7 +227,7 @@ static const uint32_t sound_alarm[] = {
  */
 static const uint32_t sound_click[] = {
 	CMD_BUZZER_ON |  FREQ_C(2),
-        CMD_DELAY  | 20,
+        CMD_DELAY  | 10,
 	CMD_BUZZER_OFF,
 	CMD_DONE
 };

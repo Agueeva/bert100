@@ -131,12 +131,13 @@ PVar_SetCallbacks(PVar *pvar,PVar_GetCallback *gcb,PVar_SetCallback *scb,void *c
 bool
 PVar_Set(PVar *pvar,const char *valStr) 
 {
+	bool retval;
 	if(pvar_debug) {
 		Con_Printf("%s\n",valStr);
 	}
 	if(pvar->setCallback) {
-		pvar->setCallback(pvar->cbData,pvar->adId,valStr);
-		return true;
+		retval = pvar->setCallback(pvar->cbData,pvar->adId,valStr);
+		return retval;
 	} else {
 		return false;
 	}	
