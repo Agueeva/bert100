@@ -28,6 +28,11 @@
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
 #define SYNC_RESET_LOW()        BCLR(3,PORTJ.PODR.BYTE) 
+
+#define MOD_TEC_ENA_DIROUT()	BSET(1,PORTC.PDR.BYTE)
+#define MOD_TEC_ENA(val)	BMOD(1,PORTC.PODR.BYTE,(val))
+#define MOD_TEC_ENA_IN()	PORTC.PODR.BIT.B1
+
 #define	CTRL_FAULT_LIMIT	(0.6) // Volt
 
 typedef struct ModReg {
@@ -188,6 +193,15 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 			//PORTE.PDR.BIT.B5 = 0;
 			//PORTE.PODR.BIT.B5 = 0;
 		}
+		return 0;
+	} else if((argc == 3)  && (strcmp(argv[1],"tec") == 0)) {
+		bool value = !!astrtoi16(argv[2]);
+		MOD_TEC_ENA(value);
+		return 0;
+	} else if((argc == 2)  && (strcmp(argv[1],"tec") == 0)) {
+		bool value;
+		value = MOD_TEC_ENA_IN();
+		Con_Printf("%u\n",value);
 		return 0;
 	} else if((argc == 2)  && (strcmp(argv[1],"delay") == 0)) {
 		Con_Printf("%f us\n",mr->rectDelayUs);
@@ -433,6 +447,11 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+/**
+ ****************************************************************************************************
+ *
+ ****************************************************************************************************
+ */
 static bool
 PVLatchedFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
@@ -451,6 +470,25 @@ PVLatchedFault_Set (void *cbData, uint32_t chNr, const char *strP)
 {
 	ModReg *mr = cbData;
 	mr->ctrlLatchedFault[chNr] = !!astrtoi16(strP);
+        return true;
+}
+
+static bool
+PVModTecEna_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	if(MOD_TEC_ENA_IN()) {
+        	bufP[0] = '1';
+	} else {
+        	bufP[0] = '0';
+	}
+	bufP[1] = 0;
+        return true;
+}
+
+static bool
+PVModTecEna_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	MOD_TEC_ENA(!!astrtoi16(strP));
         return true;
 }
 
@@ -490,6 +528,10 @@ ModReg_Init(void)
 	mr->rectDelayUs = 12.0;
 	DB_VarInit(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs,"mzMod.rectDelay");
 	enable_modulator_clock(mr,20000,mr->rectDelayUs);
+
+	MOD_TEC_ENA(1);
+	MOD_TEC_ENA_DIROUT();
+	PVar_New(PVModTecEna_Get,PVModTecEna_Set,mr,ch,"mzMod.tecEna");
 
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
