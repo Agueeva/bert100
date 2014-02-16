@@ -22,7 +22,7 @@ SRCFILES= main.c editor.c hardware_setup.c interpreter.c sci0.c timer.c \
 	pvar_websock.c adc12.c pvar.c usbdev.c usbstorage.c \
 	leds.c xo.c version.c bootloader.c dataflash.c swupdate.c \
 	bert.c pat_trig.c fanco.c modreg.c database.c ntc.c buzzer.c \
-	alarms.c pvar_netcat.c
+	alarms.c pvar_netcat.c system.c
 
 ASMFILES=reset_program.asm switch_context.asm bootloader_setup.asm
 

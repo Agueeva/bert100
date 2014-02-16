@@ -28,7 +28,7 @@
 #define SYNC_RESET_DIROUT()     BSET(3,PORTJ.PDR.BYTE)
 #define SYNC_RESET_HIGH()       BSET(3,PORTJ.PODR.BYTE)
 #define SYNC_RESET_LOW()        BCLR(3,PORTJ.PODR.BYTE) 
-#define	CTRL_FAULT_LIMIT	(0.5) // Volt
+#define	CTRL_FAULT_LIMIT	(0.6) // Volt
 
 typedef struct ModReg {
 	Timer syncTimer;	

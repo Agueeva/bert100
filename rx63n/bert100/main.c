@@ -57,6 +57,7 @@
 #include "ntc.h"
 #include "buzzer.h"
 #include "alarms.h"
+#include "system.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -166,7 +167,8 @@ main(void)
 	Bert_Init();
 	Buzzer_Init();
 	Alarm_Init();
-	Interp_StartScript(interp, "0:/bert100.scr");
+	Interp_StartScript("0:/bert100.scr");
+	SystemIf_Init();
 	Buzzer_SelectMelody(BUZZER_MELODY_OK);
 	EV_Loop();
 }

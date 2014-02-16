@@ -221,9 +221,10 @@ Interp_ExecuteScript(void *eventData)
  ********************************************************************************
  */
 bool
-Interp_StartScript(Interp * interp, char *path)
+Interp_StartScript(const char *path)
 {
 	FRESULT res;
+	Interp *interp = &g_interp;
 	res = f_open(&interp->file, path, FA_READ);
 	if (res == FR_OK) {
 		EV_Trigger(&interp->nextLineEvent);
@@ -236,7 +237,7 @@ static int8_t
 cmd_script(Interp * interp, uint8_t argc, char *argv[])
 {
 	if(argc > 1) {
-		if(Interp_StartScript(interp,argv[1]) != true) {
+		if(Interp_StartScript(argv[1]) != true) {
 			Con_Printf("Failed to start script %s\n",argv[1]);
 		}
 		return 0;
@@ -246,6 +247,7 @@ cmd_script(Interp * interp, uint8_t argc, char *argv[])
 }
 
 INTERP_CMD(cmdScript, "script", cmd_script, "script        <filename>");
+
 /**
  ***************************************************************************
  * \fn Interp *Interp_Init(Interp_OutProc * OutStr, Interp_Printf* Printf_P)
