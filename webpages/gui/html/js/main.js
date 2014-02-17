@@ -7,6 +7,9 @@
   var my_Interval, bl_Communication, all;
   var socket,page_k,page_pref, all_pat, all_tx;
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
+  var dataset=-1;
+  Alarm_Strings=new Array("Mod.Overtemp","Amp. Overtemp","CPU (na)","FAN1 fault","FAN2 fault","FAN3 fault","FAN4 fault","Alarm");
+
   var myVarPattern= new Array("bert0.L0.patGenSel","bert0.L1.patGenSel","bert0.L2.patGenSel","bert0.L3.patGenSel",
                               "bert0.L0.prbsVerInv","bert0.L1.prbsVerInv","bert0.L2.prbsVerInv","bert0.L3.prbsVerInv",
                               "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  
@@ -60,12 +63,12 @@
 
                          ); 
   
-  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm",
+  var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm","system.latchedFault",
                              "system.firmware","system.ip","system.netmask","system.mac","system.gateway","system.temp","amp.temp","mzMod.temp","system.variant","system.hwRevision");
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=   'ws://' + document.domain + ':' + document.location.port + '/messages'; // 'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //   'ws://tneuner.homeip.net:8080/messages'; //
      
      bl_Communication=true;
      all_pat=false;
@@ -110,10 +113,10 @@
      
           value=Math.round(value * 100) / 100;
           if (value>10) {
-           value=10;    
+           value='>10';    
           }
            if (value<-10) {
-           value=-10;    
+           value='<-10';    
           }
           }
        if (item.substr(9, 7)=="CdrTrip") {  //bert0.L0.CdrTrip
@@ -231,41 +234,34 @@ switch(item)
 case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
+case "system.latchedFault":
+     
+      var meldung="";
+       if (value!=0) {
+         var fehler=value.toString(2);
+         for (i=fehler.length-1; i>=0; i--){
+          if (fehler.charAt(i)==1) {
+          meldung=meldung+Alarm_Strings[fehler.length-1-i]+" ";}
+         }
+       }
+       $("#frame").contents().find("#FaultDescription").val(meldung);
+     break;
 case "system.fault":
-    //alert(value);
-     //$("#Alarmindicator").html("Amp. Overtemp");
-       document.getElementById('system.fault').value=value;
+       document.getElementById(item).value=value;
        if (value==0) {
          Alarmindicator.className = "AlarmindicatorGreen";
+         //document.getElementsById('latchedFault').style.display="none";
        }
        else {
-          switch(value)
-     {
-     case 1:
-     
-          $("#Alarmindicator").html("Amp. Overtemp");
-         
-     break;
-     case 2:
-        $("#Alarmindicator").html("CPU (na)");
-     break;
-     case 3:
-      $("#Alarmindicator").html("FAN0 fault");
-     break;
-     case 4:
-      $("#Alarmindicator").html("FAN1 fault");
-     break;
-     case 5:
-      $("#Alarmindicator").html("FAN2 fault");
-     break;
-     case 6:
-      $("#Alarmindicator").html("FAN3 fault");
-     break;
-     default:
-           $("#Alarmindicator").html("Alarm!");
-     break;
-     }
-         Alarmindicator.className = "AlarmindicatorRed"; 
+         var fehler=value.toString(2);
+         var meldung="System failing: ";
+         for (i=fehler.length-1; i>=0; i--){
+          if (fehler.charAt(i)==1) {
+          meldung=meldung+Alarm_Strings[fehler.length-1-i]+"; ";}
+         }
+          $("#Alarmindicator").html(meldung);   
+          Alarmindicator.className = "AlarmindicatorRed";
+          document.getElementsById('latchedFault').style.display='table-row';	 
        }
      return;
 case  "system.variant":
@@ -337,6 +333,18 @@ case "bert0.bitrate":
          value=25781250000;}
      if (value>27952493300 && value<27952493482) {
          value=27952493392;}
+         $("#frame").contents().find("#userDR").val((parseInt(value/100)/10000000));
+     if ( value!=25781250000 &&  value!=27952493392){
+          $("#frame").contents().find("#bert0.bitrate".replace(/[.]/g,"\\.")).val(-1);
+          $("#frame").contents().find('#noneUserDateRate').hide();
+          $("#frame").contents().find('#userDateRate').show();
+          //console.log("show");
+          return;     
+     }else{
+         $("#frame").contents().find('#noneUserDateRate').show();
+          $("#frame").contents().find('#userDateRate').hide();
+          //console.log("hide");
+     }
      break; 
      // 27952493320
 default:
@@ -357,7 +365,7 @@ default:
    
 
      function keepAlive() {
-          socket.send(JSON.stringify({get: "test.var1"}));
+          //socket.send(JSON.stringify({get: "test.var1"}));
           socket.send(JSON.stringify({get: "system.fault"}));
 }
 
@@ -523,7 +531,7 @@ $(document).ready(function()
 		all=all_tx_opt_test;
                 page_pref="amp";
                 page_k=0;
-		laodpage("html/tx_opt_calibr.html","#frame");
+		laodpage("admin/tx_opt_calibr.html","#frame");
 		return false;
 	});
        $( "#OpticalGraphBut" ).click(function() {
@@ -532,7 +540,7 @@ $(document).ready(function()
 		all=all_tx_opt_test;
                 page_pref="amp";
                 page_k=0;
-		laodpage("html/tx_opt_graph.html","#frame");
+		laodpage("admin/graph.html","#frame");
 		return false;
 	});
         $( "#VariableBut" ).click(function() {
@@ -700,4 +708,6 @@ function SaveVar(myVar, typeVar,pref,k){
 	  break;
     }
 }
-
+function SystemFaultreset(){
+socket.send(JSON.stringify({set: "system.latchedFault",val: 0}));     
+}

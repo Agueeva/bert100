@@ -93,3 +93,27 @@ if (window.parent.all_tx) {
 	window.parent.myElement=window.parent.myVarTX;
 }
 }
+function CheckDataSet(){
+  window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
+    if (window.parent.dataset==-1) {
+	document.getElementById("bert0.dataSetDescription").style.display="none";
+    }
+    else {
+	document.getElementById("bert0.dataSetDescription").style.display='table-row';}
+	document.getElementById('bert0.loadDataSet').value=window.parent.dataset;    
+}
+
+function Dataset(my_action,n){
+    var my_item=document.getElementById(my_action);
+	if (my_item.value>=n && my_item.value<=19) {
+	    window.parent.SaveVar(my_item,1,'',0);
+	    window.parent.window_onload();
+	    window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
+	    window.parent.dataset=my_item.value;
+	    if (window.parent.dataset==-1) {
+		document.getElementById("bert0.dataSetDescription").style.display="none";}
+	    else {document.getElementById("bert0.dataSetDescription").style.display='table-row';}
+	}
+	else {alert("Wrong dataset number!"); }
+ 
+}

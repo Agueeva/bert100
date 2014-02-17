@@ -54,13 +54,11 @@
 <TD><input class="textfildsys" type="text"  id="system.temp" value="" size=3 readonly> </TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
-<TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
 
 <TR ALIGN="left">
 <TH>Modulater Temperature, &deg;C:</TH>
 <TD><input class="textfildsys" type="text"  id="mzMod.temp" value="" size=3 readonly> </TD>
-<TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
@@ -70,9 +68,14 @@
 <TD><input class="textfildsys" type="text"  id="amp.temp" value="" size=3 readonly> </TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
-<TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
 
+<TR ALIGN="left">
+<TH>System fault memory:</TH>
+<TD><input class="textfildsys" type="text"  id="system.latchedFault" value="" size=3 readonly> </TD>
+<TD  colspan=2><input class="textfildsysFault" type="text"  id="FaultDescription" value="" size=3 readonly> </TD>
+<TD><button class="buttonGreen" type="button" ID="reset" onclick="javascript: clickReset();">Reset</button></TD>
+</TR>
 </TABLE>
 
 <div class="headline">Network Settings</div>
@@ -154,6 +157,10 @@ var user = document.getElementById('system.username').value;
 function Readsecurety(){
 window.parent.socket.send(JSON.stringify({get: "system.username"}));}
 Readsecurety();
+function clickReset(){
+window.parent.socket.send(JSON.stringify({set: "system.latchedFault",val: 0}));}	
+
+
 		-->
 </script>
 		

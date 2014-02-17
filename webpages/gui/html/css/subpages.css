@@ -28,10 +28,14 @@
 
 .datarate{
 	position: relative;
-	width: 290px;
+	width: 300px;
 	height: 32px;
-	font-size: 17px;
+	font-size: 15px;
 	float: right;
+}
+
+.datarate div{
+	float: left;
 }
 
 .datarate select{
@@ -192,6 +196,16 @@
         border-color: #00aeeb;
 }
 
+.textfildDR{
+	position: relative;
+	height: 32px;
+        width: 100px;
+	color: #ffffff;
+	font-weight:bold;
+        background-color:transparent;
+	border:0;
+}
+
 .textfild{
 	position: relative;
 	height: 32px;
@@ -209,7 +223,12 @@
 	height: 32px;
 	width: 150px;
 }
-
+.textfildsysFault
+{
+	position: relative;
+	height: 32px;
+	width: 300px;
+}
 .lightText{
 	color:#50508F;
 }
@@ -238,7 +257,14 @@ tr:nth-of-type(even) {
 	background-color:#cde8ff;
 	
 } 
-
+.tableDR, tdDT, trDT
+{
+	font-family: Arial;
+	color: #ffffff;
+	font-weight:bold;
+        background-color:transparent;
+	border:0;
+}
 .seperator{
 	height: 19px;
 	background: url(../img/separator.jpg);

@@ -43,36 +43,50 @@ function TestVal(i, bez, gr1,gr2){
 
 
 function Check_all() {
-    
-var my_all=document.getElementById('all');
-if (window.parent.all_tx_opt_test) {
+    var my_all=document.getElementById('all');
+    if (window.parent.all_tx_opt_test) {
 	my_all.checked=true;
 	window.parent.myElement=window.parent.myVarTX_opt_test0;
 	window.parent.myDisableAll(my_all,'amp','amp',0);
 	window.parent.myElement=window.parent.myVarTX_opt_test2;
 	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX_opt_test;
-}
- window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));  
-}
-function Dataset(my_action,n){
-var my_item=document.getElementById(my_action);
-if (my_item.value>=n && my_item.value<=19) {
-   if(n==1){ 
-    Check = prompt("Enter a Descrition!", "");
-    if (Check==null) {return; }
-    if (Check!="") {
-	var my_item_d=document.getElementById('bert0.dataSetDescription');
-	my_item_d.value=Check;
-	window.parent.SaveVar(my_item_d,1,'',0);
     }
-    else {alert("Description can not be empty!");
-    return;};}
- window.parent.SaveVar(my_item,1,'',0);
- window.parent.window_onload();
- window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));  
+    window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
+    if (window.parent.dataset==-1) {
+	document.getElementById("bert0.dataSetDescription").style.display="none";
+    }
+    else {
+	
+	document.getElementById("bert0.dataSetDescription").style.display='table-row';}
+	document.getElementById('bert0.loadDataSet').value=window.parent.dataset;
+    
 }
-else {alert("Falshe Dataset Number!"); }
+
+function Dataset(my_action,n){
+    var my_item=document.getElementById(my_action);
+	if (my_item.value>=n && my_item.value<=19) {
+	    if(n==1){ 
+		Check = prompt("Enter descrition.", "");
+		if (Check==null) {return; }
+		if (Check!="") {
+		    var my_item_d=document.getElementById('bert0.dataSetDescription');
+		    my_item_d.value=Check;
+		    window.parent.SaveVar(my_item_d,1,'',0);
+		    document.getElementById('bert0.loadDataSet').value=my_item.value;
+		    
+		}
+		else {alert("Description can not be empty!");
+		return;};}
+	    window.parent.SaveVar(my_item,1,'',0);
+	    window.parent.window_onload();
+	    window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
+	    window.parent.dataset=my_item.value;
+	    if (window.parent.dataset==-1) {
+		document.getElementById("bert0.dataSetDescription").style.display="none";}
+	    else {document.getElementById("bert0.dataSetDescription").style.display='table-row';}
+	}
+	else {alert("Wrong dataset number!"); }
  
 }
 

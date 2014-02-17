@@ -1,1 +1,1 @@
-void System_IfInit(void);
+void SystemIf_Init(void);

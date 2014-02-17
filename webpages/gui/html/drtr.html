@@ -4,19 +4,31 @@
 
 <div name="wrap_data_rate">
 <FORM onsubmit="return false" ID="Form_PG">
-<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 >
 
 <TR ALIGN="left" VALIGN="middle">
 	<TH>Data Rate, Gbit/s</TH>
 	<TD>
-	<SELECT  ID="bert0.bitrate" onChange="javascript: window.parent.SaveVar(this,1,'.f',0)">
+	<SELECT  ID="bert0.bitrate" onChange="javascript: DateRate(this);">
 		<OPTION VALUE="25781250000">25.78125</OPTION>
 		<OPTION VALUE="27952493392">27.9524934</OPTION>
+		<OPTION VALUE ="-1">User Data Rate</OPTION>
 	</SELECT>
 	</TD>
+	<TD></TD>
+	<TD></TD></TR>
+	<TR ALIGN="left"  style="display:none" id="userDateRate">
+	<TH>User Data Rate, Gbit/s</TH>
+	<TD><input class="textfildsys" type="text" id="userDR" value="0" size=10 onkeydown='validateImput(event,this)'></TD>
+		
+	<TD><button class="buttonBlue" type="button" onclick="javascript: TestUserDR();">Save</button></TD>
+	<TD><div id="savePatternIndicator" class="saveindicatorGreen">Saved!</div></TD></TD>
+		
+		
 </TR>
 
-<TR ALIGN="left" VALIGN="middle"><TH>Trigger Output</TH>
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Trigger Output</TH>
 	<TD>
 	<SELECT NAME="ptrig0.pattern" ID="ptrig0.pattern" onChange="javascript: window.parent.SaveVar(this,1,'.l',0)">
 	<OPTION VALUE="0"> Clock (Rate/40)</OPTION>
@@ -27,13 +39,14 @@
 	<OPTION VALUE="5">PRBS 2E31-1</OPTION>
 	</SELECT>
 	</TD>
-	
+	<TD></TD>
+	<TD></TD>
 	</TR>
 
-<TR ALIGN="left" VALIGN="middle"><TH>Pattern Trigger<br>shift left/right</TH>
-		<TD ALIGN="center" ><button class="button_arrow_big doubleLeft" type="button" title="Shift left"  onclick="javascript: clickLeft();"></button>
+<TR ALIGN="left" VALIGN="middle"><TH>Pattern Trigger<br>shift left/right</TH><TD></TD>
+		<TD ALIGN="center" colspan=4><button class="button_arrow_big doubleLeft" type="button" title="Shift left"  onclick="javascript: clickLeft();"></button>
 		<button class="button_arrow_big doubleRight" type="button" title="Shift right"  onclick="javascript: clickRight();"></button></TD>
-	</TR>	
+	<TD></TD></TR>	
 </TABLE>
 
 </FORM>
@@ -46,6 +59,79 @@ function clickLeft(){
 	}
 function clickRight(){	
 	 window.parent. socket.send(JSON.stringify({set: 'ptrig0.pattern',val: 'right'}));
-	}	
+	}
+	
+function DateRate(myvar){
+	if (myvar.value==-1) {
+	showFun(true);	
+	}
+	else{
+	showFun(false);
+	window.parent.SaveVar(myvar,1,'.f',0);	
+	}
+	
+	}
+	
+function showFun(visible) {
+    if(visible) {
+	document.getElementById('userDateRate').style.display = 'table-row';
+	
+    } else {
+		document.getElementById('userDateRate').style.display = 'none';
+	    }
+}
+
+function TestUserDR() {
+	
+	var string = parseFloat(document.getElementById('userDR').value);
+	var savePatternIndicatorElement = document.getElementById('savePatternIndicator');
+	if (string<24 || string>29.5){
+		alert("Date rate value is not in range 24 Gbit/s - 29.5 Gbit/s! ");
+		savePatternIndicatorElement.innerHTML = "NOT Saved!";
+		savePatternIndicatorElement.className = "saveindicatorRed";
+	}else {
+		
+		window.parent.socket.send(JSON.stringify({set: "bert0.bitrate",val: string*1000000000}));
+		savePatternIndicatorElement.innerHTML = "Saved!";
+		savePatternIndicatorElement.className = "saveindicatorGreen";
+	}
+}
+
+
+//**********************************************************
+function validateImput(evt,Feld) {
+	//the pressed key
+	var theEvent = evt || window.event;
+	var bkey = theEvent.keyCode || theEvent.which;
+	key = String.fromCharCode( bkey );
+	//console.log("theEvent:"+theEvent+" key: "+bkey);
+	
+	//allow arrow keys
+	if ( bkey == 39 || bkey == 37) return;
+	
+	//allow backspace and color save indicator red
+	if (bkey == 8){
+		makeSavePatternIndicatorRed();
+		return;
+	}
+	
+	//allow only "0" and "1" and check length of string
+	var s=Feld.value;
+	var regex = /[a-zA-Z]/;
+	if( regex.test(key) || s.length>=12 || bkey == 188) {
+		theEvent.returnValue = false;
+		if(theEvent.preventDefault) theEvent.preventDefault();
+		return;
+	}
+	
+	makeSavePatternIndicatorRed();
+}
+//**********************************************************    
+function  makeSavePatternIndicatorRed(){
+	//change the save indicator to red
+	var savePatternIndicatorElement = document.getElementById('savePatternIndicator');
+	savePatternIndicatorElement.innerHTML = "NOT Saved!";
+	savePatternIndicatorElement.className = "saveindicatorRed";
+}
 	-->
 	</script>

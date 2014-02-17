@@ -227,7 +227,7 @@ ul.menu, .item-list ul {
 .AlarmindicatorRed{
         position:relative;
         left:10px;
-	width: 100px;
+	width: 150px;
 	background-color: #ff0000;
 	font-size: 16px;
 	font-weight:bold;

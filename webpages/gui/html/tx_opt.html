@@ -4,7 +4,7 @@
 	<script type="text/javascript" src="js/tx_eml.js" ></script>
 	
 </head>
-<body onload="javascript: onStart();">
+<body onload="javascript: onStart(); CheckDataSet();">
 
 <div class="headline">Optical TX</div>
 
@@ -26,71 +26,41 @@
 	
 <TR ALIGN="left" VALIGN="middle">
 	<TH>ER (dB)</TH>
+	<TH>
+	Dataset:
+	</TH>
 	<TD>
-	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2)"/></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2)"></button>
-			
-		</div>
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(0,1,1,2)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2)"></button>
-			
-		</div>	
-		
-		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(0); window.parent.SaveVar(this,2,'amp',0); window.parent.myElement=window.parent.myVarTX_opt; window.parent.window_onload();">
-	</div>
-	</TD>
-	<TD>
-	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1)"></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1)"></button>
-			
-		</div>
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1)"></button>
-			
-		</div>	
-		
-		<input class="textfild" type="text" id="" value="0" size=3 readonly onChange="javascript: TestVal(1); window.parent.SaveVar(this,1,'amp',0)">
-	</div>
+	<SELECT  ID="bert0.loadDataSet">
+                <OPTION VALUE="-1"></OPTION>
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE="11">11</OPTION>
+		<OPTION VALUE="12">12</OPTION>
+		<OPTION VALUE="13">13</OPTION>
+		<OPTION VALUE="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+		<OPTION VALUE="16">16</OPTION>
+		<OPTION VALUE="17">17</OPTION>
+		<OPTION VALUE="18">18</OPTION>
+		<OPTION VALUE="19">19</OPTION>	
+	</SELECT>
 	</TD>
 	
 	<TD>
-	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1)"></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1)"></button>
-			
-		</div>
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1)"></button>
-			
-		</div>	
-		
-		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'amp',0)">
-	</div>
+	<button class="buttonBlue" type="button" id="bert0.loadDataSet_But"  onclick="javascript: Dataset('bert0.loadDataSet',0);">Load</button>
 	</TD>
 	
 	<TD>
-	<div class="control">
-		<div class="control_elements">
-			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1)"></button>
-			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1)"></button>
-			
-		</div>
-		<div class="control_elements">
-			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1)"></button>
-			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1)"></button>
-			
-		</div>	
-		
-		<input class="textfild" type="text"  id="" value="0" size=3 readonly onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'amp',0)">
-	</div>
+	<input class="textfildsys" type="text"  id="bert0.dataSetDescription" size="15" maxlength="15" >
 	</TD>
 	
 </TR>
@@ -269,23 +239,23 @@
 	<TH>Referenz Optical<br>Power (dB)tx0.pwrRef</TH>
 	
 	<TD>
-	<input class="textfildPattern" type="text"  id="tx0.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+	<input class="textfildPattern" type="text"  id="tx0.pwrRef" value="0" size=3  onkeydown='validateImput(event,this)'>
 	<button class="buttonBlue" type="button" id="tx0.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>	
 	</TD>
 	
 	
 	<TD>
-	<input class="textfildPattern" type="text"  id="tx1.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+	<input class="textfildPattern" type="text"  id="tx1.pwrRef" value="0" size=3  onkeydown='validateImput(event,this)'>
 		<button class="buttonBlue" type="button" ID="tx1.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
 	</TD>
 	
 	<TD>
-	<input class="textfildPattern" type="text"  id="tx2.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+	<input class="textfildPattern" type="text"  id="tx2.pwrRef" value="0" size=3  onkeydown='validateImput(event,this)'>
 		<button class="buttonBlue" type="button" ID="tx2.pwrRef_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
 	</TD>
 	
 	<TD>
-	<input class="textfildPattern" type="text"  id="tx3.pwrRef" value="0" size=3  onkeypress='validateImput(event,this)'>
+	<input class="textfildPattern" type="text"  id="tx3.pwrRef" value="0" size=3  onkeydown='validateImput(event,this)'>
 		<button class="buttonBlue" type="button" ID="tx3.pwrRef_But" onclick="javascript: TestpwrRef(this); ">Save</button>
 	</TD>
 </TR>

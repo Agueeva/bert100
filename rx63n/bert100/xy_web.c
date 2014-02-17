@@ -1908,10 +1908,10 @@ XY_NewWebServer(void)
 	DB_VarInit(DBKEY_WSERV_PASSWD_ADMIN,&passwd_md5hex,"system.passwdAdmin");
 	passwd_md5hex[array_size(passwd_md5hex) - 1] = 0;
 	parse_md5hexstring(wserv->passwdAdmin_md5, passwd_md5hex);
-	XY_WebRegisterPage(wserv, "/sd/gui/admin", Page_FatFile, NULL);
-	XY_WebCreateMD5Auth(wserv, "/sd/gui/admin", REALM_ADMIN, "admin", MD5PASS);
+	XY_WebRegisterPage(wserv, "/sd/gui/admin/", Page_FatFile, NULL);
+	XY_WebCreateMD5Auth(wserv, "/sd/gui/admin/", REALM_ADMIN, "admin", MD5PASS);
 	if(strlen(wserv->username)) {
-		XY_WebAddMD5Auth(wserv, "/sd/gui/admin", REALM_ADMIN, "admin", wserv->passwdAdmin_md5);
+		XY_WebAddMD5Auth(wserv, "/sd/gui/admin/", REALM_ADMIN, "admin", wserv->passwdAdmin_md5);
 	}
 	return wserv;
 }

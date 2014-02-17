@@ -31,7 +31,7 @@
 
 #define MOD_TEC_ENA_DIROUT()	BSET(1,PORTC.PDR.BYTE)
 #define MOD_TEC_ENA(val)	BMOD(1,PORTC.PODR.BYTE,(val))
-#define MOD_TEC_ENA_IN()	PORTC.PODR.BIT.B1
+#define MOD_TEC_ENA_IN()	PORTC.PIDR.BIT.B1	/* Use the Input register to get the real value */
 
 #define	CTRL_FAULT_LIMIT	(0.6) // Volt
 
@@ -473,6 +473,11 @@ PVLatchedFault_Set (void *cbData, uint32_t chNr, const char *strP)
         return true;
 }
 
+/**
+ *********************************************************************************
+ * Enable / disable the modulator controler
+ *********************************************************************************
+ */
 static bool
 PVModTecEna_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
