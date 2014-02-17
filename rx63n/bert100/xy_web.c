@@ -465,9 +465,7 @@ FindRequestHandler(XY_WebServer * wserv, const char *path)
 		return reg;
 	}
 	for (i = strlen(path); (i > 1); i--) {
-		char c;
 		if (path[i - 1] == '/') {
-			c = path[i];
 			entryPtr = StrNHash_FindEntry(wserv->rqHandlerHash, path, i);
 			if (entryPtr) {
 				//Con_Printf("Found directory of path\n");
@@ -1889,17 +1887,6 @@ XY_NewWebServer(void)
 	wserv->rqHandlerHash = StrHash_New(16);
 	Web_PoolsInit();
 
-	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
-	XY_WebCreateMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
-	if(strlen(wserv->username)) {
-		XY_WebAddMD5Auth(wserv, "/sd/", REALM, wserv->username, wserv->passwdUser_md5);
-	}
-	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
-	XY_WebCreateMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
-	if(strlen(wserv->username)) {
-		XY_WebAddMD5Auth(wserv, "/", REALM, wserv->username, wserv->passwdUser_md5);
-	}
-
 	/**
  	 *************************************************************************
  	 * Pages in admin folder.
@@ -1913,5 +1900,17 @@ XY_NewWebServer(void)
 	if(strlen(wserv->username)) {
 		XY_WebAddMD5Auth(wserv, "/sd/gui/admin/", REALM_ADMIN, "admin", wserv->passwdAdmin_md5);
 	}
+
+	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
+	XY_WebCreateMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
+	if(strlen(wserv->username)) {
+		XY_WebAddMD5Auth(wserv, "/sd/", REALM, wserv->username, wserv->passwdUser_md5);
+	}
+	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
+	XY_WebCreateMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
+	if(strlen(wserv->username)) {
+		XY_WebAddMD5Auth(wserv, "/", REALM, wserv->username, wserv->passwdUser_md5);
+	}
+
 	return wserv;
 }

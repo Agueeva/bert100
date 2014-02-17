@@ -20,7 +20,7 @@
                                   "bert0.L0.txaEqpre","bert0.L1.txaEqpre","bert0.L2.txaEqpre","bert0.L3.txaEqpre",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
                          "amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
-                          "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
+                         "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
 			 "amp1.vd1","amp2.vd1","amp3.vd1","amp0.vd1",
                          "amp1.vd2","amp2.vd2","amp3.vd2","amp0.vd2","bert0.dataSetDescription");
   var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
