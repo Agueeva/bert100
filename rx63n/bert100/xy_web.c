@@ -29,7 +29,7 @@
 #include "pvar.h"
 
 #define REALM	"Munich Instruments C-BERT"
-#define REALM_ADMIN	"Munich Instruments C-BERT Admin"
+#define xxxREALM_ADMIN	"Munich Instruments C-BERT Admin"
 
 #define USERNAME 	"ernie"
 //define MD5PASS 	"4546bd8724b61a838a1be440b7680f39"	/* Passwd is "dog100#" */
@@ -1251,8 +1251,10 @@ XY_WebAddMD5Auth(XY_WebServer * wserv, const char *uri, const char *realm, const
 	XYWebAuthInfo *auth;
 	XYWebAuthInfo *cursor;
 	reg = FindRequestHandler(wserv, uri);
-	if (!reg)
+	if (!reg) {
+		Con_Printf("Page not found in AddMD5Auth: %s\n",uri);
 		return -1;
+	}
 
 	auth = IRam_Calloc(sizeof(XYWebAuthInfo));
 	if (!auth)
@@ -1738,6 +1740,7 @@ XY_WebSocketRegister(XY_WebServer * wserv, const char *path, WebSockOps * wops, 
 	if(strlen(wserv->username)) {
 		XY_WebAddMD5Auth(wserv, path, REALM, wserv->username, wserv->passwdUser_md5);
 	}
+	XY_WebAddMD5Auth(wserv, path, REALM, "admin", wserv->passwdAdmin_md5);
 }
 
 /**
@@ -1876,7 +1879,7 @@ XY_NewWebServer(void)
 	passwd_md5hex[array_size(passwd_md5hex) - 1] = 0;
 	parse_md5hexstring(wserv->passwdUser_md5, passwd_md5hex);
 	
-	Con_Printf("The username is %s\n",wserv->username);
+	//Con_Printf("The username is %s\n",wserv->username);
 
 	PVar_New(PVPasswd_Get,PVPasswd_Set,wserv,0,"system.passwdUser");
 	PVar_New(PVPasswdAdmin_Get,PVPasswdAdmin_Set,wserv,0,"system.passwdAdmin");
@@ -1896,21 +1899,22 @@ XY_NewWebServer(void)
 	passwd_md5hex[array_size(passwd_md5hex) - 1] = 0;
 	parse_md5hexstring(wserv->passwdAdmin_md5, passwd_md5hex);
 	XY_WebRegisterPage(wserv, "/sd/gui/admin/", Page_FatFile, NULL);
-	XY_WebCreateMD5Auth(wserv, "/sd/gui/admin/", REALM_ADMIN, "admin", MD5PASS);
-	if(strlen(wserv->username)) {
-		XY_WebAddMD5Auth(wserv, "/sd/gui/admin/", REALM_ADMIN, "admin", wserv->passwdAdmin_md5);
-	}
+	XY_WebCreateMD5Auth(wserv, "/sd/gui/admin/", REALM, USERNAME, MD5PASS);
+	XY_WebAddMD5Auth(wserv, "/sd/gui/admin/", REALM, "admin", wserv->passwdAdmin_md5);
 
 	XY_WebRegisterPage(wserv, "/sd/", Page_FatFile, NULL);
 	XY_WebCreateMD5Auth(wserv, "/sd/", REALM, USERNAME, MD5PASS);
 	if(strlen(wserv->username)) {
 		XY_WebAddMD5Auth(wserv, "/sd/", REALM, wserv->username, wserv->passwdUser_md5);
 	}
+	XY_WebAddMD5Auth(wserv, "/sd/", REALM, "admin", wserv->passwdAdmin_md5);
+
 	XY_WebRegisterPage(wserv, "/", redirect_page, NULL);
 	XY_WebCreateMD5Auth(wserv, "/", REALM, USERNAME, MD5PASS);	
 	if(strlen(wserv->username)) {
 		XY_WebAddMD5Auth(wserv, "/", REALM, wserv->username, wserv->passwdUser_md5);
 	}
+	XY_WebAddMD5Auth(wserv, "/", REALM, "admin", wserv->passwdAdmin_md5);
 
 	return wserv;
 }
