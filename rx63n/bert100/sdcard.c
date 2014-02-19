@@ -1359,6 +1359,7 @@ cmd_sdcard(Interp * interp, uint8_t argc, char *argv[])
 		SDCard_Deselect(sdc);
 		SDCard_EnableBuffer(sdc);
 
+		SDCard_Unlock(sdc);
 		SDCard_Init(sdc);
 		SDCard_ReadCsd(sdc);
 		SDCard_ReadCid(sdc);
@@ -1387,7 +1388,6 @@ cmd_sdcard(Interp * interp, uint8_t argc, char *argv[])
 				break;
 			}
 		}
-		SDCard_Unlock(sdc);
 	} else {
 		Con_Printf("MaxWriteTime:  %lu\n", sdc->statMaxWriteTime);
 		Con_Printf("MaxReadTime :  %lu\n", sdc->statMaxReadTime);
