@@ -33,7 +33,7 @@
 #define MOD_TEC_ENA(val)	BMOD(1,PORTC.PODR.BYTE,(val))
 #define MOD_TEC_ENA_IN()	PORTC.PIDR.BIT.B1	/* Use the Input register to get the real value */
 
-#define	CTRL_FAULT_LIMIT	(0.6) // Volt
+#define	DEFAULT_CTRL_FAULT_LIMIT	(0.7) // Volt, overwritten by DB-Entry
 
 typedef struct ModReg {
 	Timer syncTimer;	
@@ -46,6 +46,7 @@ typedef struct ModReg {
 	float deviation[4];
 	float ctrlDevFiltered[4];
 	bool ctrlLatchedFault[4];
+	float ctrlFaultLimit;
 	/* Mapping from Channel Number to A/D or D/A converter channel number */
 	uint32_t adCh[4];
 	uint32_t daCh[4];
@@ -89,7 +90,7 @@ ModulatorControlProc(void *eventData)
 		mr->ctrlDevFiltered[ch] = (mr->ctrlDevFiltered[ch] * 0.9) + (diff / 10); // IIR filtered
 
 		pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(ch));
-		if(fabs(mr->ctrlDevFiltered[ch]) > CTRL_FAULT_LIMIT) {
+		if(fabs(mr->ctrlDevFiltered[ch]) > mr->ctrlFaultLimit) {
 			mr->ctrlLatchedFault[ch] = true;
 		} else if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 			mr->ctrlLatchedFault[ch] = true;
@@ -194,6 +195,13 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 			//PORTE.PODR.BIT.B5 = 0;
 		}
 		return 0;
+	} else if((argc == 3)  && (strcmp(argv[1],"faultlimit") == 0)) {
+		mr->ctrlFaultLimit = astrtof32(argv[2]);
+		DB_VarWrite(DBKEY_MODREG_FAULT_LIMIT,&mr->ctrlFaultLimit);
+		return 0;
+	} else if((argc == 2)  && (strcmp(argv[1],"faultlimit") == 0)) {
+		Con_Printf("CtrlFaultLimit: %f Volt\n",mr->ctrlFaultLimit);
+		return 0;
 	} else if((argc == 3)  && (strcmp(argv[1],"tec") == 0)) {
 		bool value = !!astrtoi16(argv[2]);
 		MOD_TEC_ENA(value);
@@ -231,7 +239,7 @@ cmd_mod(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 3)  && (strcmp(argv[2],"ad") == 0)) {
 		Con_Printf("StartVal: %lu, EndVal %lu ControlDev. %f, filtered %f\n",
 			mr->advalBefore[ch],mr->advalAfter[ch],
-			(mr->advalBefore[ch] - mr->advalAfter[ch]) * 3.300/4096,mr->ctrlDevFiltered[ch]);
+			(mr->advalBefore[ch] - mr->advalAfter[ch]) * 3.300/4096, mr->ctrlDevFiltered[ch]);
 	} else {
 		return -EC_BADARG;
 	}
@@ -437,7 +445,7 @@ PVCtrlFault_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 	pwrVolt = ADC12_ReadVolt(ADCH_TX_PWR(chNr));
 	if((pwrVolt < 0.21) || (pwrVolt > 3.2)) {
 		fault = true;	
-	} else if(fabs(mr->ctrlDevFiltered[chNr]) > CTRL_FAULT_LIMIT) {
+	} else if(fabs(mr->ctrlDevFiltered[chNr]) > mr->ctrlFaultLimit) {
 		fault = true;
 	} else {
 		fault = false;
@@ -505,6 +513,7 @@ PVModTecEna_Set (void *cbData, uint32_t chNr, const char *strP)
  ****************************************************************************
  */
 
+
 void
 ModReg_Init(void)
 {
@@ -513,6 +522,7 @@ ModReg_Init(void)
 	if(Variant_Get() != VARIANT_MZ) {
 		return;
 	}
+	mr->ctrlFaultLimit = DEFAULT_CTRL_FAULT_LIMIT;
 	Timer_Init(&mr->syncTimer,ModulatorControlProc,mr);
 	for(ch = 0; ch < 4; ch++) {
 		mr->regKI[ch] = -0.5;
@@ -532,6 +542,7 @@ ModReg_Init(void)
 	}
 	mr->rectDelayUs = 12.0;
 	DB_VarInit(DBKEY_MODREG_RECT_DELAY,&mr->rectDelayUs,"mzMod.rectDelay");
+	DB_VarInit(DBKEY_MODREG_FAULT_LIMIT,&mr->ctrlFaultLimit,"mzMod.ctrlFaultLimit");
 	enable_modulator_clock(mr,20000,mr->rectDelayUs);
 
 	MOD_TEC_ENA(1);

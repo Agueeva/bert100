@@ -292,7 +292,7 @@ static void
 sprintf_char(void *cbData, uint8_t data)
 {
 	SPrintfCtxt *ctxt = cbData;
-	if (ctxt->cnt < ctxt->maxlen - 1) {
+	if (ctxt->cnt < (ctxt->maxlen - 1)) {
 		ctxt->dstBuf[ctxt->cnt++] = data;
 	}
 }
