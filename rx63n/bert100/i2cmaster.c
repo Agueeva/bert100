@@ -19,13 +19,6 @@
 #define BUS_NR(i2caddr) (((i2caddr) >> 12) & 0x3)
 #define MAX_ACK_POLLS	(2)
 
-#define PORT_SDA(val)	BMOD(3,PORT1.DR.BYTE,(val))
-#define PORT_SCL(val)	BMOD(2,PORT1.DR.BYTE,(val))
-#define STATUS_SDA	PORT1.PORT.BIT.B3
-#define STATUS_SCL	PORT1.PORT.BIT.B2
-#define DIR_SDA(val)	BMOD(3,PORT1.DDR.BYTE,(val))
-#define DIR_SCL(val)	BMOD(2,PORT1.DDR.BYTE,(val))
-
 #ifdef I2C_SPEED_FAST
 #define T_HDSTA 600		// 0.6 uS
 #define T_SUSTA 600		// 0.6 uS
