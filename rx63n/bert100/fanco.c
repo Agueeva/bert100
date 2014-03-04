@@ -3,6 +3,7 @@
   * Fan Controller interface
   *****************************************************************
   */
+#include <string.h>
 #include "types.h"
 #include "interpreter.h"
 #include "hex.h"
@@ -125,6 +126,29 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 {
 	uint32_t i;
 	FanCo *fc = &gFanCo[0];
+	uint8_t i2c_result;
+	if((argc == 3) && (strcmp(argv[1],"speed") == 0)) {
+		uint8_t speed = astrtoi16(argv[2]);
+		i2c_result = I2C_Write8(fc->i2cAddr,MAX6651_SPEED,&speed,1);
+		if(i2c_result != I2C_RESULT_OK) {
+			Con_Printf("failed to write speed to FAN controller\n");
+		}
+		return 0;
+	} else if((argc == 3) && (strcmp(argv[1],"mode") == 0)) {
+		uint8_t config;
+		uint8_t mode = astrtoi16(argv[2]);
+		if(mode > 3) {
+			Con_Printf("Illegal mode %u\n",mode);
+			return 0;
+		}
+		i2c_result = I2C_Read8(fc->i2cAddr,MAX6651_CONFIG,&config,1);
+		config = (config & 0xcf) | (mode << 4);
+		i2c_result = I2C_Write8(fc->i2cAddr,MAX6651_CONFIG,&config,1);
+		if(i2c_result != I2C_RESULT_OK) {
+			Con_Printf("failed to write mode to FAN controller\n");
+		}
+		return 0;
+	}
 	for(i = 0; i < NR_FANS; i ++) {
 		Con_Printf("Fan %lu RPM %lu\n",i,FanCo_GetRpm(fc,i));
 	}
