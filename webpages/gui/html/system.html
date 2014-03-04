@@ -11,9 +11,9 @@
 	</TR>
 
 <TR ALIGN="left">
-<TH>C-BERT:
+<TH>C-BERT Version:
 </TH>
-<TD id="version">Optical TX Version</TD>
+<TD id="version">Optical TX</TD>
 </TR>
 
 <TR ALIGN="left">
@@ -57,14 +57,14 @@
 <TD>&nbsp;&nbsp;</TD></TR>
 
 <TR ALIGN="left">
-<TH>Modulater Temperature, &deg;C:</TH>
+<TH>Modulator Temperature, &deg;C:</TH>
 <TD><input class="textfildsys" type="text"  id="mzMod.temp" value="" size=3 readonly> </TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD></TR>
 
 <TR ALIGN="left">
-<TH>Driver Temperature, &deg;C:</TH>
+<TH>Driver Amp Temperature, &deg;C:</TH>
 <TD><input class="textfildsys" type="text"  id="amp.temp" value="" size=3 readonly> </TD>
 <TD>&nbsp;&nbsp;</TD>
 <TD>&nbsp;&nbsp;</TD>
@@ -119,12 +119,6 @@
 <TD><input class="textfildsys" type="password"  id="system.passwdUser" size="15" maxlength="15" ></TD>
 <TD><button class="buttonBlue" type="button" id="userpas_But"  onclick="javascript: SaveUser(); ">Save</button></TD>
 </TR>
-
-<TR ALIGN="left">
-<TH>Admin Password:</TH>
-<TD><input class="textfildsys" type="password"  id="system.passwdAdmin" size="15" maxlength="15" ></TD>
-<TD><button class="buttonBlue" type="button" id="adminpas_But"  onclick="javascript: SaveAdmin(); ">Save</button></TD>
-</TR>
 </TABLE>
 </div>
 </FORM>
@@ -163,21 +157,7 @@ window.parent.socket.send(JSON.stringify({get: "system.username"}));}
 Readsecurety();
 function clickReset(){
 window.parent.socket.send(JSON.stringify({set: "system.latchedFault",val: 0}));}	
-function SaveAdmin(){
-var pass = document.getElementById('system.passwdAdmin').value;
 
-	
-	var re = /[",',\\]/gi;                //      ',",\\
-	var found = pass.match(re);
-	if (found!=null){
-	alert("Not: "+ found);	
-	}
-	else {
-	
-	window.parent.SaveVar(document.getElementById('system.passwdAdmin'),1,'',0);
-	
-	}
-}
 		-->
 </script>
 		

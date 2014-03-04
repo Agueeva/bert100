@@ -90,3 +90,81 @@ function Dataset(my_action,n){
  
 }
 
+function SaveAdmin(){
+var pass = document.getElementById('system.passwdAdmin').value;
+
+	
+	var re = /[",',\\]/gi;                //      ',",\\
+	var found = pass.match(re);
+	if (found!=null){
+	alert("Not: "+ found);	
+	}
+	else {
+	
+	window.parent.SaveVar(document.getElementById('system.passwdAdmin'),1,'',0);
+	
+	}
+}
+
+function RunScript(){
+//  var script=document.getElementById("system.execScript").value;
+  
+  window.parent.SaveVar(document.getElementById('system.execScript'),1,'',0);  
+    
+}
+
+function validateImput(evt,Feld) {
+	//the pressed key
+	var theEvent = evt || window.event;
+	var bkey = theEvent.keyCode || theEvent.which;
+	key = String.fromCharCode( bkey );
+	console.log("theEvent:"+theEvent+" key: "+bkey);
+	
+	//allow arrow keys
+	if ( bkey == 39 || bkey == 37 ) return;
+	
+	//allow backspace and color save indicator red
+	if (bkey == 8){
+		makeSaveVisible(Feld);
+		return;
+	}
+	
+	var s=Feld.value;
+	var regex = /[a-zA-Z]/;               // /[-.0-9]/;
+	if( regex.test(key) || s.length>=5 || bkey == 188) {
+		theEvent.returnValue = false;
+		if(theEvent.preventDefault) theEvent.preventDefault();
+		return;
+	}
+	
+	makeSaveVisible(Feld);
+}
+//**********************************************************    
+function  makeSaveVisible(Feld){
+	var but=(Feld.id+'_But');   
+	//my_Inter=clearInterval(my_Inter);	
+	document.getElementById(but).style.display='table-row';	
+}
+
+function TestpwrRef(item){
+
+var myname=item.id;
+myname=myname.substr(0,myname.length-4);
+var elem=document.getElementById(myname);
+var val=elem.value;
+if (!isNumber(val) && val<=10 && val>=-10) {	
+elem.value="";
+}
+else {
+elem.value=Math.round(Number(val) * 100) / 100;    
+window.parent.SaveVar(elem,1,'.L',0);  //
+document.getElementById("mzMod0.Ki_But").style.display="none";
+document.getElementById("mzMod1.Ki_But").style.display="none";
+document.getElementById("mzMod2.Ki_But").style.display="none";
+document.getElementById("mzMod3.Ki_But").style.display="none";
+//StartInterval();
+}
+}
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}

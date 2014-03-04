@@ -22,6 +22,7 @@
                          "amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
                          "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
 			 "amp1.vd1","amp2.vd1","amp3.vd1","amp0.vd1",
+                         "mzMod0.Ki","mzMod1.Ki","mzMod2.Ki","mzMod3.Ki",
                          "amp1.vd2","amp2.vd2","amp3.vd2","amp0.vd2","bert0.dataSetDescription");
   var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
   var myVarTX_opt_test2= new Array("txaSwingFine","swapTxPN","txaSwing","swapTxPN");
@@ -41,8 +42,7 @@
   var myVarTX0= new Array("vg1","vg2");
   var myVarTX2= new Array("swapTxPN","txaSwing");
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
-  var myVarErr= new Array("bert0.bitrate",
-                           "mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
+  var myVarErr= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
                            "mzMod0.ctrlFault", "mzMod1.ctrlFault","mzMod2.ctrlFault","mzMod3.ctrlFault",
                            "mzMod0.latchedCtrlFault", "mzMod1.latchedCtrlFault", "mzMod2.latchedCtrlFault", "mzMod3.latchedCtrlFault",
                           "mzMod0.ctrlDev","mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev",
@@ -59,8 +59,7 @@
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
                           "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr",
                           "bert0.L0.accTime",
-                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip"
-
+                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip","bert0.bitrate"
                          ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm","system.latchedFault",
@@ -68,7 +67,7 @@
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; //   'ws://tneuner.homeip.net:8080/messages'; //
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //  'ws://tneuner.homeip.net:8080/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -96,12 +95,14 @@
      {
         var myCh;
         var mystr;
+       // alert(evt.data);
+   if (evt.data.substr(2, 3)=="ack") { return;}
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-
-        if (item.substring(9, item.length)=="patGenSel" && value==3) {
+        //console.log("item:"+item+" Value:"+value);
+        if (item.substr(9, item.length)=="patGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
            mystr='l'+item.substr(7, 1)+'.prbs_autovr';
@@ -333,12 +334,11 @@ case "bert0.bitrate":
          value=25781250000;}
      if (value>27952493300 && value<27952493482) {
          value=27952493392;}
-         $("#frame").contents().find("#userDR").val((parseInt(value/100)/10000000));
+         $("#frame").contents().find("#userDR").val((Math.round(Number(value/100))/10000000));
      if ( value!=25781250000 &&  value!=27952493392){
           $("#frame").contents().find("#bert0.bitrate".replace(/[.]/g,"\\.")).val(-1);
           $("#frame").contents().find('#noneUserDateRate').hide();
           $("#frame").contents().find('#userDateRate').show();
-          //console.log("show");
           return;     
      }else{
          $("#frame").contents().find('#noneUserDateRate').show();

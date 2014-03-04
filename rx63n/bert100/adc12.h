@@ -11,3 +11,4 @@ float ADC12_ReadVolt(int channel);
 float ADC12_ReadDB(int channel);
 
 float ADC12_ReadVoltMultiple(int channel,uint8_t repeatCnt);
+float ADC12_GetTemperature(void);

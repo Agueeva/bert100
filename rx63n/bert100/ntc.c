@@ -129,7 +129,7 @@ NTC_Read(int16_t adchannel, uint8_t measCnt)
 static void
 NTC_PollTimerProc(void *eventData)
 {
-	float tempMod,tempAmp;
+	float tempMod, tempAmp;
 	tempMod = NTC_Read(ADCH_NTC_MOD,1); 
 	if(tempMod > 45) {
 		Alarm_Set(ALARM_MOD_TEMP);

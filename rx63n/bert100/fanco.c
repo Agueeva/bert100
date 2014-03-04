@@ -44,6 +44,8 @@ typedef struct FanCo {
 	TimeMs_t timeStamp[NR_FANS];
 	Timer fanPollTimer;
 	uint8_t fanPollIdx;
+	uint8_t dacVal;
+	uint16_t targetRpm;
 } FanCo;
 
 static FanCo gFanCo[1];
@@ -96,9 +98,25 @@ FanCo_PollTimer(void *eventData)
 	}  else {
 		Alarm_Clear(ALARM_FAN_0 + fc->fanPollIdx);
 	}
+	if(rpm > fc->targetRpm) {
+		if(fc->dacVal < 255) {
+			fc->dacVal++;
+		}
+	} else {
+		if(fc->dacVal > 0) {
+			fc->dacVal--;
+		}
+	} 
+	I2C_Write8(fc->i2cAddr,MAX6651_DAC, &fc->dacVal,1);
 	Timer_Start(&fc->fanPollTimer,1002);
 }
 
+void 
+FanCo_SetTargetRpm(uint16_t rpm)
+{
+	FanCo *fc = &gFanCo[0];
+	fc->targetRpm = rpm;
+}
 /**
   *********************************************************************
   * State variable interface for the Fan speed
@@ -141,6 +159,7 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 			Con_Printf("Illegal mode %u\n",mode);
 			return 0;
 		}
+		fc->dacVal = 0;
 		i2c_result = I2C_Read8(fc->i2cAddr,MAX6651_CONFIG,&config,1);
 		config = (config & 0xcf) | (mode << 4);
 		i2c_result = I2C_Write8(fc->i2cAddr,MAX6651_CONFIG,&config,1);
@@ -148,6 +167,13 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 			Con_Printf("failed to write mode to FAN controller\n");
 		}
 		return 0;
+	} else if((argc == 3) && (strcmp(argv[1],"rpm") == 0)) {
+		fc->targetRpm = astrtoi16(argv[2]);
+		return 0;
+	} else if((argc == 2) && (strcmp(argv[1],"rpm") == 0)) {
+		Con_Printf("Target RPM: %u\n",fc->targetRpm);
+	} else if((argc == 2) && (strcmp(argv[1],"dac") == 0)) {
+		Con_Printf("DAC-Val: %u\n",fc->dacVal);
 	}
 	for(i = 0; i < NR_FANS; i ++) {
 		Con_Printf("Fan %lu RPM %lu\n",i,FanCo_GetRpm(fc,i));
@@ -167,6 +193,7 @@ FanCo_Init(void)
 {
 	FanCo *fc = &gFanCo[0];
 	uint8_t value = 1;
+	uint8_t config;
 	uint8_t i2c_result;
 	uint16_t fanNr;
 	fc->i2cAddr = 0x3e;
@@ -179,6 +206,11 @@ FanCo_Init(void)
 	{
 		PVar_New(PVRpm_Get,NULL,fc,fanNr ,"fanco.fan%u.rpm",fanNr);
 	}
+	fc->targetRpm = 2500;
+	fc->dacVal = 0;
+	config = 0x32;
+	I2C_Write8(fc->i2cAddr,MAX6651_DAC, &fc->dacVal,1);
+	I2C_Write8(fc->i2cAddr,MAX6651_CONFIG,&config,1);
 	Timer_Init(&fc->fanPollTimer, FanCo_PollTimer, fc); 
-	Timer_Start(&fc->fanPollTimer,10000);
+	Timer_Start(&fc->fanPollTimer,5000);
 }

@@ -13,6 +13,7 @@
 #include "pvar.h"
 #include "version.h"
 #include "database.h"
+#include "fanco.h"
 
 #define NR_CHANNELS 21
 
@@ -309,7 +310,7 @@ ADC12_Init(void)
 	TEMPS.TSCR.BIT.TSOE = 1;
 	adc->tempSensCorr = 0;
 	DB_VarInit(DBKEY_TEMPSENS_CORR(channel),&adc->tempSensCorr,"adc12.tempSensCorr");
-
+	
 	Interp_RegisterCmd(&adc12Cmd);
 	Interp_RegisterCmd(&temperatureCmd);
 }
