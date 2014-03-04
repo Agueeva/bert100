@@ -561,7 +561,7 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 		uint32_t key;
 		key = Key_FindByName(db,argv[2]);
 		if(key == 0) {
-			Con_Printf("Database entry \"%s\" not found\n");
+			Con_Printf("Database entry \"%s\" not found\n",argv[2]);
 			return 0;
 		}		
 		if(strcmp(argv[3],"byte") == 0) {
