@@ -33,7 +33,7 @@
 #define MOD_TEC_ENA(val)	BMOD(1,PORTC.PODR.BYTE,(val))
 #define MOD_TEC_ENA_IN()	PORTC.PIDR.BIT.B1	/* Use the Input register to get the real value */
 
-#define	DEFAULT_CTRL_FAULT_LIMIT	(0.6) // Volt, overwritten by DB-Entry
+#define	DEFAULT_CTRL_FAULT_LIMIT	(0.7) // Volt, overwritten by DB-Entry
 
 typedef struct ModReg {
 	Timer syncTimer;	
