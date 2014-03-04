@@ -8,6 +8,7 @@
  ********************************************************************************
  */
 #include <stdlib.h>
+#include <ctype.h>
 #include "types.h"
 #include "console.h"
 #include <string.h>
@@ -343,7 +344,9 @@ Editor_Feed(void *clientData, uint8_t c)
 				break;
 
 			default:
-				editor_insert(ed, c);
+				if(isprint(c)) {
+					editor_insert(ed, c);
+				}
 		    }
 		    break;
 
