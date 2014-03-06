@@ -1,6 +1,6 @@
 /**
   ************************************************************
-  * Initialization of the MZ modulator amplifier. 
+  * Initialization of the EML modulator amplifier. 
   ************************************************************
   */
 #include <string.h>
@@ -17,6 +17,7 @@
 #include "pvar.h"
 #include "database.h"
 #include "version.h"
+#include "amp_eml.h"
 
 #define NR_CHANNELS     (32)
 

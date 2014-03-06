@@ -17,6 +17,7 @@
 #include "pvar.h"
 #include "database.h"
 #include "version.h"
+#include "amp_mz.h"
 
 #define NR_CHANNELS     (32)
 
