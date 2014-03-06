@@ -29,6 +29,7 @@ Con_TransmitChar(void *cbData, uint8_t c)
 #define Con_RegisterSink Sci6_RegisterSink
 #endif
 
+#define Printf Con_Printf
 void Con_Printf(const char *format, ...);
 void Con_PrintVA(const char *format, va_list ap);
 void Con_PrintToVA(PrintCharProc *, void *cbData, const char *format, va_list ap);

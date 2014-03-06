@@ -64,7 +64,7 @@ typedef struct DacAlias {
 #define FLG_READABLE 	(1)
 #define FLG_WRITABLE 	(2)
 
-const DacAlias dac0AliasesEml[NR_CHANNELS] = {
+static const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 	{NULL,0},
 	{NULL,0},
 	{NULL,0},
@@ -99,7 +99,7 @@ const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 	{NULL, 0},
 };	
 
-const DacAlias dac0AliasesMZ[NR_CHANNELS] = 
+static const DacAlias dac0AliasesMZ[NR_CHANNELS] = 
 {
 	{ NULL,FLG_READABLE | FLG_WRITABLE },
 	{ NULL,FLG_READABLE | FLG_WRITABLE },
@@ -231,6 +231,12 @@ static WriteVar wrvars[] = {
 };
 
 
+/**
+  *************************************************************************************
+  * \fn static uint32_t AD537x_Write(uint32_t value)
+  * Write a 32 bit value to the SPI (combination of command and register value)
+  *************************************************************************************
+  */
 static uint32_t  
 AD537x_Write(uint32_t value)
 {
@@ -270,7 +276,9 @@ AD537x_SFWrite(uint8_t sfc,uint16_t value)
 }
 
 /*
- * Readback  
+ *********************************************************************************
+ * \fn static uint32_t AD537x_Readback(uint16_t addrCode,uint8_t channelAddr) 
+ *********************************************************************************
  */
 static uint32_t 
 AD537x_Readback(uint16_t addrCode,uint8_t channelAddr) 
@@ -410,6 +418,12 @@ cmd_dac(Interp *interp,uint8_t argc, char *argv[])
 	return -EC_BADNUMARGS;
 }
 
+/**
+ ******************************************************************************
+ * \fn static int8_t cmd_dacrreset(Interp *interp,uint8_t argc,char *argv[])
+ * Shell command for resetting the DAC using the reset pin.
+ ******************************************************************************
+ */
 static int8_t
 cmd_dacrreset(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -419,6 +433,12 @@ cmd_dacrreset(Interp *interp,uint8_t argc,char *argv[])
 	return 0;
 }
 
+/**
+ ******************************************************************************  
+ * \fn static int8_t cmd_dacreg(Interp *interp,uint8_t argc,char *argv[])
+ * 
+ ******************************************************************************  
+ */
 static int8_t
 cmd_dacreg(Interp *interp,uint8_t argc,char *argv[])
 {
@@ -609,6 +629,11 @@ PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
         return true;
 }
 
+/**
+  ***********************************************************
+  * Initialize the DAC device driver module.
+  ***********************************************************
+  */
 void
 AD537x_ModInit(const char *name)
 {
