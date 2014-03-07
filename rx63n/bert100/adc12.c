@@ -29,7 +29,15 @@ typedef struct ADC12 {
 
 static ADC12 gAdc12;
 
-int16_t ADC12_Read(int channel)
+/**
+ ************************************************************************
+ * \fn int16_t ADC12_Read(int channel)
+ * Select a channel, Start the A/D conversion, wait for completion
+ * and return the digital Value
+ ************************************************************************
+ */
+int16_t 
+ADC12_Read(int channel)
 {
     uint16_t adc_value;
     volatile uint16_t *addr;
@@ -66,6 +74,11 @@ ADC12_ReadDB(int channel)
 	return db;
 }
 
+/*
+ **************************************************************************************
+ * Read from the A/D converter and convert the value to Volt.
+ **************************************************************************************
+ */
 float
 ADC12_ReadVolt(int channel)
 {
@@ -105,6 +118,30 @@ ADC12_GetTemperature(void)
 	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
 	temperature = (((adval * 3301) / 4096 - 1260) / 4.1) + 25 - adc->tempSensCorr;
 	return temperature;
+}
+
+/*
+ *************************************************************************** 
+ * \fn float ADC12_ReadRefVolt(void)
+ * Read the reference Voltage of the internal 
+ *************************************************************************** 
+ */
+float
+ADC12_ReadRefVolt(void)
+{
+	int32_t adval;
+	float volt;
+	S12AD.ADANS0.WORD = 0;
+    	S12AD.ADANS1.WORD = 0;
+	S12AD.ADEXICR.BIT.OCS = 1; /* Ref. Voltage select */
+	/* Start a conversion */
+	S12AD.ADCSR.BIT.ADST = 1;
+	/* Wait for the conversion to end */
+	while(1 == S12AD.ADCSR.BIT.ADST);
+	adval = S12AD.ADOCDR;
+	S12AD.ADEXICR.BIT.OCS = 0; /* Ref. Voltage uselect */
+	volt = ((adval * 3.300) / 4096);
+	return volt;
 }
 
 static bool 

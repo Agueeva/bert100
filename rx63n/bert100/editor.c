@@ -465,7 +465,7 @@ Editor_Init(Editor_LineSinkProc * LineSinkProc, void *LineSinkData)
 	ed->last_line = ed->current_line = 0;
 	ed->state = ED_STATE_IDLE;
 	Editor_OutPStr("\r\nWelcome to Bert100 Version ");
-	Con_Printf(" %s\n", Version_GetStr());
+	Con_Printf(" %s\n", System_GetVersion());
 	////Con_Printf(" %s \n", g_CompileTime);
 	//Con_Printf("Version %s\n", g_Version);
 	Editor_OutPStr(PROMPT);

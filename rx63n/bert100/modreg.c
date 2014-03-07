@@ -519,7 +519,7 @@ ModReg_Init(void)
 {
 	ModReg *mr = &gModReg;
 	int ch;
-	if(Variant_Get() != VARIANT_MZ) {
+	if(System_GetVariant() != VARIANT_MZ) {
 		return;
 	}
 	mr->ctrlFaultLimit = DEFAULT_CTRL_FAULT_LIMIT;

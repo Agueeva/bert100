@@ -14,6 +14,7 @@
 #include "scsi.h"
 #include "diskio.h"
 #include "config.h"
+#include "version.h" /* For the serial number */
 
 #if 1
 #define dbgprintf(x...) Con_Printf(x)
@@ -1154,7 +1155,7 @@ Usb_GetStringDescr(void *evData, uint8_t epNr, UsbSetupBuffer * sb)
 		    break;
 
 	    case 3:		/* iSerialNumber        */
-		    sb->dataLen = UsbDev_StrToDescr(reply, "00000000001", maxlen);
+		    sb->dataLen = UsbDev_StrToDescr(reply, System_GetSerialNumber(), maxlen);
 		    break;
 
 	    case 4:		/* iConfiguration       */

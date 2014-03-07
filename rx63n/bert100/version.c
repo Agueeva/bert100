@@ -11,6 +11,7 @@
 
 static uint8_t gVariant = 0;
 static uint8_t gHwRevision = 1;
+static char gSerialNumber[9] = ""; /* 8 + 1 */
 
 /* Year in BCD */
 #define YEAR ((((__DATE__ [7]-'0')*16+(__DATE__[8]-'0'))*16 \
@@ -36,16 +37,22 @@ static uint8_t gHwRevision = 1;
 static char gVersion[16];
 
 const char *
-Version_GetStr(void)
+System_GetVersion(void)
 {
 	SNPrintf(gVersion,sizeof(gVersion) - 1,"%s%02x%02x%02x",SWNAME,YEAR2,MONTH,DAY);
 	return gVersion;
 }
 
 uint8_t 
-Variant_Get(void)
+System_GetVariant(void)
 {
 	return gVariant;
+}
+
+const char *
+System_GetSerialNumber(void)
+{
+	return gSerialNumber;
 }
 
 static bool 
@@ -81,13 +88,18 @@ PVHWRev_Get (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 static int8_t
 cmd_version(Interp * interp, uint8_t argc, char *argv[])
 {
-        Interp_Printf_P(interp, "Software Version %s\n", Version_GetStr());
+        Interp_Printf_P(interp, "Software Version %s\n", System_GetVersion());
         Interp_Printf_P(interp, "Build date " __DATE__ " " __TIME__ "\n");
 	return 0;
 }
 
 INTERP_CMD(versionCmd, "version", cmd_version, "version # Print version information");
 
+/**
+ **********************************************************************************************
+ * \fn static int8_t cmd_variant(Interp * interp, uint8_t argc, char *argv[])
+ **********************************************************************************************
+ */
 static int8_t
 cmd_variant(Interp * interp, uint8_t argc, char *argv[])
 {
@@ -110,6 +122,24 @@ cmd_variant(Interp * interp, uint8_t argc, char *argv[])
 INTERP_CMD(variantCmd, "variant", cmd_variant, "variant # Print variant information");
 
 /**
+ ***************************************************************************************************
+ * \fn static int8_t cmd_serialnumber(Interp * interp, uint8_t argc, char *argv[])
+ ***************************************************************************************************
+ */
+static int8_t
+cmd_serialnumber(Interp * interp, uint8_t argc, char *argv[])
+{
+	if((argc == 3) && (strcmp(argv[1],"set") == 0)) {
+		SNPrintf(gSerialNumber,array_size(gSerialNumber),argv[2]);
+		DB_VarWrite(DBKEY_SERIALNUMBER,gSerialNumber);
+	}
+        Interp_Printf_P(interp, "SerialNumber: \"%s\"\n",gSerialNumber);
+	return 0;
+}
+
+INTERP_CMD(serialnumberCmd, "serialnumber", cmd_serialnumber, "serialnumber ?set <serialnumber>? # Print / Set serialnumber");
+
+/**
  ******************************************************************************************
  * Register shell command and process variable interface to Bert
  ******************************************************************************************
@@ -119,6 +149,9 @@ Version_Init(void)
 {
 	Interp_RegisterCmd(&versionCmd);
 	Interp_RegisterCmd(&variantCmd);
+	Interp_RegisterCmd(&serialnumberCmd);
+	SNPrintf(gSerialNumber,array_size(gSerialNumber),"0000000000");
+	DB_VarInit(DBKEY_SERIALNUMBER,gSerialNumber,"system.serialNr");
 	DB_VarInit(DBKEY_HWREV,&gHwRevision,"system.hwRevision");
 	DB_VarInit(DBKEY_VARIANT,&gVariant,"system.variant");
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");

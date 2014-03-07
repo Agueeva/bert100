@@ -34,7 +34,7 @@ CPUTemp_PollTimerProc(void *eventData)
                 fanRpm = 2500;
         }
         FanCo_SetTargetRpm(fanRpm);
-        Timer_Mod(&sys->tempPollTimer,2500);
+        Timer_Start(&sys->tempPollTimer,2500);
 }
 
 static int8_t
@@ -59,7 +59,8 @@ PVExecScript_Set(void *cbData, uint32_t adId, const char *strP)
 }
 
 void
-SystemIf_Init(void) {
+SystemIf_Init(void) 
+{
 	SystemIf *sys = &gSystemIf;
 	PVar_New(NULL,PVExecScript_Set,NULL,0,"system.execScript");
 	sys->temp0 = 30;

@@ -9,6 +9,6 @@ void ADC12_Init(void);
 int16_t ADC12_Read(int channel);
 float ADC12_ReadVolt(int channel);
 float ADC12_ReadDB(int channel);
-
+float ADC12_ReadRefVolt(void);
 float ADC12_ReadVoltMultiple(int channel,uint8_t repeatCnt);
 float ADC12_GetTemperature(void);

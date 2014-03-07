@@ -170,11 +170,9 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 	} else if((argc == 3) && (strcmp(argv[1],"rpm") == 0)) {
 		fc->targetRpm = astrtoi16(argv[2]);
 		return 0;
-	} else if((argc == 2) && (strcmp(argv[1],"rpm") == 0)) {
-		Con_Printf("Target RPM: %u\n",fc->targetRpm);
-	} else if((argc == 2) && (strcmp(argv[1],"dac") == 0)) {
-		Con_Printf("DAC-Val: %u\n",fc->dacVal);
 	}
+	Con_Printf("Target RPM: %u\n",fc->targetRpm);
+	Con_Printf("DAC-Val:    %u\n",fc->dacVal);
 	for(i = 0; i < NR_FANS; i ++) {
 		Con_Printf("Fan %lu RPM %lu\n",i,FanCo_GetRpm(fc,i));
 	}

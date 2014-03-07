@@ -189,11 +189,11 @@ main(void)
 	Alarm_Init();
 	Interp_StartScript("0:/bert100.scr");
 	SystemIf_Init();
-	variant = Variant_Get();
+	variant = System_GetVariant();
 	if(variant == VARIANT_MZ) {
-		//MachZehnder_Init();
+		MachZehnder_Init();
 	} else if (variant == VARIANT_EML) {
-		//Eml_Init();
+		Eml_Init();
 	}
 	Buzzer_SelectMelody(BUZZER_MELODY_OK);
 	EV_Loop();

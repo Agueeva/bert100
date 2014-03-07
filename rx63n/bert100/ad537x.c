@@ -638,7 +638,7 @@ void
 AD537x_ModInit(const char *name)
 {
 	int ch;
-	uint8_t variant = Variant_Get();
+//	uint8_t variant = Variant_Get();
 	RESET_HIGH;
 	RESET_DIROUT;
 
@@ -661,13 +661,14 @@ AD537x_ModInit(const char *name)
 	DACOFS1_Write(0x2000);
  	for(ch = 0; ch < NR_CHANNELS; ch++) {
 		uint16_t value;
-		const DacAlias *alias;
+//		const DacAlias *alias;
 		value = 0xffff;
 		DACM_Set(ch,value);
 		value = 0x8000;
 		DACX_Set(ch,value);
 		value = 0x8000;
 		DACC_Set(ch,value);
+#if 0
 		if(variant == VARIANT_MZ) {
 			alias = &dac0AliasesMZ[ch];
 		} else if(variant == VARIANT_EML) {
@@ -683,6 +684,7 @@ AD537x_ModInit(const char *name)
 				PVar_New(PVDac_Get,NULL,NULL,ch,alias->name);
 			}
 		}
+#endif
 		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.ch%d",ch);
 	}
 		
