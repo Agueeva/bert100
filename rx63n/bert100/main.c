@@ -58,6 +58,8 @@
 #include "buzzer.h"
 #include "alarms.h"
 #include "system.h"
+#include "amp_eml.h"
+#include "amp_mz.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -97,6 +99,23 @@ blinkProc(void *eventData)
 #endif
 }
 
+/** 
+ * Variant specific init functions 
+ */
+static bool 
+MachZehnder_Init(void)
+{
+	AmpEML_Init("amp");
+	return true;
+}
+
+static bool 
+Eml_Init(void)
+{
+	AmpEML_Init("emlAmp");
+	return true;
+}
+
 int 
 main(void)
 {
@@ -104,6 +123,7 @@ main(void)
 	Interp *interp;
         Editor *editor;
 	EthDriver *ethDrv;
+	uint8_t variant;
 	XY_WebServer *wserv;
 	/* Disable register protection permanently */
 	SYSTEM.PRCR.WORD = 0xa50b;
@@ -169,6 +189,12 @@ main(void)
 	Alarm_Init();
 	Interp_StartScript("0:/bert100.scr");
 	SystemIf_Init();
+	variant = Variant_Get();
+	if(variant == VARIANT_MZ) {
+		//MachZehnder_Init();
+	} else if (variant == VARIANT_EML) {
+		//Eml_Init();
+	}
 	Buzzer_SelectMelody(BUZZER_MELODY_OK);
 	EV_Loop();
 }
