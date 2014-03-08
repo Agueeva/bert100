@@ -14,6 +14,7 @@
 #include "version.h"
 #include "database.h"
 #include "fanco.h"
+#include "timer.h"
 
 #define NR_CHANNELS 21
 
@@ -113,6 +114,8 @@ ADC12_GetTemperature(void)
 	/* Start a conversion */
 	S12AD.ADCSR.BIT.ADST = 1;
 	/* Wait for the conversion to end */
+    	while(1 == S12AD.ADCSR.BIT.ADST);
+	S12AD.ADCSR.BIT.ADST = 1;
     	while(1 == S12AD.ADCSR.BIT.ADST);
 	adval = S12AD.ADTSDR;
 	S12AD.ADEXICR.WORD = 0; /* Temperature sensor unselect */
@@ -230,10 +233,10 @@ PVAdc12_GetTemperature (void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
 {
 	float temperature;
 	int i;
-	for(i = 0, temperature = 0; i < 12; i++) {
+	for(i = 0, temperature = 0; i < 8; i++) {
 		temperature += ADC12_GetTemperature();
 	}
-	temperature = temperature / 12;
+	temperature = temperature / 8;
 	bufP[f32toa(temperature,bufP,maxlen)] = 0;
 	return true;
 }
@@ -303,6 +306,8 @@ cmd_temperature(Interp * interp, uint8_t argc, char *argv[])
 	float tempCorr;
 	ADC12 *adc = &gAdc12;
 	if(argc == 1) {
+		temperature = ADC12_GetTemperature();
+		Con_Printf("CPU Temp. %f C\n",temperature);
 		temperature = ADC12_GetTemperature();
 		Con_Printf("CPU Temp. %f C\n",temperature);
 	} else if(argc == 2) {

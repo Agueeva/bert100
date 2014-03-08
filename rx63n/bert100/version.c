@@ -11,7 +11,7 @@
 
 static uint8_t gVariant = 0;
 static uint8_t gHwRevision = 1;
-static char gSerialNumber[9] = ""; /* 8 + 1 */
+static char gSerialNumber[9]; /* 8 + 1 */
 
 /* Year in BCD */
 #define YEAR ((((__DATE__ [7]-'0')*16+(__DATE__[8]-'0'))*16 \
@@ -131,7 +131,7 @@ cmd_serialnumber(Interp * interp, uint8_t argc, char *argv[])
 {
 	if((argc == 3) && (strcmp(argv[1],"set") == 0)) {
 		SNPrintf(gSerialNumber,array_size(gSerialNumber),argv[2]);
-		DB_VarWrite(DBKEY_SERIALNUMBER,gSerialNumber);
+		DB_VarWrite(DBKEY_SERIALNUMBER,&gSerialNumber);
 	}
         Interp_Printf_P(interp, "SerialNumber: \"%s\"\n",gSerialNumber);
 	return 0;
@@ -151,7 +151,7 @@ Version_Init(void)
 	Interp_RegisterCmd(&variantCmd);
 	Interp_RegisterCmd(&serialnumberCmd);
 	SNPrintf(gSerialNumber,array_size(gSerialNumber),"0000000000");
-	DB_VarInit(DBKEY_SERIALNUMBER,gSerialNumber,"system.serialNr");
+	DB_VarInit(DBKEY_SERIALNUMBER,&gSerialNumber,"system.serialNr");
 	DB_VarInit(DBKEY_HWREV,&gHwRevision,"system.hwRevision");
 	DB_VarInit(DBKEY_VARIANT,&gVariant,"system.variant");
 	PVar_New(PVVersionSW_Get,NULL,NULL,0,"system.firmware");
