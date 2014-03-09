@@ -18,8 +18,10 @@ typedef struct TxDriverSettings {
 
         float vg1[4];
         float vg2[4];
+        float vg3[4];
         float vd1[4];
         float vd2[4];
+        float vs[4];
 
         uint8_t txaSwing[4];
         uint8_t txaEqpst[4];
@@ -66,7 +68,7 @@ BertEML_LoadDataset(BertEML *bert,uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154712) {
+        if(txDs.signature != 0x08154713) {
                 Con_Printf("Dataset not valid\n");
                 return false;
         }
@@ -77,10 +79,16 @@ BertEML_LoadDataset(BertEML *bert,uint16_t idx)
                 DAC_Set(DAC_EMLAMP1_VG2(chNr),txDs.vg2[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VG3(chNr),txDs.vg3[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
                 DAC_Set(DAC_EMLAMP1_VD2(chNr),txDs.vd2[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
                 DAC_Set(DAC_EMLAMP1_VD1(chNr),txDs.vd1[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VS(chNr),txDs.vs[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
                 CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs.txaSwing[chNr]);
@@ -117,10 +125,16 @@ BertEML_SaveDataset(BertEML *beml, uint16_t idx)
                 DAC_Get(DAC_EMLAMP1_VG2(chNr),&txDs.vg2[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Get(DAC_EMLAMP1_VG3(chNr),&txDs.vg3[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
                 DAC_Get(DAC_EMLAMP1_VD2(chNr),&txDs.vd2[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
                 DAC_Get(DAC_EMLAMP1_VD1(chNr),&txDs.vd1[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Get(DAC_EMLAMP1_VS(chNr),&txDs.vs[chNr]);
         }
         for(chNr = 0; chNr < 4; chNr++) {
                 txDs.txaSwing[chNr] =   CDR_Read(CDR_ID_TX,CDR_TXA_SWING(chNr));
@@ -130,7 +144,7 @@ BertEML_SaveDataset(BertEML *beml, uint16_t idx)
                 txDs.swapTxPN[chNr] = CDR_Read(CDR_ID_TX,CDR_SWAP_TXP_N(chNr));
         }
         SNPrintf(txDs.strDescription,array_size(txDs.strDescription), "%s",beml->currDataSetDescr);
-        txDs.signature = 0x08154712;
+        txDs.signature = 0x08154713;
         result = DB_SetObj(DBKEY_BERT0_EMLTXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
         if(result == false) {
                 Con_Printf("Failed to save dataset %u\n",idx);
@@ -222,7 +236,7 @@ BertEML_ShowDataset(uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154712) {
+        if(txDs.signature != 0x08154713) {
                 Con_Printf("Dataset not valid\n");
                 return false;
         }
