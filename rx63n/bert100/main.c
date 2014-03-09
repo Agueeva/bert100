@@ -60,6 +60,8 @@
 #include "system.h"
 #include "amp_eml.h"
 #include "amp_mz.h"
+#include "bert_mz.h"
+#include "bert_eml.h"
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -106,6 +108,8 @@ static bool
 MachZehnder_Init(void)
 {
 	AmpEML_Init("amp");
+	BertMZ_Init("bert0");
+	FanCo_Init(4);
 	return true;
 }
 
@@ -113,6 +117,8 @@ static bool
 Eml_Init(void)
 {
 	AmpEML_Init("emlAmp");
+	//BertEML_Init("bert0");
+	FanCo_Init(3);
 	return true;
 }
 
@@ -183,7 +189,6 @@ main(void)
 	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */
 	Leds_Init();
-	FanCo_Init();
 	Bert_Init();
 	Buzzer_Init();
 	Alarm_Init();

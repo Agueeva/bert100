@@ -36,12 +36,13 @@
 #define MAX6651_GPIO_STAT   (20)
 #define MAX6651_COUNT       (22)
 
-#define NR_FANS	(4)
+#define MAX_FANS (4)
 
 typedef struct FanCo {
 	uint16_t i2cAddr;
-	uint16_t fanRpm[NR_FANS];
-	TimeMs_t timeStamp[NR_FANS];
+	uint16_t nrFans;
+	uint16_t fanRpm[MAX_FANS];
+	TimeMs_t timeStamp[MAX_FANS];
 	Timer fanPollTimer;
 	uint8_t fanPollIdx;
 	uint8_t dacVal;
@@ -64,7 +65,7 @@ FanCo_GetRpm(FanCo *fc,int fanNr)
 	uint8_t i2c_result;
 	TimeMs_t now = TimeMs_Get();
         uint32_t rpm;
-	if(fanNr >= NR_FANS) {
+	if(fanNr >= MAX_FANS) {
 		return 0;
 	}
 	if((now - fc->timeStamp[fanNr]) > 550) {
@@ -91,7 +92,7 @@ FanCo_PollTimer(void *eventData)
 {
 	FanCo *fc = eventData;
 	uint32_t rpm;
-	fc->fanPollIdx = (fc->fanPollIdx + 1) % NR_FANS;
+	fc->fanPollIdx = (fc->fanPollIdx + 1) % fc->nrFans;
 	rpm = FanCo_GetRpm(fc,fc->fanPollIdx);	
 	if(rpm < 1000) {
 		Alarm_Set(ALARM_FAN_0 + fc->fanPollIdx);
@@ -173,7 +174,7 @@ cmd_fan(Interp * interp, uint8_t argc, char *argv[])
 	}
 	Con_Printf("Target RPM: %u\n",fc->targetRpm);
 	Con_Printf("DAC-Val:    %u\n",fc->dacVal);
-	for(i = 0; i < NR_FANS; i ++) {
+	for(i = 0; i < fc->nrFans; i ++) {
 		Con_Printf("Fan %lu RPM %lu\n",i,FanCo_GetRpm(fc,i));
 	}
 	return 0;
@@ -187,20 +188,21 @@ INTERP_CMD(fanCmd, "fan", cmd_fan, "fan # Get all FAN speeds");
  **********************************************************************
  */
 void
-FanCo_Init(void)
+FanCo_Init(uint16_t nrFans)
 {
 	FanCo *fc = &gFanCo[0];
 	uint8_t value = 1;
 	uint8_t config;
 	uint8_t i2c_result;
 	uint16_t fanNr;
+	fc->nrFans = nrFans;
 	fc->i2cAddr = 0x3e;
 	i2c_result = I2C_Write8(fc->i2cAddr,MAX6651_COUNT,&value,1);
 	if(i2c_result != I2C_RESULT_OK) {
 		Con_Printf("Can not access FAN controller\n");
 	}
 	Interp_RegisterCmd(&fanCmd);
-	for(fanNr = 0 ; fanNr < NR_FANS; fanNr++)
+	for(fanNr = 0 ; fanNr < nrFans; fanNr++)
 	{
 		PVar_New(PVRpm_Get,NULL,fc,fanNr ,"fanco.fan%u.rpm",fanNr);
 	}

@@ -14,6 +14,7 @@
 #include "shiftreg.h"
 #include "database.h"
 #include "bert.h"
+#include "amp_mz.h"
 #include "ad537x.h"
 #include "modreg.h"
 #include <math.h>
@@ -1453,9 +1454,9 @@ cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
 INTERP_CMD(datasetCmd, "dataset", cmd_dataset, "dataset <load | save | dump> <DataSetNr> # ");
 
 /*
- ********************************************
+ *******************************************************************************
  * \fn void Bert_Init(void) 
- ********************************************
+ *******************************************************************************
  */
 void
 Bert_Init(void) 
@@ -1499,9 +1500,9 @@ Bert_Init(void)
                 const CdrForward *fwd = &gForwardRegs[i];
                 PVar_New(PVForward_Get,PVForward_Set,bert,i,"%s.%s",name,fwd->name);
         }
-	PVar_New(NULL,PVDataSet_Load,bert,0 ,"%s.%s",name,"loadDataSet");
-	PVar_New(NULL,PVDataSet_Save,bert,0 ,"%s.%s",name,"saveDataSet");
-	PVar_New(PVDataSet_GetDescr,PVDataSet_SetDescr,bert,0 ,"%s.%s",name,"dataSetDescription");
+//	PVar_New(NULL,PVDataSet_Load,bert,0 ,"%s.%s",name,"loadDataSet");
+//	PVar_New(NULL,PVDataSet_Save,bert,0 ,"%s.%s",name,"saveDataSet");
+//	PVar_New(PVDataSet_GetDescr,PVDataSet_SetDescr,bert,0 ,"%s.%s",name,"dataSetDescription");
 	PVar_New(PVBerMeasWin_Get,PVBerMeasWin_Set,bert,0 ,"%s.%s",name,"berMeasWin_ms");
 	PVar_New(PVBitrate_Get,PVBitrate_Set,bert,0 ,"%s.%s",name,"bitrate");
 	PVar_New(PVUserPattern_Get,PVUserPattern_Set,bert,0 ,"%s.userPattern");
@@ -1515,5 +1516,5 @@ Bert_Init(void)
 		DB_VarInit(DBKEY_BERT0_BITRATE_MAX,&bert->dbBitrateMax,"%s.bitrateMax",name);
 	}
 	Interp_RegisterCmd(&berCmd);
-	Interp_RegisterCmd(&datasetCmd);
+//	Interp_RegisterCmd(&datasetCmd);
 }
