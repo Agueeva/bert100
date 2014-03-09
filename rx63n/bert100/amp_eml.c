@@ -29,7 +29,6 @@ typedef struct DacAlias {
 #define FLG_READABLE	(1)
 #define FLG_WRITABLE	(2)
 
-
 static const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 	{NULL,0},
 	{NULL,0},
