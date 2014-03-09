@@ -117,7 +117,7 @@ static bool
 Eml_Init(void)
 {
 	AmpEML_Init("emlAmp");
-	//BertEML_Init("bert0");
+	BertEML_Init("bert0");
 	FanCo_Init(3);
 	return true;
 }

@@ -56,84 +56,6 @@ typedef struct ReadbackVar {
         uint8_t nrArgs;
 } ReadbackVar;
 
-typedef struct DacAlias {
-	const char *name;
-	uint8_t flags;
-} DacAlias;
-
-#define FLG_READABLE 	(1)
-#define FLG_WRITABLE 	(2)
-
-static const DacAlias dac0AliasesEml[NR_CHANNELS] = {
-	{NULL,0},
-	{NULL,0},
-	{NULL,0},
-	{NULL,0},
-	{"emlAmp0.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp1.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp2.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp3.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp0.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp1.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp2.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp3.vg2", FLG_READABLE | FLG_WRITABLE },
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{"emlAmp0.vd1", FLG_READABLE },
-	{"emlAmp1.vd1", FLG_READABLE },
-	{"emlAmp2.vd1", FLG_READABLE },
-	{"emlAmp3.vd1", FLG_READABLE },
-	{"emlAmp0.vd2", FLG_READABLE },
-	{"emlAmp1.vd2", FLG_READABLE },
-	{"emlAmp2.vd2", FLG_READABLE },
-	{"emlAmp3.vd2", FLG_READABLE },
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-};	
-
-static const DacAlias dac0AliasesMZ[NR_CHANNELS] = 
-{
-	{ NULL,FLG_READABLE | FLG_WRITABLE },
-	{ NULL,FLG_READABLE | FLG_WRITABLE },
-	{ NULL,FLG_READABLE | FLG_WRITABLE },
-	{ NULL,FLG_READABLE | FLG_WRITABLE },
-	{"amp0.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"amp1.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"amp2.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"amp3.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"amp0.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"amp1.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"amp2.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"amp3.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"amp0.vg3", FLG_READABLE | FLG_WRITABLE },
-	{"amp1.vg3", FLG_READABLE | FLG_WRITABLE },
-	{"amp2.vg3", FLG_READABLE | FLG_WRITABLE },
-	{"amp3.vg3", FLG_READABLE | FLG_WRITABLE },
-	{"amp0.vd1", FLG_READABLE | FLG_WRITABLE },
-	{"amp1.vd1", FLG_READABLE | FLG_WRITABLE },
-	{"amp2.vd1", FLG_READABLE | FLG_WRITABLE },
-	{"amp3.vd1", FLG_READABLE | FLG_WRITABLE },
-	{"amp0.vd2", FLG_READABLE | FLG_WRITABLE },
-	{"amp1.vd2", FLG_READABLE | FLG_WRITABLE },
-	{"amp2.vd2", FLG_READABLE | FLG_WRITABLE },
-	{"amp3.vd2", FLG_READABLE | FLG_WRITABLE },
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-};	
 
 static ReadbackVar rbvars[] = {
 	{
@@ -638,7 +560,6 @@ void
 AD537x_ModInit(const char *name)
 {
 	int ch;
-//	uint8_t variant = Variant_Get();
 	RESET_HIGH;
 	RESET_DIROUT;
 
@@ -661,30 +582,12 @@ AD537x_ModInit(const char *name)
 	DACOFS1_Write(0x2000);
  	for(ch = 0; ch < NR_CHANNELS; ch++) {
 		uint16_t value;
-//		const DacAlias *alias;
 		value = 0xffff;
 		DACM_Set(ch,value);
 		value = 0x8000;
 		DACX_Set(ch,value);
 		value = 0x8000;
 		DACC_Set(ch,value);
-#if 0
-		if(variant == VARIANT_MZ) {
-			alias = &dac0AliasesMZ[ch];
-		} else if(variant == VARIANT_EML) {
-			alias = &dac0AliasesEml[ch];
-		} else {
-			Con_Printf("DAC aliases: unknown Hardware variant\n");
-			break;
-		}
-		if(alias->name) {
-			if(alias->flags == (FLG_READABLE | FLG_WRITABLE)) {
-				PVar_New(PVDac_Get,PVDac_Set,NULL,ch,alias->name);
-			} else if(alias->flags == FLG_READABLE) {
-				PVar_New(PVDac_Get,NULL,NULL,ch,alias->name);
-			}
-		}
-#endif
 		PVar_New(PVDac_Get,PVDac_Set,NULL,ch,"dac0.ch%d",ch);
 	}
 		
