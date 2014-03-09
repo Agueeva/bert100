@@ -14,6 +14,8 @@
 
 typedef struct TxDriverSettings {
         uint32_t signature;
+        char    strDescription[32];
+
         float vg1[4];
         float vg2[4];
         float vd1[4];
@@ -24,8 +26,6 @@ typedef struct TxDriverSettings {
         uint8_t txaEqpre[4];
         uint8_t txaSwingFine[4];
         bool    swapTxPN[4];
-        //float   modKi[4];
-        char    strDescription[32];
 } TxDriverSettings;
 
 /**
