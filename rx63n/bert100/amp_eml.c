@@ -93,7 +93,7 @@ PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 
 /**
   ***********************************************************
-  * \fn void AmpMZ_Init(const char *name);
+  * \fn void AmpEML_Init(const char *name);
   * Initialize the DAC device driver module.
   ***********************************************************
   */
