@@ -29,36 +29,104 @@ typedef struct DacAlias {
 #define FLG_READABLE	(1)
 #define FLG_WRITABLE	(2)
 
-
 static const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 	{NULL,0},
 	{NULL,0},
 	{NULL,0},
 	{NULL,0},
-	{"emlAmp0.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp1.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp2.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp3.vg1", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp0.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp1.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp2.vg2", FLG_READABLE | FLG_WRITABLE },
-	{"emlAmp3.vg2", FLG_READABLE | FLG_WRITABLE },
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{"emlAmp0.vd1", FLG_READABLE },
-	{"emlAmp1.vd1", FLG_READABLE },
-	{"emlAmp2.vd1", FLG_READABLE },
-	{"emlAmp3.vd1", FLG_READABLE },
-	{"emlAmp0.vd2", FLG_READABLE },
-	{"emlAmp1.vd2", FLG_READABLE },
-	{"emlAmp2.vd2", FLG_READABLE },
-	{"emlAmp3.vd2", FLG_READABLE },
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
-	{NULL, 0},
+	{
+		.name = "emlAmp0.vg1", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{	.name = "emlAmp1.vg1", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp2.vg1", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp3.vg1", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp0.vg2", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp1.vg2", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp2.vg2", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp3.vg2", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp0.vg3", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp1.vg3", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{
+		.name = "emlAmp2.vg3", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{	
+		.name = "emlAmp3.vg3", 
+		.flags = FLG_READABLE | FLG_WRITABLE 
+	},
+	{	
+		.name = "emlAmp0.vd1", 
+		.flags = FLG_READABLE 
+	},
+	{	.name = "emlAmp1.vd1", 
+		.flags = FLG_READABLE 
+	},
+	{	.name = "emlAmp2.vd1", 
+		.flags = FLG_READABLE 
+	},
+	{
+		.name = "emlAmp3.vd1", 
+		.flags = FLG_READABLE 
+	},
+	{
+		.name = "emlAmp0.vd2", 
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp1.vd2", 
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp2.vd2", 
+		.flags = FLG_READABLE 
+	},
+	{
+		.name = "emlAmp3.vd2", 
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp0.vs",  
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp1.vs",  
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp2.vs",  
+		.flags = FLG_READABLE 
+	},
+	{	
+		.name = "emlAmp3.vs",  
+		.flags = FLG_READABLE 
+	},
 	{NULL, 0},
 	{NULL, 0},
 	{NULL, 0},
@@ -74,7 +142,9 @@ static const DacAlias dac0AliasesEml[NR_CHANNELS] = {
 static bool 
 PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
 {
+	const DacAlias *alias;
 	float val;	
+	alias = &dac0AliasesEml[chNr];
 	val = astrtof32(strP);
 	return DAC_Set(chNr,val);
 }
@@ -82,9 +152,11 @@ PVDac_Set (void *cbData, uint32_t chNr, const char *strP)
 static bool 
 PVDac_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 {
+	const DacAlias *alias;
 	float dacval;
         uint8_t cnt;
 	bool retval;
+	alias = &dac0AliasesEml[chNr];
 	retval = DAC_Get(chNr,&dacval);
         cnt = f32toa(dacval,bufP,maxlen);
         bufP[cnt] = 0;
