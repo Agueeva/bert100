@@ -145,6 +145,21 @@ enable_modulator_clock(ModReg *mr,uint32_t hz,float delayUs)
 	MTU.TSTR.BIT.CST4 = 1;
 }
 
+float 
+ModReg_GetDelay(void)
+{
+	ModReg *mr = &gModReg;
+	return mr->rectDelayUs;
+}
+
+bool 
+ModReg_SetDelay(float delayUs)
+{
+	ModReg *mr = &gModReg;
+	enable_modulator_clock(mr,20000,delayUs);
+	return true;
+}
+
 static void
 update_eff_ki(ModReg *mr,uint8_t chNr) 
 {
@@ -505,7 +520,11 @@ PVModTecEna_Set (void *cbData, uint32_t chNr, const char *strP)
         return true;
 }
 
-
+/*
+ **********************************************************************************************
+ *
+ **********************************************************************************************
+ */
 static bool
 PVShiftEyeSym_Set (void *cbData, uint32_t chNr, const char *strP)
 {
