@@ -506,6 +506,39 @@ PVModTecEna_Set (void *cbData, uint32_t chNr, const char *strP)
 }
 
 
+static bool
+PVShiftEyeSym_Set (void *cbData, uint32_t chNr, const char *strP)
+{
+	ModReg *mr = cbData;
+	float dbRectDelayUs;
+        float val;
+	DB_VarRead(DBKEY_MODREG_RECT_DELAY,&dbRectDelayUs);
+        val = astrtof32(strP);
+	if(fabs(val) > 100) {
+		return false;
+	} else {
+		mr->rectDelayUs = dbRectDelayUs + 2 * val / 100;
+		enable_modulator_clock(mr,20000,mr->rectDelayUs);
+		return true;
+	}
+}
+
+static bool
+PVShiftEyeSym_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
+{
+	ModReg *mr = cbData;
+	float dbRectDelayUs;
+        float val;
+        uint8_t cnt;
+
+	DB_VarRead(DBKEY_MODREG_RECT_DELAY,&dbRectDelayUs);
+        val = mr->rectDelayUs; 
+	val = (val - dbRectDelayUs) / 2 * 100;
+        cnt = f32toa(val,bufP,maxlen);
+        bufP[cnt] = 0;
+        return true;
+}
+
 /**
  ****************************************************************************
  * \fn void ModReg_Init(void)
@@ -548,6 +581,7 @@ ModReg_Init(void)
 	MOD_TEC_ENA(1);
 	MOD_TEC_ENA_DIROUT();
 	PVar_New(PVModTecEna_Get,PVModTecEna_Set,mr,ch,"mzMod.tecEna");
+        PVar_New(PVShiftEyeSym_Get,PVShiftEyeSym_Set,mr,0,"mzMod.shiftEyeSym");
 
 	SYNC_RESET_DIROUT(); 
 	Timer_Start(&mr->syncTimer,100);
