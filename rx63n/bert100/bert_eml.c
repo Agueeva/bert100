@@ -14,6 +14,7 @@
 
 typedef struct TxDriverSettings {
         uint32_t signature;
+	//float   outAmplitudeVolt;
         char    strDescription[32];
 
         float vg1[4];

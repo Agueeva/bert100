@@ -520,6 +520,7 @@ PVModTecEna_Set (void *cbData, uint32_t chNr, const char *strP)
         return true;
 }
 
+#define MOD_SHIFT_EYE_SYM_100_PERCENT	(2)
 /*
  **********************************************************************************************
  *
@@ -536,7 +537,7 @@ PVShiftEyeSym_Set (void *cbData, uint32_t chNr, const char *strP)
 	if(fabs(val) > 100) {
 		return false;
 	} else {
-		mr->rectDelayUs = dbRectDelayUs + 2 * val / 100;
+		mr->rectDelayUs = dbRectDelayUs + MOD_SHIFT_EYE_SYM_100_PERCENT * val / 100;
 		enable_modulator_clock(mr,20000,mr->rectDelayUs);
 		return true;
 	}
@@ -552,7 +553,7 @@ PVShiftEyeSym_Get (void *cbData, uint32_t chNr, char *bufP,uint16_t maxlen)
 
 	DB_VarRead(DBKEY_MODREG_RECT_DELAY,&dbRectDelayUs);
         val = mr->rectDelayUs; 
-	val = (val - dbRectDelayUs) / 2 * 100;
+	val = (val - dbRectDelayUs) / MOD_SHIFT_EYE_SYM_100_PERCENT * 100;
         cnt = f32toa(val,bufP,maxlen);
         bufP[cnt] = 0;
         return true;

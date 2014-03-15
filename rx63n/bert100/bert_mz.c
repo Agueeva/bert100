@@ -192,6 +192,11 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
         }
 }
 
+/**
+ ****************************************************************************
+ * Set Data set description.
+ ****************************************************************************
+ */
 static bool
 PVDataSet_SetDescr(void *cbData, uint32_t adId, const char *strP)
 {
