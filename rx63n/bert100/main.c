@@ -107,7 +107,7 @@ blinkProc(void *eventData)
 static bool 
 MachZehnder_Init(void)
 {
-	AmpEML_Init("amp");
+	AmpMZ_Init("amp");
 	BertMZ_Init("bert0");
 	FanCo_Init(4);
 	return true;
