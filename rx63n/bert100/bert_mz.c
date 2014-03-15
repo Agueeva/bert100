@@ -26,6 +26,8 @@ typedef struct TxDriverSettings {
         uint8_t txaSwingFine[4];
         bool    swapTxPN[4];
         float   modKi[4];
+	float 	modDelay;
+
         char    strDescription[32];
 } TxDriverSettings;
 
@@ -67,7 +69,7 @@ BertMZ_LoadDataset(BertMZ *bert,uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154711) {
+        if(txDs.signature != 0x08161234) {
                 Con_Printf("Dataset not valid\n");
                 return false;
         }
@@ -93,7 +95,9 @@ BertMZ_LoadDataset(BertMZ *bert,uint16_t idx)
         for(chNr = 0; chNr < 4; chNr++) {
                 ModReg_SetKi(chNr,txDs.modKi[chNr]);
         }
+	ModReg_SetDelay(txDs.modDelay); 
         SNPrintf(bert->currDataSetDescr,array_size(bert->currDataSetDescr),"%s",txDs.strDescription);
+	// Mod_GetDelay();
         return true;
 }
 
@@ -137,7 +141,8 @@ BertMZ_SaveDataset(BertMZ *bmz, uint16_t idx)
                 txDs.modKi[chNr] = ModReg_GetKi(chNr);
         }
         SNPrintf(txDs.strDescription,array_size(txDs.strDescription), "%s",bmz->currDataSetDescr);
-        txDs.signature = 0x08154711;
+	txDs.modDelay = ModReg_GetDelay(); 
+        txDs.signature = 0x08161234;
         result = DB_SetObj(DBKEY_BERT0_MZTXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
         if(result == false) {
                 Con_Printf("Failed to save dataset %u\n",idx);
@@ -229,7 +234,7 @@ BertMZ_ShowDataset(uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154711) {
+        if(txDs.signature != 0x08161234) {
                 Con_Printf("Dataset not valid\n");
                 return false;
         }
@@ -263,6 +268,7 @@ BertMZ_ShowDataset(uint16_t idx)
         for(chNr = 0; chNr < 4; chNr++) {
                 Con_Printf("modKI_%u: %f\n",chNr,txDs.modKi[chNr]);
         }
+	Con_Printf("modDelay: %f\n",txDs.modDelay);
         Con_Printf("Name: \"%s\"\n",txDs.strDescription);
         return true;
 }
