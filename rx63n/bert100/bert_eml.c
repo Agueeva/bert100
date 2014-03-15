@@ -14,7 +14,7 @@
 
 typedef struct TxDriverSettings {
         uint32_t signature;
-	//float   outAmplitudeVolt;
+	float   outAmplVolt;
         char    strDescription[32];
 
         float vg1[4];
@@ -42,6 +42,39 @@ typedef struct BertEML {
 } BertEML;
 
 static BertEML gBertEML;
+
+static bool 
+BertEML_FindInterpolDs(BertEML *beml, float outAmplVolt, uint16_t *dsetLow, uint16_t *dsetHigh)
+{
+	int i;
+	bool result;
+        TxDriverSettings txDs;
+	float outAmplLow = 0;
+	float outAmplHigh = 1e20;
+	int16_t dataSetHigh = -1; 
+	int16_t dataSetLow = 0x7fff; 
+	for(i = 0; i < NR_TX_DRIVER_SETTINGS; i++) {  
+        	memset(&txDs,0,sizeof(txDs));
+        	result = DB_GetObj(DBKEY_BERT0_EMLTXDRIVER_SETTINGS(i),&txDs,sizeof(txDs));
+		if(result == false) {
+			continue;
+		}	
+		if((txDs.outAmplVolt <= outAmplVolt) && (txDs.outAmplVolt > outAmplLow)) {
+			outAmplLow = txDs.outAmplVolt;	
+			dataSetLow = i;
+		}
+		if((txDs.outAmplVolt >= outAmplVolt) && (txDs.outAmplVolt < outAmplHigh)) {
+			outAmplHigh = txDs.outAmplVolt;	
+			dataSetHigh = i;
+		}
+	}
+	if((dataSetHigh >= 0) && (dataSetLow < NR_TX_DRIVER_SETTINGS)) {
+		*dsetLow = dataSetLow;
+		*dsetHigh = dataSetHigh;
+		return true;
+	}
+}
+
 /**
  ********************************************************************************
  * \fn static bool Bert_LoadDataset(uint16_t idx) 
