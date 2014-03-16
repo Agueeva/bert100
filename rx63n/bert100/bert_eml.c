@@ -97,7 +97,7 @@ BertEML_SetOutAmplVolt(BertEML *beml, uint16_t chNr, float outAmplVolt) {
 	uint16_t dsetLow,dsetHigh;
         TxDriverSettings txDsLow;
         TxDriverSettings txDsHigh;
-	float weightLow, weightHigh;
+	float weightLow, weightHigh, weightSum;
         float vg1;
         float vg2;
         float vg3;
@@ -126,10 +126,18 @@ BertEML_SetOutAmplVolt(BertEML *beml, uint16_t chNr, float outAmplVolt) {
 	}
 	weightLow = txDsHigh.outAmplVolt - outAmplVolt;
 	weightHigh = outAmplVolt -  txDsLow.outAmplVolt;
-	if((weightLow < 0.0001 && weightHigh < 0.0001)) {
+	Printf("Ds %u, %u, weight %f %f\n",dsetLow, dsetHigh, weightLow, weightHigh);
+	if((weightLow < 0.0001) && (weightHigh < 0.0001)) {
 		weightHigh = 1;
 		weightLow = 0;	
 	}
+	weightSum = weightHigh + weightLow;
+	if(weightSum == 0) {
+		return false;
+	}
+	weightHigh /= weightSum;
+	weightLow /= weightSum; 
+	weightSum = 1;
 	vg1 = txDsHigh.vg1[chNr] *  weightHigh + txDsLow.vg1[chNr] * weightLow;
 	DAC_Set(DAC_EMLAMP1_VG1(chNr),vg1);
 
