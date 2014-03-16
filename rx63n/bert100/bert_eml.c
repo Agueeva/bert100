@@ -11,6 +11,7 @@
 #include "pvar.h"
 
 #define NR_TX_DRIVER_SETTINGS   (20)
+#define DATASET_SIGNATURE	(0x08155713) 
 
 typedef struct TxDriverSettings {
         uint32_t signature;
@@ -38,17 +39,23 @@ typedef struct TxDriverSettings {
  */
 typedef struct BertEML {
         int32_t currentDataSet;
+	float outAmplVolt;
         char currDataSetDescr[32];
 } BertEML;
 
 static BertEML gBertEML;
 
+/**
+ ***********************************************************************************************
+ *
+ ***********************************************************************************************
+ */
 static bool 
 BertEML_FindInterpolDs(BertEML *beml, float outAmplVolt, uint16_t *dsetLow, uint16_t *dsetHigh)
 {
 	int i;
 	bool result;
-        TxDriverSettings txDs;
+        static TxDriverSettings txDs;
 	float outAmplLow = 0;
 	float outAmplHigh = 1e20;
 	int16_t dataSetHigh = -1; 
@@ -59,6 +66,9 @@ BertEML_FindInterpolDs(BertEML *beml, float outAmplVolt, uint16_t *dsetLow, uint
 		if(result == false) {
 			continue;
 		}	
+		if(txDs.signature != DATASET_SIGNATURE) {
+			continue;
+		}
 		if((txDs.outAmplVolt <= outAmplVolt) && (txDs.outAmplVolt > outAmplLow)) {
 			outAmplLow = txDs.outAmplVolt;	
 			dataSetLow = i;
@@ -73,6 +83,113 @@ BertEML_FindInterpolDs(BertEML *beml, float outAmplVolt, uint16_t *dsetLow, uint
 		*dsetHigh = dataSetHigh;
 		return true;
 	}
+	return false;
+}
+
+/**
+ ***********************************************************************************************
+ * \fn static bool BertEML_SetOutAmplVolt(BertEML *beml, uint16_t chNr, float outAmplVolt); 
+ ***********************************************************************************************
+ */
+static bool 
+BertEML_SetOutAmplVolt(BertEML *beml, uint16_t chNr, float outAmplVolt) {
+	bool result;
+	uint16_t dsetLow,dsetHigh;
+        TxDriverSettings txDsLow;
+        TxDriverSettings txDsHigh;
+	float weightLow, weightHigh;
+        float vg1;
+        float vg2;
+        float vg3;
+        float vd1;
+        float vd2;
+        float vs;
+	if(chNr >= 4) {
+		return false;
+	}
+	if(BertEML_FindInterpolDs(beml, outAmplVolt, &dsetLow, &dsetHigh) == false) {
+		return false;
+	}
+	result = DB_GetObj(DBKEY_BERT0_EMLTXDRIVER_SETTINGS(dsetLow),&txDsLow,sizeof(txDsLow));
+	if(result == false) {
+		return false;
+	}	
+	result = DB_GetObj(DBKEY_BERT0_EMLTXDRIVER_SETTINGS(dsetHigh),&txDsHigh,sizeof(txDsHigh));
+	if(result == false) {
+		return false;
+	}	
+	if(txDsHigh.signature != DATASET_SIGNATURE) {
+		return false;
+	}
+	if(txDsLow.signature != DATASET_SIGNATURE) {
+		return false;
+	}
+	weightLow = txDsHigh.outAmplVolt - outAmplVolt;
+	weightHigh = outAmplVolt -  txDsLow.outAmplVolt;
+	if((weightLow < 0.0001 && weightHigh < 0.0001)) {
+		weightHigh = 1;
+		weightLow = 0;	
+	}
+	vg1 = txDsHigh.vg1[chNr] *  weightHigh + txDsLow.vg1[chNr] * weightLow;
+	DAC_Set(DAC_EMLAMP1_VG1(chNr),vg1);
+
+	vg2 = txDsHigh.vg2[chNr] *  weightHigh + txDsLow.vg2[chNr] * weightLow;
+        DAC_Set(DAC_EMLAMP1_VG2(chNr),vg2);
+
+	vg3 = txDsHigh.vg3[chNr] *  weightHigh + txDsLow.vg3[chNr] * weightLow;
+	DAC_Set(DAC_EMLAMP1_VG3(chNr),vg3);
+
+	vd2 = txDsHigh.vd2[chNr] *  weightHigh + txDsLow.vd2[chNr] * weightLow;
+	DAC_Set(DAC_EMLAMP1_VD2(chNr),vd2);
+
+	vd1 = txDsHigh.vd1[chNr] *  weightHigh + txDsLow.vd1[chNr] * weightLow;
+	DAC_Set(DAC_EMLAMP1_VD1(chNr),vd1);
+
+	vs = txDsHigh.vs[chNr] *  weightHigh + txDsLow.vs[chNr] * weightLow;
+	DAC_Set(DAC_EMLAMP1_VS(chNr),vs);
+	return true;
+}
+
+/*
+ ************************************************************************************************
+ * \fn static void BertEML_LoadDataset(); 
+ ************************************************************************************************
+ */
+static bool 
+BertEML_ActivateDataset(BertEML *beml, const TxDriverSettings *txDs) {
+        unsigned int chNr;
+        if(txDs->signature != DATASET_SIGNATURE) {
+                Con_Printf("Dataset not valid\n");
+                return false;
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VG1(chNr),txDs->vg1[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VG2(chNr),txDs->vg2[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VG3(chNr),txDs->vg3[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VD2(chNr),txDs->vd2[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VD1(chNr),txDs->vd1[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                DAC_Set(DAC_EMLAMP1_VS(chNr),txDs->vs[chNr]);
+        }
+        for(chNr = 0; chNr < 4; chNr++) {
+                CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs->txaSwing[chNr]);
+                CDR_Write(CDR_ID_TX,CDR_TXA_EQPST(chNr),txDs->txaEqpst[chNr]);
+                CDR_Write(CDR_ID_TX,CDR_TXA_EQPRE(chNr),txDs->txaEqpre[chNr]);
+                CDR_Write(CDR_ID_TX,CDR_TXA_SWING_FINE(chNr),txDs->txaSwingFine[chNr]);
+                CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(chNr),txDs->swapTxPN[chNr]);
+        }
+	beml->outAmplVolt = txDs->outAmplVolt;
+        SNPrintf(beml->currDataSetDescr,array_size(beml->currDataSetDescr),"%s",txDs->strDescription);
+	return true;
 }
 
 /**
@@ -82,11 +199,10 @@ BertEML_FindInterpolDs(BertEML *beml, float outAmplVolt, uint16_t *dsetLow, uint
  ********************************************************************************
  */
 static bool
-BertEML_LoadDataset(BertEML *bert,uint16_t idx)
+BertEML_LoadDataset(BertEML *beml,uint16_t idx)
 {
         TxDriverSettings txDs;
         bool result;
-        unsigned int chNr;
         unsigned int descrLen;
         if(idx >= NR_TX_DRIVER_SETTINGS) {
                 Con_Printf("Selected bad driver setting with index %u\n",idx);
@@ -102,37 +218,7 @@ BertEML_LoadDataset(BertEML *bert,uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154713) {
-                Con_Printf("Dataset not valid\n");
-                return false;
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VG1(chNr),txDs.vg1[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VG2(chNr),txDs.vg2[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VG3(chNr),txDs.vg3[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VD2(chNr),txDs.vd2[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VD1(chNr),txDs.vd1[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                DAC_Set(DAC_EMLAMP1_VS(chNr),txDs.vs[chNr]);
-        }
-        for(chNr = 0; chNr < 4; chNr++) {
-                CDR_Write(CDR_ID_TX,CDR_TXA_SWING(chNr),txDs.txaSwing[chNr]);
-                CDR_Write(CDR_ID_TX,CDR_TXA_EQPST(chNr),txDs.txaEqpst[chNr]);
-                CDR_Write(CDR_ID_TX,CDR_TXA_EQPRE(chNr),txDs.txaEqpre[chNr]);
-                CDR_Write(CDR_ID_TX,CDR_TXA_SWING_FINE(chNr),txDs.txaSwingFine[chNr]);
-                CDR_Write(CDR_ID_TX,CDR_SWAP_TXP_N(chNr),txDs.swapTxPN[chNr]);
-        }
-        SNPrintf(bert->currDataSetDescr,array_size(bert->currDataSetDescr),"%s",txDs.strDescription);
-        return true;
+	return BertEML_ActivateDataset(beml, &txDs); 
 }
 
 /**
@@ -152,6 +238,7 @@ BertEML_SaveDataset(BertEML *beml, uint16_t idx)
                 Con_Printf("Selected bad driver setting with index %u\n",idx);
                 return false;
         }
+	txDs.outAmplVolt = beml->outAmplVolt;
         for(chNr = 0; chNr < 4; chNr++) {
                 DAC_Get(DAC_EMLAMP1_VG1(chNr),&txDs.vg1[chNr]);
         }
@@ -178,13 +265,29 @@ BertEML_SaveDataset(BertEML *beml, uint16_t idx)
                 txDs.swapTxPN[chNr] = CDR_Read(CDR_ID_TX,CDR_SWAP_TXP_N(chNr));
         }
         SNPrintf(txDs.strDescription,array_size(txDs.strDescription), "%s",beml->currDataSetDescr);
-        txDs.signature = 0x08154713;
+        txDs.signature = DATASET_SIGNATURE;
         result = DB_SetObj(DBKEY_BERT0_EMLTXDRIVER_SETTINGS(idx),&txDs,sizeof(txDs));
         if(result == false) {
                 Con_Printf("Failed to save dataset %u\n",idx);
                 return false;
         }
         return true;
+}
+
+static bool
+PVDataSet_OutAmplSet(void *cbData, uint32_t adId, const char *strP)
+{
+        BertEML *beml = cbData;
+        beml->outAmplVolt = astrtof32(strP);
+	return true;
+}
+
+static bool
+PVDataSet_OutAmplGet(void *cbData, uint32_t adId, char *bufP,uint16_t maxlen)
+{
+        BertEML *beml = cbData;
+        SNPrintf(bufP, maxlen, "%f", beml->outAmplVolt);
+	return true;
 }
 
 /**
@@ -228,6 +331,12 @@ PVDataSet_Save(void *cbData, uint32_t adId, const char *strP)
         }
 }
 
+/**
+ ****************************************************************************************
+ * \fn static bool PVDataSet_SetDescr(void *cbData, uint32_t adId, const char *strP)
+ * Set the description of a dataset.
+ ****************************************************************************************
+ */
 static bool
 PVDataSet_SetDescr(void *cbData, uint32_t adId, const char *strP)
 {
@@ -270,7 +379,7 @@ BertEML_ShowDataset(uint16_t idx)
         if(txDs.strDescription[descrLen - 1] != 0) {
                 txDs.strDescription[0] = 0;     /* Completely invalidate it in this case */
         }
-        if(txDs.signature != 0x08154713) {
+        if(txDs.signature != DATASET_SIGNATURE) {
                 Con_Printf("Dataset not valid\n");
                 return false;
         }
@@ -305,6 +414,15 @@ BertEML_ShowDataset(uint16_t idx)
         return true;
 }
 
+static bool
+PV_SetOutAmpl(void *cbData, uint32_t adId, const char *strP)
+{
+        BertEML *beml = cbData;
+	uint16_t chNr = adId;
+	float outAmplVolt = astrtof32(strP); 
+	return BertEML_SetOutAmplVolt(beml, chNr, outAmplVolt); 
+}
+
 /**
  ***********************************************************************************
  * \fn static int8_t cmd_dataset(Interp * interp, uint8_t argc, char *argv[])
@@ -334,15 +452,19 @@ INTERP_CMD(datasetCmd, "dataset", cmd_dataset, "dataset <load | save | dump> <Da
 
 
 /**
- * MZ specific part of the Bert module 
+ * EML specific part of the Bert module 
  */
 void
 BertEML_Init(const char *name)
 {
 	BertEML *beml = &gBertEML;
+	uint16_t chNr;
         PVar_New(NULL,PVDataSet_Load,beml,0 ,"%s.%s",name,"loadDataSet");
         PVar_New(NULL,PVDataSet_Save,beml,0 ,"%s.%s",name,"saveDataSet");
         PVar_New(PVDataSet_GetDescr,PVDataSet_SetDescr,beml,0 ,"%s.%s",name,"dataSetDescription");
+        PVar_New(PVDataSet_OutAmplGet,PVDataSet_OutAmplSet,beml,0 ,"%s.%s",name,"dataSetOutAmpl");
+	for(chNr = 0; chNr < 4; chNr++) {
+        	PVar_New(NULL,PV_SetOutAmpl,beml,chNr ,"%s.outAmpl%u",name,chNr);
+	}
         Interp_RegisterCmd(&datasetCmd);
 }
-
