@@ -28,6 +28,31 @@ if (k==2) {
   window.parent.window_onload();
 }
 }
+
+function ClickUpSym(ud,sr,k){ 
+    var my_item=document.getElementById('mzMod.shiftEyeSym');
+    switch(ud){
+        case 1:
+            if((Number(my_item.value)+sr) < 100) {
+               my_item.value=Number(my_item.value)+(sr);
+            }else {
+             my_item.value=100;
+            }
+        break;
+        case 2:
+            if((my_item.value-sr) > -100) {
+                my_item.value=Number(my_item.value)-(sr);
+            }else{
+                my_item.value=-100;
+            }
+        break;
+        default:
+        break;
+    }
+window.parent.SaveVar(my_item,k,'amp',0);
+window.parent.window_onload();
+}   
+    
 //emlAmp1.vg1
 function TestVal(i, bez, gr1,gr2){
 	var my_item=document.getElementById('amp'+i+bez);
@@ -52,13 +77,13 @@ function Check_all() {
 	window.parent.myDisableAll(my_all,'bert0.L','.L',0);
 	window.parent.myElement=window.parent.myVarTX_opt_test;
     }
-    window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
+/**  window.parent.socket.send(JSON.stringify({get: 'bert0.dataSetDescription'}));
     if (window.parent.dataset==-1) {
 	document.getElementById("bert0.dataSetDescription").style.display="none";
     }
-    else {
+    else { **/
 	
-	document.getElementById("bert0.dataSetDescription").style.display='table-row';}
+	document.getElementById("bert0.dataSetDescription").style.display='table-row';  //}
 	document.getElementById('bert0.loadDataSet').value=window.parent.dataset;
     
 }

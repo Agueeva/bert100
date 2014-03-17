@@ -12,6 +12,7 @@
 typedef struct SystemIf {
 	Timer tempPollTimer;	
 	float temp0;
+	float currTemp;
 	uint32_t rpmPerCelsius;
 } SystemIf;
 
@@ -27,7 +28,8 @@ CPUTemp_PollTimerProc(void *eventData)
         SystemIf *sys = eventData;
         float temp = ADC12_GetTemperature();
         int32_t fanRpm;
-        fanRpm = 2500 + (temp - sys->temp0) * sys->rpmPerCelsius;
+	sys->currTemp = sys->currTemp * 0.8  + temp * 0.2;
+        fanRpm = 2500 + (sys->currTemp - sys->temp0) * sys->rpmPerCelsius;
         if(fanRpm > 10000) {
                 fanRpm = 10000;
         } else if(fanRpm < 2500) {
@@ -63,7 +65,7 @@ SystemIf_Init(void)
 {
 	SystemIf *sys = &gSystemIf;
 	PVar_New(NULL,PVExecScript_Set,NULL,0,"system.execScript");
-	sys->temp0 = 30;
+	sys->currTemp = sys->temp0 = 30;
 	sys->rpmPerCelsius = 200;
 	Timer_Init(&sys->tempPollTimer, CPUTemp_PollTimerProc, sys);
         Timer_Start(&sys->tempPollTimer, 2000);

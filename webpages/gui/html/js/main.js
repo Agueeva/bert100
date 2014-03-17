@@ -15,36 +15,31 @@
                               "bert0.L0.patVerSel","bert0.L1.patVerSel","bert0.L2.patVerSel","bert0.L3.patVerSel");  
   var myVarPattern0= new Array("patGenSel","prbsVerInv","patVerSel");
   var myVarTX_opt_test=new Array("bert0.L0.txaSwingFine", "bert0.L1.txaSwingFine", "bert0.L2.txaSwingFine", "bert0.L3.txaSwingFine",
-                                  "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
-                                  "bert0.L0.txaEqpst","bert0.L1.txaEqpst","bert0.L2.txaEqpst","bert0.L3.txaEqpst",
-                                  "bert0.L0.txaEqpre","bert0.L1.txaEqpre","bert0.L2.txaEqpre","bert0.L3.txaEqpre",
+                         "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
+                         "bert0.L0.txaEqpst","bert0.L1.txaEqpst","bert0.L2.txaEqpst","bert0.L3.txaEqpst",
+                         "bert0.L0.txaEqpre","bert0.L1.txaEqpre","bert0.L2.txaEqpre","bert0.L3.txaEqpre",
 			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
                          "amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
                          "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
 			 "amp1.vd1","amp2.vd1","amp3.vd1","amp0.vd1",
                          "mzMod0.Ki","mzMod1.Ki","mzMod2.Ki","mzMod3.Ki",
-                         "amp1.vd2","amp2.vd2","amp3.vd2","amp0.vd2","bert0.dataSetDescription");
+                         "amp1.vd2","amp2.vd2","amp3.vd2","amp0.vd2","bert0.dataSetDescription","mzMod.shiftEyeSym");
   var myVarTX_opt_test0= new Array("vg1","vg2","vd1","vd2");
   var myVarTX_opt_test2= new Array("txaSwingFine","swapTxPN","txaSwing","swapTxPN");
-  var myVarTX= new Array("amp1.vg1","amp2.vg1","amp3.vg1","amp0.vg1",
-			 "amp1.vg2","amp2.vg2","amp3.vg2","amp0.vg2",
-			 "bert0.L0.txaSwing","bert0.L1.txaSwing","bert0.L2.txaSwing","bert0.L3.txaSwing",
-			 "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN");
+  
   var myVarTX_opt= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
                              "mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev","mzMod0.ctrlDev",
                              "bert0.L0.swapTxPN","bert0.L1.swapTxPN","bert0.L2.swapTxPN","bert0.L3.swapTxPN",
                              "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable",
-			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
-                         "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
-                         "mzMod0.bias","mzMod1.bias","mzMod2.bias","mzMod3.bias");
-   var myVarTX_opt0= new Array("swapTxPN");
-   var myVarTX_opt1= new Array("ctrlEnable");
-  var myVarTX0= new Array("vg1","vg2");
-  var myVarTX2= new Array("swapTxPN","txaSwing");
+			     "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
+                             "tx0.pwrRef","tx1.pwrRef","tx2.pwrRef","tx3.pwrRef",
+                             "mzMod0.bias","mzMod1.bias","mzMod2.bias","mzMod3.bias","bert0.dataSetDescription");
+  var myVarTX_opt0= new Array("swapTxPN");
+  var myVarTX_opt1= new Array("ctrlEnable");
   var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
-  var myVarErr= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
-                           "mzMod0.ctrlFault", "mzMod1.ctrlFault","mzMod2.ctrlFault","mzMod3.ctrlFault",
-                           "mzMod0.latchedCtrlFault", "mzMod1.latchedCtrlFault", "mzMod2.latchedCtrlFault", "mzMod3.latchedCtrlFault",
+  var myVarErr= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias","bert0.bitrate",
+                          "mzMod0.ctrlFault", "mzMod1.ctrlFault","mzMod2.ctrlFault","mzMod3.ctrlFault",
+                          "mzMod0.latchedCtrlFault", "mzMod1.latchedCtrlFault", "mzMod2.latchedCtrlFault", "mzMod3.latchedCtrlFault",
                           "mzMod0.ctrlDev","mzMod1.ctrlDev","mzMod2.ctrlDev","mzMod3.ctrlDev",
                           "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr",
                           "mzMod0.ctrlEnable","mzMod1.ctrlEnable","mzMod2.ctrlEnable","mzMod3.ctrlEnable",
@@ -59,7 +54,7 @@
                           "bert0.L0.accBeRatio", "bert0.L1.accBeRatio","bert0.L2.accBeRatio","bert0.L3.accBeRatio",
                           "bert0.L0.absErrCntr","bert0.L1.absErrCntr","bert0.L2.absErrCntr","bert0.L3.absErrCntr",
                           "bert0.L0.accTime",
-                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip","bert0.bitrate"
+                          "bert0.L0.CdrTrip" ,"bert0.L1.CdrTrip" ,"bert0.L2.CdrTrip" ,"bert0.L3.CdrTrip"
                          ); 
   
   var myVarSystem= new Array("fanco.fan0.rpm","fanco.fan1.rpm","fanco.fan2.rpm","fanco.fan3.rpm","system.latchedFault",
@@ -67,7 +62,7 @@
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; //  'ws://tneuner.homeip.net:8080/messages'; // 
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -81,27 +76,23 @@
      socket = new WebSocket(urlWS);
 
  socket.onopen = function() {
-            // alert("Verbindung open");
              bl_Communication=true;
 	     my_Interval=setInterval(keepAlive,3000);
 }
-     socket.onclose = function()
-     {
-		//alert('Verbindung unterbrochen');
+     socket.onclose = function(){
 		bl_Communication=false;
                 my_Interval=clearInterval(my_Interval);
 }
-     socket.onmessage = function(evt)
-     {
+     socket.onmessage = function(evt){
         var myCh;
         var mystr;
-       // alert(evt.data);
+      
    if (evt.data.substr(2, 3)=="ack") { return;}
 	var arr = JSON.parse(evt.data);
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-        //console.log("item:"+item+" Value:"+value);
+     //  console.log("item:"+item+" Value:"+value);
         if (item.substr(9, item.length)=="patGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
@@ -110,7 +101,7 @@
            mystr=item.substr(0, 8)+'.patVerSel';
            $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
-    if ((item.substr(0, 3)=="amp" && item!="amp.temp") || (item.substr(0, 5)=="mzMod" && item!="mzMod.temp") || item.substr(4, 3)=="pwr") {
+    if ((item.substr(0, 3)=="amp" && item!="amp.temp") || (item.substr(0, 5)=="mzMod" && item!="mzMod.temp" && item!="mzMod.shiftEyeSym") || item.substr(4, 3)=="pwr") {
      
           value=Math.round(value * 100) / 100;
           if (value>10) {
@@ -228,13 +219,16 @@ var k;
      }
      }  
      
- //***********************************************************************+         
+ //***********************************************************************+  "mzMod.shiftEyeSym"       
         
 switch(item)
      {
 case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
+case "mzMod.shiftEyeSym":
+      value= parseInt(value); 
+     break;
 case "system.latchedFault":
      
       var meldung="";
@@ -251,8 +245,7 @@ case "system.fault":
        document.getElementById(item).value=value;
        if (value==0) {
          Alarmindicator.className = "AlarmindicatorGreen";
-         //document.getElementsById('latchedFault').style.display="none";
-       }
+             }
        else {
          var fehler=value.toString(2);
          var meldung="System failing: ";
@@ -266,12 +259,8 @@ case "system.fault":
        }
      return;
 case  "system.variant":
-      if (value=="MZ") {
-      $("#frame").contents().find("#version").innerHTML = "Optical TX Version";    
-     }
-     else {
-     $("#frame").contents().find("#version").innerHTML ="EML Version";}
-     break;
+      value=value+" TX";
+     break; 
 case "bert0.L0.accTime":
      if (value!=0) {
       var wert=Number(value);
@@ -365,7 +354,6 @@ default:
    
 
      function keepAlive() {
-          //socket.send(JSON.stringify({get: "test.var1"}));
           socket.send(JSON.stringify({get: "system.fault"}));
 }
 
@@ -379,8 +367,6 @@ var newUrl = "";
 var pageLoading = false;
 var timeout;
 function laodpage(url,id) {
-           //$(id).stop();
-           //$("#content div").stop();
            $(id).hide();
            $("#content_wrapper div").show();
 
@@ -388,8 +374,6 @@ function laodpage(url,id) {
                       clearTimeout(timeout);
                       pageLoading = false;
                       requestToRelaod = true;
-                     //laodpage(url,id);
-                    // return;
            }
 
            pageLoading = true;
@@ -399,9 +383,6 @@ function laodpage(url,id) {
                                  if (!requestToRelaod) {
                                             $(id).fadeIn(200);
                                             $("#content_wrapper div").fadeOut(200);
-                                            //timeout=setTimeout(function(){
-                                            //           pageLoading = false;
-                                           // },210);
                                  }else{
                                             requestToRelaod=false;
 
@@ -435,10 +416,8 @@ function createTreeMenu(id) {
                       // open/close a entry
                       if ($(childid).css("display") == "none") {
                                  $(childid).fadeIn(200);
-                                // $(childid).css("display", "block");
                       }else{
                                  $(childid).hide();
-                                // $(childid).css("display", "none");
                       }
                       // change the css class of the entry (changees the icon)
                       if ($$.hasClass("cat_close")) {
@@ -457,10 +436,6 @@ function createTreeMenu(id) {
 //---------------------TreeMenu END-----------------------
 $(document).ready(function()
 {
-                
-        	// myElement=myVarSystem;
-                //n=2;
-		//laodpage("html/system.html","#frame");
                n=3;
           laodpage("html/main.html","#frame");
 	  SocketNew();
@@ -484,15 +459,7 @@ $(document).ready(function()
                 
 		return false;
 	});
-	$( "#TXBut" ).click(function() {
-	        myElement=myVarTX;
-		n=2;
-		all=all_tx;
-                page_pref="emlAmp";
-                page_k=0;
-		laodpage("html/tx_eml.html","#frame");
-		return false;
-	});
+	
 
 	$( "#RateTrBut" ).click(function() {
 	        myElement=myVarDrTr;
@@ -556,22 +523,19 @@ $(document).ready(function()
      }
      );
 
-function ReadVar(variable){
-	      //  alert(bl_Communication);
+function ReadVar(variable){	      
 		if(!bl_Communication) SocketNew(); 
 		var my_var;
 		my_var=variable.value;
 		socket.send(JSON.stringify({get: my_var}));
      }
 function ReadVarByName(variable){
-	      //  alert(bl_Communication);
 		if(!bl_Communication) SocketNew();  
 		socket.send(JSON.stringify({get: variable}));
      }
 
 function window_onload()
 {
-     
   if(!bl_Communication) SocketNew(); 
   var my_var;
   var j,i,k;
@@ -608,8 +572,6 @@ function window_onload()
 
 function window_onload_variable()
 {
-   
-    // setTimeout(callback, 500);
      if (myQueueCount<myQueue.length) {
   socket.send(JSON.stringify({get: myQueue[myQueueCount]}));
   myQueueCount++;
@@ -629,7 +591,6 @@ function myCheckAll(box,prefB,pref,k)
 	var iframe = document.getElementById('frame');
 	var frameDoc = iframe.contentDocument || iframe.contentWindow.document;
 	my_var = frameDoc.getElementById(item);
-        //alert(my_var.id);
 	SaveVar(my_var, 2,pref,k);
 	for (i = 1; i <= 3; i++){
 	  item=prefB + (i+k) + "." + myElement[j];
@@ -677,9 +638,7 @@ function myDisableAuto()
           item='bert0.L'+i+'.patVerSel'; 
           $("#frame").contents().find("#"+item.replace(/[.]/g,"\\.")).attr("disabled",true);
      }
-    }
-    
-   
+    }   
 }
 
 function SaveVar(myVar, typeVar,pref,k){
@@ -690,13 +649,11 @@ function SaveVar(myVar, typeVar,pref,k){
           
      switch(typeVar){
 	case 1:  //einfach
-	    // alert("SV1:" +myID+"="+formval);
 	    socket.send(JSON.stringify({set: myID,val: formval}));
 	    break;
 	case 2:  //all vorhandeln	
 	    if(all) {
                for (i = 0; i <= 3; i++) {
-                //   alert("SV:" +myID+"="+formval);
                     socket.send(JSON.stringify({set: myID,val: formval}));
                     myID=myID.replace(pref+(i+k), pref+(i+1+k));
                     }
