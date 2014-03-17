@@ -92,6 +92,9 @@ FanCo_PollTimer(void *eventData)
 {
 	FanCo *fc = eventData;
 	uint32_t rpm;
+	int32_t diffRpm;
+	int32_t deltaDac;
+	int32_t dacVal;
 	fc->fanPollIdx = (fc->fanPollIdx + 1) % fc->nrFans;
 	rpm = FanCo_GetRpm(fc,fc->fanPollIdx);	
 	if(rpm < 1000) {
@@ -99,16 +102,19 @@ FanCo_PollTimer(void *eventData)
 	}  else {
 		Alarm_Clear(ALARM_FAN_0 + fc->fanPollIdx);
 	}
-	if(rpm > fc->targetRpm) {
-		if(fc->dacVal < 255) {
-			fc->dacVal++;
+	if(fc->fanPollIdx == 0) {
+		diffRpm = (int32_t)rpm - (int32_t)fc->targetRpm;
+		deltaDac = diffRpm / 64;
+		dacVal = fc->dacVal;
+		dacVal += deltaDac;
+		if(dacVal > 255) {
+			dacVal = 255;
+		} else if(dacVal < 0) {
+			dacVal = 0;
 		}
-	} else {
-		if(fc->dacVal > 0) {
-			fc->dacVal--;
-		}
-	} 
-	I2C_Write8(fc->i2cAddr,MAX6651_DAC, &fc->dacVal,1);
+		fc->dacVal = dacVal;
+		I2C_Write8(fc->i2cAddr,MAX6651_DAC, &fc->dacVal,1);
+	}
 	Timer_Start(&fc->fanPollTimer,1002);
 }
 
