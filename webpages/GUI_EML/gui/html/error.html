@@ -1,0 +1,301 @@
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+</head>
+<body  onload="javascript: ErrStart();">
+	
+<div class="headline">BER Measurement
+	<div class="datarate">
+		<div id="noneUserDateRate" style="display: none">
+			Data Rate:
+			<SELECT  ID="bert0.bitrate"  disabled>
+				<OPTION VALUE="25781250000">25.78125 Gbit/s</OPTION>
+				<OPTION VALUE="27952493392">27.9524934 Gbit/s</OPTION>
+			</SELECT>
+		</div>
+		<div id="userDateRate">
+			Data Rate:
+			<INPUT class="textfildDR" TYPE="Text"  ID="userDR"  Value="" readonly>Gbit/s
+		</div>
+	</div>
+</div>
+
+<div name="wrap_BER_Measurement">
+<FORM  ID="Form_PG">
+	
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH></TH>
+		<TH>Channel 1</TH>
+		<TH>Channel 2</TH>
+		<TH>Channel 3</TH>
+		<TH>Channel 4</TH>
+	</TR>
+	
+	<TR ALIGN="left" VALIGN="middle" style="display: none">
+		<TH>ED Pattern:</TH>
+
+		<TD> <SELECT  ID="bert0.L0.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD>
+
+		<TD><SELECT  ID="bert0.L1.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD>
+
+		<TD><SELECT  ID="bert0.L2.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD>
+
+		<TD><SELECT  ID="bert0.L3.patVerSel"  disabled>
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD>
+	</TR>
+	<TR ALIGN="left">
+		<TH>ED Pattern:</TH>
+
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L0.patVerSel_Text"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L1.patVerSel_Text" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L2.patVerSel_Text" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L3.patVerSel_Text" Value="" readonly>
+		</TD>
+	</TR>
+	
+	<TR ALIGN="left">
+		<TH>Total Errors:</TH>
+
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L0.absErrCntr"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L1.absErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L2.absErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2 lightText" TYPE="Text"  ID="bert0.L3.absErrCntr" Value="" readonly>
+		</TD>
+	</TR>
+
+	<TR ALIGN="left">
+		<TH>Current BER<br>Gating: <INPUT class="textfild_small" TYPE="Text"  ID="msec"  Value="" onChange="javascript: sendMeasWin_ms(this);"> sec
+		<INPUT  TYPE="Hidden"  ID="bert0.berMeasWin_ms"  Value="" ></TH>
+	
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.currBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.currBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.currBeRatio" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.currBeRatio"  Value="" readonly>
+		</TD>
+	</TR>
+
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank_big" colspan=5></TD>
+		
+	</TR>
+	
+	<TR ALIGN="left">
+		<TH>Accumulated Errors:</TH>
+		
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accErrCntr"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accErrCntr" Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accErrCntr" Value="" readonly>
+		</TD>
+	</TR>
+
+	<TR ALIGN="left">
+		<TH> Accumulated BER:</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L1.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L2.accBeRatio"  Value="" readonly>
+		</TD>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L3.accBeRatio"  Value="" readonly>
+		</TD>
+	</TR>
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank" colspan=5></TD>
+		
+	</TR>
+
+	<!-- /Test Time elapsed-->
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Time elapsed, "d:h:m:s":</TH>
+		<TD><INPUT class="textfild2" TYPE="Text"  ID="bert0.L0.accTime"  Value="" readonly></TD>
+		<TD><button class="buttonGreen" type="button" ID="ButStart" onclick="javascript: clickStart();">Restart</button></TD>
+		<TD><button class="buttonRed" type="button" ID="ButStop" onclick="javascript: clickStop();">Stop</button></TD>
+		<TD></TD>
+	</TR>
+	
+	</TABLE>
+<br><br>
+	<div class="headline">Status</div>
+	
+	<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%" style="font-size:80%";>
+	<TR ALIGN="left" VALIGN="middle">
+		<TR ALIGN="left">
+		<TH>Sync Los | Sync Los memory:</TH>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Loss0"  Value="" readonly>
+		<INPUT class="textfild_small" TYPE="Text" size=5  ID="Mem0"  Value=""></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Loss1"  Value="" readonly>
+		<INPUT class="textfild_small" TYPE="Text" size=5  ID="Mem1"  Value=""></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Loss2"  Value="" readonly>
+		<INPUT class="textfild_small" TYPE="Text" size=5  ID="Mem2"  Value=""></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Loss3" boug Value="" readonly>
+		<INPUT class="textfild_small" TYPE="Text"  size=5  ID="Mem3"  Value=""></TD>
+	</TR>
+
+	<TR ALIGN="left" >
+		<TH>Pattern Sync Los:</TH>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Lock0"  Value="" readonly></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Lock1"  Value="" readonly></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Lock2"  Value="" readonly></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="Lock3"  Value="" readonly></TD>
+	</TR>
+ 	<!--Prozent-->
+	<TR ALIGN="left" >
+		<TH>Input Signal Quality<br>(RX Input EQ State):</TH>		
+		<TD> <div class="wrapprozent">
+			<div class="eqstatefield_sm" ID="bert0.L0.EqState_st"></div><INPUT class="eqstatetextfield_sm" TYPE="Text" ID="bert0.L0.EqState"  Value="--" readonly>
+		</div></TD>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield_sm" ID="bert0.L1.EqState_st"> </div><INPUT class="eqstatetextfield_sm" TYPE="Text"  ID="bert0.L1.EqState"  Value="--" readonly>
+		</div></TD>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield_sm" ID="bert0.L2.EqState_st"> </div><INPUT class="eqstatetextfield_sm" TYPE="Text"  ID="bert0.L2.EqState"  Value="--" readonly>
+		</div></TD>
+		<TD><div class="wrapprozent">
+			<div class="eqstatefield_sm" ID="bert0.L3.EqState_st"> </div><INPUT class="eqstatetextfield_sm" TYPE="Text"  ID="bert0.L3.EqState"  Value="--" readonly>
+		</div></TD>
+	</TR>
+	
+	<TR ALIGN="left" >
+		<TH>Recovered Clk dev. (ppm):</TH>
+		<TD>
+		<div class="cDRTripFeld">
+			<img src="./img/red_left.png" >
+			<img class="cDRTripBgMid" src="./img/mid_marker.png" >  
+			<img class="cDRTripBgRight" src="./img/red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L0.CdrTrip_line" src="./img/line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L0.CdrTrip"  Value="--" readonly>
+		</div></TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src="./img/red_left.png" >
+			<img class="cDRTripBgMid" src="./img/mid_marker.png" >  
+			<img class="cDRTripBgRight" src="./img/red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L1.CdrTrip_line" src="./img/line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L1.CdrTrip"  Value="--" readonly>
+		</div></TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src="./img/red_left.png" >
+			<img class="cDRTripBgMid" src="./img/mid_marker.png" >  
+			<img class="cDRTripBgRight" src="./img/red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L2.CdrTrip_line" src="./img/line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L2.CdrTrip"  Value="--" readonly>
+		</div>
+		</TD>
+		
+		<TD>
+		<div class="cDRTripFeld">
+			<img src="./img/red_left.png" >
+			<img class="cDRTripBgMid" src="./img/mid_marker.png" >  
+			<img class="cDRTripBgRight" src="./img/red_right.png" >   
+			<img class="cDRTripMid" ID="bert0.L3.CdrTrip_line" src="./img/line.png" >
+			<INPUT class="cDRTripTextfield" TYPE="Text"  size=5  ID="bert0.L3.CdrTrip"  Value="--" readonly>
+		</div>
+		</TD>
+	</TR>
+	
+	
+	<TR ALIGN="left" >
+		<TH>TX-Clk PLL lock | RX-Clk PLL lock:</TH>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="TX"  Value="" readonly></TD>
+		<TD><INPUT class="textfild_small" TYPE="Text"  size=5  ID="RX"  Value="" readonly></TD>
+		<TD></TD>
+		<TD></TD>
+	</TR>
+
+	<TR ALIGN="left" class="clearTR">
+		<TD class="seperator_blank_big" colspan=5></TD>
+		
+	</TR>
+
+</TABLE>
+</FORM>
+</div>
+</body>
+<script type="text/javascript">
+	<!--
+var my_Inter, my_sek;
+my_sek= window.parent.my_sek;
+function ErrStart(){	
+	 window.parent.socket.send(JSON.stringify({get: 'bert0.berMeasWin_ms'})); 
+         setTimeout(StartInterval, 500);
+	}
+function StartInterval(){
+		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
+                 my_Inter=setInterval(window.parent.window_onload,my_sek);
+		}
+function clickStart(){
+		//my_Inter=clearInterval(my_Inter);  .css('background-color', 'red');#92182b
+		window.parent.$("#frame").contents().find("#ButStart").css('background-color', '#21491b');
+		window.parent.$("#frame").contents().find("#ButStop").css('background-color', '#ce0202');
+		window.parent.socket.send(JSON.stringify({set: "bert0.L0.accBerMeasStart",val: 1}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L1.accBerMeasStart",val: 1}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L2.accBerMeasStart",val: 1}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L3.accBerMeasStart",val: 1}));
+		}		
+function clickStop(){
+		//my_Inter=clearInterval(my_Inter);
+		window.parent.$("#frame").contents().find("#ButStart").css('background-color', '#0cac00');
+		window.parent.$("#frame").contents().find("#ButStop").css('background-color', '#92182b');
+		window.parent.socket.send(JSON.stringify({set: "bert0.L0.accBerMeasStart",val: 0}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L1.accBerMeasStart",val: 0}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L2.accBerMeasStart",val: 0}));
+		window.parent.socket.send(JSON.stringify({set: "bert0.L3.accBerMeasStart",val: 0}));
+		}
+		
+function sendMeasWin_ms(my_Sec){
+	my_Sec.style="background-color: #c0c0c0;";
+	if (isNaN(my_Sec.value)) {
+		my_Sec.style="background-color: #ff0000;";
+	alert("Field value must be an integer in seconds!");
+	my_Sec.value=0;
+	}else {
+	var item=document.getElementById('bert0.berMeasWin_ms');
+	item.value=my_Sec.value*1000;
+	 window.parent.SaveVar(item,1,'.l',0);	
+	}
+	 setTimeout(function(){my_Sec.style="background-color: #ffffff;";}, 1000);
+	
+		}		
+	
+-->
+		</script>

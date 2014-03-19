@@ -1,0 +1,159 @@
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+</head>
+<body  onload="javascript: onStart();">
+<div name="wrap_System">
+<FORM  ID="Form_PG">
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="35%">
+<TR ALIGN="left" VALIGN="middle">
+        <TH>Software/Hardware</TH>
+	<TH></TH>
+	</TR>
+
+<TR ALIGN="left">
+<TH>C-BERT Version:
+</TH>
+<TD><input class="textfildsys" type="text"  id="system.variant" size="15" maxlength="15" readonly></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>HW rev.:
+</TH>
+<TD><input class="textfildsys" type="text"  id="system.hwRevision" size="15" maxlength="15" readonly></TD>
+</TR>
+
+
+<TR ALIGN="left">
+<TH>Firmware:</TH>
+<TD><input class="textfildsys" type="text"  id="system.firmware" size="15" maxlength="15" readonly></TD>
+</TR>
+
+</TABLE>
+
+<div class="headline">Cooling</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="95%">
+<TR ALIGN="left" VALIGN="middle">
+        <TH></TH>
+	<TH>FAN 1</TH>
+	<TH>FAN 2</TH>
+	<TH>FAN 3</TH>
+	<TH></TH>
+	</TR>
+<TR ALIGN="left" VALIGN="middle">
+<TH>FAN speed:</TH>
+<TD><input class="textfildsys" type="text"  id="fanco.fan0.rpm" value="0" size=15 readonly> </TD>
+<TD><input class="textfildsys" type="text"  id="fanco.fan1.rpm" value="0" size=15 readonly></TD>
+<TD><input class="textfildsys" type="text"  id="fanco.fan2.rpm" value="0" size=15 readonly> </TD>
+<TD> </TD>
+</TR>
+
+
+<TR ALIGN="left">
+<TH>Chassis Temperature, &deg;C:</TH>
+<TD><input class="textfildsys" type="text"  id="system.temp" value="" size=3 readonly> </TD>
+<TD>&nbsp;&nbsp;</TD>
+<TD>&nbsp;&nbsp;</TD>
+<TD>&nbsp;&nbsp;</TD></TR>
+
+
+
+<TR ALIGN="left">
+<TH>Driver Amp Temperature, &deg;C:</TH>
+<TD><input class="textfildsys" type="text"  id="amp.temp" value="" size=3 readonly> </TD>
+<TD>&nbsp;&nbsp;</TD>
+<TD>&nbsp;&nbsp;</TD>
+<TD>&nbsp;&nbsp;</TD></TR>
+
+<TR ALIGN="left">
+<TH>System fault memory:</TH>
+<TD><input class="textfildsys" type="text"  id="system.latchedFault" value="" size=3 readonly> </TD>
+<TD  colspan=2><input class="textfildsysFault" type="text"  id="FaultDescription" value="" size=3 readonly> </TD>
+<TD><button class="buttonGreen" type="button" ID="reset" onclick="javascript: clickReset();">Reset</button></TD>
+</TR>
+</TABLE>
+
+<div class="headline">Network Settings</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
+
+<TR ALIGN="left">
+<TH>IP address:</TH>
+<TD><input class="textfildsys" type="text"  id="system.ip" size="15" maxlength="15" readonly ></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Netmask:</TH>
+<TD><input class="textfildsys" type="text"  id="system.netmask" size="15" maxlength="15" readonly ></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Gateway:</TH>
+<TD><input class="textfildsys" type="text"  id="system.gateway" size="15" maxlength="15" readonly ></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>MAC Adresse:</TH>
+<TD><input class="textfildsys" type="text"  id="system.mac" size="15" maxlength="15" readonly ></TD>
+</TR>
+</TABLE>
+</div>
+
+<div class="headline">Security Settings</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="60%">
+
+<TR ALIGN="left">
+<TH>User:</TH>
+<TD><input class="textfildsys" type="text"  id="system.username" size="15" maxlength="15" ></TD>
+<TD>&nbsp;&nbsp;</TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Password:</TH>
+<TD><input class="textfildsys" type="password"  id="system.passwdUser" size="15" maxlength="15" ></TD>
+<TD><button class="buttonBlue" type="button" id="userpas_But"  onclick="javascript: SaveUser(); ">Save</button></TD>
+</TR>
+</TABLE>
+</div>
+</FORM>
+
+</body>
+
+<script type="text/javascript">
+	<!--
+var my_Inter, my_sek;
+my_sek= window.parent.my_sek;
+function onStart(){	
+         setTimeout(StartInterval, 500);
+	}
+function StartInterval(){
+		if (typeof(my_Inter)!="undefined") my_Inter=clearInterval(my_Inter);
+                 my_Inter=setInterval(window.parent.window_onload,my_sek);
+		}
+		
+function SaveUser(){		
+var pass = document.getElementById('system.passwdUser').value;
+var user = document.getElementById('system.username').value;
+	
+	var re = /[",',\\]/gi;                //      ',",\\
+	var found = pass.match(re);
+	if (found!=null){
+	alert("Not: "+ found);	
+	}
+	else {
+	window.parent.SaveVar(document.getElementById('system.passwdUser'),1,'',0);
+	window.parent.SaveVar(document.getElementById('system.username'),1,'',0);
+	Readsecurety();
+	}
+}
+function Readsecurety(){
+window.parent.socket.send(JSON.stringify({get: "system.username"}));}
+Readsecurety();
+function clickReset(){
+window.parent.socket.send(JSON.stringify({set: "system.latchedFault",val: 0}));}	
+
+		-->
+</script>
+		
+		

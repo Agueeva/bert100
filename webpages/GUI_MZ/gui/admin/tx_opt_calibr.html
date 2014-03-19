@@ -1,0 +1,715 @@
+<head>
+	<LINK href="../html/css/subpages.css" rel="stylesheet" type="text/css">
+	<!-- tx eml functions -->
+	<script type="text/javascript" src="../html/js/tx_opt_test.js" ></script>
+</head>
+<body onload="javascript: Check_all();">
+
+<div class="headline">Optical TX Calibration Menu</div>
+
+<div name="wrap_TX_Data">
+<FORM onsubmit="return false" ID="Form_PG">
+	<!--Table-->
+<TABLE  class="blue-select" ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+	<!--Row 1-->
+<TR ALIGN="left" VALIGN="middle">
+        <TH></TH>
+	<TH>Channel 1</TH>
+	<TH>Channel 2</TH>
+	<TH>Channel 3</TH>
+	<TH>Channel 4</TH></TR>
+
+	
+	<!--Row 2-->
+
+	
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp Vg1 (gain)</TH>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2,'.vg1',0.2,-0.5)"/></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2,'.vg1',0.2,-0.5)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(0,1,1,2,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2,'.vg1',0.2,-0.5)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp0.vg1" value="0" size=3 readonly onChange="javascript: TestVal(0,'.vg1',0.2,-0.5); window.parent.SaveVar(this,1,'amp',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();">
+	</div>
+	</TD>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp1.vg1" value="0" size=3 readonly onChange="javascript: TestVal(1,'.vg1',0.2,-0.5); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp2.vg1" value="0" size=3 readonly onChange="javascript: TestVal(2,'.vg1',0.2,-0.5); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1,'.vg1',0.2,-0.5)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1,'.vg1',0.2,-0.5)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp3.vg1" value="0" size=3 readonly onChange="javascript: TestVal(3,'.vg1',0.2,-0.5); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+</TR>
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp Vg2 (X)</TH>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2,'.vg2',0.2,-2)"/></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2,'.vg2',0.2,-2)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(0,1,1,2,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2,'.vg2',0.2,-2)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp0.vg2" value="0" size=3 readonly onChange="javascript: TestVal(0,'.vg2',0.2,-2); window.parent.SaveVar(this,1,'amp',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();">
+	</div>
+	</TD>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1,'.vg2',0.2,-2)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1,'.vg2',0.2,-2)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp1.vg2" value="0" size=3 readonly onChange="javascript: TestVal(1,'.vg2',0.2,-2); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1,'.vg2',0.2,-2)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1,'.vg2',0.2,-2)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp2.vg2" value="0" size=3 readonly onChange="javascript: TestVal(2,'.vg2',0.2,-2); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1,'.vg2',0.2,-2)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1,'.vg2',0.2,-2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1,'.vg2',0.2,-2)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text"  id="amp3.vg2" value="0" size=3 readonly onChange="javascript: TestVal(3,'.vg2',0.2,-2); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	</TD>
+	
+</TR>
+	<!--Row 4-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp Vd1</TH>
+	<TD>
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2,'.vd1',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(0,1,1,2,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2,'.vd1',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild" type="text"  id="amp0.vd1" value="0" size=3 readonly onChange="javascript: TestVal(0,'.vd1',8.0,0.0); window.parent.SaveVar(this,1,'amp',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();">
+	</div>
+	</TD>
+	
+	
+	<TD>
+	<div class="control">
+			
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1,'.vd1',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1,'.vd1',8.0,0.0)"></button>
+		</div>
+		<input class="textfild" type="text"  id="amp1.vd1" value="0" size=3 readonly onChange="javascript: TestVal(1,'.vd1',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+		
+	</TD>
+	
+	<TD>
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1,'.vd1',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1,'.vd1',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild" type="text"  id="amp2.vd1" value="0" size=3 readonly onChange="javascript: TestVal(2,'.vd1',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	
+	</TD>
+	
+	<TD>	
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1,'.vd1',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1,'.vd1',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1,'.vd1',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild"  type="text"  id="amp3.vd1" value="0" size=3 readonly onChange="javascript: TestVal(3,'.vd1',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>			
+	</TD>
+	
+</TR>
+
+	<!--Row 5-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp Vd2</TH>
+	<TD>
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(0,1,10,2,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(0,2,10,2,'.vd2',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(0,1,1,2,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(0,2,1,2,'.vd2',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild" type="text"  id="amp0.vd2" value="0" size=3 readonly onChange="javascript: TestVal(0,'.vd2',8.0,0.0); window.parent.SaveVar(this,1,'amp',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();">
+	</div>
+	</TD>
+	
+	
+	<TD>
+	<div class="control">
+			
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,1,'.vd2',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(1,1,1,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,1,'.vd2',8.0,0.0)"></button>
+		</div>
+		<input class="textfild" type="text"  id="amp1.vd2" value="0" size=3 readonly onChange="javascript: TestVal(1,'.vd2',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+		
+	</TD>
+	
+	<TD>
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1,'.vd2',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1,'.vd2',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild" type="text"  id="amp2.vd2" value="0" size=3 readonly onChange="javascript: TestVal(2,'.vd2',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>
+	
+	</TD>
+	
+	<TD>	
+	<div class="control">		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1,'.vd2',8.0,0.0)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1,'.vd2',8.0,0.0)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1,'.vd2',8.0,0.0)"></button>
+		</div>	
+		<input class="textfild"  type="text"  id="amp3.vd2" value="0" size=3 readonly onChange="javascript: TestVal(3,'.vd2',8.0,0.0); window.parent.SaveVar(this,1,'amp',0)">
+	</div>			
+	</TD>
+	
+</TR>
+
+	<!--Row 6-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp fine</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="bert0.L0.txaSwingFine"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE ="1">1</OPTION>
+		<OPTION VALUE ="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE ="4">4</OPTION>
+		<OPTION VALUE ="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE ="7">7</OPTION>
+		<OPTION VALUE ="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE ="10">10</OPTION>
+		<OPTION VALUE ="11">11</OPTION>
+		<OPTION VALUE ="12">12</OPTION>
+		<OPTION VALUE ="13">13</OPTION>
+		<OPTION VALUE ="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="bert0.L1.txaSwingFine"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE ="1">1</OPTION>
+		<OPTION VALUE ="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE ="4">4</OPTION>
+		<OPTION VALUE ="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE ="7">7</OPTION>
+		<OPTION VALUE ="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE ="10">10</OPTION>
+		<OPTION VALUE ="11">11</OPTION>
+		<OPTION VALUE ="12">12</OPTION>
+		<OPTION VALUE ="13">13</OPTION>
+		<OPTION VALUE ="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="bert0.L2.txaSwingFine"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE ="1">1</OPTION>
+		<OPTION VALUE ="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE ="4">4</OPTION>
+		<OPTION VALUE ="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE ="7">7</OPTION>
+		<OPTION VALUE ="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE ="10">10</OPTION>
+		<OPTION VALUE ="11">11</OPTION>
+		<OPTION VALUE ="12">12</OPTION>
+		<OPTION VALUE ="13">13</OPTION>
+		<OPTION VALUE ="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="bert0.L3.txaSwingFine"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE ="1">1</OPTION>
+		<OPTION VALUE ="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE ="4">4</OPTION>
+		<OPTION VALUE ="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE ="7">7</OPTION>
+		<OPTION VALUE ="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE ="10">10</OPTION>
+		<OPTION VALUE ="11">11</OPTION>
+		<OPTION VALUE ="12">12</OPTION>
+		<OPTION VALUE ="13">13</OPTION>
+		<OPTION VALUE ="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+	</SELECT>
+	</TD>
+	
+</TR>
+
+	<!--Row 7-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Amp corse</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="bert0.L0.txaSwing"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="bert0.L1.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="bert0.L2.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="bert0.L3.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+	</SELECT>
+	</TD>
+	
+</TR>
+	<!--Row 8-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Swap P_N</TH>
+	
+	<TD>
+	<SELECT  NAME="bert0.L0.swapTxPN" ID="bert0.L0.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<!-- inv. for EML vers1 only -->
+		<OPTION VALUE="1">Yes</OPTION>
+		<OPTION VALUE ="0">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="bert0.L1.swapTxPN" ID="bert0.L1.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+	<OPTION VALUE="1">Yes</OPTION>
+	<OPTION VALUE ="0">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="bert0.L2.swapTxPN" ID="bert0.L2.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="1">Yes</OPTION>
+		<OPTION VALUE ="0">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT NAME="bert0.L3.swapTxPN" ID="bert0.L3.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="1">Yes</OPTION>
+		<OPTION VALUE ="0">No</OPTION>
+	</SELECT>
+	</TD>
+</TR>
+
+	<!--Row 9-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH> EQ pst</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="bert0.L0.txaEqpst"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="bert0.L1.txaEqpst"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="bert0.L2.txaEqpst"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="bert0.L3.txaEqpst"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE ="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+	</SELECT>
+	</TD>
+	
+</TR>
+	<!--Row 10-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH> EQ pre</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="bert0.L0.txaEqpre"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX_opt_test; window.parent.window_onload();" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="bert0.L1.txaEqpre"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="bert0.L2.txaEqpre"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="bert0.L3.txaEqpre"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		
+	</SELECT>
+	</TD>
+	
+</TR>
+<!--Row 11-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Mod ctrl Ki</TH>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod0.Ki" value="0" size=3  onkeydown='validateImput(event,this)'>
+	<button class="buttonBlue" type="button" id="mzMod0.Ki_But"  onclick="javascript: TestpwrRef(this); ">Save</button>	
+	</TD>
+	
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod1.Ki" value="0" size=3  onkeydown='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="mzMod1.Ki_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod2.Ki" value="0" size=3  onkeydown='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="mzMod2.Ki_But"  onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+	
+	<TD>
+	<input class="textfildPattern" type="text"  id="mzMod3.Ki" value="0" size=3  onkeydown='validateImput(event,this)'>
+		<button class="buttonBlue" type="button" ID="mzMod3.Ki_But" onclick="javascript: TestpwrRef(this); ">Save</button>
+	</TD>
+</TR>
+
+	<!--Row 12-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Eye Symmetry, %</TH>
+	<TD>
+	<div class="control">
+		
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUpSym(1,10,2)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUpSym(2,10,2)"></button>
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUpSym(1,1,2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUpSym(2,1,2)"></button>
+		</div>	
+		<input class="textfild" type="text"  id="mzMod.shiftEyeSym" value="0" size=3 readonly>
+	</div>
+	</TD>
+	<TD></TD>
+	<TD></TD>
+	<TD></TD>
+</TR>
+
+</TABLE>
+
+<div class="headline">Dataset Save/Load</div>
+
+<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="40%">
+
+<TR ALIGN="left">
+<TH>Load Dataset:</TH>
+<TD><SELECT  ID="bert0.loadDataSet">
+                <OPTION VALUE="-1"></OPTION>
+		<OPTION VALUE="0">0</OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE="11">11</OPTION>
+		<OPTION VALUE="12">12</OPTION>
+		<OPTION VALUE="13">13</OPTION>
+		<OPTION VALUE="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+		<OPTION VALUE="16">16</OPTION>
+		<OPTION VALUE="17">17</OPTION>
+		<OPTION VALUE="18">18</OPTION>
+		<OPTION VALUE="19">19</OPTION>	
+	</SELECT></TD>
+<TD><button class="buttonBlue" type="button" id="bert0.loadDataSet_But"  onclick="javascript: Dataset('bert0.loadDataSet',0); ">Load Dataset</button>
+</TD><TD><input class="textfildsys" type="text"  id="bert0.dataSetDescription" size="15" maxlength="15" ></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Save Dataset:</TH>
+<TD><SELECT  ID="bert0.saveDataSet">
+		<OPTION VALUE="-1"></OPTION>
+		<OPTION VALUE="1">1</OPTION>
+		<OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE ="3">3</OPTION>
+		<OPTION VALUE="4">4</OPTION>
+		<OPTION VALUE="5">5</OPTION>
+		<OPTION VALUE="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION>
+		<OPTION VALUE="8">8</OPTION>
+		<OPTION VALUE ="9">9</OPTION>
+		<OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE="11">11</OPTION>
+		<OPTION VALUE="12">12</OPTION>
+		<OPTION VALUE="13">13</OPTION>
+		<OPTION VALUE="14">14</OPTION>
+		<OPTION VALUE ="15">15</OPTION>
+		<OPTION VALUE="16">16</OPTION>
+		<OPTION VALUE="17">17</OPTION>
+		<OPTION VALUE="18">18</OPTION>
+		<OPTION VALUE="19">19</OPTION>	
+	</SELECT>
+	
+	</TD>
+<TD><button class="buttonBlue" type="button" id="bert0.saveDataSet_But"  onclick="javascript: Dataset('bert0.saveDataSet',1); ">Save Dataset</button></TD><TD></TD>
+</TR>
+
+<TR ALIGN="left">
+<TH>Run Script:</TH>
+<TD><input class="textfildsys" type="text"  id="system.execScript" size="15" maxlength="15" ></TD>
+<TD><button class="buttonBlue" type="button" id="execScript_But"  onclick="javascript: RunScript(); ">Run Script</button></TD>
+<TD></TD>
+</TR>
+<!--move set Admin PW to an extra page-->
+<TR ALIGN="left">
+<TH>Admin Password:</TH>
+<TD><input class="textfildsys" type="password"  id="system.passwdAdmin" size="15" maxlength="15" ></TD>
+<TD><button class="buttonBlue" type="button" id="adminpas_But"  onclick="javascript: SaveAdmin(); ">Save</button></TD>
+<TD></TD></TR>
+
+</TABLE>
+</div>
+</FORM>
+
+</div>
+</body>
+<script type="text/javascript">
+	<!--
+document.getElementById("mzMod0.Ki_But").style.display="none";
+document.getElementById("mzMod1.Ki_But").style.display="none";
+document.getElementById("mzMod2.Ki_But").style.display="none";
+document.getElementById("mzMod3.Ki_But").style.display="none";
+-->
+		</script>

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+  	<title>Beispiel</title>
+    </head>
+    <body bgcolor="#000000" text="#cccccc">
+    <center>
+    <H1>Websocket Variables</H1>
+     <br></br>
+    <table border="1">  
+	  <colgroup>
+    		<col width="120">
+    		<col width="180">
+	</colgroup>
+	 <tr>
+		<th>Channel</th>
+		<th width="15">value</th>
+  	</tr>
+	  <tr>
+	    <td>Lane 0 (Channel 1)</td>
+	    <td id="tx0.pwr" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>Lane 1 (Channel 2)</td>
+	    <td id="tx1.pwr" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>Lane 2 (Channel 3)</td>
+	    <td id="tx2.pwr" align="center">unknown</td>
+	  </tr>
+	  <tr>
+	    <td>Lane 3 (Channel 4)</td>
+	    <td id="tx3.pwr" align="center">unknown</td>
+	  </tr>
+    </table>
+    <script type="text/javascript">
+     var url='ws://' + document.domain + ':' + document.location.port + '/messages';
+     var socket = new WebSocket(url);
+     socket.onopen = function() { 
+		//alert('Verbindung aufgebaut');	
+     }; 
+     socket.onclose = function() { 
+		alert('Verbindung unterbrochen');	
+     }; 
+     socket.onmessage = function(evt) {
+	var arr = JSON.parse(evt.data);
+	var cnt = 0;
+	var item = arr['var'];
+	var value = arr['val'];
+	value = value.toExponential();
+	//alert(item);
+	document.getElementById(item).firstChild.nodeValue=value;
+     }
+     var pollArr = new Array( "tx0.pwr",
+     			"tx1.pwr",
+     			"tx2.pwr",
+     			"tx3.pwr"
+		     );
+     var cursor = 0;
+     function pollAdc() {
+	    socket.send(JSON.stringify({get: pollArr[cursor]}));
+	    cursor = (cursor + 1) % pollArr.length;
+     }
+     function SelectLied(lied) {
+	    socket.send(JSON.stringify({set: "test.var1", val: lied}));
+     }
+     setInterval(pollAdc,200);
+     </script>
+     <br></br>
+	<input type="button" value="Lied 1 vom Kasper" onclick="SelectLied(1);" </input>
+	<input type="button" value="Lied 2 (Entchen)" onclick="SelectLied(2);" </input>
+    </center>
+
+    </body>
+</html>
