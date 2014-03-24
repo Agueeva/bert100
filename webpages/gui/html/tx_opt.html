@@ -1,0 +1,168 @@
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+	 <!-- tx eml functions -->
+	<script type="text/javascript" src="js/tx_eml.js" ></script>
+</head>
+<body onload="javascript: Check_all();">
+
+<div class="headline">Optical TX</div>
+
+<div name="wrap_TX_Data">
+<FORM onsubmit="return false" ID="Form_PG">
+	<!--Table-->
+<TABLE  class="blue-select" ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%">
+	<!--Row 1-->
+<TR ALIGN="left" VALIGN="middle">
+        <TH>All channels<br>same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript:  window.parent.all_tx=this.checked; window.parent.myElement=window.parent.myVarTX0; window.parent.myCheckAll(this,'emlAmp','Amp',1);  window.parent.myElement=window.parent.myVarTX2; window.parent.myCheckAll(this,'bert0.L','.L',0);window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" VALUE ="checkbox"></TH>
+	<TH>Channel 1</TH>
+	<TH>Channel 2</TH>
+	<TH>Channel 3</TH>
+	<TH>Channel 4</TH></TR>
+
+	
+	<!--Row 2-->
+
+	
+<TR ALIGN="left" VALIGN="middle">
+	<TH>ER (dB)</TH>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(1,1,10,2)"/></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(1,2,10,2)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button"  onclick="javascript: ClickUp(1,1,1,2)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(1,2,1,2)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text" name="emlAmp1.vg1" id="emlAmp1.vg1" value="0" size=3 readonly onChange="javascript: TestVal(1); window.parent.SaveVar(this,2,'Amp',1); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();">
+	</div>
+	</TD>
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(2,1,10,1)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(2,2,10,1)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(2,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(2,2,1,1)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text" name="emlAmp2.vg1" id="emlAmp2.vg1" value="0" size=3 readonly onChange="javascript: TestVal(2); window.parent.SaveVar(this,1,'Amp',1)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(3,1,10,1)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(3,2,10,1)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(3,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(3,2,1,1)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text" name="emlAmp3.vg1" id="emlAmp3.vg1" value="0" size=3 readonly onChange="javascript: TestVal(3); window.parent.SaveVar(this,1,'Amp',1)">
+	</div>
+	</TD>
+	
+	<TD>
+	<div class="control">
+		<div class="control_elements">
+			<button class="button_arrow dplus" type="button" onclick="javascript: ClickUp(4,1,10,1)"></button>
+			<button class="button_arrow dminus" type="button" onclick="javascript: ClickUp(4,2,10,1)"></button>
+			
+		</div>
+		<div class="control_elements">
+			<button class="button_arrow plus" type="button" onclick="javascript: ClickUp(4,1,1,1)"></button>
+			<button class="button_arrow minus" type="button" onclick="javascript: ClickUp(4,2,1,1)"></button>
+			
+		</div>	
+		
+		<input class="textfild" type="text" name="emlAmp4.vg1" id="emlAmp4.vg1" value="0" size=3 readonly onChange="javascript: TestVal(4); window.parent.SaveVar(this,1,'Amp',1)">
+	</div>
+	</TD>
+	
+</TR>
+	<!--Row 3-->
+
+	<!--Row 4-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Control Loop</TH>
+	<TD>
+	<SELECT NAME="l0.txa_swing" ID="bert0.L0.txaSwing"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" >
+		<OPTION VALUE="0">OFF</OPTION>
+		<OPTION VALUE ="2">ON</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="l1.txa_swing" ID="bert0.L1.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">OFF</OPTION>
+		<OPTION VALUE ="2">ON</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="l2.txa_swing" ID="bert0.L2.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">OFF</OPTION>
+		<OPTION VALUE ="2">ON</OPTION>
+	</SELECT>
+	</TD>
+	<TD>
+	<SELECT NAME="l3.txa_swing" ID="bert0.L3.txaSwing"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">OFF</OPTION>
+		<OPTION VALUE ="2">ON</OPTION>
+	</SELECT>
+	</TD>
+	
+</TR>
+	<!--Row 5-->
+<TR ALIGN="left" VALIGN="middle">
+	<TH>Swap P_N</TH>
+	
+	<TD>
+	<SELECT  NAME="bert0.L0.swapTxPN" ID="bert0.L0.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.myElement=window.parent.myVarTX; window.parent.window_onload();" >
+		<!-- inv. for EML vers1 only -->
+		<OPTION VALUE="0">Yes</OPTION>
+		<OPTION VALUE ="1">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	
+	<TD>
+	<SELECT  NAME="bert0.L1.swapTxPN" ID="bert0.L1.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+	<OPTION VALUE="0">Yes</OPTION>
+	<OPTION VALUE ="1">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT  NAME="bert0.L2.swapTxPN" ID="bert0.L2.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">Yes</OPTION>
+		<OPTION VALUE ="1">No</OPTION>
+	</SELECT>
+	</TD>
+	
+	<TD>
+	<SELECT NAME="bert0.L3.swapTxPN" ID="bert0.L3.swapTxPN"  onChange="javascript: window.parent.SaveVar(this,1,'.L',0);" >
+		<OPTION VALUE="0">Yes</OPTION>
+		<OPTION VALUE ="1">No</OPTION>
+	</SELECT>
+	</TD>
+</TR>
+</TABLE>
+</FORM>
+
+</div>
+</body>

@@ -15,8 +15,11 @@
 #include "timer.h"
 #include "rx_crc.h"
 #include "version.h"
+<<<<<<< HEAD
 #include "strhash.h"
 #include "fat.h"
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 
 #define DB_SPACE	(8192)
 #define MIN_WRITE	(8)
@@ -33,7 +36,10 @@
 
 typedef struct Database {
 	Mutex dbSema;
+<<<<<<< HEAD
 	StrHashTable *objIdHash;
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 	uint32_t dbBlock[2];
 	uint32_t fillLevel[2];
 	uint16_t crcinit;
@@ -101,7 +107,10 @@ FindEnd(uint32_t dbBlock)
 
 /**
  ***************************************************************
+<<<<<<< HEAD
  * \fn static void DB_Erase(Database * db, uint8_t blockNr)
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
  * Erase all flash blocks belonging to both database blocks
  ***************************************************************
  */
@@ -116,12 +125,21 @@ DB_Erase(Database * db, uint8_t blockNr)
 }
 
 /**
+<<<<<<< HEAD
  ***********************************************************************************************
  * \fn static bool _DB_SetObj(uint8_t currBlock, uint32_t tag, const void *buf, uint16_t len)
  ***********************************************************************************************
  */
 static bool
 _DB_SetObj(uint8_t currBlock, uint32_t tag, const void *buf, uint16_t len)
+=======
+ ********************************************************************
+ *
+ ********************************************************************
+ */
+static bool
+_DB_SetObj(uint8_t currBlock, uint32_t tag, void *buf, uint16_t len)
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 {
 	uint8_t data[8], hdr[8];
 	uint16_t i;
@@ -351,7 +369,11 @@ DB_Defrag(Database * db)
  ***********************************************************
  */
 bool
+<<<<<<< HEAD
 DB_SetObj(uint32_t tag, const void *buf, uint16_t len)
+=======
+DB_SetObj(uint32_t tag, void *buf, uint16_t len)
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 {
 	Database *db = &g_Database;
 	bool retval;
@@ -367,6 +389,7 @@ DB_SetObj(uint32_t tag, const void *buf, uint16_t len)
 	return retval;
 }
 
+<<<<<<< HEAD
 bool
 DB_SetObjName(uint32_t objKey, const char *format, ...) 
 {
@@ -390,6 +413,8 @@ DB_SetObjName(uint32_t objKey, const char *format, ...)
 	return true;
 }
 
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 /**
  ********************************************************
  * Create a database by initializing both blocks
@@ -522,6 +547,7 @@ DB_Fix(Database * db)
 	}
 }
 
+<<<<<<< HEAD
 static void
 Keys_Dump(Database *db) {
         StrHashSearch hashSearch;
@@ -547,6 +573,8 @@ Key_FindByName(Database *db, const char *keyname)
 	return objId;
 }
 
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 /**
  *****************************************************************************
  * \fn static int8_t cmd_db(Interp * interp, uint8_t argc, char *argv[])
@@ -556,6 +584,7 @@ static int8_t
 cmd_db(Interp * interp, uint8_t argc, char *argv[])
 {
 	Database *db = &g_Database;
+<<<<<<< HEAD
 	unsigned int i;
 	if (argc == 5 && (strcmp(argv[1],"set") == 0)) {
 		uint32_t key;
@@ -625,6 +654,15 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 			}
 			return 0;
 		} else if (strcmp(argv[1], "key") == 0) {
+=======
+	uint16_t i;
+	if (argc == 4) {
+			uint32_t tag;
+			tag = astrtoi32(argv[2]);
+			DB_SetObj(tag, argv[3],strlen(argv[3]) + 1);
+	} else if (argc > 2) {
+		if (strcmp(argv[1], "key") == 0) {
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 			uint32_t key;
 			uint16_t len;
 			uint8_t *obj;
@@ -684,6 +722,15 @@ cmd_db(Interp * interp, uint8_t argc, char *argv[])
 	}
 	Con_Printf("Use Flash Block %u, used %lu of %u bytes\n",
 		   db->currBlock, db->fillLevel[db->currBlock], DB_SPACE);
+<<<<<<< HEAD
+=======
+#if 0
+	DB_SetObj(0x12345679, "01234567890123456789012345678901234567890", 45);
+	Con_Printf("Used flash BlockNr %u, level %lu\n", db->currBlock,
+		   db->fillLevel[db->currBlock]);
+	DB_GetObjP(db->currBlock, 0x12345679, NULL);
+#endif
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 	return 0;
 }
 
@@ -707,7 +754,10 @@ DB_Init(void)
 	 */
 	Mutex_Init(&db->dbSema);
 	//db->crcinit = CRC16(0,(uint8_t*)g_Version,3);
+<<<<<<< HEAD
 	db->objIdHash = StrHash_New(32);
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 	db->crcinit = DB_CRCINIT;
 
 	db->dbBlock[0] = DFLASH_MAP_ADDR(0);

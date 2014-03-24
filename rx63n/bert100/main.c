@@ -54,6 +54,7 @@
 #include "fanco.h"
 #include "modreg.h"
 #include "database.h"
+<<<<<<< HEAD
 #include "ntc.h"
 #include "buzzer.h"
 #include "alarms.h"
@@ -62,6 +63,8 @@
 #include "amp_mz.h"
 #include "bert_mz.h"
 #include "bert_eml.h"
+=======
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 
 /* Configure the clock to 96MHz CPU / 48MHz Peripheral */
 static void
@@ -184,7 +187,12 @@ main(void)
 	wserv = XY_NewWebServer();
 	PVarSocket_New(wserv);	
 	ADC12_Init();
+<<<<<<< HEAD
 	NTC_Init();
+=======
+	DataFlash_Init();
+	DB_Init();
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f
 	SWUpdate_Init();
 	ModReg_Init();
 	/* Now the higher level modules depending on hardware modules */

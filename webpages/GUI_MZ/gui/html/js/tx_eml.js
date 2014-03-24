@@ -3,7 +3,7 @@ function ClickUp(i,ud,sr,k){
     var my_item=document.getElementById('amp'+i+'.vg1');
     switch(ud){
         case 1:
-            if((Number(my_item.value)+sr*0.01) < 2.8) {
+         if((Number(my_item.value)+sr*0.01) < 2.8) {
                my_item.value=Math.round((Number(my_item.value)+(sr*0.01))* 100) / 100;
             }else {
                my_item.value=2.8;

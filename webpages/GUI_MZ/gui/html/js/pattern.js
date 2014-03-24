@@ -3,7 +3,7 @@ var i;
 //**********************************************************
 function Check_Auto(n){
    
- if (document.getElementById('all').checked) { 
+if (document.getElementById('all').checked) { 
  AUTO_main_0();
  AUTO_main();      
 }

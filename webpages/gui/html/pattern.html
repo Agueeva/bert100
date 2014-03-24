@@ -1,0 +1,158 @@
+<head>
+	<LINK href="css/subpages.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="js/pattern.js" ></script>
+</head>
+
+<body onload="javascript: all_load();">
+<div class="headline">Pattern</div>
+
+<div name="wrap_Pattern">
+	<FORM  ID="Form_PG">
+	<TABLE ALIGN="left" BORDER=1 CELLSPACING=1 CELLPADDING=1 WIDTH="100%" >
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>All channels same: <INPUT TYPE="CHECKBOX" NAME="all" ID="all" onClick="javascript: fun_all(this)" VALUE ="checkbox"></TH>
+		<TH>Channel 1</TH>
+		<TH>Channel 2</TH>
+		<TH>Channel 3</TH>
+		<TH>Channel 4</TH>
+	</TR>
+	
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Pattern:</TH>
+		<TD>
+		<SELECT NAME="pat_gen_sel0" ID="bert0.L0.prbsPatGenSel"  onChange="javascript: Check_Pattern(0,this,2); window.parent.window_onload();" >	
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave</OPTION>
+			<OPTION VALUE ="3">User Pattern</OPTION>
+		</SELECT></TD>
+		<TD><SELECT  ID="bert0.L1.prbsPatGenSel" onChange="javascript:  Check_Pattern(1,this,1);">
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave</OPTION>
+			<OPTION VALUE ="3">User Pattern</OPTION>
+		</SELECT></TD>
+		<TD><SELECT ID="bert0.L2.prbsPatGenSel" onChange="javascript: Check_Pattern(2,this,1);" >
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave</OPTION>
+			<OPTION VALUE ="3">User Pattern</OPTION>
+		</SELECT></TD>
+		<TD><SELECT  ID="bert0.L3.prbsPatGenSel" onChange="javascript: Check_Pattern(3,this,1);" >
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+			<OPTION VALUE ="2">8:8 Square wave</OPTION>
+			<OPTION VALUE ="3">User Pattern</OPTION>
+		</SELECT></TD>
+	</TR>
+
+
+	<TR ALIGN="left" style="display:none" id="userPattern0">
+		<TH>User Pattern, 40 bits:</TH>
+		<TD colspan=2>
+			<input class="textfildPattern" type="text" id="userHex1" value="0" size=10 onkeypress='validateImput(event,this)'>-
+			<input class="textfildPattern" type="text" id="userHex2" value="0" size=10 onkeypress='validateImput(event,this)'>-
+			<input class="textfildPattern" type="text" id="userHex3" value="0" size=10 onkeypress='validateImput(event,this)'>-
+			<input class="textfildPattern" type="text" id="userHex4" value="0" size=10 onkeypress='validateImput(event,this)'>
+			<input  type="hidden"  id="bert0.userPattern" value="0">
+		</TD>
+		<TD><button class="buttonBlue" type="button" onclick="javascript: TestUserPat(); ">Save</button></TD>
+		<TD><div id="savePatternIndicator" class="saveindicatorGreen">Saved!</div></TD>
+	</TR>
+		
+	<TR ALIGN="left">
+		<TH>True/Invers:</TH>
+
+		<TD><SELECT NAME="prbs_gen_inv0" ID="bert0.L0.prbsVerInv" onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.window_onload();">
+			<OPTION VALUE="1">Invers</OPTION>
+			<OPTION VALUE ="0">true</OPTION>
+		</SELECT></TD>
+		<TD><SELECT NAME="prbs_gen_inv1" ID="bert0.L1.prbsVerInv" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="1">Invers</OPTION>
+			<OPTION VALUE ="0">true</OPTION>
+		</SELECT></TD>
+		<TD><SELECT NAME="prbs_gen_inv2" ID="bert0.L2.prbsVerInv" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="1">Invers</OPTION>
+			<OPTION VALUE ="0">true</OPTION>
+		</SELECT></TD>
+		<TD><SELECT NAME="prbs_gen_inv3" ID="bert0.L3.prbsVerInv" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="1">Invers</OPTION>
+			<OPTION VALUE ="0">true</OPTION>
+		</SELECT></TD></TR>
+	
+	<TR ALIGN="left">	
+		<TH>Auto Sync  ED:</TH>
+		<TD><SELECT NAME="prbs_autovr0" ID="l0.prbs_autovr"  onChange="javascript: Check_Auto(0);">
+			<OPTION VALUE="0">no</OPTION>
+			<OPTION VALUE ="1">yes</OPTION>
+		</SELECT>
+		</TD>
+		<TD><SELECT NAME="prbs_autovr1" ID="l1.prbs_autovr"  onChange="javascript:  Check_Auto(1);">
+			<OPTION VALUE="0">no</OPTION>
+			<OPTION VALUE ="1">yes</OPTION>
+		</SELECT>
+		</TD>
+		<TD><SELECT NAME="prbs_autovr2" ID="l2.prbs_autovr"  onChange="javascript: Check_Auto(2); ">
+			<OPTION VALUE="0">no</OPTION>
+			<OPTION VALUE ="1">yes</OPTION>
+		</SELECT>
+		</TD>
+		<TD><SELECT NAME="prbs_autovr3" ID="l3.prbs_autovr"  onChange="javascript: Check_Auto(3);">
+			<OPTION VALUE="0">no</OPTION>
+			<OPTION VALUE ="1">yes</OPTION>
+	</SELECT>
+	</TD></TR>
+
+	<TR ALIGN="left" VALIGN="middle">
+		<TH>Pattern verification:</TH>
+		<TD> <SELECT NAME="pat_ver_sel0" ID="bert0.L0.patVerSel" onChange="javascript: window.parent.SaveVar(this,2,'.L',0); window.parent.window_onload();">
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD><TD><SELECT NAME="pat_ver_sel1" ID="bert0.L1.patVerSel" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD><TD><SELECT NAME="pat_ver_sel2" ID="bert0.L2.patVerSel" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD><TD><SELECT NAME="pat_ver_sel3" ID="bert0.L3.patVerSel" onChange="javascript: window.parent.SaveVar(this,1,'.L',0)">
+			<OPTION VALUE="7">2E7-1</OPTION>
+			<OPTION VALUE ="1">2E9-1</OPTION>
+			<OPTION VALUE ="6">2E15-1</OPTION>
+			<OPTION VALUE ="5">2E23-1</OPTION>
+			<OPTION VALUE ="4">2E31-1</OPTION>
+		</SELECT></TD></TR>
+
+</TABLE>
+</FORM>
+</div>
+
+<script type="text/javascript" >
+	<!--
+document.getElementById('userPattern0' ).style.display = 'none';
+//document.getElementById('savePatternIndicator' ).style.display = 'none';
+ -->
+</script>
+
+<body>

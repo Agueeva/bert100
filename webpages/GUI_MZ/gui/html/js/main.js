@@ -62,7 +62,7 @@
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 
+  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 
      
      bl_Communication=true;
      all_pat=false;

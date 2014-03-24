@@ -1,3 +1,4 @@
+<<<<<<< HEAD:webpages/GUI_EML/gui/index.html
 <head>
 <LINK href="html/css/stylefile.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="html/js/jquery-2.0.3.min.js"></script>
@@ -51,4 +52,55 @@
 		</div>
 	</div>
 </div>
+=======
+<head>
+<LINK href="html/css/stylefile.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="html/js/jquery-2.0.3.min.js"></script>
+	<!-- Main functions -->
+	<script type="text/javascript" src="html/js/main.js" ></script>
+	<!--<script type="text/javascript" src="html/js/simpletreemenu.js" ></script>-->
+</head>
+<body >
+<div id="wrapper_all">
+	<div id="header">
+		<img id="logo" src="html/img/header.jpg"  alt="header" >
+		<img id="companylogo" src="html/img/MunichInstruments.png"  alt="header" >
+	</div>
+
+	<div id="wrapper">
+		<div id="menu">
+		<!--<img id="menubg" src="html/img/menu_bg.jpg"  alt="header" >-->
+		<ul id="treemenu" class="menu">
+			<!--<li><a href='javascript:void(0);' id="homeBut">Home</a></li>-->
+			<li><a href='javascript:void(0);' id="SystemBut" >System</a></li>
+			<li><a href='javascript:void(0);'>Settings</a>
+				<ul>
+					<li><a href='javascript:void(0);' id="Variables" >Variables</a></li>
+				<li><a href='javascript:void(0);' id="PatternBut" >Pattern</a></li>
+				<!--<li><a href='javascript:void(0);' id="TXBut" >TX Data Port OUT</a></li>-->
+				<li><a href='javascript:void(0);' id="RateTrBut" >Data Rate & Trigger</a></li>
+				<li><a href='javascript:void(0);' id="OpticalTXBut" >Optical TX</a></li>
+				<li><a href='javascript:void(0);' id="OpticalTXTestBut" >Optical TX Test</a></li>
+				</ul>	
+			
+			</li>
+			<li><a href='javascript:void(0);' id="MeasureBut">Measurement</a></li>
+		</ul>
+		<input type="hidden" size="20"  name="test.var1" id="test.var1" value="">
+		</div>
+
+		<div id="content">
+			<!--<div id="bert"><font size="5" >BER: </font><input type="hiden" size="20" style="font-size:16pt;" name="test.var1" id="test.var1" value=""></div> -->
+			<div id="content_wrapper"> 
+				<img id="c_bert_bg" src="html/img/c_bert_bg.png"  alt="logo" >
+				<iframe id="frame" src=""></iframe>
+				<div id="loading">
+					<b>&nbsp;&nbsp;Loading...</b></br>
+					<img id="loader" src="html/img/loader.gif"  alt="bg" >
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+>>>>>>> f787f742d2526f05a4fb11382eb6ac4b6db75b4f:webpages/gui/index.html
 </body>
