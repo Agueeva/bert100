@@ -5,7 +5,7 @@
   var n=0;
   var my_sek=300;
   var my_Interval, bl_Communication, all;
-  var socket,page_k,page_pref, all_pat, all_tx;
+  var socket,page_k,page_pref, all_pat, all_tx, page_act="Index";
   var prbs_autovr0=1,prbs_autovr1=1,prbs_autovr2=1,prbs_autovr3=1;
   var dataset=-1;
   Alarm_Strings=new Array("Mod.Overtemp","Amp. Overtemp","CPU (na)","FAN1 fault","FAN2 fault","FAN3 fault","FAN4 fault","Alarm");
@@ -36,7 +36,7 @@
                              "mzMod0.bias","mzMod1.bias","mzMod2.bias","mzMod3.bias","bert0.dataSetDescription");
   var myVarTX_opt0= new Array("swapTxPN");
   var myVarTX_opt1= new Array("ctrlEnable");
-  var myVarDrTr= new Array("bert0.bitrate","ptrig0.pattern");
+  var myVarDrTr= new Array("ptrig0.pattern","bert0.bitrate");
   var myVarErr= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias","bert0.bitrate",
                           "mzMod0.ctrlFault", "mzMod1.ctrlFault","mzMod2.ctrlFault","mzMod3.ctrlFault",
                           "mzMod0.latchedCtrlFault", "mzMod1.latchedCtrlFault", "mzMod2.latchedCtrlFault", "mzMod3.latchedCtrlFault",
@@ -62,7 +62,7 @@
   var myVarGraph= new Array("mzMod0.modBias","mzMod1.modBias","mzMod2.modBias","mzMod3.modBias",
 			 "tx0.pwr","tx1.pwr","tx2.pwr","tx3.pwr");
  
-  var urlWS= 'ws://' + document.domain + ':' + document.location.port + '/messages'; // 
+  var urlWS=  'ws://' + document.domain + ':' + document.location.port + '/messages'; // 
      
      bl_Communication=true;
      all_pat=false;
@@ -92,7 +92,7 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-     //  console.log("item:"+item+" Value:"+value);
+       console.log("item:"+item+" Value:"+value);
         if (item.substr(9, item.length)=="patGenSel" && value==3) {
          ReadVarByName("bert0.userPattern");
           $("#frame").contents().find("#userPattern0").css('display','table-row');
@@ -219,15 +219,18 @@ var k;
      }
      }  
      
- //***********************************************************************+  "mzMod.shiftEyeSym"       
-        
+ //***********************************************************************+  "mzMod.shiftEyeSym"
+ if (page_act=="Measure" && item.substr(9, 9)=="patVerSel") {
+var item_c=item.substr(0, 9)+"patVerSel_Text";
+ $("#frame").contents().find("#"+item_c.replace(/[.]/g,"\\.")).val(value);
+ }
 switch(item)
      {
 case "test.var1":
        document.getElementById('test.var1').value=value;
      return;
 case "mzMod.shiftEyeSym":
-      value= parseInt(value); 
+      value= Math.round(value); 
      break;
 case "system.latchedFault":
      
@@ -442,7 +445,7 @@ $(document).ready(function()
           
 	//Click.
 	$( "#homeBut" ).click(function() {
-                
+                page_act="Index"
 		laodpage("html/main.html","#frame");
 		return false;
 	});
@@ -455,6 +458,7 @@ $(document).ready(function()
                 all=all_pat;
                 page_pref="bert0.L";
                 page_k=0;
+                page_act="Pattern"
 		laodpage("html/pattern.html","#frame");
                 
 		return false;
@@ -465,6 +469,7 @@ $(document).ready(function()
 	        myElement=myVarDrTr;
 		n=2;
                 page_k=0;
+                page_act="RateTrBut"
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
@@ -473,6 +478,7 @@ $(document).ready(function()
 		myElement=myVarErr;
                 n=2;
                 page_k=0;
+                page_act="Measure"
 		laodpage("html/error.html","#frame");
 		return false;
 	});
@@ -481,6 +487,7 @@ $(document).ready(function()
 		myElement=myVarSystem;
                 n=2;
                 page_k=0;
+                page_act="System"
 		laodpage("html/system.html","#frame");
 		return false;
 	});
@@ -489,6 +496,7 @@ $(document).ready(function()
                 n=2;
                 page_k=0;
                 all=all_tx;
+                page_act="OpticalTX"
 		laodpage("html/tx_opt.html","#frame");
 		return false;
 	});
@@ -498,6 +506,7 @@ $(document).ready(function()
 		all=all_tx_opt_test;
                 page_pref="amp";
                 page_k=0;
+                page_act="OpticalTXcalibr"
 		laodpage("admin/tx_opt_calibr.html","#frame");
 		return false;
 	});
@@ -507,6 +516,7 @@ $(document).ready(function()
 		all=all_tx_opt_test;
                 page_pref="amp";
                 page_k=0;
+                page_act="Graph"
 		laodpage("admin/graph.html","#frame");
 		return false;
 	});
