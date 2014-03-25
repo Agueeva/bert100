@@ -3,7 +3,7 @@ var i;
 //**********************************************************
 function Check_Auto(n){
    
-if (document.getElementById('all').checked) { 
+ if (document.getElementById('all').checked) { 
  AUTO_main_0();
  AUTO_main();      
 }
@@ -35,13 +35,13 @@ document.getElementById('bert0.L'+n+'.patVerSel').disabled=false;
 function all_load() {
    main_AUTO();
 var my_all=document.getElementById('all');
+ console.log("my_all:"+window.parent.all_pat);
 if (window.parent.all_pat) {
 	 my_all.checked=true;
          window.parent.myElement=window.parent.myVarPattern0;
          window.parent.myDisableAll(my_all,'bert0.L','.L',0);
-        // window.parent.myElement=window.parent.myVarPattern1;
          window.parent.myDisableAuto();
-         window.parent.myElement=window.parent.myVarPattern;
+         window.parent.myElement=window.parent.myVarPattern0;
          AUTO_main_all_ch();
 }
 else {

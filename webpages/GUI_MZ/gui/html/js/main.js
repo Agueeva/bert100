@@ -92,14 +92,14 @@
 	var cnt = 0;
 	var item =arr['var'];
 	var value =arr['val'];
-       console.log("item:"+item+" Value:"+value);
-        if (item.substr(9, item.length)=="patGenSel" && value==3) {
-         ReadVarByName("bert0.userPattern");
-          $("#frame").contents().find("#userPattern0").css('display','table-row');
-           mystr='l'+item.substr(7, 1)+'.prbs_autovr';
-           $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
-           mystr=item.substr(0, 8)+'.patVerSel';
-           $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
+  //     console.log("item:"+item+" Value:"+value);
+       if (item.substr(9, item.length)=="patGenSel" && value==3) {
+               ReadVarByName("bert0.userPattern");
+               $("#frame").contents().find("#userPattern0").css('display','table-row');
+               mystr='l'+item.substr(7, 1)+'.prbs_autovr';
+               $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
+               mystr=item.substr(0, 8)+'.patVerSel';
+               $("#frame").contents().find("#"+mystr.replace(/[.]/g,"\\.")).attr("disabled",true);
           }
     if ((item.substr(0, 3)=="amp" && item!="amp.temp") || (item.substr(0, 5)=="mzMod" && item!="mzMod.temp" && item!="mzMod.shiftEyeSym") || item.substr(4, 3)=="pwr") {
      
@@ -222,7 +222,28 @@ var k;
  //***********************************************************************+  "mzMod.shiftEyeSym"
  if (page_act=="Measure" && item.substr(9, 9)=="patVerSel") {
 var item_c=item.substr(0, 9)+"patVerSel_Text";
- $("#frame").contents().find("#"+item_c.replace(/[.]/g,"\\.")).val(value);
+var value_c=value;
+switch(value){
+          case 1:
+               value_c="2E9-1";
+          break;
+          case 7:
+               value_c="2E7-1";
+          break;
+          case 6:
+               value_c="2E15-1";
+          break;
+          case 5:
+               value_c="2E23-1";
+          break;
+          case 4:
+               value_c="2E31-1";
+          break;
+          default:
+           value_c="2E31-1";
+          break;
+          }
+ $("#frame").contents().find("#"+item_c.replace(/[.]/g,"\\.")).val(value_c);
  }
 switch(item)
      {
@@ -321,23 +342,30 @@ case "bert0.berMeasWin_ms":
       $("#frame").contents().find("#msec").val(value/1000);     
      break;
      
-case "bert0.bitrate":
-     if (value>25781249900 && value<25781250080) {
-         value=25781250000;}
-     if (value>27952493300 && value<27952493482) {
-         value=27952493392;}
-         $("#frame").contents().find("#userDR").val((Math.round(Number(value/100))/10000000));
-     if ( value!=25781250000 &&  value!=27952493392){
-          $("#frame").contents().find("#bert0.bitrate".replace(/[.]/g,"\\.")).val(-1);
-          $("#frame").contents().find('#noneUserDateRate').hide();
-          $("#frame").contents().find('#userDateRate').show();
-          return;     
-     }else{
-         $("#frame").contents().find('#noneUserDateRate').show();
-          $("#frame").contents().find('#userDateRate').hide();
-          //console.log("hide");
-     }
-     break; 
+ case "bert0.bitrate":
+               if (value>25781249900 && value<25781250080) 
+                    value=25781250000;
+               if (value>27952493300 && value<27952493482) 
+                    value=27952493392;
+               
+               $("#frame").contents().find("#userDR").val((Math.round(Number(value/100))/10000000));
+               if (page_act=="RateTr") {
+               if ( value!=25781250000 &&  value!=27952493392){
+                    $("#frame").contents().find("#bert0.bitrate".replace(/[.]/g,"\\.")).val(-1);
+                    $("#frame").contents().find('#noneUserDateRate').hide();
+                    $("#frame").contents().find('#userDateRate').show();
+                    return;     
+               }else{
+                    $("#frame").contents().find('#noneUserDateRate').show();
+                    $("#frame").contents().find('#userDateRate').hide();
+                    //console.log("hide");
+               }
+               }
+               else {
+                  $("#frame").contents().find('#noneUserDateRate').hide();   
+                    $("#frame").contents().find('#userDateRate').show(); 
+               }
+          break;
      // 27952493320
 default:
      break;
@@ -469,7 +497,7 @@ $(document).ready(function()
 	        myElement=myVarDrTr;
 		n=2;
                 page_k=0;
-                page_act="RateTrBut"
+                page_act="RateTr"
 		laodpage("html/drtr.html","#frame");
 		return false;
 	});
